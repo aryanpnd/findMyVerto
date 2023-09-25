@@ -31,8 +31,8 @@ opt.add_argument("disable-infobars")
 
 try:
     driver=webdriver.Chrome(options=opt)
-except:
-    print(f"Error occurred in the script,Try Again")
+except e:
+    print(f"Error occurred : {e}")
 
 
 username = "12203693"
@@ -40,8 +40,8 @@ password = ".V4mwB8$B$.75vE"
 
 try:
     driver.get("https://ums.lpu.in/lpuums/")
-except:
-    print(f"Error occurred while fetching UMS")
+except e:
+    print(f"Error {e}")
 
 
 userNameField = WebDriverWait(driver, 30).until(
@@ -76,19 +76,6 @@ loginBtn = WebDriverWait(driver, 30).until(
 
 driver.execute_script("arguments[0].click();", loginBtn)
 
-try:
-    pName = WebDriverWait(driver, 5).until(
-        EC.element_to_be_clickable(
-            (
-                By.XPATH,
-                '/html/body/div[3]/div/div[2]',
-            )
-        )
-    )
-    print(f"{pName.text} \nIncorrect username or password")
-    driver.quit()
-except:
-    print("Login succeeded")
 
 
 cookies = driver.get_cookies()
