@@ -115,28 +115,56 @@ class UmsScrapper:
                     )
                 )
             )
-            return table.get_attribute("outerHTML")
+
+            soup = BeautifulSoup(table.get_attribute("outerHTML"), 'html.parser')
+
+            timetable = []
+
+            # Extract data from the table
+            rows = soup.find_all('tr')[2:]  # Skip the first two rows with headers
+            days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+
+            for i, day in enumerate(days_of_week):
+                day_schedule = {}
+                day_schedule[day] = {}
+
+                for j in range(1, 9):  # Loop through the 8 time slots
+                    time_slot = soup.find_all('td', class_='A8c6e49135c5c4cfaaf04989ba8451e85100cl')[j].text.strip()
+                    
+                    # Error handling for subject info extraction
+                    subject_info_element = soup.find_all('td', class_='A8c6e49135c5c4cfaaf04989ba8451e85120cl')[j].div
+                    if subject_info_element:
+                        subject_info = subject_info_element.text.strip()
+                        room = subject_info.split(" / ")[-2]
+                        subject = subject_info.split(" / ")[-3]
+                        day_schedule[day][time_slot] = {"room": room, "subject": subject}
+                    else:
+                        day_schedule[day][time_slot] = {}
+
+                timetable.append(day_schedule)
+
+            return timetable
         else:
             return "login failed"
+
 
     def close(self):
         self.driver.quit()
             
 
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    umsScrapper = UmsScrapper("12203987","0Password@123",False)
+#     umsScrapper = UmsScrapper("12203987","0Password@123",False)
 
-    timeTable = umsScrapper.get_time_table()
+#     timeTable = umsScrapper.get_time_table()
 
-    file_path = "timeTable.csv"
+#     file_path = "timeTable.csv"
 
-    timeTable = pd.read_html(timeTable)[0]
+#     timeTable = pd.read_html(timeTable)[0]
 
-    timeTable.to_csv(file_path, index=False)
+#     timeTable.to_csv(file_path, index=False)
 
-    print(f'DataFrame has been written to {file_path}')
+#     print(f'DataFrame has been written to {file_path}')
 
-
-    umsScrapper.close()
+#     umsScrapper.close()
