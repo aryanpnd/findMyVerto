@@ -126,7 +126,7 @@ class UmsScrapper:
 
 if __name__ == "__main__":
 
-    umsScrapper = UmsScrapper("12203987","0Password@123")
+    umsScrapper = UmsScrapper("12203987","0Password@123",False)
 
     timeTable = umsScrapper.get_time_table()
 
