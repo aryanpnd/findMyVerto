@@ -1,1 +1,2 @@
-A8c6e49135c5c4cfaaf04989ba8451e85100cl
+
+        # print(column[index].text)

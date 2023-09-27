@@ -1,63 +1,168 @@
-{'Monday': {'09-10 AM': {'room': 'R: 34-306', 'subject': 'G: 2 C:CSE325'
-        }, '10-11 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '11-12 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '12-01 PM': {'room': 'R: 34-406X', 'subject': 'G:All C:CSE316'
-        }, '01-02 PM': {'room': 'R: 34-807', 'subject': 'G: 0 C:CSE211'
-        }, '02-03 PM': {}, '03-04 PM': {'room': 'R: 38-909', 'subject': 'G: 2 C:PEL134'
-        }, '04-05 PM': {}
+{
+    "Monday": {
+        "09-10 AM": {
+            "room": "R: 38-817",
+            "subject": "G:0 C:INT216"
+        },
+        "10-11 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "11-12 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "12-01 PM": {
+            "room": "R: 38-803",
+            "subject": "G:All C:CSE211"
+        },
+        "01-02 PM": {},
+        "02-03 PM": {},
+        "03-04 PM": {},
+        "04-05 PM": {}
     }
-}
-{'Tuesday': {'09-10 AM': {'room': 'R: 34-306', 'subject': 'G: 2 C:CSE325'
-        }, '10-11 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '11-12 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '12-01 PM': {'room': 'R: 34-406X', 'subject': 'G:All C:CSE316'
-        }, '01-02 PM': {'room': 'R: 34-807', 'subject': 'G: 0 C:CSE211'
-        }, '02-03 PM': {}, '03-04 PM': {'room': 'R: 38-909', 'subject': 'G: 2 C:PEL134'
-        }, '04-05 PM': {}
+},
+{
+    "Tuesday": {
+        "09-10 AM": {
+            "room": "R: 38-817",
+            "subject": "G:0 C:INT216"
+        },
+        "10-11 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "11-12 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "12-01 PM": {
+            "room": "R: 38-803",
+            "subject": "G:All C:CSE211"
+        },
+        "01-02 PM": {},
+        "02-03 PM": {},
+        "03-04 PM": {},
+        "04-05 PM": {}
     }
-}
-{'Wednesday': {'09-10 AM': {'room': 'R: 34-306', 'subject': 'G: 2 C:CSE325'
-        }, '10-11 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '11-12 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '12-01 PM': {'room': 'R: 34-406X', 'subject': 'G:All C:CSE316'
-        }, '01-02 PM': {'room': 'R: 34-807', 'subject': 'G: 0 C:CSE211'
-        }, '02-03 PM': {}, '03-04 PM': {'room': 'R: 38-909', 'subject': 'G: 2 C:PEL134'
-        }, '04-05 PM': {}
+},
+{
+    "Wednesday": {
+        "09-10 AM": {
+            "room": "R: 38-817",
+            "subject": "G:0 C:INT216"
+        },
+        "10-11 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "11-12 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "12-01 PM": {
+            "room": "R: 38-803",
+            "subject": "G:All C:CSE211"
+        },
+        "01-02 PM": {},
+        "02-03 PM": {},
+        "03-04 PM": {},
+        "04-05 PM": {}
     }
-}
-{'Thursday': {'09-10 AM': {'room': 'R: 34-306', 'subject': 'G: 2 C:CSE325'
-        }, '10-11 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '11-12 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '12-01 PM': {'room': 'R: 34-406X', 'subject': 'G:All C:CSE316'
-        }, '01-02 PM': {'room': 'R: 34-807', 'subject': 'G: 0 C:CSE211'
-        }, '02-03 PM': {}, '03-04 PM': {'room': 'R: 38-909', 'subject': 'G: 2 C:PEL134'
-        }, '04-05 PM': {}
+},
+{
+    "Thursday": {
+        "09-10 AM": {
+            "room": "R: 38-817",
+            "subject": "G:0 C:INT216"
+        },
+        "10-11 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "11-12 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "12-01 PM": {
+            "room": "R: 38-803",
+            "subject": "G:All C:CSE211"
+        },
+        "01-02 PM": {},
+        "02-03 PM": {},
+        "03-04 PM": {},
+        "04-05 PM": {}
     }
-}
-{'Friday': {'09-10 AM': {'room': 'R: 34-306', 'subject': 'G: 2 C:CSE325'
-        }, '10-11 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '11-12 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '12-01 PM': {'room': 'R: 34-406X', 'subject': 'G:All C:CSE316'
-        }, '01-02 PM': {'room': 'R: 34-807', 'subject': 'G: 0 C:CSE211'
-        }, '02-03 PM': {}, '03-04 PM': {'room': 'R: 38-909', 'subject': 'G: 2 C:PEL134'
-        }, '04-05 PM': {}
+},
+{
+    "Friday": {
+        "09-10 AM": {
+            "room": "R: 38-817",
+            "subject": "G:0 C:INT216"
+        },
+        "10-11 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "11-12 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "12-01 PM": {
+            "room": "R: 38-803",
+            "subject": "G:All C:CSE211"
+        },
+        "01-02 PM": {},
+        "02-03 PM": {},
+        "03-04 PM": {},
+        "04-05 PM": {}
     }
-}
-{'Saturday': {'09-10 AM': {'room': 'R: 34-306', 'subject': 'G: 2 C:CSE325'
-        }, '10-11 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '11-12 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '12-01 PM': {'room': 'R: 34-406X', 'subject': 'G:All C:CSE316'
-        }, '01-02 PM': {'room': 'R: 34-807', 'subject': 'G: 0 C:CSE211'
-        }, '02-03 PM': {}, '03-04 PM': {'room': 'R: 38-909', 'subject': 'G: 2 C:PEL134'
-        }, '04-05 PM': {}
+},
+{
+    "Saturday": {
+        "09-10 AM": {
+            "room": "R: 38-817",
+            "subject": "G:0 C:INT216"
+        },
+        "10-11 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "11-12 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "12-01 PM": {
+            "room": "R: 38-803",
+            "subject": "G:All C:CSE211"
+        },
+        "01-02 PM": {},
+        "02-03 PM": {},
+        "03-04 PM": {},
+        "04-05 PM": {}
     }
-}
-{'Sunday': {'09-10 AM': {'room': 'R: 34-306', 'subject': 'G: 2 C:CSE325'
-        }, '10-11 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '11-12 AM': {'room': 'R: 37-910', 'subject': 'G: 0 C:CSE229'
-        }, '12-01 PM': {'room': 'R: 34-406X', 'subject': 'G:All C:CSE316'
-        }, '01-02 PM': {'room': 'R: 34-807', 'subject': 'G: 0 C:CSE211'
-        }, '02-03 PM': {}, '03-04 PM': {'room': 'R: 38-909', 'subject': 'G: 2 C:PEL134'
-        }, '04-05 PM': {}
+},
+{
+    "Sunday": {
+        "09-10 AM": {
+            "room": "R: 38-817",
+            "subject": "G:0 C:INT216"
+        },
+        "10-11 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "11-12 AM": {
+            "room": "R: 38-813",
+            "subject": "G:0 C:CSE228"
+        },
+        "12-01 PM": {
+            "room": "R: 38-803",
+            "subject": "G:All C:CSE211"
+        },
+        "01-02 PM": {},
+        "02-03 PM": {},
+        "03-04 PM": {},
+        "04-05 PM": {}
     }
 }

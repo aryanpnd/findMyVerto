@@ -101,47 +101,58 @@ class UmsScrapper:
             print("Login succeeded")
             return True
 
+
+    def tableParser(self,html):
+        time_table = [
+            {"Monday":{}},
+            {"Tuesday":{}},
+            {"Wednesday":{}},
+            {"Thursday":{}},
+            {"Friday":{}},
+            {"Saturday":{}},
+            {"Sunday":{}}
+        ]
+
+        soup = BeautifulSoup(html, 'html.parser')
+
+        rows = soup.find_all('tr')[2:]  # Skip the first two rows with headers
+
+
+        for time_slot in rows:
+            temp_soup = BeautifulSoup(str(time_slot), 'html.parser')
+            columns = temp_soup.find_all('td')[1:]  # Skip the first two rows with headers
+            for index, day in enumerate(time_table):
+                day_name = list(day.keys())[0]  # Get the name of the day
+                day[day_name][columns[0].text] = columns[index+1].text #columns[0].text = the time slot
+
+
+        return time_table
+
+
+
     def get_time_table(self):
         user_login = self._login()
 
         if user_login:
             self.driver.get("https://ums.lpu.in/lpuums/Reports/frmStudentTimeTable.aspx")
 
-            table = WebDriverWait(self.driver, 30).until(
-                EC.element_to_be_clickable(
-                    (
-                        By.XPATH,
-                        '/html/body/form/table/tbody/tr[5]/td/span/div/table/tbody/tr[5]/td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/table',
+            while True:
+                try:
+                    table = WebDriverWait(self.driver, 30).until(
+                        EC.element_to_be_clickable(
+                            (
+                                By.XPATH,
+                                '/html/body/form/table/tbody/tr[5]/td/span/div/table/tbody/tr[5]/td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/table',
+                            )
+                        )
                     )
-                )
-            )
+                    break
+                except:
+                    self.driver.refresh()
 
-            soup = BeautifulSoup(table.get_attribute("outerHTML"), 'html.parser')
 
-            timetable = []
+            timetable = self.tableParser(table.get_attribute("outerHTML"))  
 
-            # Extract data from the table
-            rows = soup.find_all('tr')[2:]  # Skip the first two rows with headers
-            days_of_week = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-
-            for i, day in enumerate(days_of_week):
-                day_schedule = {}
-                day_schedule[day] = {}
-
-                for j in range(1, 9):  # Loop through the 8 time slots
-                    time_slot = soup.find_all('td', class_='A8c6e49135c5c4cfaaf04989ba8451e85100cl')[j].text.strip()
-                    
-                    # Error handling for subject info extraction
-                    subject_info_element = soup.find_all('td', class_='A8c6e49135c5c4cfaaf04989ba8451e85120cl')[j].div
-                    if subject_info_element:
-                        subject_info = subject_info_element.text.strip()
-                        room = subject_info.split(" / ")[-2]
-                        subject = subject_info.split(" / ")[-3]
-                        day_schedule[day][time_slot] = {"room": room, "subject": subject}
-                    else:
-                        day_schedule[day][time_slot] = {}
-
-                timetable.append(day_schedule)
 
             return timetable
         else:
@@ -153,18 +164,12 @@ class UmsScrapper:
             
 
 
-# if __name__ == "__main__":
+if __name__ == "__main__":
 
-#     umsScrapper = UmsScrapper("12203987","0Password@123",False)
+    umsScrapper = UmsScrapper("12203987","0Password@123",False)
 
-#     timeTable = umsScrapper.get_time_table()
+    timeTable = umsScrapper.get_time_table()
 
-#     file_path = "timeTable.csv"
+    print(timeTable)
 
-#     timeTable = pd.read_html(timeTable)[0]
-
-#     timeTable.to_csv(file_path, index=False)
-
-#     print(f'DataFrame has been written to {file_path}')
-
-#     umsScrapper.close()
+    umsScrapper.close()
