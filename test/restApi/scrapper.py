@@ -7,11 +7,11 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from bs4 import BeautifulSoup
-import pandas as pd
 
 class UmsScrapper:
     username=""
     password=""
+    is_user_loggedIn=False
 
     def __init__(self,username,password,headless=True):
         self.username = username
@@ -46,7 +46,7 @@ class UmsScrapper:
             print(f"Error occurred in the script, Try Again")
 
 
-    def _login(self):
+    def login(self):
         try:
             self.driver.get("https://ums.lpu.in/lpuums/")
         except:
@@ -99,8 +99,65 @@ class UmsScrapper:
             return False
         except:
             print("Login succeeded")
+            self.is_user_loggedIn = True
             return True
 
+    def get_user_info(self):
+        if self.is_user_loggedIn==True:
+            pass
+        else:
+            return "login first"
+        
+        try:
+            self.driver.get("https://ums.lpu.in/lpuums/default3.aspx")
+        except:
+            print(f"Error occurred while fetching UMS")
+            return
+        
+        student_details = []
+
+        student_name = self.driver.find_element(By.XPATH,'//*[@id="ctl00_cphHeading_Logoutout1_lblId"]')
+        student_details.append({"name":student_name.text.split(' (')[0]})
+
+        student_details.append({"registration no.":self.username})
+
+        student_section = self.driver.find_element(By.XPATH,'//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[1]/p')
+        student_details.append({"section and group.":student_section.text})
+
+        student_program = self.driver.find_element(By.XPATH,'//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[3]/p/a')
+        student_details.append({"program":student_program.text})
+
+        student_ums_pass_exp = self.driver.find_element(By.XPATH,'//*[@id="ctl00_cphHeading_wcUserPasswordDetail1_Label1"]')
+        student_details.append({"pass expire":student_ums_pass_exp.text})
+
+
+        return student_details
+
+    def get_time_table(self):
+
+        if self.is_user_loggedIn==True:
+            pass
+        else:
+            return "login first"
+
+
+        self.driver.get("https://ums.lpu.in/lpuums/Reports/frmStudentTimeTable.aspx")
+        while True:
+            try:
+                table = WebDriverWait(self.driver, 30).until(
+                    EC.element_to_be_clickable(
+                        (
+                            By.XPATH,
+                            '/html/body/form/table/tbody/tr[5]/td/span/div/table/tbody/tr[5]/td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/table',
+                        )
+                    )
+                )
+                break
+            except:
+                self.driver.refresh()
+        timetable = self.tableParser(table.get_attribute("outerHTML"))  
+        return timetable
+        
 
     def tableParser(self,html):
         time_table = [
@@ -129,36 +186,6 @@ class UmsScrapper:
         return time_table
 
 
-
-    def get_time_table(self):
-        user_login = self._login()
-
-        if user_login:
-            self.driver.get("https://ums.lpu.in/lpuums/Reports/frmStudentTimeTable.aspx")
-
-            while True:
-                try:
-                    table = WebDriverWait(self.driver, 30).until(
-                        EC.element_to_be_clickable(
-                            (
-                                By.XPATH,
-                                '/html/body/form/table/tbody/tr[5]/td/span/div/table/tbody/tr[5]/td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/table',
-                            )
-                        )
-                    )
-                    break
-                except:
-                    self.driver.refresh()
-
-
-            timetable = self.tableParser(table.get_attribute("outerHTML"))  
-
-
-            return timetable
-        else:
-            return "login failed"
-
-
     def close(self):
         self.driver.quit()
             
@@ -167,9 +194,7 @@ class UmsScrapper:
 if __name__ == "__main__":
 
     umsScrapper = UmsScrapper("12203987","0Password@123",False)
-
-    timeTable = umsScrapper.get_time_table()
-
-    print(timeTable)
+    umsScrapper.login()
+    print(umsScrapper.get_user_info())
 
     umsScrapper.close()

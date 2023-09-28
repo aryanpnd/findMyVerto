@@ -5,9 +5,15 @@ from scrapper import UmsScrapper
 app = FastAPI()
 
 
+@app.get("/")
+async def hello():
+    str = "hello"
+    return str
+
 @app.get("/getTimeTable")
-async def sum(regno:int,password:str):
+async def getTT(regno:int,password:str):
     umsScrapper = UmsScrapper(username=regno,password=password)
+    umsScrapper.login()
     timeTable = umsScrapper.get_time_table()
     umsScrapper.close()
     return timeTable
