@@ -53,15 +53,17 @@ class UmsScrapper {
 
             student_details.push({ "registration no.": this.username });
 
-            const student_section = await this.page.$x('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[1]/p');
+            const student_rollNo = await this.page.$x('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[1]/p');
+            const student_rollNo_text = await this.page.evaluate(element => element.textContent, student_rollNo[0]);
+            student_details.push({ "rollNo.": student_rollNo_text });
+
+            const student_section = await this.page.$x('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[2]/p');
             const student_section_text = await this.page.evaluate(element => element.textContent, student_section[0]);
-            student_details.push({ "section": student_section_text });
+            student_details.push({ "section and group.": student_section_text });
 
-            // const student_program = await this.page.$eval('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[3]/p/a', el => el.textContent);
-            // student_details.push({ "section": student_program});
-
-            // const student_ums_pass_exp = await this.page.$x('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[3]/p/a');
-            // student_details.push({ "section": student_ums_pass_exp});
+            const student_program = await this.page.$x('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[3]/p/a');
+            const student_program_text = await this.page.evaluate(element => element.textContent, student_program[0]);
+            student_details.push({ "program": student_program_text });
 
 
             return student_details;
@@ -70,18 +72,67 @@ class UmsScrapper {
         }
     }
 
+    async get_time_table() {
+        if (!this.is_user_loggedIn) {
+            return "login first";
+        }
+
+        try {
+            await this.page.goto('https://ums.lpu.in/lpuums/Reports/frmStudentTimeTable.aspx');
+            await this.page.waitForXPath('/html/body/form/table/tbody/tr[5]/td/span/div/table/tbody/tr[5]/td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/table');
+            const timeTable = await this.tableParser();
+            return timeTable;
+        } catch (error) {
+            console.log(`Error occurred while fetching UMS: ${error}`);
+        }
+    }
+
+    async tableParser() {
+        const time_table = [
+            { "Monday": {} },
+            { "Tuesday": {} },
+            { "Wednesday": {} },
+            { "Thursday": {} },
+            { "Friday": {} },
+            { "Saturday": {} },
+            { "Sunday": {} }
+        ];
+
+        const rows = await this.page.$x('/html/body/form/table/tbody/tr[5]/td/span/div/table/tbody/tr[5]/td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/table//tr[position()>2]');
+
+        try{
+        for (let i = 0; i <= rows.length; i++) {
+            const columns = await rows[i].$$('td:nth-child(n+2)');
+            for (let j = 0; j < time_table.length; j++) {
+                const day_name = Object.keys(time_table[j])[0];
+                const time_slot = await (await columns[0].getProperty('textContent')).jsonValue();
+                const value = await (await columns[j + 1].getProperty('textContent')).jsonValue();
+
+                time_table[j][day_name][time_slot] = value;
+            }
+        }}
+         catch (error) {
+             return(time_table);
+        }
+        return time_table;
+    }
+
     async close() {
         await this.browser.close();
     }
 }
 
 (async () => {
-    const umsScrapper = new UmsScrapper('12204116', 'Khan@12345',false);
+    const umsScrapper = new UmsScrapper('12220778', 'Rocky@212020', false);
     await umsScrapper.init();
     const loginSuccess = await umsScrapper.login();
+    // if (loginSuccess) {
+    //     const userInfo = await umsScrapper.get_user_info();
+    //     console.log(userInfo);
+    // }
     if (loginSuccess) {
-        const userInfo = await umsScrapper.get_user_info();
-        console.log(userInfo);
+        const userTimeTable = await umsScrapper.get_time_table();
+        console.log(userTimeTable);
     }
     // await umsScrapper.close();
 })();
