@@ -1,24 +1,18 @@
-import uvicorn
-from fastapi import FastAPI,Path
-from scrapper import UmsScrapper
+from fastapi import APIRouter, Depends, HTTPException
+# from main.models.studentModels import Message
+from middleware.scrapper import UmsScrapper
 
-app = FastAPI()
+router = APIRouter()
 
-
-@app.get("/")
-async def hello():
-    str = "hello"
-    return str
-
-@app.get("/getInfoScrapped")
-async def getTT(regno:int,password:str):
+@router.get("/StudentInfo")
+def getStudentInfo(regno:int,password:str):
     umsScrapper = UmsScrapper(username=regno,password=password)
     umsScrapper.login()
     userInfo = umsScrapper.get_user_info()
     umsScrapper.close()
     return userInfo
 
-@app.get("/getTimeTableScrapped")
+@router.get("/TimeTable")
 async def getTT(regno:int,password:str):
     umsScrapper = UmsScrapper(username=regno,password=password)
     umsScrapper.login()
@@ -26,6 +20,3 @@ async def getTT(regno:int,password:str):
     umsScrapper.close()
     return timeTable
 
-
-if __name__ == "__main__":
-   uvicorn.run("startingScript:app", host="127.0.0.1", port=8000, reload=True)
