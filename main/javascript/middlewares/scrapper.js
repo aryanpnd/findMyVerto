@@ -76,7 +76,7 @@ class UmsScrapper {
 
             return student_details;
         } catch (error) {
-            console.log(`Error occurred while fetching UMS: ${error}`);
+            return{errorStatus:false,message:(`Error occurred while fetching UMS: ${error}`)};
         }
     }
 
@@ -91,44 +91,45 @@ class UmsScrapper {
             const timeTable = await this.tableParser();
             return timeTable;
         } catch (error) {
-            console.log(`Error occurred while fetching UMS: ${error}`);
+            return{errorStatus:false,message:(`Error occurred while fetching UMS: ${error}`)};
         }
     }
 
     async tableParser() {
-        const time_table = [
-            { "Monday": {} },
-            { "Tuesday": {} },
-            { "Wednesday": {} },
-            { "Thursday": {} },
-            { "Friday": {} },
-            { "Saturday": {} },
-            { "Sunday": {} }
-        ];
-
+        const time_table = {
+            "Monday": {},
+            "Tuesday": {},
+            "Wednesday": {},
+            "Thursday": {},
+            "Friday": {},
+            "Saturday": {},
+            "Sunday": {}
+        };
+    
         const rows = await this.page.$x('/html/body/form/table/tbody/tr[5]/td/span/div/table/tbody/tr[5]/td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/table//tr[position()>2]');
-
+    
         try {
-            for (let i = 0; i <= rows.length; i++) {
+            for (let i = 0; i < rows.length; i++) {
                 const columns = await rows[i].$$('td:nth-child(n+2)');
-                for (let j = 0; j < time_table.length; j++) {
-                    const day_name = Object.keys(time_table[j])[0];
-                    const time_slot = await (await columns[0].getProperty('textContent')).jsonValue();
+                const time_slot = await (await columns[0].getProperty('textContent')).jsonValue();
+                
+                for (let j = 0; j < Object.keys(time_table).length; j++) {
+                    const day_name = Object.keys(time_table)[j];
                     const value = await (await columns[j + 1].getProperty('textContent')).jsonValue();
-
-                    time_table[j][day_name][time_slot] = value;
+                    time_table[day_name][time_slot] = value;
                 }
             }
-        }
-        catch (error) {
-            return (time_table);
+        } catch (error) {
+            return time_table;
         }
         return time_table;
     }
+    
 
     async close() {
         await this.browser.close();
     }
 }
+
 
 module.exports = UmsScrapper;
