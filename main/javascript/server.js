@@ -2,17 +2,13 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const { ScrappingRoutes } = require("./routes/scrappingRoutes");
+const { StudentRoutes } = require("./routes/studentRoutes");
+const { AuthRoutes } = require("./routes/authRoutes");
+
 // initializing express
 const app = express();
 
 // initializing app middlewares
-// app.use(
-//   cors({
-//     origin: "http://localhost:3000", // allow to server to accept request from different origin
-//     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-//     credentials: true, // allow session cookie from browser to pass through
-//   })
-// );
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -31,7 +27,9 @@ mongoose
 
 
 // rest apis
-app.use("/api/scrap/", ScrappingRoutes);
+app.use("/api/scrap/", ScrappingRoutes); 
+app.use("/api/student/", StudentRoutes);
+app.use("/api/auth/", AuthRoutes);
 
 // handling main and auth page not found routes
 app.get("/*", (req, res) => {

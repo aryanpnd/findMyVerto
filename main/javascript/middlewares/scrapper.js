@@ -26,15 +26,15 @@ class UmsScrapper {
             ]);
             const pName = await this.page.$x('/html/body/div[3]/div/div[2]');
             if (pName.length > 0) {
-                console.log(`${await (await pName[0].getProperty('textContent')).jsonValue()} \nIncorrect username or password`);
-                return false;
+                // console.log(`${await (await pName[0].getProperty('textContent')).jsonValue()} \nIncorrect username or password`);
+                return { "status": false, "message": `${await (await pName[0].getProperty('textContent')).jsonValue()}` };
             } else {
-                console.log("Login succeeded");
+                // console.log("Login succeeded");
                 this.is_user_loggedIn = true;
-                return true;
+                return { "status": true, "message": "Login successfully" };
             }
         } catch (error) {
-            console.log(`Error occurred while fetching UMS: ${error}`);
+            return ({ "status": false, "message": `Error occurred while fetching UMS: ${error}` });
         }
     }
 
@@ -46,25 +46,33 @@ class UmsScrapper {
         try {
             await this.page.goto('https://ums.lpu.in/lpuums/default3.aspx');
 
-            const student_details = [];
+            const student_details = {};
 
             const student_name = await this.page.$eval('#ctl00_cphHeading_Logoutout1_lblId', el => el.textContent);
-            student_details.push({ "name": student_name.split(' (')[0] });
+            student_details["name"] = student_name.split(' (')[0];
 
-            student_details.push({ "registration no.": this.username });
+            student_details["registrationNumber"] = this.username;
+            student_details["password"] = this.password;
 
             const student_rollNo = await this.page.$x('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[1]/p');
             const student_rollNo_text = await this.page.evaluate(element => element.textContent, student_rollNo[0]);
-            student_details.push({ "rollNo.": student_rollNo_text });
+            student_details["rollNo"] = student_rollNo_text.split("-")[1].split("(")[0].trim();
+
+            const student_term = await this.page.$x('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[1]/p');
+            const student_term_text = await this.page.evaluate(element => element.textContent, student_term[0]);
+            student_details["term"] = student_term_text.split("(")[1].split(")")[0].split(":")[1];
 
             const student_section = await this.page.$x('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[2]/p');
             const student_section_text = await this.page.evaluate(element => element.textContent, student_section[0]);
-            student_details.push({ "section and group.": student_section_text });
+            student_details["section"] = student_section_text.split("(")[1].split(")")[0].split(":")[1] ;
+
+            const student_group = await this.page.$x('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[2]/p');
+            const student_group_text = await this.page.evaluate(element => element.textContent, student_group[0]);
+            student_details["group"] = student_group_text.split("-")[1].split("(")[0].trim();
 
             const student_program = await this.page.$x('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[3]/p/a');
             const student_program_text = await this.page.evaluate(element => element.textContent, student_program[0]);
-            student_details.push({ "program": student_program_text });
-
+            student_details["program"] = student_program_text.split("Programme -")[1].split("View Programme Outcome")[0].trim();
 
             return student_details;
         } catch (error) {
@@ -100,19 +108,20 @@ class UmsScrapper {
 
         const rows = await this.page.$x('/html/body/form/table/tbody/tr[5]/td/span/div/table/tbody/tr[5]/td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/table//tr[position()>2]');
 
-        try{
-        for (let i = 0; i <= rows.length; i++) {
-            const columns = await rows[i].$$('td:nth-child(n+2)');
-            for (let j = 0; j < time_table.length; j++) {
-                const day_name = Object.keys(time_table[j])[0];
-                const time_slot = await (await columns[0].getProperty('textContent')).jsonValue();
-                const value = await (await columns[j + 1].getProperty('textContent')).jsonValue();
+        try {
+            for (let i = 0; i <= rows.length; i++) {
+                const columns = await rows[i].$$('td:nth-child(n+2)');
+                for (let j = 0; j < time_table.length; j++) {
+                    const day_name = Object.keys(time_table[j])[0];
+                    const time_slot = await (await columns[0].getProperty('textContent')).jsonValue();
+                    const value = await (await columns[j + 1].getProperty('textContent')).jsonValue();
 
-                time_table[j][day_name][time_slot] = value;
+                    time_table[j][day_name][time_slot] = value;
+                }
             }
-        }}
-         catch (error) {
-             return(time_table);
+        }
+        catch (error) {
+            return (time_table);
         }
         return time_table;
     }
