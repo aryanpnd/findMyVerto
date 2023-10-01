@@ -1,4 +1,5 @@
 const puppeteer = require('puppeteer');
+require("dotenv").config()
 
 class UmsScrapper {
     constructor(username, password, headless = true) {
@@ -9,7 +10,17 @@ class UmsScrapper {
     }
 
     async init() {
-        this.browser = await puppeteer.launch({ headless: this.headless });
+        this.browser = await puppeteer.launch({
+            headless: this.headless,
+            args:[
+                "--disable-setuid-sandbox",
+                "--no-sandbox",
+                "--single-process",
+                "--no-zygote"
+            ],
+            executablePath: process.env.NODE_ENV === "production" ? process.env.PUPPETEER_EXECUTABLE_PATH :
+                puppeteer.executablePath()
+        });
         this.page = await this.browser.newPage();
     }
 
@@ -64,7 +75,7 @@ class UmsScrapper {
 
             const student_section = await this.page.$x('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[2]/p');
             const student_section_text = await this.page.evaluate(element => element.textContent, student_section[0]);
-            student_details["section"] = student_section_text.split("(")[1].split(")")[0].split(":")[1] ;
+            student_details["section"] = student_section_text.split("(")[1].split(")")[0].split(":")[1];
 
             const student_group = await this.page.$x('//*[@id="middle_profile"]/div[1]/div[2]/ul[1]/li[2]/p');
             const student_group_text = await this.page.evaluate(element => element.textContent, student_group[0]);
@@ -76,7 +87,7 @@ class UmsScrapper {
 
             return student_details;
         } catch (error) {
-            return{errorStatus:false,message:(`Error occurred while fetching UMS: ${error}`)};
+            return { errorStatus: false, message: (`Error occurred while fetching UMS: ${error}`) };
         }
     }
 
@@ -91,7 +102,7 @@ class UmsScrapper {
             const timeTable = await this.tableParser();
             return timeTable;
         } catch (error) {
-            return{errorStatus:false,message:(`Error occurred while fetching UMS: ${error}`)};
+            return { errorStatus: false, message: (`Error occurred while fetching UMS: ${error}`) };
         }
     }
 
@@ -105,14 +116,14 @@ class UmsScrapper {
             "Saturday": {},
             "Sunday": {}
         };
-    
+
         const rows = await this.page.$x('/html/body/form/table/tbody/tr[5]/td/span/div/table/tbody/tr[5]/td[3]/div/div[1]/div/table/tbody/tr/td/table/tbody/tr[2]/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr/td/table/tbody/tr[2]/td[2]/table//tr[position()>2]');
-    
+
         try {
             for (let i = 0; i < rows.length; i++) {
                 const columns = await rows[i].$$('td:nth-child(n+2)');
                 const time_slot = await (await columns[0].getProperty('textContent')).jsonValue();
-                
+
                 for (let j = 0; j < Object.keys(time_table).length; j++) {
                     const day_name = Object.keys(time_table)[j];
                     const value = await (await columns[j + 1].getProperty('textContent')).jsonValue();
@@ -124,7 +135,7 @@ class UmsScrapper {
         }
         return time_table;
     }
-    
+
 
     async close() {
         await this.browser.close();
