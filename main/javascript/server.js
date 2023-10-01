@@ -37,6 +37,6 @@ app.get("/*", (req, res) => {
 });
 
 // declaring express listener
-app.listen(process.env.PORT, () => {
-  console.log(`Server started on port ${process.env.PORT}`);
+app.listen(8080, () => {
+  console.log(`Server started on port 8080`);
 });
