@@ -9,7 +9,7 @@ const studentLogin = async (req, res) => {
     try {
         const user = await Student.findOne({ registrationNumber: req.body.regNo, password: req.body.password });
         if (user) {
-            const token = jwt.sign({ userId: user.registrationNumber }, secretKey);
+            const token = jwt.sign({ userId: user.registrationNumber }, secretKey, { expiresIn: "30d" });
 
             res.status(200).json({ status: true, message: "Login success", token: token })
         } else {
@@ -21,7 +21,7 @@ const studentLogin = async (req, res) => {
 }
 
 const studentSignup = async (req, res) => {
-    const umsScrapper = new UmsScrapper(req.body.regNo, req.body.password, false);
+    const umsScrapper = new UmsScrapper(req.body.regNo, req.body.password);
     await umsScrapper.init();
     const loginMsg = await umsScrapper.login();
     const studentDetails = await umsScrapper.get_user_info();
@@ -45,7 +45,7 @@ const studentSignup = async (req, res) => {
     umsScrapper.close()
 }
 
-const authenticate = async (req, res,next) => {
+const authenticate = async (req, res, next) => {
     const token = req.headers.authorization;
 
     if (!token) {
