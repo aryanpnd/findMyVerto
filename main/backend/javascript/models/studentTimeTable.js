@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const { Schema } = mongoose;
 
 const studentTimeTableschema = new Schema({
-    RegistrationNumber: { type: Number, required: [true, "Registration Number required"], unique: [true, "Registration Number already exists"] },
+    registrationNumber: { type: Number, required: [true, "Registration Number required"] },
     Monday:{},
     Tuesday:{},
     Wednesday:{},

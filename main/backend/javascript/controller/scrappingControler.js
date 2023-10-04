@@ -6,7 +6,7 @@ const getStudentInfoScrapped = async (req, res) => {
     try {
         const exists = await Student.findOne({ registrationNumber: req.body.regNo, password: req.body.password });
         if (exists) {
-            const umsScrapper = new UmsScrapper(req.query.regNo, req.query.password);
+            const umsScrapper = new UmsScrapper(req.body.regNo, req.body.password);
             await umsScrapper.init();
             const loginSuccess = await umsScrapper.login();
             if (loginSuccess) {
@@ -55,16 +55,15 @@ const getStudentTimeTableScrapped = async (req, res) => {
 
                 if(!req.body.update){
                     const timeTable = new TimeTable(userTimeTable)
-                    timeTable.RegistrationNumber = req.body.regNo
-                    await timeTable.save()
-                    .then((result) => {
+                    timeTable.registrationNumber = req.body.regNo
+                    await timeTable.save().then((result) => {
                         res.status(200).send(result)
                     })
                     .catch((error) => {
                         res.status(400).send(error);
                     });
                 }else{
-                    await TimeTable.findOneAndUpdate({RegistrationNumber:req.body.regNo},userTimeTable)
+                    await TimeTable.findOneAndUpdate({registrationNumber:req.body.regNo},userTimeTable)
                     .then((result) => {
                         res.status(200).send(result)
                     })

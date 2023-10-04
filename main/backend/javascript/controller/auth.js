@@ -8,12 +8,31 @@ const secretKey = process.env.SECRETKEY;
 const studentLogin = async (req, res) => {
     try {
         const user = await Student.findOne({ registrationNumber: req.body.regNo, password: req.body.password });
+        console.log(user);
         if (user) {
             const token = jwt.sign({ userId: user.registrationNumber }, secretKey, { expiresIn: "30d" });
 
             res.status(200).json({ status: true, message: "Login success", token: token })
         } else {
-            res.status(500).send(`Wrong username or password`);
+            // here , i have to make password change logic where i will check if the user exists with this registration number in database , if yes then i will scrape and update the password in db else i will scrape and save a new user
+            const umsScrapper = new UmsScrapper(req.body.regNo, req.body.password);
+            await umsScrapper.init();
+            const loginMsg = await umsScrapper.login();
+            const studentDetails = await umsScrapper.get_user_info();
+            if (loginMsg.status) {
+                const student = new Student(studentDetails);
+                await student
+                    .save()
+                    .then((docs) => {
+                        res.status(200).json({ status: true, message: "Login success", token: token });
+                    })
+                    .catch((err) => {
+                        res.status(400).send(`Some error occured ${err}`);
+                    });
+            } else {
+                res.send(loginMsg)
+            }
+            umsScrapper.close()
         }
     } catch (e) {
         res.status(500).send(e);
@@ -54,9 +73,9 @@ const authenticate = async (req, res, next) => {
 
     jwt.verify(token.split(" ")[1], secretKey, (err, decoded) => {
         if (err) {
-            return res.status(401).json({ message: 'Authentication failed. Invalid token.' });
+            return res.status(401).json({status: false, message: 'Authentication failed. Invalid token.' });
         }
-        req.userId = decoded.userId;
+        // req.userId = decoded.userId;
         // res.send({regno:decoded.userId})
         next();
     });
