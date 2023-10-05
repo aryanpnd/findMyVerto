@@ -1,5 +1,5 @@
-import React, { useContext, useState } from 'react';
-import { Alert, TextInput, View, StyleSheet, Text, ScrollView, TouchableOpacity } from 'react-native';
+import React, { useContext, useRef, useState } from 'react';
+import { TextInput, View, StyleSheet, Text, ScrollView, TouchableOpacity, Keyboard } from 'react-native';
 import { API_URL, AuthContext } from '../../../context/Auth';
 import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -10,17 +10,14 @@ import * as SecureStore from 'expo-secure-store';
 
 
 export default function Login() {
-  const { auth, setAuth } = useContext(AuthContext)
+  const { setAuth } = useContext(AuthContext)
 
   const [regno, setRegno] = useState(null);
   const [password, setPassword] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false)
 
-
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
+  const passwordRef = useRef(null);
 
   const login = async () => {
     if (!regno) {
@@ -132,22 +129,25 @@ export default function Login() {
                   style={styles.input}
                   keyboardType='decimal-pad'
                   cursorColor={'orange'}
+                  onSubmitEditing={()=>passwordRef.current.focus()}
                 />
                 <View style={{ flex: 1 }}>
                   <TextInput
+                    ref={passwordRef}
                     secureTextEntry={!showPassword}
                     value={password}
                     onChangeText={setPassword}
                     style={styles.input}
                     placeholder="Ums Password"
-                  // cursorColor={'orange'}
+                    cursorColor={'orange'}
+                    onSubmitEditing={()=>Keyboard.dismiss()}
                   />
                   <FontAwesome5
                     name={showPassword ? 'eye-slash' : 'eye'}
                     size={24}
                     color={showPassword ? '#aaa' : '#d66f0c'}
                     style={styles.icon}
-                    onPress={toggleShowPassword}
+                    onPress={()=>setShowPassword(!showPassword)}
                   />
                 </View>
               </View>
