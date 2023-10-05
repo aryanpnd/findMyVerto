@@ -9,8 +9,8 @@ const studentLogin = async (req, res) => {
     try {
         const user = await Student.findOne({ registrationNumber: req.body.regNo, password: req.body.password });
         console.log(user);
-        const token = jwt.sign({ userId: user.registrationNumber }, secretKey, { expiresIn: "30d" });
         if (user) {
+            const token = jwt.sign({ userId: user.registrationNumber }, secretKey, { expiresIn: "30d" });
             res.status(200).json({ status: true, message: "Login success", token: token })
         } else {
             // here , i have to make password change logic where i will check if the user exists with this registration number in database , if yes then i will scrape and update the password in db else i will scrape and save a new user
@@ -21,8 +21,9 @@ const studentLogin = async (req, res) => {
             if (loginMsg.status) {
                 const student = new Student(studentDetails);
                 await student
-                    .save()
-                    .then((docs) => {
+                .save()
+                .then((docs) => {
+                        const token = jwt.sign({ userId: req.body.regNo }, secretKey, { expiresIn: "30d" });
                         res.status(200).json({ status: true, message: "Login success", token: token });
                     })
                     .catch((err) => {
