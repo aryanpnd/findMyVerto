@@ -2,6 +2,8 @@ const UmsScrapper = require('../middlewares/scrapper');
 const { Student } = require('../models/studentModels');
 const { TimeTable } = require('../models/studentTimeTable');
 
+// due to server load and low budget i'm using username and password coming from the req.body, else decrypting username and pass from the bearer token would be an efficient choice here. 
+
 const getStudentInfo = async (req, res) => {
     try {
         const user = await Student.findOne({ registrationNumber: req.body.regNo, password: req.body.password });

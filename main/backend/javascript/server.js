@@ -29,7 +29,7 @@ mongoose
 // rest apis
 app.use("/api/auth/", AuthRoutes);
 app.use("/api/scrap/", authenticate, ScrappingRoutes);
-app.use("/api/student/", authenticate, StudentRoutes);
+app.use("/api/student/", StudentRoutes);
 
 // handling main and auth page not found routes
 app.get("/*", (req, res) => {

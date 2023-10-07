@@ -32,16 +32,21 @@ export default function Login() {
     setLoading(true)
     await axios.post(`${API_URL}/api/auth/login`, { regNo: regno, password: password }).then(async (result) => {
       if (result.data.status) {
-        axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`
-        await SecureStore.setItemAsync("TOKEN", result.data.token)
         setAuth({
           token: result.data.token,
+          regNo:regno,
+          pass:password,
           authenticated: true
         })
+        axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`
+        await SecureStore.setItemAsync("TOKEN", result.data.token)
+        await SecureStore.setItemAsync("REGNO", regno)
+        await SecureStore.setItemAsync("PASS", password)
         Toast.show({
           type: 'success',
           text1: `${result.data.message}`,
         });
+        await SecureStore.setItemAsync("AUTHENTICATED",JSON.stringify(true));
         setLoading(false)
       } else {
         Toast.show({
@@ -50,7 +55,6 @@ export default function Login() {
           text2: `Wrong Ums username and password`,
         });
         alert("Wrong Ums username and password")
-        console.log(result.data.message);
         setLoading(false)
       }
     }).catch((err) => {
@@ -70,30 +74,30 @@ export default function Login() {
       </View>
       <SafeAreaView style={styles.container}>
 
-        <View style={{
+        <View style={[{
           display: loading ? "" : "none",
           flex: 1,
-          backgroundColor: '#ccd0d3e8',
+          backgroundColor: 'white',
           position: 'absolute',
-          height: 860,
-          width: 400,
+          padding: 20,
+          borderRadius: 10,
+          width: '60%',
+          maxHeight: '80%',
           zIndex: 1,
           justifyContent: 'center',
-          alignItems: 'center'
-        }}>
+          alignItems: 'center',
+        },styles.elevation,styles.shadowProp]}>
           <LottieView
             autoPlay
             style={{
               width: 150,
               height: 150,
+              // backgroundColor:'red'
             }}
             source={require('../../../assets/lotties/loading4.json')}
           />
-          <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Logging...</Text>
-          <Text style={styles.textSmall}></Text>
-          <Text style={styles.textSmall}>This may take 40-50 sec</Text>
-          <Text style={styles.textSmall}>if you're Logging for the first time</Text>
-          <Text style={styles.textSmall}>Depending upon UMS server</Text>
+          <Text style={{ fontSize: 20, fontWeight: 'bold',marginVertical:10 }}>Logging...</Text>
+            <Text style={[styles.textSmall, { marginBottom: 5,marginBottom:40 }]}>This may take 40-50 seconds if you're Logging for the first time, Depending upon UMS server</Text>
 
         </View>
 
@@ -116,7 +120,7 @@ export default function Login() {
             {/* login text */}
 
             {/* login input container */}
-            <ScrollView>
+            <ScrollView >
               <View style={{ flex: 5, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 5, marginBottom: 50, marginTop: 40 }}>
                 <Text style={styles.textLarge}>LOGIN</Text>
                 <Text style={styles.textSmall}>with your UMS Credentials</Text>
@@ -129,7 +133,7 @@ export default function Login() {
                   style={styles.input}
                   keyboardType='decimal-pad'
                   cursorColor={'orange'}
-                  onSubmitEditing={()=>passwordRef.current.focus()}
+                  onSubmitEditing={() => passwordRef.current.focus()}
                 />
                 <View style={{ flex: 1 }}>
                   <TextInput
@@ -140,14 +144,14 @@ export default function Login() {
                     style={styles.input}
                     placeholder="Ums Password"
                     cursorColor={'orange'}
-                    onSubmitEditing={()=>Keyboard.dismiss()}
+                    onSubmitEditing={() => Keyboard.dismiss()}
                   />
                   <FontAwesome5
                     name={showPassword ? 'eye-slash' : 'eye'}
                     size={24}
                     color={showPassword ? '#aaa' : '#d66f0c'}
                     style={styles.icon}
-                    onPress={()=>setShowPassword(!showPassword)}
+                    onPress={() => setShowPassword(!showPassword)}
                   />
                 </View>
               </View>
@@ -172,11 +176,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#ecf0f1',
-    // backgroundColor: '#c96806',
+    justifyContent: 'center',
+    alignItems: 'center',
+    width: '100%',
+    height: '100%',
     padding: 6,
   },
   loginContainer: {
     flex: 4,
+    height: '100%',
+    width: '100%'
   },
   keyboardContainer: {
     flex: 7,
@@ -195,6 +204,16 @@ const styles = StyleSheet.create({
     right: 20,
     top: 20
   },
-  textSmall: { fontSize: 15, fontWeight: '400' },
-  textLarge: { fontSize: 45, fontWeight: 'bold' }
+  textSmall: { fontWeight: '400' },
+  textLarge: { fontSize: 45, fontWeight: 'bold',color:'#333'},
+  shadowProp: {  
+    shadowOffset: {width: -2, height: 4},  
+    shadowColor: '#171717',  
+    shadowOpacity: 0.2,  
+    shadowRadius: 3,  
+  },  
+  elevation: {  
+    shadowColor: '#52006A',  
+    elevation: 20,  
+  },  
 });
