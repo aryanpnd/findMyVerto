@@ -8,7 +8,6 @@ const secretKey = process.env.SECRETKEY;
 const studentLogin = async (req, res) => {
     try {
         const user = await Student.findOne({ registrationNumber: req.body.regNo, password: req.body.password });
-        console.log(user);
         if (user) {
             const token = jwt.sign({ userId: user.registrationNumber }, secretKey, { expiresIn: "30d" });
             res.status(200).json({ status: true, message: "Login success", token: token })

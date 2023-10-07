@@ -11,6 +11,7 @@ const studentschema = new Schema({
   section: { type: String },
   group: { type: String },
   program: { type: String },
+  attendance:{type:String}
 });
 
 const Student = mongoose.model("Student", studentschema);

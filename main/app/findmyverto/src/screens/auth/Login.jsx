@@ -63,6 +63,7 @@ export default function Login() {
         text1: 'Login failed',
         text2: `${err}`,
       });
+      console.log(err);
       setLoading(false)
     })
   }

@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { createContext, useEffect, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthContext = createContext();
 
@@ -38,6 +39,10 @@ const AuthProvider = ({ children }) => {
 
   const logout = async ()=>{
     await SecureStore.setItemAsync("AUTHENTICATED",JSON.stringify(false));
+    await SecureStore.deleteItemAsync("REGNO");
+    await SecureStore.deleteItemAsync("PASS");
+    await SecureStore.deleteItemAsync("TOKEN");
+    await AsyncStorage.clear()
     setAuth({ ...auth, authenticated: false })
   }
 
