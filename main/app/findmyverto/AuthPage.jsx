@@ -4,17 +4,18 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './src/screens/home/Home';
 import Login from './src/screens/auth/Login';
 import Attendance from './src/screens/home/Attendance';
+import { colors } from './src/constants/colors';
 
 const Stack = createNativeStackNavigator();
 
 export default function AuthPage() {
   const { auth } = useContext(AuthContext)
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false,animationTypeForReplace:'push',animation:'default'}}>
       {auth.authenticated ?
         <React.Fragment>
             <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Attendance" component={Attendance} />
+            <Stack.Screen name="Attendance" component={Attendance} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue}}} />
         </React.Fragment>
         :
         <React.Fragment>

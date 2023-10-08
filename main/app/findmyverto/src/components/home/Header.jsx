@@ -34,7 +34,6 @@ export default function Header({ userDetails,navigation }) {
             })
             return
           }
-          console.log({ "ouside if": userAttendance });
           setattendence(JSON.parse(userAttendance))
         } catch (error) {
           console.error(error);
@@ -74,7 +73,7 @@ export default function Header({ userDetails,navigation }) {
 
                 <TouchableOpacity style={styles.classesToday} onPress={()=>navigation.navigate('Attendance')}>
                     <Text style={{ fontWeight: '500', color: '#ffffffb5' }}>Attendance</Text>
-                    <AttendanceProgressBar attendence={parseInt(attendence?.attendanceHistory?.[attendence.attendanceHistory?.length - 1]?.totalPercentage ?? 0)}/>
+                    <AttendanceProgressBar size={50} attendence={parseInt(attendence?.attendanceHistory?.[attendence.attendanceHistory?.length - 1]?.totalPercentage ?? 0)}/>
                 </TouchableOpacity>
             </View>
         </View>

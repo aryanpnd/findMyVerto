@@ -8,6 +8,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../../components/home/Header';
 import Body from '../../components/home/Body';
+import { colors } from '../../constants/colors';
 
 
 export default function Home({navigation}) {
@@ -36,7 +37,6 @@ export default function Home({navigation}) {
           })
           return
         }
-        console.log({ "ouside if": user });
         setuserDetails(JSON.parse(user))
       } catch (error) {
         console.error(error);
@@ -68,7 +68,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor:'#f78c30'
+    backgroundColor:colors.blue
   },
   textSmall: { fontWeight: '400' },
   textLarge: { fontSize: 45, fontWeight: 'bold', color: '#333' },
