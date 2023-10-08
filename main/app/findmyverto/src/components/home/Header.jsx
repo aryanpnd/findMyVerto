@@ -1,8 +1,49 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { FontAwesome5, Octicons } from '@expo/vector-icons'
+import AttendanceProgressBar from '../miscellaneous/attendanceProgressBar'
+import AsyncStorage from '@react-native-async-storage/async-storage'
+import axios from 'axios'
+import { API_URL, AuthContext } from '../../../context/Auth'
+import Toast from 'react-native-toast-message'
 
-export default function Header({ userDetails }) {
+
+export default function Header({ userDetails,navigation }) {
+    const { auth } = useContext(AuthContext)
+    const [attendence, setattendence] = useState({})
+    const [loading, setLoading] = useState(false)
+  
+    useEffect(() => {
+      async function fetchDataLocally() {
+        try {
+          let userAttendance = await AsyncStorage.getItem("ATTENDANCE");
+          if (!userAttendance) {
+            await axios.post(`${API_URL}/api/student/getStudentAttendance`, { regNo: auth.regNo, password: auth.pass }).then(async (result) => {
+              await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(result.data))
+              setattendence(result.data)
+              setLoading(false)
+            //   console.log({ "inside if then": result });
+            }).catch((err) => {
+              Toast.show({
+                type: 'error',
+                text1: 'Login failed',
+                text2: `${err}`,
+              });
+              console.log({ "inside catch": err });
+              setLoading(false)
+            })
+            return
+          }
+          console.log({ "ouside if": userAttendance });
+          setattendence(JSON.parse(userAttendance))
+        } catch (error) {
+          console.error(error);
+        }
+      }
+      fetchDataLocally();
+    }, []);
+  
+
     return (
         <View style={styles.container}>
             <View style={{ height: '20%', alignItems: 'center' }}><Text style={{ color: "whitesmoke", fontSize: 20, fontWeight: '600' }}>FindMyVerto</Text></View>
@@ -31,9 +72,10 @@ export default function Header({ userDetails }) {
                     <Text style={{ fontSize: 40, fontWeight: '500', color: 'white' }}>{userDetails.name?.split(" ")[0]}</Text>
                 </View>
 
-                <View style={styles.classesToday}>
-                    <Text style={{fontWeight:'500',color:'grey'}}>Attendance</Text>
-                </View>
+                <TouchableOpacity style={styles.classesToday} onPress={()=>navigation.navigate('Attendance')}>
+                    <Text style={{ fontWeight: '500', color: '#ffffffb5' }}>Attendance</Text>
+                    <AttendanceProgressBar attendence={parseInt(attendence?.attendanceHistory?.[attendence.attendanceHistory?.length - 1]?.totalPercentage ?? 0)}/>
+                </TouchableOpacity>
             </View>
         </View>
     )
@@ -62,14 +104,17 @@ const styles = StyleSheet.create({
     },
     greeting: {
         width: '50%',
+        overflow:'hidden',
+        height:'80%',
     },
     classesToday: {
-        width: '35%', 
-        backgroundColor: '#ffffffc9',
-        borderRadius:25,
-        marginBottom:15,
-        alignItems:'center',
-        padding:3
+        width: '35%',
+        backgroundColor: '#d4d8dc69',
+        borderRadius: 25,
+        marginBottom: 15,
+        alignItems: 'center',
+        padding: 3,
+        gap:8
     },
     button1: {
         backgroundColor: '#d4d8dc69',

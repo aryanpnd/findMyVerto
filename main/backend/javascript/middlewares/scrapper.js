@@ -53,22 +53,11 @@ class UmsScrapper {
         if (!this.is_user_loggedIn) {
             return "login first";
         }
-        const student_details = {};
-
-        // await this.page.click('#AttPercent');
-        // await this.page.waitForSelector('#AttSummary > tr:nth-child(17) > td:nth-child(6) > b');
-        // const elements = await this.page.$x('//*[@id="AttSummary"]/tr[17]/td[6]/b');
-        // const texts = await Promise.all(elements.map(element => this.page.evaluate(el => el.textContent, element)));
-        // console.log(texts);
-
-        // await this.page.waitForXPath('/html/body/form/main/div/div[2]/div[2]/div[2]/div[1]/div/div[2]/div/div[2]');
-        // const student_attendanpercent = await this.page.$x('/html/body/form/main/div/div[2]/div[2]/div[2]/div[1]/div/div[2]/div/div[2]');
-        // const student_attendanpercent_text = await this.page.evaluate(element => element.textContent, student_attendanpercent[0]);
-        // console.log(student_attendanpercent_text);
 
         try {
             await this.page.goto('https://ums.lpu.in/lpuums/default3.aspx');
 
+            const student_details = {};
 
             const student_name = await this.page.$eval('#ctl00_cphHeading_Logoutout1_lblId', el => el.textContent);
             student_details["name"] = student_name.split(' (')[0];
@@ -148,23 +137,60 @@ class UmsScrapper {
         return time_table;
     }
 
+    async get_user_attendance() {
+        if (!this.is_user_loggedIn) {
+            return "login first";
+        }
+
+        try{
+            await this.page.click('#AttPercent');
+            await this.page.waitForXPath('/html/body/form/main/div/div[10]/div/div/div[2]/div/div/div/div[1]/div/table/tbody/tr[1]')
+            const data = await this.page.evaluate(() => {
+                const table = document.getElementById('AttSummary');
+                const rows = table.querySelectorAll('tr');
+                const dataArray = [];
+            
+                for (let i = 0; i < rows.length; i += 2) { // Skip every other row
+                  const columns = rows[i].querySelectorAll('td');
+                  if (columns.length === 6) { // Ensure it's a data row with 6 columns
+                    const obj = {
+                      course: columns[0].textContent.trim(),
+                      lastAttended: columns[1].textContent.trim(),
+                      dutyLeave: columns[2].textContent.trim(),
+                      totalDelivered: columns[3].textContent.trim(),
+                      totalAttended: columns[4].textContent.trim(),
+                      totalPercentage: columns[5].textContent.trim(),
+                    };
+                    dataArray.push(obj);
+                  }
+                }
+            
+                return dataArray;
+              });
+            
+              return data
+
+        }catch (error) {
+            return { errorStatus: false, message: (`Error occurred while fetching UMS: ${error}`) };
+        }
+    }
 
     async close() {
         await this.browser.close();
     }
 }
 
-(async () => {
-    try {
-        const umsScrapper = new UmsScrapper("12200267", "Raj@7777", false);
-        await umsScrapper.init();
-        await umsScrapper.login();
-        const studentDetails = await umsScrapper.get_user_info();
-        console.log(studentDetails);
-        // umsScrapper.close()
-    } catch (error) {
-        console.error(error);
-    }
-})();
+// (async () => {
+//     try {
+//         const umsScrapper = new UmsScrapper("regno", "pass", false);
+//         await umsScrapper.init();
+//         await umsScrapper.login();
+//         const studentDetails = await umsScrapper.get_user_attendance();
+//         console.log(studentDetails);
+//         // umsScrapper.close()
+//     } catch (error) {
+//         console.error(error);
+//     }
+// })();
 
 module.exports = UmsScrapper;

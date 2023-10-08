@@ -10,7 +10,7 @@ import Header from '../../components/home/Header';
 import Body from '../../components/home/Body';
 
 
-export default function Home() {
+export default function Home({navigation}) {
   const { auth, logout } = useContext(AuthContext)
   const [loading, setLoading] = useState(false)
   const [userDetails, setuserDetails] = useState({})
@@ -20,12 +20,11 @@ export default function Home() {
       try {
         let user = await AsyncStorage.getItem("USER");
         if (!user) {
-          console.log(axios.defaults.headers.common['Authorization']);
           await axios.post(`${API_URL}/api/student/getStudentInfo`, { regNo: auth.regNo, password: auth.pass }).then(async (result) => {
             await AsyncStorage.setItem("USER", JSON.stringify(result.data))
             setuserDetails(result.data)
             setLoading(false)
-            console.log({ "inside if then": result });
+            // console.log({ "inside if then": result });
           }).catch((err) => {
             Toast.show({
               type: 'error',
@@ -54,7 +53,7 @@ export default function Home() {
       </View>
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
-            <Header userDetails={userDetails} />
+            <Header userDetails={userDetails} attendence={10} navigation={navigation}/>
             <Body logout={logout} />
         </View>
       </SafeAreaView>
