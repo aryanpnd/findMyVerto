@@ -3,9 +3,14 @@ import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 
-export default function AttendanceCard({ attendance }) {
+export default function AttendanceCard({ attendance,colors }) {
     return (
-        <LinearGradient colors={["#0f0c29", "#302b63"]} style={styles.cardContainer}>
+        <LinearGradient 
+        colors={colors}
+        style={styles.cardContainer}
+        start={{ x: 0, y: 0 }} // Start from the left
+        end={{ x: 1, y: 0 }} 
+        >
             <View style={styles.details}>
                 <Text>hello</Text>
             </View>

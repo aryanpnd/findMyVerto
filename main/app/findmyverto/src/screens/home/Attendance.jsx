@@ -48,12 +48,12 @@ export default function Attendance({ navigation }) {
       </View>
       <View style={styles.container}>
         <View style={styles.TotalAttendanceContainer}>
-          <AttendanceCard attendance={attendance?.attendanceHistory?.[attendance.attendanceHistory?.length - 1] ?? 0} />
+          <AttendanceCard colors={['#8360c3', '#2ebf91']} attendance={attendance?.attendanceHistory?.[attendance.attendanceHistory?.length - 1] ?? 0} />
         </View>
 
         <View style={styles.AttendanceContainer}>
           <ScrollView>
-            <View style={styles.cardContainer}>
+            {/* <View style={styles.cardContainer}>
               <AttendanceCard attendance={attendance?.attendanceHistory?.[attendance.attendanceHistory?.length - 1] ?? 0} />
             </View>
             <View style={styles.cardContainer}>
@@ -64,7 +64,7 @@ export default function Attendance({ navigation }) {
             </View>
             <View style={styles.cardContainer}>
               <AttendanceCard attendance={attendance?.attendanceHistory?.[attendance.attendanceHistory?.length - 1] ?? 0} />
-            </View>
+            </View> */}
           </ScrollView>
         </View>
       </View>
@@ -86,7 +86,7 @@ const styles = StyleSheet.create({
   },
   AttendanceContainer: {
     flex: 5,
-    backgroundColor: 'red'
+    // backgroundColor: 'red'
   },
   cardContainer: {
     height: 150, // Set an appropriate height for your cards

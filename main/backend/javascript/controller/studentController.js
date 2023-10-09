@@ -79,7 +79,7 @@ const getStudentAttendance = async (req, res) => {
                         const userAttendance = await umsScrapper.get_user_attendance();
                         if (userAttendance.errorStatus) {
                             res.status(400).send(userAttendance.message);
-                            // umsScrapper.close()
+                            umsScrapper.close()
                             return
                         }
                         const attendance = new Attendance({attendanceHistory:userAttendance})
@@ -92,11 +92,13 @@ const getStudentAttendance = async (req, res) => {
                             .catch((error) => {
                                 res.status(400).send(error);
                             });
+                        umsScrapper.close()
                     }
                 } catch (e) {
+                    umsScrapper.close()
                     res.send(e)
                 }
-                // umsScrapper.close()
+                umsScrapper.close()
             }
         } else {
             res.status(500).send(`User doesn't exists in database, Signup first`);

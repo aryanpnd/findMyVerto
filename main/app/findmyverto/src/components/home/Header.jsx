@@ -1,47 +1,53 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { FontAwesome5, Octicons } from '@expo/vector-icons'
-import AttendanceProgressBar from '../miscellaneous/attendanceProgressBar'
+import AttendanceProgressBar from '../miscellaneous/AttendanceProgressBar'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import { API_URL, AuthContext } from '../../../context/Auth'
 import Toast from 'react-native-toast-message'
 
 
-export default function Header({ userDetails,navigation }) {
+export default function Header({ userDetails, navigation }) {
     const { auth } = useContext(AuthContext)
     const [attendence, setattendence] = useState({})
     const [loading, setLoading] = useState(false)
-  
+
     useEffect(() => {
-      async function fetchDataLocally() {
-        try {
-          let userAttendance = await AsyncStorage.getItem("ATTENDANCE");
-          if (!userAttendance) {
-            await axios.post(`${API_URL}/api/student/getStudentAttendance`, { regNo: auth.regNo, password: auth.pass }).then(async (result) => {
-              await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(result.data))
-              setattendence(result.data)
-              setLoading(false)
-            //   console.log({ "inside if then": result });
-            }).catch((err) => {
-              Toast.show({
-                type: 'error',
-                text1: 'Login failed',
-                text2: `${err}`,
-              });
-              console.log({ "inside catch": err });
-              setLoading(false)
-            })
-            return
-          }
-          setattendence(JSON.parse(userAttendance))
-        } catch (error) {
-          console.error(error);
+        async function fetchDataLocally() {
+            try {
+                setLoading(true)
+                let userAttendance = await AsyncStorage.getItem("ATTENDANCE");
+                if (!userAttendance) {
+                    await axios.post(`${API_URL}/api/student/getStudentAttendance`, { regNo: auth.regNo, password: auth.pass }).then(async (result) => {
+                        await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(result.data))
+                        setattendence(result.data)
+                        //   console.log(result.data);
+                        setLoading(false)
+                        //   console.log({ "inside if then": result });
+                    }).catch((err) => {
+                        Toast.show({
+                            type: 'error',
+                            text1: 'Login failed',
+                            text2: `${err}`,
+                        });
+                        console.log({ "inside catch": err });
+                        setLoading(false)
+                    })
+                    setLoading(false)
+                    return
+                }
+                setLoading(false)
+                setattendence(JSON.parse(userAttendance))
+            } catch (error) {
+                console.error(error);
+                setLoading(false)
+            }
         }
-      }
-      fetchDataLocally();
+        fetchDataLocally();
+
     }, []);
-  
+
 
     return (
         <View style={styles.container}>
@@ -71,9 +77,16 @@ export default function Header({ userDetails,navigation }) {
                     <Text style={{ fontSize: 40, fontWeight: '500', color: 'white' }}>{userDetails.name?.split(" ")[0]}</Text>
                 </View>
 
-                <TouchableOpacity style={styles.classesToday} onPress={()=>navigation.navigate('Attendance')}>
-                    <Text style={{ fontWeight: '500', color: '#ffffffb5' }}>Attendance</Text>
-                    <AttendanceProgressBar size={50} attendence={parseInt(attendence?.attendanceHistory?.[attendence.attendanceHistory?.length - 1]?.totalPercentage ?? 0)}/>
+                <TouchableOpacity style={styles.classesToday} onPress={loading?()=>{}:() => navigation.navigate('Attendance')}>
+                    {loading ?
+                        <>
+                            <Text>Loading...</Text>
+                        </> :
+                        <>
+                            <Text style={{ fontWeight: '500', color: '#ffffffb5' }}>Attendance</Text>
+                            <AttendanceProgressBar size={50} attendance={parseInt(attendence?.attendanceHistory?.[attendence.attendanceHistory?.length - 1]?.totalPercentage ?? 0)} />
+                        </>
+                    }
                 </TouchableOpacity>
             </View>
         </View>
@@ -103,8 +116,8 @@ const styles = StyleSheet.create({
     },
     greeting: {
         width: '50%',
-        overflow:'hidden',
-        height:'80%',
+        overflow: 'hidden',
+        height: '80%',
     },
     classesToday: {
         width: '35%',
@@ -113,7 +126,7 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         alignItems: 'center',
         padding: 3,
-        gap:8
+        gap: 8
     },
     button1: {
         backgroundColor: '#d4d8dc69',
