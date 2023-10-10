@@ -32,7 +32,7 @@ export default function AttendanceScreen({ attendance,fetchDataLocally,syncAtten
       {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, It may take few seconds"} />}
 
       <View style={styles.container}>
-        <SyncData time={lastSynced} syncNow={syncAttendaceData} self={self}/>
+        <SyncData time={lastSynced} syncNow={syncAttendaceData} self={self} color={'white'} bg={colors.blue}/>
 
         <View style={styles.TotalAttendanceContainer}>
           <AttendanceCard colors={['#2657eb', '#de6161']} attendance={attendance?.attendanceHistory?.[attendance.attendanceHistory?.length - 1] ?? 0} />

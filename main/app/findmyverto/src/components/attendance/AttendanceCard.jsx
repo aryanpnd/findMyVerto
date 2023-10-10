@@ -35,7 +35,7 @@ export default function AttendanceCard({ attendance, colors }) {
                         width={8}
                         fill={parseInt(attendance?.totalPercentage ?? 0)}
                         rotation={360}
-                        tintColor={parseInt(attendance?.totalPercentage ?? 0) > 75 ? "#2ecc71" : parseInt(attendance?.totalPercentage ?? 0) > 50 ? '#4834d4' : '#ea2027'}
+                        tintColor={parseInt(attendance?.totalPercentage ?? 0) > 75 ? "#2ecc71" : parseInt(attendance?.totalPercentage ?? 0) > 60 ? '#686de0' : '#ea2027'}
                         backgroundColor="#ffffff87" />
                     <Text style={{ position: 'absolute', justifyContent: "center", color: 'white', fontSize: 25, fontWeight: '500' }}>{parseInt(attendance?.totalPercentage ?? 0)}%</Text>
                 </View>

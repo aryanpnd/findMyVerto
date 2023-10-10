@@ -3,6 +3,7 @@ const { Schema } = mongoose;
 
 const studentTimeTableschema = new Schema({
     registrationNumber: { type: Number, required: [true, "Registration Number required"] },
+    lastSync: { type: Date, required: [true, "Registration Number required"]},
     Monday:{},
     Tuesday:{},
     Wednesday:{},

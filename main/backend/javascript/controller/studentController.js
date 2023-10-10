@@ -28,8 +28,6 @@ const getStudentTimeTable = async (req, res) => {
             }
             else {
                 const umsScrapper = new UmsScrapper(req.regNo.toString(), req.body.password);
-                console.log(req.regNo);
-                console.log(typeof (req.regNo));
                 try {
                     await umsScrapper.init();
                     const loginSuccess = await umsScrapper.login();
@@ -40,16 +38,30 @@ const getStudentTimeTable = async (req, res) => {
                             umsScrapper.close()
                             return
                         }
-                        const timeTable = new TimeTable(userTimeTable)
-                        timeTable.registrationNumber = req.regNo
-
-                        await timeTable.save()
-                            .then((result) => {
+                        if (req.body.sync) {
+                            await TimeTable.findOneAndUpdate({ registrationNumber: req.regNo }, { userTimeTable, lastSync: new Date() }, { new: true }).select({ _id: 0, registrationNumber: 0, __v: 0 }).then((result) => {
                                 res.status(200).send(result)
                             })
-                            .catch((error) => {
-                                res.status(400).send(error);
-                            });
+                                .catch((error) => {
+                                    res.status(400).send(error);
+                                });
+                        } else {
+                            const time_table = new TimeTable(userTimeTable)
+                            time_table.registrationNumber = req.regNo
+                            time_table.lastSync = new Date()
+                            await time_table.save()
+                                .then(async (result) => {
+                                    // requesting again so that we only get selected fields
+                                    await TimeTable.findOne({ registrationNumber: req.regNo, }).select({ _id: 0, registrationNumber: 0, __v: 0 }).then((data)=>{
+                                        res.status(200).send(data)
+                                    }).catch((error)=>{
+                                        res.status(400).send(error);
+                                    })
+                                })
+                                .catch((error) => {
+                                    res.status(400).send(error);
+                                });
+                        }
                     }
                 } catch (e) {
                     res.send(e)

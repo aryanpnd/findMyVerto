@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { FontAwesome5, Octicons } from '@expo/vector-icons'
+import { FontAwesome5,  Octicons } from '@expo/vector-icons'
 import AttendanceProgressBar from '../miscellaneous/AttendanceProgressBar'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
@@ -23,16 +23,13 @@ export default function Header({ userDetails, navigation }) {
                 let userAttendance = await AsyncStorage.getItem("ATTENDANCE");
                 if (!userAttendance) {
                     await axios.post(`${API_URL}/api/student/getStudentAttendance`, { password: auth.pass }).then(async (result) => {
-                        const currentDate = new Date();
-                        const attendanceData = result.data;
-                        attendanceData.lastSynced = formatTimeAgo(currentDate);
-                        await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(attendanceData));
-                        setattendence(attendanceData)
+                        await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(result.data));
+                        setattendence(result.data)
                         setLoading(false)
                     }).catch((err) => {
                         Toast.show({
                             type: 'error',
-                            text1: 'Login failed',
+                            text1: 'Error fetching Attendance',
                             text2: `${err}`,
                         });
                         console.log({ "inside catch": err });
@@ -64,7 +61,7 @@ export default function Header({ userDetails, navigation }) {
                     </TouchableOpacity></View>
                 <View style={styles.iconContainer}>
                     <View style={{ width: '35%', alignItems: "center" }}>
-                        <TouchableOpacity style={styles.button2}><FontAwesome5 name='user-friends' size={17} color={'#ffffffb5'} /></TouchableOpacity>
+                        <TouchableOpacity onPress={()=>navigation.navigate('Test')} style={styles.button2}><FontAwesome5 name='user-friends' size={17} color={'#ffffffb5'} /></TouchableOpacity>
                         <Text style={{ color: 'white', fontSize: 11 }}>Friends</Text>
                     </View>
                     <View style={{ width: '35%', alignItems: "center" }}>
@@ -77,10 +74,16 @@ export default function Header({ userDetails, navigation }) {
             <View style={styles.body}>
                 <View style={styles.greeting}>
                     <Text style={{ fontSize: 20, color: '#ffffffb5', fontWeight: 'bold' }}>Hello,</Text>
-                    <Text style={{ fontSize: 40, fontWeight: '500', color: 'white' }}>{userDetails.name?.split(" ")[0]}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMedium}>{userDetails.name}</Text>
+                    <View style={{flexDirection:'row'}}>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>{userDetails.registrationNumber}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>{userDetails.section}</Text>
+                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>Group: {userDetails.group}</Text>
+                    </View>
                 </View>
 
-                <TouchableOpacity style={styles.classesToday} onPress={loading ? () => { } : () => navigation.navigate('Attendance')}>
+
+                <TouchableOpacity style={styles.AttendanceContainer} onPress={loading ? () => { } : () => navigation.navigate('Attendance')}>
                     <Text style={{ fontWeight: '500', color: '#ffffffb5' }}>Attendance</Text>
                     {loading ?
                         <>
@@ -125,12 +128,12 @@ const styles = StyleSheet.create({
         height: '60%'
     },
     greeting: {
-        width: '50%',
+        width: '55%',
         overflow: 'hidden',
         maxHeight: '80%',
     },
-    classesToday: {
-        width: '35%',
+    AttendanceContainer: {
+        width: '30%',
         backgroundColor: '#d4d8dc69',
         borderRadius: 25,
         marginBottom: 15,
@@ -163,5 +166,7 @@ const styles = StyleSheet.create({
     },
     text1: {
         color: '#ffffffb5'
-    }
+    },
+    textSmall:{ marginRight:15,fontSize: 15, fontWeight: '400', color: 'white' },
+    textMedium:{ fontSize: 25, fontWeight: 'bold', color: 'white' }
 })
