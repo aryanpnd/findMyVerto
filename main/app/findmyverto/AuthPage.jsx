@@ -15,7 +15,7 @@ export default function AuthPage() {
       {auth.authenticated ?
         <React.Fragment>
             <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Attendance" component={Attendance} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue}}} />
+            <Stack.Screen name="Attendance" component={Attendance} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue},headerShadowVisible:false}} />
         </React.Fragment>
         :
         <React.Fragment>

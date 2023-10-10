@@ -51,8 +51,9 @@ class UmsScrapper {
 
     async get_user_info() {
         if (!this.is_user_loggedIn) {
-            return "login first";
+            return {status:false,message:"login first"};
         }
+
 
         try {
             await this.page.goto('https://ums.lpu.in/lpuums/default3.aspx');
@@ -94,8 +95,9 @@ class UmsScrapper {
 
     async get_time_table() {
         if (!this.is_user_loggedIn) {
-            return "login first";
+            return {errorStatus:true,message:"login first"};
         }
+
 
         try {
             await this.page.goto('https://ums.lpu.in/lpuums/Reports/frmStudentTimeTable.aspx');
@@ -103,7 +105,7 @@ class UmsScrapper {
             const timeTable = await this.tableParser();
             return timeTable;
         } catch (error) {
-            return { errorStatus: false, message: (`Error occurred while fetching UMS: ${error}`) };
+            return { errorStatus: true, message: (`Error occurred while fetching UMS: ${error}`) };
         }
     }
 
@@ -139,7 +141,7 @@ class UmsScrapper {
 
     async get_user_attendance() {
         if (!this.is_user_loggedIn) {
-            return "login first";
+            return {errorStatus:true,message:"login first"};
         }
 
         try{
@@ -171,7 +173,7 @@ class UmsScrapper {
               return data
 
         }catch (error) {
-            return { errorStatus: false, message: (`Error occurred while fetching UMS: ${error}`) };
+            return { errorStatus: true, message: (`Error occurred while fetching UMS: ${error}`) };
         }
     }
 
@@ -182,10 +184,10 @@ class UmsScrapper {
 
 // (async () => {
 //     try {
-//         const umsScrapper = new UmsScrapper("regno", "pass", false);
+//         const umsScrapper = new UmsScrapper("12204084", "Alpha@12", false);
 //         await umsScrapper.init();
 //         await umsScrapper.login();
-//         const studentDetails = await umsScrapper.get_user_attendance();
+//         const studentDetails = await umsScrapper.get_time_table();
 //         console.log(studentDetails);
 //         // umsScrapper.close()
 //     } catch (error) {

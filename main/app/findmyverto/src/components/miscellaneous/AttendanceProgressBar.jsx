@@ -2,11 +2,7 @@ import { View, Text } from 'react-native'
 import React, { useEffect } from 'react'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 
-export default function AttendanceProgressBar({attendance,size}) {
-    useEffect(() => {
-      console.log(attendance);
-    }, [])
-    
+export default function AttendanceProgressBar({attendance,size}) {    
     return (
         <View>
             <AnimatedCircularProgress

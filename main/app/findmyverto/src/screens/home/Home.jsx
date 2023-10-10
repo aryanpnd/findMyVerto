@@ -21,7 +21,7 @@ export default function Home({navigation}) {
       try {
         let user = await AsyncStorage.getItem("USER");
         if (!user) {
-          await axios.post(`${API_URL}/api/student/getStudentInfo`, { regNo: auth.regNo, password: auth.pass }).then(async (result) => {
+          await axios.post(`${API_URL}/api/student/getStudentInfo`, { password: auth.pass }).then(async (result) => {
             await AsyncStorage.setItem("USER", JSON.stringify(result.data))
             setuserDetails(result.data)
             setLoading(false)
@@ -72,14 +72,4 @@ const styles = StyleSheet.create({
   },
   textSmall: { fontWeight: '400' },
   textLarge: { fontSize: 45, fontWeight: 'bold', color: '#333' },
-  shadowProp: {
-    shadowOffset: { width: -2, height: 4 },
-    shadowColor: '#171717',
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
-  },
-  elevation: {
-    shadowColor: '#52006A',
-    elevation: 20,
-  },
 });

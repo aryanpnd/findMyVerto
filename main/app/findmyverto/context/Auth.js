@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthContext = createContext();
 
-export const API_URL = "http://192.168.3.229:8080"
+export const API_URL = "http://192.168.197.229:8080"
 // export const API_URL = "https://findmyverto.onrender.com"
 
 const AuthProvider = ({ children }) => {

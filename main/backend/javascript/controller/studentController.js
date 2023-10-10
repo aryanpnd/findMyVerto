@@ -7,7 +7,7 @@ const { TimeTable } = require('../models/studentTimeTable');
 
 const getStudentInfo = async (req, res) => {
     try {
-        const user = await Student.findOne({ registrationNumber: req.body.regNo, password: req.body.password });
+        const user = await Student.findOne({ registrationNumber: req.regNo, password: req.body.password });
         if (user) {
             res.status(200).send(user)
         } else {
@@ -20,26 +20,28 @@ const getStudentInfo = async (req, res) => {
 
 const getStudentTimeTable = async (req, res) => {
     try {
-        const user = await Student.findOne({ registrationNumber: req.body.regNo });
+        const user = await Student.findOne({ registrationNumber: req.regNo });
         if (user) {
-            const time_table = await TimeTable.findOne({ registrationNumber: req.body.regNo, }).select({ _id: 0, registrationNumber: 0, __v: 0 });
+            const time_table = await TimeTable.findOne({ registrationNumber: req.regNo, }).select({ _id: 0, registrationNumber: 0, __v: 0 });
             if (time_table) {
                 res.status(200).send(time_table)
             }
             else {
-                const umsScrapper = new UmsScrapper(req.body.regNo, req.body.password,);
+                const umsScrapper = new UmsScrapper(req.regNo.toString(), req.body.password);
+                console.log(req.regNo);
+                console.log(typeof (req.regNo));
                 try {
                     await umsScrapper.init();
                     const loginSuccess = await umsScrapper.login();
                     if (loginSuccess) {
                         const userTimeTable = await umsScrapper.get_time_table();
                         if (userTimeTable.errorStatus) {
-                            res.status(400).send(userTimeTable.message);
+                            res.status(400).send(userTimeTable);
                             umsScrapper.close()
                             return
                         }
                         const timeTable = new TimeTable(userTimeTable)
-                        timeTable.registrationNumber = req.body.regNo
+                        timeTable.registrationNumber = req.regNo
 
                         await timeTable.save()
                             .then((result) => {
@@ -64,38 +66,47 @@ const getStudentTimeTable = async (req, res) => {
 
 const getStudentAttendance = async (req, res) => {
     try {
-        const user = await Student.findOne({ registrationNumber: req.body.regNo });
+        const user = await Student.findOne({ registrationNumber: req.regNo.toString() });
         if (user) {
-            const attendance = await Attendance.findOne({ registrationNumber: req.body.regNo, }).select({ _id: 0, registrationNumber: 0, __v: 0 });
-            if (attendance) {
-                res.status(200).send(attendance)
+            const user_attendance = await Attendance.findOne({ registrationNumber: req.regNo, }).select({ _id: 0, registrationNumber: 0, __v: 0 });
+            if (user_attendance && !req.body.sync) {
+                res.status(200).send(user_attendance)
             }
             else {
-                const umsScrapper = new UmsScrapper(req.body.regNo, req.body.password);
+                const umsScrapper = new UmsScrapper(req.regNo.toString(), req.body.password);
                 try {
                     await umsScrapper.init();
                     const loginSuccess = await umsScrapper.login();
                     if (loginSuccess) {
-                        const userAttendance = await umsScrapper.get_user_attendance();
-                        if (userAttendance.errorStatus) {
-                            res.status(400).send(userAttendance.message);
+                        const userAttendace = await umsScrapper.get_user_attendance();
+                        if (userAttendace.errorStatus) {
+                            res.status(400).send(userAttendace);
                             umsScrapper.close()
                             return
                         }
-                        const attendance = new Attendance({attendanceHistory:userAttendance})
-                        attendance.registrationNumber = req.body.regNo
+                        if (req.body.sync) {
+                            await Attendance.findOneAndUpdate({ registrationNumber: req.regNo }, { attendanceHistory: userAttendace, lastSync: new Date() }, { new: true })
+                                .then((result) => {
+                                    res.status(200).send(result)
+                                })
+                                .catch((error) => {
+                                    res.status(400).send(error);
+                                });
+                        } else {
+                            const attendance = new Attendance({ attendanceHistory: userAttendace })
+                            attendance.registrationNumber = req.regNo
+                            attendance.lastSync = new Date()
 
-                        await attendance.save()
-                            .then((result) => {
-                                res.status(200).send(result)
-                            })
-                            .catch((error) => {
-                                res.status(400).send(error);
-                            });
-                        umsScrapper.close()
+                            await attendance.save()
+                                .then((result) => {
+                                    res.status(200).send(result)
+                                })
+                                .catch((error) => {
+                                    res.status(400).send(error);
+                                });
+                        }
                     }
                 } catch (e) {
-                    umsScrapper.close()
                     res.send(e)
                 }
                 umsScrapper.close()

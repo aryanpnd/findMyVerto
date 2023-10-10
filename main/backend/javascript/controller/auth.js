@@ -74,7 +74,7 @@ const authenticate = async (req, res, next) => {
         if (err) {
             return res.status(401).json({status: false, message: 'Authentication failed. Invalid token.' });
         }
-        // req.userId = decoded.userId;
+        req.regNo = decoded.userId;
         // res.send({regno:decoded.userId})
         next();
     });

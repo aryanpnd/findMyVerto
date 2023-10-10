@@ -6,10 +6,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import { API_URL, AuthContext } from '../../../context/Auth'
 import Toast from 'react-native-toast-message'
+import formatTimeAgo from '../../constants/dateFormatter'
+import LottieView from 'lottie-react-native';
+
 
 
 export default function Header({ userDetails, navigation }) {
-    const { auth } = useContext(AuthContext)
+    const { auth, logout } = useContext(AuthContext)
     const [attendence, setattendence] = useState({})
     const [loading, setLoading] = useState(false)
 
@@ -19,12 +22,13 @@ export default function Header({ userDetails, navigation }) {
                 setLoading(true)
                 let userAttendance = await AsyncStorage.getItem("ATTENDANCE");
                 if (!userAttendance) {
-                    await axios.post(`${API_URL}/api/student/getStudentAttendance`, { regNo: auth.regNo, password: auth.pass }).then(async (result) => {
-                        await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(result.data))
-                        setattendence(result.data)
-                        //   console.log(result.data);
+                    await axios.post(`${API_URL}/api/student/getStudentAttendance`, { password: auth.pass }).then(async (result) => {
+                        const currentDate = new Date();
+                        const attendanceData = result.data;
+                        attendanceData.lastSynced = formatTimeAgo(currentDate);
+                        await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(attendanceData));
+                        setattendence(attendanceData)
                         setLoading(false)
-                        //   console.log({ "inside if then": result });
                     }).catch((err) => {
                         Toast.show({
                             type: 'error',
@@ -34,7 +38,6 @@ export default function Header({ userDetails, navigation }) {
                         console.log({ "inside catch": err });
                         setLoading(false)
                     })
-                    setLoading(false)
                     return
                 }
                 setLoading(false)
@@ -65,7 +68,7 @@ export default function Header({ userDetails, navigation }) {
                         <Text style={{ color: 'white', fontSize: 11 }}>Friends</Text>
                     </View>
                     <View style={{ width: '35%', alignItems: "center" }}>
-                        <TouchableOpacity style={styles.button2}><FontAwesome5 name='user' size={17} color={'#ffffffb5'} /></TouchableOpacity>
+                        <TouchableOpacity style={styles.button2} onPress={logout}><FontAwesome5 name='user' size={17} color={'#ffffffb5'} /></TouchableOpacity>
                         <Text style={{ color: 'white', fontSize: 11 }}>Profile</Text>
                     </View>
                 </View>
@@ -77,13 +80,20 @@ export default function Header({ userDetails, navigation }) {
                     <Text style={{ fontSize: 40, fontWeight: '500', color: 'white' }}>{userDetails.name?.split(" ")[0]}</Text>
                 </View>
 
-                <TouchableOpacity style={styles.classesToday} onPress={loading?()=>{}:() => navigation.navigate('Attendance')}>
+                <TouchableOpacity style={styles.classesToday} onPress={loading ? () => { } : () => navigation.navigate('Attendance')}>
+                    <Text style={{ fontWeight: '500', color: '#ffffffb5' }}>Attendance</Text>
                     {loading ?
                         <>
-                            <Text>Loading...</Text>
+                            <LottieView
+                                autoPlay
+                                style={{
+                                    width: 50,
+                                    height: 50,
+                                }}
+                                source={require('../../../assets/lotties/loading1.json')}
+                            />
                         </> :
                         <>
-                            <Text style={{ fontWeight: '500', color: '#ffffffb5' }}>Attendance</Text>
                             <AttendanceProgressBar size={50} attendance={parseInt(attendence?.attendanceHistory?.[attendence.attendanceHistory?.length - 1]?.totalPercentage ?? 0)} />
                         </>
                     }
@@ -117,7 +127,7 @@ const styles = StyleSheet.create({
     greeting: {
         width: '50%',
         overflow: 'hidden',
-        height: '80%',
+        maxHeight: '80%',
     },
     classesToday: {
         width: '35%',

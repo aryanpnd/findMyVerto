@@ -2,29 +2,43 @@ import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
+import { globalStyles } from '../../constants/styles'
 
-export default function AttendanceCard({ attendance,colors }) {
+export default function AttendanceCard({ attendance, colors }) {
     return (
-        <LinearGradient 
-        colors={colors}
-        style={styles.cardContainer}
-        start={{ x: 0, y: 0 }} // Start from the left
-        end={{ x: 1, y: 0 }} 
+        <LinearGradient
+            colors={colors}
+            style={[styles.cardContainer, globalStyles.elevation]}
+            start={{ x: 0, y: 0 }} // Start from the left
+            end={{ x: 1, y: 0 }}
         >
-            <View style={styles.details}>
-                <Text>hello</Text>
-            </View>
+            <Text style={[styles.textCourse, { marginLeft:10 }]}>{attendance?.course ?? ''}</Text>
 
-            <View style={styles.progress}>
-                {/* <AttendanceProgressBar attendence={parseInt(attendance?.attendanceHistory?.[attendance.attendanceHistory?.length - 1]?.totalPercentage ?? 0)} size={25} /> */}
-                <AnimatedCircularProgress
-                size={100}
-                width={10}
-                fill={parseInt(attendance?.totalPercentage??0)}
-                rotation={360}
-                tintColor={parseInt(attendance?.totalPercentage??0) > 75 ? "#2ecc71" : parseInt(attendance?.totalPercentage??0) > 50 ? '#4834d4' : '#ea2027'}
-                backgroundColor="#ffffff87" />
-            <Text style={{ position: 'absolute', justifyContent:"center", color: 'white',fontSize:25,fontWeight:'500' }}>{parseInt(attendance?.totalPercentage??0)}%</Text>
+            <View style={{flex:4,flexDirection:'row'}}>
+
+                <View style={styles.detailsContainer}>
+
+                    <View style={{ flex: 4.5, justifyContent: "space-evenly", paddingLeft: 5 }}>
+                        <Text style={[styles.textAttendanceDetails, { display: (attendance?.lastAttended ?? '') === "" ? "none" : "flex" }]}>Last Attended: <Text style={styles.textCourse}>{attendance?.lastAttended ?? 0}</Text></Text>
+
+                        <Text style={styles.textAttendanceDetails}>Duty leaves: <Text style={styles.textCourse}>{parseInt(attendance?.DutyLeave ?? 0)}</Text></Text>
+
+                        <Text style={styles.textAttendanceDetails}>Total classes: <Text style={styles.textCourse}>{parseInt(attendance?.totalDelivered ?? 0)}</Text></Text>
+
+                        <Text style={styles.textAttendanceDetails}>Total Attended: <Text style={styles.textCourse}>{parseInt(attendance?.totalAttended ?? 0)}</Text></Text>
+                    </View>
+                </View>
+
+                <View style={styles.progress}>
+                    <AnimatedCircularProgress
+                        size={95}
+                        width={8}
+                        fill={parseInt(attendance?.totalPercentage ?? 0)}
+                        rotation={360}
+                        tintColor={parseInt(attendance?.totalPercentage ?? 0) > 75 ? "#2ecc71" : parseInt(attendance?.totalPercentage ?? 0) > 50 ? '#4834d4' : '#ea2027'}
+                        backgroundColor="#ffffff87" />
+                    <Text style={{ position: 'absolute', justifyContent: "center", color: 'white', fontSize: 25, fontWeight: '500' }}>{parseInt(attendance?.totalPercentage ?? 0)}%</Text>
+                </View>
             </View>
         </LinearGradient>
     )
@@ -35,15 +49,33 @@ const styles = StyleSheet.create({
         width: '90%',
         height: '80%',
         borderRadius: 25,
-        flexDirection: 'row',
-        padding:10
+        // flexDirection: 'row',
+        padding: 10
+    },
+    detailsContainer: {
+        width: '65%',
+        borderRadius: 25,
+        padding: 8,
+        gap: 10,
+        // flexDirection: 'row'
+        // backgroundColor: '#d4d8dc69',
     },
     details: {
-        width:'65%'
+        width: '65%'
     },
     progress: {
-        width:"35%",
-        justifyContent:'center',
-        alignItems:"center"
-    }
+        width: "35%",
+        justifyContent: 'center',
+        alignItems: "center"
+    },
+    textCourse: {
+        fontSize: 18,
+        color: '#f5f6fa',
+        fontWeight: '500',
+    },
+    textAttendanceDetails: {
+        fontSize: 14,
+        color: '#f1ebeb',
+        fontWeight: '400'
+    },
 })

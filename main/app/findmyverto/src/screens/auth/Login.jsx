@@ -7,6 +7,8 @@ import LottieView from 'lottie-react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
+import { globalStyles } from '../../constants/styles';
+import OverlayLoading from '../../components/miscellaneous/OverlayLoading';
 
 
 export default function Login() {
@@ -34,8 +36,8 @@ export default function Login() {
       if (result.data.status) {
         setAuth({
           token: result.data.token,
-          regNo:regno,
-          pass:password,
+          regNo: regno,
+          pass: password,
           authenticated: true
         })
         axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`
@@ -46,7 +48,7 @@ export default function Login() {
           type: 'success',
           text1: `${result.data.message}`,
         });
-        await SecureStore.setItemAsync("AUTHENTICATED",JSON.stringify(true));
+        await SecureStore.setItemAsync("AUTHENTICATED", JSON.stringify(true));
         setLoading(false)
       } else {
         Toast.show({
@@ -74,33 +76,7 @@ export default function Login() {
         <Toast />
       </View>
       <SafeAreaView style={styles.container}>
-
-        <View style={[{
-          display: loading ? "" : "none",
-          flex: 1,
-          backgroundColor: 'white',
-          position: 'absolute',
-          padding: 20,
-          borderRadius: 10,
-          width: '60%',
-          maxHeight: '80%',
-          zIndex: 1,
-          justifyContent: 'center',
-          alignItems: 'center',
-        },styles.elevation,styles.shadowProp]}>
-          <LottieView
-            autoPlay
-            style={{
-              width: 150,
-              height: 150,
-              // backgroundColor:'red'
-            }}
-            source={require('../../../assets/lotties/loading4.json')}
-          />
-          <Text style={{ fontSize: 20, fontWeight: 'bold',marginVertical:10 }}>Logging...</Text>
-            <Text style={[styles.textSmall, { marginBottom: 5,marginBottom:40 }]}>This may take 40-50 seconds if you're Logging for the first time, Depending upon UMS server</Text>
-
-        </View>
+        <OverlayLoading loading={loading} loadAnim={"amongus"} loadingMsg={"This may take 40-50 seconds if you're Logging for the first time, Depending upon UMS server"} loadingText={"Loading..."} />
 
         <View style={styles.container}>
           <View style={{ flex: 3, justifyContent: 'center', alignItems: "center" }}>
@@ -206,15 +182,6 @@ const styles = StyleSheet.create({
     top: 20
   },
   textSmall: { fontWeight: '400' },
-  textLarge: { fontSize: 45, fontWeight: 'bold',color:'#333'},
-  shadowProp: {  
-    shadowOffset: {width: -2, height: 4},  
-    shadowColor: '#171717',  
-    shadowOpacity: 0.2,  
-    shadowRadius: 3,  
-  },  
-  elevation: {  
-    shadowColor: '#52006A',  
-    elevation: 20,  
-  },  
+  textLarge: { fontSize: 45, fontWeight: 'bold', color: '#333' },
+
 });

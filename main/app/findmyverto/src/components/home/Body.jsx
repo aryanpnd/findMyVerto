@@ -1,10 +1,16 @@
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native'
 import React from 'react'
 
-export default function Body({logout}) {
+export default function Body() {
     return (
         <View style={styles.body}>
-            <TouchableOpacity onPress={logout}><Text>Logout</Text></TouchableOpacity>
+          <ScrollView>
+            
+            <View>
+              
+            </View>
+
+          </ScrollView>
         </View>
     )
 }
