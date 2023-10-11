@@ -55,7 +55,7 @@ export default function Header({ userDetails, navigation }) {
 
             <View style={styles.header}>
                 <View style={styles.searchbarContainer}>
-                    <TouchableOpacity style={styles.button1}>
+                    <TouchableOpacity style={styles.button1} onPress={()=>navigation.navigate('CardSwiper')}>
                         <Text style={styles.text1}>Search a Verto</Text>
                         <Octicons name='search' color={'#ffffffb5'} size={18} />
                     </TouchableOpacity></View>

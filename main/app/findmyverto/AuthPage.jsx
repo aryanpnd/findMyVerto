@@ -6,6 +6,7 @@ import Login from './src/screens/auth/Login';
 import Attendance from './src/screens/home/Attendance';
 import { colors } from './src/constants/colors';
 import Test from './src/components/home/Test';
+import CardSwiper from './src/components/home/CardSwiper';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +19,7 @@ export default function AuthPage() {
             <Stack.Screen name="Home" component={Home} />
             <Stack.Screen name="Attendance" component={Attendance} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue},headerShadowVisible:false}} />
             <Stack.Screen name="Test" component={Test} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue},headerShadowVisible:false}} />
+            <Stack.Screen name="CardSwiper" component={CardSwiper} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue},headerShadowVisible:false}} />
         </React.Fragment>
         :
         <React.Fragment>
