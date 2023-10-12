@@ -24,7 +24,7 @@ export default function Body() {
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
             <Text style={styles.text1}>Classes today: {classesToday}</Text>
             <TouchableOpacity>
-              <Text style={styles.text1}>View Timetable</Text>
+              <Text >View Timetable</Text>
             </TouchableOpacity>
           </View>
           {
@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
   },
   text1: {
     color: "#2d3436",
-    fontSize: 14,
-    fontWeight: '500'
+    fontSize: 15,
+    fontWeight: 'bold'
   }
 })

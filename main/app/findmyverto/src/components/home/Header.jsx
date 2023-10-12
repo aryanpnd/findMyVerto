@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { FontAwesome5,  Octicons } from '@expo/vector-icons'
+import { FontAwesome5, Octicons } from '@expo/vector-icons'
 import AttendanceProgressBar from '../miscellaneous/AttendanceProgressBar'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
@@ -8,23 +8,36 @@ import { API_URL, AuthContext } from '../../../context/Auth'
 import Toast from 'react-native-toast-message'
 import formatTimeAgo from '../../constants/dateFormatter'
 import LottieView from 'lottie-react-native';
+import { AppContext } from '../../../context/MainApp'
 
 
 
 export default function Header({ userDetails, navigation }) {
     const { auth, logout } = useContext(AuthContext)
+    const { setCourses } = useContext(AppContext)
     const [attendence, setattendence] = useState({})
     const [loading, setLoading] = useState(false)
+
+
 
     useEffect(() => {
         async function fetchDataLocally() {
             try {
                 setLoading(true)
                 let userAttendance = await AsyncStorage.getItem("ATTENDANCE");
+                let Courses = await AsyncStorage.getItem("COURSES");
                 if (!userAttendance) {
                     await axios.post(`${API_URL}/api/student/getStudentAttendance`, { password: auth.pass }).then(async (result) => {
                         await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(result.data));
                         setattendence(result.data)
+
+                        // fetching courses
+                        const courses = {}
+                        const aH = result.data.attendanceHistory.slice(0, -1)
+                        await aH.map((value) => courses[value.course.split(":")[0]] = value.course.split(":")[1])
+                        setCourses(courses)
+                        await AsyncStorage.setItem("COURSES", JSON.stringify(courses));
+
                         setLoading(false)
                     }).catch((err) => {
                         Toast.show({
@@ -39,6 +52,7 @@ export default function Header({ userDetails, navigation }) {
                 }
                 setLoading(false)
                 setattendence(JSON.parse(userAttendance))
+                setCourses(JSON.parse(Courses))
             } catch (error) {
                 console.error(error);
                 setLoading(false)
@@ -55,13 +69,13 @@ export default function Header({ userDetails, navigation }) {
 
             <View style={styles.header}>
                 <View style={styles.searchbarContainer}>
-                    <TouchableOpacity style={styles.button1} onPress={()=>navigation.navigate('CardSwiper')}>
+                    <TouchableOpacity style={styles.button1} onPress={() => navigation.navigate('CardSwiper')}>
                         <Text style={styles.text1}>Search a Verto</Text>
                         <Octicons name='search' color={'#ffffffb5'} size={18} />
                     </TouchableOpacity></View>
                 <View style={styles.iconContainer}>
                     <View style={{ width: '35%', alignItems: "center" }}>
-                        <TouchableOpacity onPress={()=>navigation.navigate('Test')} style={styles.button2}><FontAwesome5 name='user-friends' size={17} color={'#ffffffb5'} /></TouchableOpacity>
+                        <TouchableOpacity onPress={() => navigation.navigate('Test')} style={styles.button2}><FontAwesome5 name='user-friends' size={17} color={'#ffffffb5'} /></TouchableOpacity>
                         <Text style={{ color: 'white', fontSize: 11 }}>Friends</Text>
                     </View>
                     <View style={{ width: '35%', alignItems: "center" }}>
@@ -75,10 +89,10 @@ export default function Header({ userDetails, navigation }) {
                 <View style={styles.greeting}>
                     <Text style={{ fontSize: 20, color: '#ffffffb5', fontWeight: 'bold' }}>Hello,</Text>
                     <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMedium}>{userDetails.name}</Text>
-                    <View style={{flexDirection:'row'}}>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>{userDetails.registrationNumber}</Text>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>{userDetails.section}</Text>
-                    <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>Group: {userDetails.group}</Text>
+                    <View style={{ flexDirection: 'row' }}>
+                        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>{userDetails.registrationNumber}</Text>
+                        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>{userDetails.section}</Text>
+                        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>Group: {userDetails.group}</Text>
                     </View>
                 </View>
 
@@ -167,6 +181,6 @@ const styles = StyleSheet.create({
     text1: {
         color: '#ffffffb5'
     },
-    textSmall:{ marginRight:15,fontSize: 15, fontWeight: '400', color: 'white' },
-    textMedium:{ fontSize: 25, fontWeight: 'bold', color: 'white' }
+    textSmall: { marginRight: 15, fontSize: 15, fontWeight: '400', color: 'white' },
+    textMedium: { fontSize: 25, fontWeight: 'bold', color: 'white' }
 })

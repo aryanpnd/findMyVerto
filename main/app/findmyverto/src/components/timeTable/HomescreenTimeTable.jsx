@@ -3,11 +3,10 @@ import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from
 import { API_URL, AuthContext } from '../../../context/Auth';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { globalStyles } from '../../constants/styles';
 import Loading1 from '../miscellaneous/Loading1';
 import { LinearGradient } from 'expo-linear-gradient';
-import { colors } from '../../constants/colors';
 import getTime from '../../constants/funtions';
+import { AppContext } from '../../../context/MainApp';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
@@ -16,9 +15,8 @@ const gap = (width - itemWidth) / 4;
 export default function HomescreenTimeTable({ setClassesToday }) {
 
     const { auth } = useContext(AuthContext)
+    const { courses } = useContext(AppContext)
     const [timeTable, settimeTable] = useState([])
-    const [day, setDay] = useState(0)
-    const [Time, setTime] = useState("")
     const [loading, setLoading] = useState(false)
 
 
@@ -54,11 +52,6 @@ export default function HomescreenTimeTable({ setClassesToday }) {
         }
     }
 
-    function getDay() {
-        const today = new Date();
-        const dayIndex = (today.getDay() + 6) % 7;
-        setDay(dayIndex);
-    }    
 
     function formatTimetableToClasses(ttToFormat) {
         const today = new Date();
@@ -70,12 +63,7 @@ export default function HomescreenTimeTable({ setClassesToday }) {
 
     useEffect(() => {
         fetchDataLocally();
-        getDay()
     }, []);
-
-    const printTT = () => {
-        console.log(timeTable);
-    }
 
 
     return (
@@ -95,16 +83,18 @@ export default function HomescreenTimeTable({ setClassesToday }) {
                         timeTable?.map((value, index) => (
                             <LinearGradient
                                 key={index}
-                                colors={getTime(value[0])?['#0f2027', '#2c5364']:["white", "white"]}
+                                colors={getTime(value[0])?['#11998e', '#38ef7d']:["white", "white"]}
                                 style={styles.cardContainer}
                                 start={{ x: 0, y: 0 }} // Start from the left
                                 end={{ x: 1, y: 0 }}
                             >
-                                <TouchableOpacity onPress={() => getTime(value[0])}>
-                                    <Text>click me</Text>
+                                <Text style={getTime(value[0])?styles.text2:styles.text1}>{value[1]?.split("/")[1].split(" ")[2].split(":")[1]}</Text>
+                                <Text style={getTime(value[0])?styles.text2:styles.text1}>{courses[value[1]?.split("/")[1].split(" ")[2].split(":")[1]]}</Text>
+                                <Text style={getTime(value[0])?styles.text2:styles.text1}>{value[0]}</Text>
+                                <Text style={getTime(value[0])?styles.text2:styles.text1}>{value[1]}</Text>
+                                <TouchableOpacity onPress={()=>console.log(courses)}>
+                                    <Text>Press</Text>
                                 </TouchableOpacity>
-                                <Text>{value[0]}</Text>
-                                <Text>{value[1]}</Text>
                             </LinearGradient>
                         ))}
 
@@ -126,5 +116,12 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         marginRight: gap,
         borderRadius: 25,
+        padding:10
     },
+    text1:{
+        color:'#2d3436',
+    },
+    text2:{
+        color:'white',
+    }
 });

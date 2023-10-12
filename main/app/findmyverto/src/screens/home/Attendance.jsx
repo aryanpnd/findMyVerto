@@ -1,15 +1,8 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import Toast from 'react-native-toast-message'
-import { SafeAreaView } from 'react-native-safe-area-context'
-import AttendanceCard from '../../components/attendance/AttendanceCard'
 import { API_URL, AuthContext } from '../../../context/Auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import { colors } from '../../constants/colors'
-import formatTimeAgo from '../../constants/dateFormatter'
-import SyncData from '../../components/miscellaneous/SyncData'
-import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
 import AttendanceScreen from '../../components/attendance/AttendanceScreen'
 
 export default function Attendance({ navigation }) {

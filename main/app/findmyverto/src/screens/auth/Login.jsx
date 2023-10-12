@@ -7,7 +7,6 @@ import LottieView from 'lottie-react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
-import { globalStyles } from '../../constants/styles';
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading';
 
 
@@ -69,6 +68,7 @@ export default function Login() {
       setLoading(false)
     })
   }
+
 
   return (
     <>
