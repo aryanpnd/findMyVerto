@@ -49,6 +49,19 @@ class UmsScrapper {
         }
     }
 
+    async bypasModal(){
+        try {
+            // Wait for the modal to appear, but not more than 5 seconds
+            await page.waitForSelector('#chkReadMessage', {visible: true, timeout: 5000});
+            await page.click('#chkReadMessage');        
+            await page.waitForSelector('#btnClose:not([disabled])', {visible: true});
+            await page.click('#btnClose');
+            return
+          } catch (error) {
+            return
+          }
+    }
+
     async get_user_info() {
         if (!this.is_user_loggedIn) {
             return {status:false,message:"login first"};
@@ -98,6 +111,7 @@ class UmsScrapper {
             return {errorStatus:true,message:"login first"};
         }
 
+        this.bypasModal()
 
         try {
             await this.page.goto('https://ums.lpu.in/lpuums/Reports/frmStudentTimeTable.aspx');
@@ -143,6 +157,8 @@ class UmsScrapper {
         if (!this.is_user_loggedIn) {
             return {errorStatus:true,message:"login first"};
         }
+
+        // this.bypasModal()
 
         try{
             await this.page.click('#AttPercent');

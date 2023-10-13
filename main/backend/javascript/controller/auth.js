@@ -15,21 +15,37 @@ const studentLogin = async (req, res) => {
             // here , i have to make password change logic where i will check if the user exists with this registration number in database , if yes then i will scrape and update the password in db else i will scrape and save a new user
             const umsScrapper = new UmsScrapper(req.body.regNo, req.body.password);
             await umsScrapper.init();
-            const loginMsg = await umsScrapper.login();
-            const studentDetails = await umsScrapper.get_user_info();
-            if (loginMsg.status) {
-                const student = new Student(studentDetails);
-                await student
-                .save()
-                .then((docs) => {
-                        const token = jwt.sign({ userId: req.body.regNo }, secretKey, { expiresIn: "30d" });
-                        res.status(200).json({ status: true, message: "Login success", token: token });
-                    })
-                    .catch((err) => {
-                        res.status(400).send(`Some error occured ${err}`);
+            const userExists = await Student.findOne({ registrationNumber: req.body.regNo });
+
+            if (userExists) {
+                const loginMsg = await umsScrapper.login();
+                // updating UMS Password
+                if (loginMsg.status) {
+                    await Student.findOneAndUpdate({ registrationNumber: req.regNo }, { password: req.body.password }, { new: true }).select({ _id: 0, __v: 0 }).then((result) => {
+                        res.status(200).send(result)
+                    }).catch((error) => {
+                        res.status(400).send(error);
                     });
+                }else {
+                    res.send(loginMsg)
+                }
             } else {
-                res.send(loginMsg)
+                const loginMsg = await umsScrapper.login();
+                const studentDetails = await umsScrapper.get_user_info();
+                if (loginMsg.status) {
+                    const student = new Student(studentDetails);
+                    await student
+                        .save()
+                        .then((docs) => {
+                            const token = jwt.sign({ userId: req.body.regNo }, secretKey, { expiresIn: "30d" });
+                            res.status(200).json({ status: true, message: "Login success", token: token });
+                        })
+                        .catch((err) => {
+                            res.status(400).send(`Some error occured ${err}`);
+                        });
+                } else {
+                    res.send(loginMsg)
+                }
             }
             umsScrapper.close()
         }
@@ -72,7 +88,7 @@ const authenticate = async (req, res, next) => {
 
     jwt.verify(token.split(" ")[1], secretKey, (err, decoded) => {
         if (err) {
-            return res.status(401).json({status: false, message: 'Authentication failed. Invalid token.' });
+            return res.status(401).json({ status: false, message: 'Authentication failed. Invalid token.' });
         }
         req.regNo = decoded.userId;
         // res.send({regno:decoded.userId})
