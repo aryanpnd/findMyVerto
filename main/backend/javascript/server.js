@@ -46,4 +46,4 @@ const pingWebsiteURL = 'https://pseudo-pinger.onrender.com/';
 
 setInterval(() => {
     http.get(pingWebsiteURL);
-}, 600000); // 600000 ms is 10 minutes
+}, 400000); // 400000 ms is 4 minutes
