@@ -41,9 +41,3 @@ app.get("/*", (req, res) => {
 app.listen(process.env.PORT, () => {
   console.log(`Server started on port ${process.env.PORT}`);
 });
-
-const pingWebsiteURL = 'https://pseudo-pinger.onrender.com/';
-
-setInterval(() => {
-    http.get(pingWebsiteURL);
-}, 400000); // 400000 ms is 4 minutes
