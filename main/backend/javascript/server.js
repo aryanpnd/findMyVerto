@@ -34,7 +34,7 @@ app.use("/api/student/", authenticate,StudentRoutes);
 
 // handling main and auth page not found routes
 app.get("/*", (req, res) => {
-  res.status(200).send(<h1>welcome to FindMyVerto</h1>);
+  res.status(200).send(Welcome to FindMyVerto);
 });
 
 // declaring express listener
