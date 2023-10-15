@@ -29,8 +29,7 @@ export default function Home({navigation}) {
           }).catch((err) => {
             Toast.show({
               type: 'error',
-              text1: 'Login failed',
-              text2: `${err}`,
+              text1: `${err}`,
             });
             console.log({ "inside catch": err });
             setLoading(false)
@@ -54,7 +53,7 @@ export default function Home({navigation}) {
       <SafeAreaView style={styles.container}>
         <View style={styles.container}>
             <Header userDetails={userDetails} attendence={10} navigation={navigation}/>
-            <Body logout={logout} />
+            <Body logout={logout} navigation={navigation} />
         </View>
       </SafeAreaView>
     </>

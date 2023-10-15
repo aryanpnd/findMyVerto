@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { API_URL, AuthContext } from '../../../context/Auth';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading1 from '../miscellaneous/Loading1';
 import { LinearGradient } from 'expo-linear-gradient';
-import getTime from '../../constants/funtions';
-import { AppContext } from '../../../context/MainApp';
+import ClassesTodayCards from './ClassesTodayCards';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
@@ -15,7 +14,6 @@ const gap = (width - itemWidth) / 4;
 export default function HomescreenTimeTable({ setClassesToday }) {
 
     const { auth } = useContext(AuthContext)
-    const { courses } = useContext(AppContext)
     const [timeTable, settimeTable] = useState([])
     const [loading, setLoading] = useState(false)
 
@@ -56,6 +54,7 @@ export default function HomescreenTimeTable({ setClassesToday }) {
     function formatTimetableToClasses(ttToFormat) {
         const today = new Date();
         const dayIndex = (today.getDay() + 6) % 7;
+        // const dayIndex = (today.getDay() + 5) % 7;
         const tt = Object.entries(ttToFormat)[dayIndex][1]
         const classes = Object.entries(tt).filter(([_, value]) => value.length > 1)
         return classes
@@ -81,21 +80,7 @@ export default function HomescreenTimeTable({ setClassesToday }) {
 
                     {
                         timeTable?.map((value, index) => (
-                            <LinearGradient
-                                key={index}
-                                colors={getTime(value[0])?['#11998e', '#38ef7d']:["white", "white"]}
-                                style={styles.cardContainer}
-                                start={{ x: 0, y: 0 }} // Start from the left
-                                end={{ x: 1, y: 0 }}
-                            >
-                                <Text style={getTime(value[0])?styles.text2:styles.text1}>{value[1]?.split("/")[1].split(" ")[2].split(":")[1]}</Text>
-                                <Text style={getTime(value[0])?styles.text2:styles.text1}>{courses[value[1]?.split("/")[1].split(" ")[2].split(":")[1]]}</Text>
-                                <Text style={getTime(value[0])?styles.text2:styles.text1}>{value[0]}</Text>
-                                <Text style={getTime(value[0])?styles.text2:styles.text1}>{value[1]}</Text>
-                                <TouchableOpacity onPress={()=>console.log(courses)}>
-                                    <Text>Press</Text>
-                                </TouchableOpacity>
-                            </LinearGradient>
+                            <ClassesTodayCards key={index} value={value}/>
                         ))}
 
                 </ScrollView>
@@ -106,22 +91,8 @@ export default function HomescreenTimeTable({ setClassesToday }) {
 
 const styles = StyleSheet.create({
     scrollView: {
-        paddingLeft: 5,
-        paddingRight: 5,
+        paddingHorizontal:5,
         alignItems: 'center',
     },
-    cardContainer: {
-        height: "100%",
-        width: itemWidth,
-        backgroundColor: 'white',
-        marginRight: gap,
-        borderRadius: 25,
-        padding:10
-    },
-    text1:{
-        color:'#2d3436',
-    },
-    text2:{
-        color:'white',
-    }
+    
 });

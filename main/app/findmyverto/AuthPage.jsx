@@ -7,6 +7,7 @@ import Attendance from './src/screens/home/Attendance';
 import { colors } from './src/constants/colors';
 import Test from './src/components/home/Test';
 import CardSwiper from './src/components/home/CardSwiper';
+import TimeTable from './src/screens/home/TimeTable';
 
 const Stack = createNativeStackNavigator();
 
@@ -17,9 +18,10 @@ export default function AuthPage() {
       {auth.authenticated ?
         <React.Fragment>
             <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Attendance" component={Attendance} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue},headerShadowVisible:false}} />
-            <Stack.Screen name="Test" component={Test} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue},headerShadowVisible:false}} />
-            <Stack.Screen name="CardSwiper" component={CardSwiper} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue},headerShadowVisible:false}} />
+            <Stack.Screen name="Attendance" component={Attendance} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false}} />
+            <Stack.Screen name="Timetable" component={TimeTable} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false}} />
+            {/* <Stack.Screen name="Test" component={Test} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false}} />
+            <Stack.Screen name="CardSwiper" component={CardSwiper} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false}} /> */}
         </React.Fragment>
         :
         <React.Fragment>

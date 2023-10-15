@@ -1,4 +1,4 @@
-export default function getTime(time) {
+export default function isTimeEqual(time) {
     const currentDate = new Date();
     const hours = currentDate.getHours();
     const hours12 = (hours % 12) || 12;

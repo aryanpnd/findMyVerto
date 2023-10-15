@@ -5,6 +5,7 @@ const { ScrappingRoutes } = require("./routes/scrappingRoutes");
 const { StudentRoutes } = require("./routes/studentRoutes");
 const { AuthRoutes } = require("./routes/authRoutes");
 const { authenticate } = require("./controller/auth");
+const http = require('http');
 
 // initializing express
 const app = express();
@@ -40,3 +41,9 @@ app.get("/*", (req, res) => {
 app.listen(process.env.PORT, () => {
   console.log(`Server started on port ${process.env.PORT}`);
 });
+
+const pingWebsiteURL = 'https://pseudo-pinger.onrender.com/';
+
+setInterval(() => {
+    http.get(pingWebsiteURL);
+}, 600000); // 600000 ms is 10 minutes
