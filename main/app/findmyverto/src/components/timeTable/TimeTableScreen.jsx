@@ -1,125 +1,215 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-    Animated,
-    Dimensions,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  Dimensions,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
+import Animated, {
+  interpolate,
+  scrollTo,
+  useAnimatedRef,
+  useAnimatedScrollHandler,
+  useAnimatedStyle,
+  useDerivedValue,
+  useSharedValue
+} from 'react-native-reanimated'; 
+import trimEmptySlots from '../../constants/trimEmptySlots';
+const { width } = Dimensions.get('screen');
 
-const { width } = Dimensions.get('window');
+const headers = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-export default function TimeTableScreen() {
-    const scrollX = useRef(new Animated.Value(0)).current;
-    const buttons = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday','Saturday'];
-    const onCLick = i => this.scrollView.scrollTo({ x: i * width });
-    return (
-        <View style={styles.container}>
-            <View style={{ padding: 5, paddingTop: 0 }}>
-                <ButtonContainer buttons={buttons} onClick={onCLick} scrollX={scrollX} />
-            </View>
-            <ScrollView
-                ref={e => (this.scrollView = e)}
-                horizontal
-                pagingEnabled
-                decelerationRate="fast"
-                showsHorizontalScrollIndicator={false}
-                onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-                    { useNativeDriver: false },
-                )}>
-                {buttons.map(x => (
-                    <View style={[styles.card]} key={x} />
-                ))}
-            </ScrollView>
-        </View>
-    );
+const getHeaderWidths = () => {
+  const obj = {};
+  headers.forEach((x, i) => {
+    obj[i] = useSharedValue(0);
+  });
+  return obj;
+};
+
+export default function TimeTableScreen({ timeTable }) {
+  //store each tab widths
+  const headerWidths = getHeaderWidths();
+
+  //scroll values of both Scrollview
+  const scrollY = useSharedValue(0);
+  const topScrollY = useSharedValue(0);
+
+  //values to handle auto scroll of bottom ScrollView
+  const bottomScrollRef = useAnimatedRef();
+  const scroll1 = useSharedValue(0);
+  useDerivedValue(() => {
+    scrollTo(bottomScrollRef, scroll1.value * width, 0, true);
+  });
+
+  //values to handle auto scroll of top ScrollView
+  const topScrollRef = useAnimatedRef();
+  const scroll2 = useSharedValue(0);
+  useDerivedValue(() => {
+    scrollTo(topScrollRef, scroll2.value, 0, true);
+  });
+
+  // listener to store scroll value of bottom ScrollView
+  const scrollHandler = useAnimatedScrollHandler(event => {
+    scrollY.value = event.contentOffset.x;
+  });
+
+  // listener to store scroll value of top ScrollView
+  const topScrollHandler = useAnimatedScrollHandler(event => {
+    topScrollY.value = event.contentOffset.x;
+  });
+
+  // generate dynamic width of moving bar
+  const barWidthStyle = useAnimatedStyle(() => {
+    const input = [];
+    const output1 = [];
+    const output2 = [];
+    let sumWidth = 0;
+    const keys = Object.keys(headerWidths);
+    keys.map((key, index) => {
+      input.push(width * index);
+      const cellWidth = headerWidths[key].value;
+      output1.push(cellWidth);
+      output2.push(sumWidth);
+      sumWidth += cellWidth;
+    });
+    const moveValue = interpolate(scrollY.value, input, output2);
+    const barWidth = interpolate(scrollY.value, input, output1);
+    // next line handle auto scroll of top ScrollView
+    scroll2.value = moveValue + barWidth / 2 - width / 2;
+    return {
+      width: barWidth,
+      transform: [
+        {
+          translateX: moveValue,
+        },
+      ],
+    };
+  });
+
+  // generate dynamic translateX of moving bar
+  const barMovingStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: -topScrollY.value }],
+  }));
+
+  const onPressHeader = index => {
+    // next line handle auto scroll of bottom ScrollView
+    scroll1.value = index;
+  };
+
+  return (
+    <View style={styles.flex}>
+
+      {/* header tabs */}
+      <Animated.ScrollView
+        ref={topScrollRef}
+        style={styles.topScroll}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        onScroll={topScrollHandler}>
+
+        {headers.map((item, index) => (
+          <View
+            onLayout={e =>
+              (headerWidths[index].value = e.nativeEvent.layout.width)
+            }
+            key={item}
+            style={{ flex: index === 1 ? 2 : 1 }}>
+            <TouchableOpacity
+              style={styles.headerItem}
+              onPress={() => onPressHeader(index)}>
+              <Text>{item}</Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </Animated.ScrollView>
+
+      {/* header scrolling bar */}
+      <Animated.View style={[styles.bar, barWidthStyle]}>
+        <Animated.View
+          style={[StyleSheet.absoluteFill, styles.barInner, barMovingStyle]}
+        />
+      </Animated.View>
+
+      {/* Timetable body */}
+      <Animated.ScrollView
+        ref={bottomScrollRef}
+        pagingEnabled
+        contentContainerStyle={styles.list}
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        onScroll={scrollHandler}>
+        {headers.map((item, index) => (
+          <Item index={index} key={item} timeTable={timeTable[index]} />
+        ))}
+      </Animated.ScrollView>
+    </View>
+  );
 }
 
-function ButtonContainer({ buttons, onClick, scrollX }) {
-    const [btnContainerWidth, setWidth] = useState(0);
-    const btnWidth = btnContainerWidth / buttons.length;
-    const translateX = scrollX.interpolate({
-        inputRange: [0, width],
-        outputRange: [0, btnWidth],
-    });
-    const translateXOpposit = scrollX.interpolate({
-        inputRange: [0, width],
-        outputRange: [0, -btnWidth],
-    });
-    return (
-        <ScrollView
-            style={styles.btnContainer}
-            >
-            {buttons.map((btn, i) => (
-                <TouchableOpacity
-                    key={btn}
-                    style={styles.btn}
-                    onPress={() => onClick(i)}>
-                    <Text>{btn}</Text>
-                </TouchableOpacity>
-            ))}
-            <Animated.View
-                style={[
-                    styles.animatedBtnContainer,
-                    { width: btnWidth, transform: [{ translateX }] },
-                ]}>
-                {buttons.map(btn => (
-                    <Animated.View
-                        key={btn}
-                        style={[
-                            styles.animatedBtn,
-                            { width: btnWidth, transform: [{ translateX: translateXOpposit }] },
-                        ]}>
-                        <Text style={styles.btnTextActive}>{btn}</Text>
-                    </Animated.View>
-                ))}
-            </Animated.View>
-        </ScrollView>
-    );
+function Item({ index, timeTable }) {
+  const [timeTableOfday, setTimeTableOfday] = useState({})
+  const [timeTableOfdayTrimed, setTimeTableOfdayTrimed] = useState({})
+
+  useEffect(() => {
+    if(timeTable && timeTable.length > 0){
+      setTimeTableOfday(timeTable[1])
+    }
+  }, [timeTable])
+  
+  useEffect(() => {
+    Object.keys(timeTableOfday).map((value,index)=>{
+      setTimeTableOfdayTrimed(trimEmptySlots(timeTableOfday))
+    })
+  }, [timeTableOfday])
+
+  return (
+    <>
+      {
+        <Animated.View style={styles.item}>
+          {
+             Object.keys(timeTableOfdayTrimed).reverse().map((value,index)=>(timeTableOfdayTrimed[value].length>1?
+              (<Text>{timeTableOfdayTrimed[value]}</Text>)
+              :
+              (<Text >Break hai bhai, mazze kar</Text>)
+             ))
+          }
+        </Animated.View>
+      }
+    </>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        paddingVertical: 5
-    },
-    btnContainer: {
-        height: 40,
-        borderRadius: 5,
-        overflow: 'hidden',
-        flexDirection: 'row',
-        backgroundColor: '#00000011',
-        width: '100%',
-    },
-    btn: {
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    animatedBtnContainer: {
-        height: 40,
-        flexDirection: 'row',
-        position: 'absolute',
-        overflow: 'hidden',
-        backgroundColor: '#444',
-    },
-    animatedBtn: {
-        height: 40,
-        justifyContent: 'center',
-        alignItems: 'center',
-    },
-    btnTextActive: {
-        color: '#fff',
-        fontWeight: 'bold',
-    },
-    card: {
-        width: width - 10,
-        height: '100%',
-        marginHorizontal: 5,
-        borderRadius: 5,
-        backgroundColor: 'red',
-    },
+  flex: {
+    flex: 1,
+  },
+  topScroll: {
+    flexGrow: 0,
+  },
+  item: {
+    height: '100%',
+    width: width,
+    // backgroundColor: 'grey',
+    borderWidth: 5,
+    borderColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerItem: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  bar: {
+    height: 3,
+    alignSelf: 'flex-start',
+  },
+  barInner: {
+    backgroundColor: '#000',
+  },
+  txt: {
+    fontSize: 30,
+    color: '#fff',
+  },
 });

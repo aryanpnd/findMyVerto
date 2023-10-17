@@ -1,22 +1,28 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Dimensions, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { API_URL, AuthContext } from '../../../context/Auth';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading1 from '../miscellaneous/Loading1';
 import { LinearGradient } from 'expo-linear-gradient';
+import LottieView from 'lottie-react-native';
 import ClassesTodayCards from './ClassesTodayCards';
+import { colors } from '../../constants/colors';
+import formatTimetableToClasses from '../../constants/timetableToClassFormatter';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
 const gap = (width - itemWidth) / 4;
 
-export default function HomescreenTimeTable({ setClassesToday }) {
-
+export default function HomescreenTimeTable({ navigation,setClassesToday, timeTable, settimeTable }) {
     const { auth } = useContext(AuthContext)
-    const [timeTable, settimeTable] = useState([])
     const [loading, setLoading] = useState(false)
+    const [day, setDay] = useState(1)
 
+    function getDay() {
+        const currentDate = new Date();
+        setDay(currentDate.getDay())
+    }
 
     async function fetchDataLocally() {
         try {
@@ -51,16 +57,8 @@ export default function HomescreenTimeTable({ setClassesToday }) {
     }
 
 
-    function formatTimetableToClasses(ttToFormat) {
-        const today = new Date();
-        const dayIndex = (today.getDay() + 6) % 7;
-        // const dayIndex = (today.getDay() + 5) % 7;
-        const tt = Object.entries(ttToFormat)[dayIndex][1]
-        const classes = Object.entries(tt).filter(([_, value]) => value.length > 1)
-        return classes
-    }
-
     useEffect(() => {
+        getDay()
         fetchDataLocally();
     }, []);
 
@@ -69,21 +67,37 @@ export default function HomescreenTimeTable({ setClassesToday }) {
         <>{
             loading ? <Loading1 loading={loading} key={gap} loadAnim={"amongus"} loadingText={"Getting your Timetable"} loadingMsg={"it may take some seconds for the first time"} />
                 :
+                day === 0 ?
+                    <View style={{ alignItems: "center", justifyContent: "center",gap:8 }}>
+                        <LottieView
+                            autoPlay
+                            style={{
+                                width: 100,
+                                height: 100,
+                            }}
+                            source={require('../../../assets/lotties/sloth.json')}
+                        />
+                        <Text style={styles.text1}>It's Sunday, No classes Today</Text>
+                        <TouchableOpacity style={{ flexDirection: 'row', gap: 5, backgroundColor: colors.btn1, paddingHorizontal: 15,paddingVertical:3, borderRadius: 10 }} onPress={() => navigation.navigate('Timetable')}>
+                            <Text style={{ fontSize: 12, color: 'grey' }}>View Timetable</Text>
+                        </TouchableOpacity>
+                    </View>
+                    :
 
-                <ScrollView
-                    horizontal
-                    pagingEnabled
-                    decelerationRate="fast"
-                    contentContainerStyle={styles.scrollView}
-                    showsHorizontalScrollIndicator={false}
-                    snapToInterval={itemWidth + gap}>
+                    <ScrollView
+                        horizontal
+                        pagingEnabled
+                        decelerationRate="fast"
+                        contentContainerStyle={styles.scrollView}
+                        showsHorizontalScrollIndicator={false}
+                        snapToInterval={itemWidth + gap}>
 
-                    {
-                        timeTable?.map((value, index) => (
-                            <ClassesTodayCards key={index} value={value}/>
-                        ))}
+                        {
+                            timeTable?.map((value, index) => (
+                                <ClassesTodayCards key={index} value={value} />
+                            ))}
 
-                </ScrollView>
+                    </ScrollView>
         }
         </>
     );
@@ -91,8 +105,8 @@ export default function HomescreenTimeTable({ setClassesToday }) {
 
 const styles = StyleSheet.create({
     scrollView: {
-        paddingHorizontal:5,
+        paddingHorizontal: 5,
         alignItems: 'center',
     },
-    
+
 });

@@ -17,7 +17,7 @@ export default function ClassesTodayCards({ value }) {
 
     return (
         <LinearGradient
-            colors={isTimeEqual(value[0]) ? ['#11998e', '#38ef7d'] : ["white", "transparent"]}
+            colors={isTimeEqual(value[0]) ? ['#11998e', '#32cf6d'] : ["white", "transparent"]}
             style={[styles.cardContainer, globalStyles.elevationMin]}
             start={{ x: 0, y: 0 }} // Start from the left
             end={{ x: 1, y: 0 }}
@@ -25,9 +25,9 @@ export default function ClassesTodayCards({ value }) {
 
 
             {/* Course name */}
-            <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'center' }}>
+            <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'center'}}>
                 <Text numberOfLines={2} style={[isTimeEqual(value[0]) ? styles.text2 : styles.text1, { fontWeight: 'bold', fontSize: 14 }]}>
-                    {courses[value[1]?.split("/")[1].split(" ")[2].split(":")[1]]}
+                {"("}{value[1]?.split("/")[1].split(" ")[2].split(":")[1]}{")"}  {courses[value[1]?.split("/")[1].split(" ")[2].split(":")[1]]}
                 </Text>
             </View>
 
@@ -46,7 +46,7 @@ export default function ClassesTodayCards({ value }) {
                     </View>
                 )}
                 {value && value[1] && value[1].split("/") && value[1].split("/")[2] && (
-                    <View style={[styles.cardElements,{backgroundColor: isTimeEqual(value[0]) ? colors.orange : "",},]}>
+                    <View style={[styles.cardElements,{backgroundColor: isTimeEqual(value[0]) ? colors.blueTransparency : "",},]}>
                         <Image
                             source={require("../../../assets/icons/building.png")}
                             style={{ height: 20, width: 20 }}
@@ -61,12 +61,12 @@ export default function ClassesTodayCards({ value }) {
 
 
 
-            {/* Course code and group */}
+            {/* class type and group */}
             <View style={styles.cardElementsContainer}>
                 <View style={[styles.cardElements, { backgroundColor: isTimeEqual(value[0]) ? colors.btn1 : "" }]}>
                     <Image source={require("../../../assets/icons/course.png")} style={{ height: 20, width: 20 }} transition={1000} />
                     <Text numberOfLines={2} style={[isTimeEqual(value[0]) ? styles.text2 : styles.text1,]}>
-                        {value[1]?.split("/")[1].split(" ")[2].split(":")[1]}
+                        {value[1]?.split("/")[0]}
                     </Text>
                 </View>
                 <View style={[styles.cardElements, { backgroundColor: isTimeEqual(value[0]) ? colors.btn1 : "" }]}>
