@@ -52,10 +52,10 @@ class UmsScrapper {
     async bypasModal(){
         try {
             // Wait for the modal to appear, but not more than 5 seconds
-            await page.waitForSelector('#chkReadMessage', {visible: true, timeout: 5000});
-            await page.click('#chkReadMessage');        
-            await page.waitForSelector('#btnClose:not([disabled])', {visible: true});
-            await page.click('#btnClose');
+            await this.page.waitForXPath('/html/body/div[8]/div[2]/div/div/div[3]/input[1]', {visible: true, timeout: 5000});
+            await this.page.click('#chkReadMessage');        
+            await this.page.waitForSelector('#btnClose:not([disabled])', {visible: true});
+            await this.page.click('#btnClose');
             return
           } catch (error) {
             return
@@ -198,17 +198,17 @@ class UmsScrapper {
     }
 }
 
-// (async () => {
-//     try {
-//         const umsScrapper = new UmsScrapper("12204084", "Alpha@12", false);
-//         await umsScrapper.init();
-//         await umsScrapper.login();
-//         const studentDetails = await umsScrapper.get_time_table();
-//         console.log(studentDetails);
-//         // umsScrapper.close()
-//     } catch (error) {
-//         console.error(error);
-//     }
-// })();
+(async () => {
+    try {
+        const umsScrapper = new UmsScrapper("12204116", "Khan@12345", false);
+        await umsScrapper.init();
+        await umsScrapper.login();
+        const studentDetails = await umsScrapper.bypasModal();
+        console.log(studentDetails);
+        // umsScrapper.close()
+    } catch (error) {
+        console.error(error);
+    }
+})();
 
 module.exports = UmsScrapper;
