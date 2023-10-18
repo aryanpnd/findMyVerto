@@ -85,7 +85,7 @@ const getStudentAttendance = async (req, res) => {
                 res.status(200).send(user_attendance)
             }
             else {
-                const umsScrapper = new UmsScrapper(req.regNo.toString(), req.body.password,false);
+                const umsScrapper = new UmsScrapper(req.regNo.toString(), req.body.password);
                 try {
                     await umsScrapper.init();
                     const loginSuccess = await umsScrapper.login();
