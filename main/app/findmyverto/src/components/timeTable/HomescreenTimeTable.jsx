@@ -90,7 +90,8 @@ export default function HomescreenTimeTable({ navigation,setClassesToday, timeTa
                         decelerationRate="fast"
                         contentContainerStyle={styles.scrollView}
                         showsHorizontalScrollIndicator={false}
-                        snapToInterval={itemWidth + gap}>
+                        snapToInterval={itemWidth + gap}
+                        >
 
                         {
                             timeTable?.map((value, index) => (

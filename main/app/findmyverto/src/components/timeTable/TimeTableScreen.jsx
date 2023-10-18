@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
+  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
@@ -14,8 +15,12 @@ import Animated, {
   useAnimatedStyle,
   useDerivedValue,
   useSharedValue
-} from 'react-native-reanimated'; 
+} from 'react-native-reanimated';
 import trimEmptySlots from '../../constants/trimEmptySlots';
+import ClassesCard from './ClassesCard';
+import BreakCard from './BreakCard';
+import { colors } from '../../constants/colors';
+import { globalStyles } from '../../constants/styles';
 const { width } = Dimensions.get('screen');
 
 const headers = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -102,9 +107,9 @@ export default function TimeTableScreen({ timeTable }) {
     <View style={styles.flex}>
 
       {/* header tabs */}
-      <Animated.ScrollView
+      <Animated.ScrollView style={[styles.topScroll, globalStyles.elevation]}
+        contentContainerStyle={styles.topScroll2}
         ref={topScrollRef}
-        style={styles.topScroll}
         horizontal
         showsHorizontalScrollIndicator={false}
         onScroll={topScrollHandler}>
@@ -119,7 +124,7 @@ export default function TimeTableScreen({ timeTable }) {
             <TouchableOpacity
               style={styles.headerItem}
               onPress={() => onPressHeader(index)}>
-              <Text>{item}</Text>
+              <Text style={{color:"#ffffffb5"}}>{item}</Text>
             </TouchableOpacity>
           </View>
         ))}
@@ -129,14 +134,14 @@ export default function TimeTableScreen({ timeTable }) {
       <Animated.View style={[styles.bar, barWidthStyle]}>
         <Animated.View
           style={[StyleSheet.absoluteFill, styles.barInner, barMovingStyle]}
-        />
+        >
+        </Animated.View>
       </Animated.View>
 
       {/* Timetable body */}
-      <Animated.ScrollView
+      <Animated.ScrollView contentContainerStyle={styles.list}
         ref={bottomScrollRef}
         pagingEnabled
-        contentContainerStyle={styles.list}
         horizontal
         showsHorizontalScrollIndicator={false}
         onScroll={scrollHandler}>
@@ -153,13 +158,13 @@ function Item({ index, timeTable }) {
   const [timeTableOfdayTrimed, setTimeTableOfdayTrimed] = useState({})
 
   useEffect(() => {
-    if(timeTable && timeTable.length > 0){
+    if (timeTable && timeTable.length > 0) {
       setTimeTableOfday(timeTable[1])
     }
   }, [timeTable])
-  
+
   useEffect(() => {
-    Object.keys(timeTableOfday).map((value,index)=>{
+    Object.keys(timeTableOfday).map((value, index) => {
       setTimeTableOfdayTrimed(trimEmptySlots(timeTableOfday))
     })
   }, [timeTableOfday])
@@ -167,14 +172,20 @@ function Item({ index, timeTable }) {
   return (
     <>
       {
-        <Animated.View style={styles.item}>
-          {
-             Object.keys(timeTableOfdayTrimed).reverse().map((value,index)=>(timeTableOfdayTrimed[value].length>1?
-              (<Text>{timeTableOfdayTrimed[value]}</Text>)
-              :
-              (<Text >Break hai bhai, mazze kar</Text>)
-             ))
-          }
+        <Animated.View style={styles.itemContainer}>
+          <View style={[styles.items]}>
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{gap:10,paddingVertical:10}}>
+            {
+              Object.keys(timeTableOfdayTrimed).reverse().map((value, index) => (
+                timeTableOfdayTrimed[value].length > 1 ?
+                (<ClassesCard time={value} value={timeTableOfdayTrimed[value]} />)
+                :
+                (<BreakCard time={value} />)
+                ))
+                
+              }
+              </ScrollView>
+          </View>
         </Animated.View>
       }
     </>
@@ -184,30 +195,56 @@ function Item({ index, timeTable }) {
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
+    justifyContent: 'space-between'
   },
   topScroll: {
     flexGrow: 0,
+    height: '8%',
+    backgroundColor: colors.blue2,
+    borderBottomLeftRadius: 25,
+    borderBottomRightRadius: 25,
   },
-  item: {
-    height: '100%',
-    width: width,
-    // backgroundColor: 'grey',
-    borderWidth: 5,
-    borderColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
+  topScroll2: {
+    // alignItems:"center"
   },
   headerItem: {
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
   bar: {
-    height: 3,
+    height: 35,
+    width: 25,
+    top: 4,
+    position: 'absolute',
     alignSelf: 'flex-start',
   },
   barInner: {
-    backgroundColor: '#000',
+    marginLeft:8,
+    width: "80%",
+    backgroundColor: "#ffffff1a",
+    borderWidth:2,
+    borderColor:"white",
+    borderRadius: 20
   },
+  list: {
+    // height:"88%",
+    justifyContent: 'center',
+    alignItems: "center"
+  },
+  itemContainer: {
+    height: '100%',
+    width: width,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  items: {
+    height: "95%",
+    width: "100%",
+    borderRadius: 30,
+    alignItems: 'center'
+  }
+  ,
+
   txt: {
     fontSize: 30,
     color: '#fff',
