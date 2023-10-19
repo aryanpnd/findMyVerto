@@ -18,6 +18,32 @@ const getStudentInfo = async (req, res) => {
     }
 }
 
+
+const searchStudents = async (req, res) => {
+    const searchQuery = req.body.query;
+    const searchLogic = {
+        $and: [
+            {
+                $or: [
+                    { name: { $regex: new RegExp(searchQuery, "i") } },
+                    { registrationNumber: { $regex: new RegExp(searchQuery, "i") } },
+                    { section: { $regex: new RegExp(searchQuery, "i") } },
+                ],
+            },
+        ],
+    };
+
+    try {
+        Student.find(searchLogic).select({ section: 1, name: 1, registrationNumber: 1,photoURL:1,_id:0 })
+            .then((documents) => {
+                res.status(200).json(documents);
+            }).catch((err)=>res.send(err))
+    } catch (err) {
+        res.status(400).send(`Some error occurred: ${err}`);
+    }
+};
+
+
 const getStudentTimeTable = async (req, res) => {
     try {
         const user = await Student.findOne({ registrationNumber: req.regNo });
@@ -52,9 +78,9 @@ const getStudentTimeTable = async (req, res) => {
                             await time_table.save()
                                 .then(async (result) => {
                                     // requesting again so that we only get selected fields
-                                    await TimeTable.findOne({ registrationNumber: req.regNo, }).select({ _id: 0, registrationNumber: 0, __v: 0 }).then((data)=>{
+                                    await TimeTable.findOne({ registrationNumber: req.regNo, }).select({ _id: 0, registrationNumber: 0, __v: 0 }).then((data) => {
                                         res.status(200).send(data)
-                                    }).catch((error)=>{
+                                    }).catch((error) => {
                                         res.status(400).send(error);
                                     })
                                 })
@@ -132,4 +158,4 @@ const getStudentAttendance = async (req, res) => {
 }
 
 
-module.exports = { getStudentInfo, getStudentTimeTable, getStudentAttendance }
+module.exports = { getStudentInfo, getStudentTimeTable, getStudentAttendance,searchStudents }

@@ -19,14 +19,16 @@ const studentLogin = async (req, res) => {
 
             if (userExists) {
                 const loginMsg = await umsScrapper.login();
-                // updating UMS Password
+                // updating UMS Password if the UMS password is correct
                 if (loginMsg.status) {
-                    await Student.findOneAndUpdate({ registrationNumber: req.regNo }, { password: req.body.password }, { new: true }).select({ _id: 0, __v: 0 }).then((result) => {
-                        res.status(200).send(result)
-                    }).catch((error) => {
-                        res.status(400).send(error);
-                    });
-                }else {
+                    await Student.findOneAndUpdate({ registrationNumber: req.regNo }, { password: req.body.password }, { new: true }).select({ _id: 0, __v: 0 })
+                        .then((result) => {
+                            const token = jwt.sign({ userId: req.body.regNo }, secretKey, { expiresIn: "30d" });
+                            res.status(200).json({ status: true, message: "Login success", token: token });
+                        }).catch((error) => {
+                            res.status(400).send(error);
+                        });
+                } else {
                     res.send(loginMsg)
                 }
             } else {

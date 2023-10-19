@@ -9,12 +9,13 @@ import ClassesTodayCards from './ClassesTodayCards';
 import { colors } from '../../constants/colors';
 import formatTimetableToClasses from '../../constants/timetableToClassFormatter';
 import getDay from '../../constants/getDay';
+import Toast from 'react-native-toast-message';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
 const gap = (width - itemWidth) / 4;
 
-export default function HomescreenTimeTable({ navigation,setClassesToday, timeTable, settimeTable }) {
+export default function HomescreenTimeTable({ navigation, setClassesToday, timeTable, settimeTable }) {
     const { auth } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
     const [day, setDay] = useState(1)
@@ -59,42 +60,46 @@ export default function HomescreenTimeTable({ navigation,setClassesToday, timeTa
 
 
     return (
-        <>{
-            loading ? <Loading1 loading={loading} key={gap} loadAnim={"amongus"} loadingText={"Getting your Timetable"} loadingMsg={"it may take some seconds for the first time"} />
-                :
-                day === 0 ?
-                    <View style={{ alignItems: "center", justifyContent: "center",gap:8 }}>
-                        <LottieView
-                            autoPlay
-                            style={{
-                                width: 100,
-                                height: 100,
-                            }}
-                            source={require('../../../assets/lotties/sloth.json')}
-                        />
-                        <Text style={styles.text1}>It's Sunday, No classes Today</Text>
-                        <TouchableOpacity style={{ flexDirection: 'row', gap: 5, backgroundColor: colors.btn1, paddingHorizontal: 15,paddingVertical:3, borderRadius: 10 }} onPress={() => navigation.navigate('Timetable')}>
-                            <Text style={{ fontSize: 12, color: 'grey' }}>View Timetable</Text>
-                        </TouchableOpacity>
-                    </View>
+        <>
+            <View style={{ zIndex: 2 }}>
+                <Toast />
+            </View>
+            {
+                loading ? <Loading1 loading={loading} key={gap} loadAnim={"amongus"} loadingText={"Getting your Timetable"} loadingMsg={"it may take some seconds for the first time"} />
                     :
+                    day === 0 ?
+                        <View style={{ alignItems: "center", justifyContent: "center", gap: 8 }}>
+                            <LottieView
+                                autoPlay
+                                style={{
+                                    width: 100,
+                                    height: 100,
+                                }}
+                                source={require('../../../assets/lotties/sloth.json')}
+                            />
+                            <Text style={styles.text1}>It's Sunday, No classes Today</Text>
+                            <TouchableOpacity style={{ flexDirection: 'row', gap: 5, backgroundColor: colors.btn1, paddingHorizontal: 15, paddingVertical: 3, borderRadius: 10 }} onPress={() => navigation.navigate('Timetable')}>
+                                <Text style={{ fontSize: 12, color: 'grey' }}>View Timetable</Text>
+                            </TouchableOpacity>
+                        </View>
+                        :
 
-                    <ScrollView
-                        horizontal
-                        pagingEnabled
-                        decelerationRate="fast"
-                        contentContainerStyle={styles.scrollView}
-                        showsHorizontalScrollIndicator={false}
-                        snapToInterval={itemWidth + gap}
+                        <ScrollView
+                            horizontal
+                            pagingEnabled
+                            decelerationRate="fast"
+                            contentContainerStyle={styles.scrollView}
+                            showsHorizontalScrollIndicator={false}
+                            snapToInterval={itemWidth + gap}
                         >
 
-                        {
-                            timeTable?.map((value, index) => (
-                                <ClassesTodayCards key={index} value={value} index={index} />
-                            ))}
+                            {
+                                timeTable?.map((value, index) => (
+                                    <ClassesTodayCards key={index} value={value} index={index} />
+                                ))}
 
-                    </ScrollView>
-        }
+                        </ScrollView>
+            }
         </>
     );
 }
