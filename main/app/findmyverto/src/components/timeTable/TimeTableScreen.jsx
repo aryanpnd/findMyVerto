@@ -22,6 +22,7 @@ import BreakCard from './BreakCard';
 import { colors } from '../../constants/colors';
 import { globalStyles } from '../../constants/styles';
 const { width } = Dimensions.get('screen');
+import getDay from '../../constants/getDay';
 
 const headers = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
@@ -34,6 +35,13 @@ const getHeaderWidths = () => {
 };
 
 export default function TimeTableScreen({ timeTable }) {
+  const [day, setDay] = useState(0)
+
+  useEffect(() => {
+    getDay(setDay)
+  }, [])
+
+
   //store each tab widths
   const headerWidths = getHeaderWidths();
 
@@ -107,7 +115,7 @@ export default function TimeTableScreen({ timeTable }) {
     <View style={styles.flex}>
 
       {/* header tabs */}
-      <Animated.ScrollView style={[styles.topScroll, globalStyles.elevation]}
+      <Animated.ScrollView style={[styles.topScroll]}
         contentContainerStyle={styles.topScroll2}
         ref={topScrollRef}
         horizontal
@@ -122,9 +130,9 @@ export default function TimeTableScreen({ timeTable }) {
             key={item}
             style={{ flex: index === 1 ? 2 : 1 }}>
             <TouchableOpacity
-              style={styles.headerItem}
+              style={[styles.headerItem]}
               onPress={() => onPressHeader(index)}>
-              <Text style={{color:"#ffffffb5"}}>{item}</Text>
+              <Text style={{ color: day-1 == index ?"yellow":"#ffffffb5",fontWeight: day-1 == index ?"bold":"400",fontSize: day-1 == index ?16:15}}>{item}</Text>
             </TouchableOpacity>
           </View>
         ))}
@@ -174,17 +182,17 @@ function Item({ index, timeTable }) {
       {
         <Animated.View style={styles.itemContainer}>
           <View style={[styles.items]}>
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{gap:10,paddingVertical:10}}>
-            {
-              Object.keys(timeTableOfdayTrimed).reverse().map((value, index) => (
-                timeTableOfdayTrimed[value].length > 1 ?
-                (<ClassesCard time={value} value={timeTableOfdayTrimed[value]} />)
-                :
-                (<BreakCard time={value} />)
+            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 10, paddingVertical: 10, paddingHorizontal: 8 }}>
+              {
+                Object.keys(timeTableOfdayTrimed).reverse().map((value, index) => (
+                  timeTableOfdayTrimed[value].length > 1 ?
+                    (<ClassesCard key={index} time={value} value={timeTableOfdayTrimed[value]} />)
+                    :
+                    (<BreakCard key={index} time={value} />)
                 ))
-                
+
               }
-              </ScrollView>
+            </ScrollView>
           </View>
         </Animated.View>
       }
@@ -219,11 +227,11 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
   },
   barInner: {
-    marginLeft:8,
+    marginLeft: 8,
     width: "80%",
     backgroundColor: "#ffffff1a",
-    borderWidth:2,
-    borderColor:"white",
+    borderWidth: 2,
+    borderColor: "white",
     borderRadius: 20
   },
   list: {
@@ -238,10 +246,10 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   items: {
-    height: "95%",
+    height: "100%",
     width: "100%",
-    borderRadius: 30,
-    alignItems: 'center'
+    alignItems: 'center',
+    // backgroundColor:'red'
   }
   ,
 

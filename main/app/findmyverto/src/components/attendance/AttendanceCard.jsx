@@ -21,7 +21,7 @@ export default function AttendanceCard({ attendance, colors }) {
                     <View style={{ flex: 4.5, justifyContent: "space-evenly", paddingLeft: 5 }}>
                         <Text style={[styles.textAttendanceDetails, { display: (attendance?.lastAttended ?? '') === "" ? "none" : "flex" }]}>Last Attended: <Text style={styles.textCourse}>{attendance?.lastAttended ?? 0}</Text></Text>
 
-                        <Text style={styles.textAttendanceDetails}>Duty leaves: <Text style={styles.textCourse}>{parseInt(attendance?.DutyLeave ?? 0)}</Text></Text>
+                        <Text style={styles.textAttendanceDetails}>Duty leaves: <Text style={styles.textCourse}>{parseInt(attendance?.dutyLeave ?? 0)}</Text></Text>
 
                         <Text style={styles.textAttendanceDetails}>Total classes: <Text style={styles.textCourse}>{parseInt(attendance?.totalDelivered ?? 0)}</Text></Text>
 

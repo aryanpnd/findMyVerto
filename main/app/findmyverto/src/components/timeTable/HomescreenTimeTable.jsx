@@ -4,11 +4,11 @@ import { API_URL, AuthContext } from '../../../context/Auth';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Loading1 from '../miscellaneous/Loading1';
-import { LinearGradient } from 'expo-linear-gradient';
 import LottieView from 'lottie-react-native';
 import ClassesTodayCards from './ClassesTodayCards';
 import { colors } from '../../constants/colors';
 import formatTimetableToClasses from '../../constants/timetableToClassFormatter';
+import getDay from '../../constants/getDay';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
@@ -18,11 +18,6 @@ export default function HomescreenTimeTable({ navigation,setClassesToday, timeTa
     const { auth } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
     const [day, setDay] = useState(1)
-
-    function getDay() {
-        const currentDate = new Date();
-        setDay(currentDate.getDay())
-    }
 
     async function fetchDataLocally() {
         try {
@@ -58,7 +53,7 @@ export default function HomescreenTimeTable({ navigation,setClassesToday, timeTa
 
 
     useEffect(() => {
-        getDay()
+        getDay(setDay)
         fetchDataLocally();
     }, []);
 
@@ -95,7 +90,7 @@ export default function HomescreenTimeTable({ navigation,setClassesToday, timeTa
 
                         {
                             timeTable?.map((value, index) => (
-                                <ClassesTodayCards key={index} value={value} />
+                                <ClassesTodayCards key={index} value={value} index={index} />
                             ))}
 
                     </ScrollView>

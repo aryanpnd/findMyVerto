@@ -76,7 +76,7 @@ export default function Login() {
         <Toast />
       </View>
       <SafeAreaView style={styles.container}>
-        <OverlayLoading loading={loading} loadAnim={"amongus"} loadingMsg={"This may take 40-50 seconds if you're Logging for the first time, Depending upon UMS server"} loadingText={"Loading..."} />
+        <OverlayLoading loading={loading} loadAnim={"amongus"} loadingMsg={"This may take 40-50 seconds if you're Logging for the first time, Depending upon UMS server"} loadingText={"Logging..."} />
 
         <View style={styles.container}>
           <View style={{ flex: 3, justifyContent: 'center', alignItems: "center" }}>

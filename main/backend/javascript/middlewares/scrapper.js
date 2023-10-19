@@ -198,17 +198,17 @@ class UmsScrapper {
     }
 }
 
-(async () => {
-    try {
-        const umsScrapper = new UmsScrapper("12204116", "Khan@12345", false);
-        await umsScrapper.init();
-        await umsScrapper.login();
-        const studentDetails = await umsScrapper.bypasModal();
-        console.log(studentDetails);
-        // umsScrapper.close()
-    } catch (error) {
-        console.error(error);
-    }
-})();
+// (async () => {
+//     try {
+//         const umsScrapper = new UmsScrapper("registration number", "password", false);
+//         await umsScrapper.init();
+//         await umsScrapper.login();
+//         const studentDetails = await umsScrapper.bypasModal();
+//         console.log(studentDetails);
+//         // umsScrapper.close()
+//     } catch (error) {
+//         console.error(error);
+//     }
+// })();
 
 module.exports = UmsScrapper;

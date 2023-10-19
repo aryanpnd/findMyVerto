@@ -23,7 +23,7 @@ const getStudentTimeTable = async (req, res) => {
         const user = await Student.findOne({ registrationNumber: req.regNo });
         if (user) {
             const time_table = await TimeTable.findOne({ registrationNumber: req.regNo, }).select({ _id: 0, registrationNumber: 0, __v: 0 });
-            if (time_table) {
+            if (time_table && !req.body.sync) {
                 res.status(200).send(time_table)
             }
             else {
@@ -85,7 +85,7 @@ const getStudentAttendance = async (req, res) => {
                 res.status(200).send(user_attendance)
             }
             else {
-                const umsScrapper = new UmsScrapper(req.regNo.toString(), req.body.password,false);
+                const umsScrapper = new UmsScrapper(req.regNo.toString(), req.body.password);
                 try {
                     await umsScrapper.init();
                     const loginSuccess = await umsScrapper.login();

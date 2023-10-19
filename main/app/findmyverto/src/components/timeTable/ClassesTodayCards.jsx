@@ -12,7 +12,7 @@ const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
 const gap = (width - itemWidth) / 4;
 
-export default function ClassesTodayCards({ value }) {
+export default function ClassesTodayCards({ value,index }) {
     const { courses } = useContext(AppContext)
 
     return (
@@ -27,7 +27,7 @@ export default function ClassesTodayCards({ value }) {
             {/* Course name */}
             <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'center'}}>
                 <Text numberOfLines={2} style={[isTimeEqual(value[0]) ? styles.text2 : styles.text1, { fontWeight: 'bold', fontSize: 14 }]}>
-                {"("}{value[1]?.split("/")[1].split(" ")[2].split(":")[1]}{")"}  {courses[value[1]?.split("/")[1].split(" ")[2].split(":")[1]]}
+                {index+1}. {"("}{value[1]?.split("/")[1].split(" ")[2].split(":")[1]}{")"}  {courses[value[1]?.split("/")[1].split(" ")[2].split(":")[1]]}
                 </Text>
             </View>
 

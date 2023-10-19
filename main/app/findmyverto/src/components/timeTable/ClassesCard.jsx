@@ -10,7 +10,9 @@ export default function ClassesCard({ time, value }) {
 
   return (
     <LinearGradient
-      colors={['#0f2027', '#2c5364']}
+      // colors={[colors.blue, colors.blue2]}
+      colors={["white", "white"]}
+      // colors={['#373b44', '#2c5364']}
       style={[styles.container, globalStyles.elevationMin]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}>
@@ -69,7 +71,7 @@ const styles = StyleSheet.create({
   },
   timeContainer: {
     borderWidth: 1,
-    borderColor: 'white',
+    borderColor: '#c31432',
     padding: 7,
     justifyContent: 'center',
     alignItems: 'center',
@@ -90,14 +92,18 @@ const styles = StyleSheet.create({
     padding: 5,
     backgroundColor: colors.btn1,
     borderRadius: 10,
-    flexDirection: 'row'
+    flexDirection: 'row',
+    justifyContent:'center',
+    alignItems:'center',
+    gap:5
   },
   text1: {
-    color: 'white',
+    color: "grey",
     fontSize: 14,
     fontWeight: 'bold'
   },
   text2: {
-    color: 'white',
+    // color: 'white',
+    color: "grey",
   }
 })
