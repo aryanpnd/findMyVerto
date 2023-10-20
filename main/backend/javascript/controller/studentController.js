@@ -5,18 +5,52 @@ const { TimeTable } = require('../models/studentTimeTable');
 
 // due to server load and low budget i'm using username and password coming from the req.body, else decrypting username and pass from the bearer token would be an efficient choice here. 
 
-const getStudentInfo = async (req, res) => {
-    try {
-        const user = await Student.findOne({ registrationNumber: req.regNo, password: req.body.password });
-        if (user) {
-            res.status(200).send(user)
-        } else {
-            res.status(500).send(`User doesn't exists in database, Signup first`);
-        }
-    } catch (e) {
-        res.status(500).send(e);
-    }
-}
+// const getStudentInfoSync = async (req, res) => {
+//     try {
+//         const user = await Student.findOne({ registrationNumber: req.body.regNo, password: req.body.password });
+//         if (user) {
+//             res.status(200).json({ status: true, message: "Sync success", data: user })
+//         } else {
+//             const umsScrapper = new UmsScrapper(req.regNo, req.body.password);
+//             await umsScrapper.init();
+//             const userExists = await Student.findOne({ registrationNumber: req.body.regNo });
+
+//             if (userExists) {
+//                 const loginMsg = await umsScrapper.login();
+//                 // updating UMS Password if the UMS password is correct
+//                 if (loginMsg.status) {
+//                     await Student.findOneAndUpdate({ registrationNumber: req.regNo }, { password: req.body.password }, { new: true }).select({ _id: 0, __v: 0 })
+//                         .then((result) => {
+//                             res.status(200).json({ status: true, message: "Sync success", data: result });
+//                         }).catch((error) => {
+//                             res.status(400).send(error);
+//                         });
+//                 } else {
+//                     res.send(loginMsg)
+//                 }
+//             } else {
+//                 const loginMsg = await umsScrapper.login();
+//                 const studentDetails = await umsScrapper.get_user_info();
+//                 if (loginMsg.status) {
+//                     const student = new Student(studentDetails);
+//                     await student
+//                         .save()
+//                         .then((docs) => {
+//                             res.status(200).json({ status: true, message: "Sync success", data: docs });
+//                         })
+//                         .catch((err) => {
+//                             res.status(400).send(`Some error occured ${err}`);
+//                         });
+//                 } else {
+//                     res.send(loginMsg)
+//                 }
+//             }
+//             umsScrapper.close()
+//         }
+//     } catch (e) {
+//         res.status(500).send(e);
+//     }
+// }
 
 
 const searchStudents = async (req, res) => {
@@ -158,4 +192,4 @@ const getStudentAttendance = async (req, res) => {
 }
 
 
-module.exports = { getStudentInfo, getStudentTimeTable, getStudentAttendance,searchStudents }
+module.exports = {  getStudentTimeTable, getStudentAttendance,searchStudents }

@@ -24,6 +24,7 @@ const studentschema = new Schema({
     type: Schema.Types.ObjectId,
     ref: 'Student'
   }],
+  lastSync: { type: Date, required: [true, "last sync Number required"]},
 });
 
 const Student = mongoose.model("Student", studentschema);

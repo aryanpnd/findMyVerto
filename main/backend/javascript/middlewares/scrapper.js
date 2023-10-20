@@ -13,10 +13,14 @@ class UmsScrapper {
         this.browser = await puppeteer.launch({
             headless: this.headless,
             args: [
-                "--disable-setuid-sandbox",
-                "--no-sandbox",
-                "--single-process",
-                "--no-zygote"
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage', //
+                '--disable-accelerated-2d-canvas', //
+                '--no-first-run', //
+                '--no-zygote',
+                '--single-process',
+                '--disable-gpu'
             ],
             executablePath: process.env.NODE_ENV === "production" ? process.env.PUPPETEER_EXECUTABLE_PATH :
                 puppeteer.executablePath()
@@ -49,22 +53,22 @@ class UmsScrapper {
         }
     }
 
-    async bypasModal(){
+    async bypasModal() {
         try {
             // Wait for the modal to appear, but not more than 5 seconds
-            await this.page.waitForXPath('/html/body/div[8]/div[2]/div/div/div[3]/input[1]', {visible: true, timeout: 5000});
-            await this.page.click('#chkReadMessage');        
-            await this.page.waitForSelector('#btnClose:not([disabled])', {visible: true});
+            await this.page.waitForXPath('/html/body/div[8]/div[2]/div/div/div[3]/input[1]', { visible: true, timeout: 5000 });
+            await this.page.click('#chkReadMessage');
+            await this.page.waitForSelector('#btnClose:not([disabled])', { visible: true });
             await this.page.click('#btnClose');
             return
-          } catch (error) {
+        } catch (error) {
             return
-          }
+        }
     }
 
     async get_user_info() {
         if (!this.is_user_loggedIn) {
-            return {status:false,message:"login first"};
+            return { status: false, message: "login first" };
         }
 
 
@@ -108,7 +112,7 @@ class UmsScrapper {
 
     async get_time_table() {
         if (!this.is_user_loggedIn) {
-            return {errorStatus:true,message:"login first"};
+            return { errorStatus: true, message: "login first" };
         }
 
         this.bypasModal()
@@ -155,40 +159,40 @@ class UmsScrapper {
 
     async get_user_attendance() {
         if (!this.is_user_loggedIn) {
-            return {errorStatus:true,message:"login first"};
+            return { errorStatus: true, message: "login first" };
         }
 
         // this.bypasModal()
 
-        try{
+        try {
             await this.page.click('#AttPercent');
             await this.page.waitForXPath('/html/body/form/main/div/div[10]/div/div/div[2]/div/div/div/div[1]/div/table/tbody/tr[1]')
             const data = await this.page.evaluate(() => {
                 const table = document.getElementById('AttSummary');
                 const rows = table.querySelectorAll('tr');
                 const dataArray = [];
-            
-                for (let i = 0; i < rows.length; i += 2) { // Skip every other row
-                  const columns = rows[i].querySelectorAll('td');
-                  if (columns.length === 6) { // Ensure it's a data row with 6 columns
-                    const obj = {
-                      course: columns[0].textContent.trim(),
-                      lastAttended: columns[1].textContent.trim(),
-                      dutyLeave: columns[2].textContent.trim(),
-                      totalDelivered: columns[3].textContent.trim(),
-                      totalAttended: columns[4].textContent.trim(),
-                      totalPercentage: columns[5].textContent.trim(),
-                    };
-                    dataArray.push(obj);
-                  }
-                }
-            
-                return dataArray;
-              });
-            
-              return data
 
-        }catch (error) {
+                for (let i = 0; i < rows.length; i += 2) { // Skip every other row
+                    const columns = rows[i].querySelectorAll('td');
+                    if (columns.length === 6) { // Ensure it's a data row with 6 columns
+                        const obj = {
+                            course: columns[0].textContent.trim(),
+                            lastAttended: columns[1].textContent.trim(),
+                            dutyLeave: columns[2].textContent.trim(),
+                            totalDelivered: columns[3].textContent.trim(),
+                            totalAttended: columns[4].textContent.trim(),
+                            totalPercentage: columns[5].textContent.trim(),
+                        };
+                        dataArray.push(obj);
+                    }
+                }
+
+                return dataArray;
+            });
+
+            return data
+
+        } catch (error) {
             return { errorStatus: true, message: (`Error occurred while fetching UMS: ${error}`) };
         }
     }

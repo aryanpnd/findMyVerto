@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const studentAttendancechema = new Schema({
     registrationNumber: { type: Number, required: [true, "Registration Number required"], unique: [true, "Registration Number already exists"] },
-    lastSync: { type: Date, required: [true, "Registration Number required"]},
+    lastSync: { type: Date, required: [true, "last sync Number required"]},
     attendanceHistory: [{
         course: { type: String },
         lastAttended: { type: String },
