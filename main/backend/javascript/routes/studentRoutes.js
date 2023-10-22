@@ -3,7 +3,7 @@ const { getStudentInfo, getStudentTimeTable, getStudentAttendance, searchStudent
 const { getFriendList, getFriendRequests, getSentFriendRequests, sendFriendRequest, addFriend, removeFriend, removeFromRequest, cancelRequest, getFriendData } = require("../controller/friendsControler");
 const StudentRoutes = express.Router();
 
-// StudentRoutes.post("/getStudentInfo", getStudentInfo)
+StudentRoutes.post("/getStudentInfo", getStudentInfo)
 StudentRoutes.post("/searchStudents", searchStudents)
 StudentRoutes.post("/getStudentTimeTable", getStudentTimeTable)
 StudentRoutes.post("/getStudentAttendance", getStudentAttendance)
