@@ -62,7 +62,7 @@ export default function ClassesCard({ time, value }) {
 const styles = StyleSheet.create({
   container: {
     height: 100,
-    width: 360,
+    // width: 360,
     borderRadius: 20,
     flexDirection: 'row',
     padding: 10,

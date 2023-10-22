@@ -106,7 +106,7 @@ const sendFriendRequest = async (req, res) => {
                                     .catch((e) => res.send({ succes: false, msg: "Error sending Friend request" }))
                                 return
                             })
-                            .catch((e) => res.send({ succes: false, msg: "Error sending Friend request" }))
+                            .catch((e) => res.send({ succes: false, msg: "Error sending Friend request",error:e }))
                         return
                     })
             }

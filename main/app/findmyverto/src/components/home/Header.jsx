@@ -73,19 +73,19 @@ export default function Header({ userDetails, navigation }) {
 
                 <View style={styles.headerContainer}>
                     <View style={styles.searchbarContainer}>
-                        <TouchableOpacity style={styles.button1}>
+                        <TouchableOpacity style={styles.button1} onPress={() => navigation.navigate('VertoSearch')}>
                             <Text style={styles.text1}>Search a Verto</Text>
-                            <Octicons name='search' color={'#ffffffb5'} size={18} />
+                            <Octicons name='search' color={colors.whiteLight} size={18} />
                         </TouchableOpacity>
                     </View>
 
                     <View style={styles.iconContainer}>
                         <View style={{ width: '35%', alignItems: "center" }}>
-                            <TouchableOpacity style={styles.button2}><FontAwesome5 name='user-friends' size={17} color={'#ffffffb5'} /></TouchableOpacity>
+                            <TouchableOpacity style={styles.button2}><FontAwesome5 name='user-friends' size={17} color={colors.whiteLight} /></TouchableOpacity>
                             <Text style={{ color: 'white', fontSize: 11 }}>Friends</Text>
                         </View>
                         <View style={{ width: '35%', alignItems: "center" }}>
-                            <TouchableOpacity style={styles.button2} onPress={logout}><FontAwesome5 name='user' size={17} color={'#ffffffb5'} /></TouchableOpacity>
+                            <TouchableOpacity style={styles.button2} onPress={logout}><FontAwesome5 name='user' size={17} color={colors.whiteLight} /></TouchableOpacity>
                             <Text style={{ color: 'white', fontSize: 11 }}>Profile</Text>
                         </View>
                     </View>
@@ -98,7 +98,7 @@ export default function Header({ userDetails, navigation }) {
                 <View style={styles.bodyContainer}>
 
                     <TouchableOpacity style={styles.greeting}>
-                        <Text style={{ fontSize: 20, color: '#ffffffb5', fontWeight: 'bold' }}>Hello,</Text>
+                        <Text style={{ fontSize: 20, color: colors.whiteLight, fontWeight: 'bold' }}>Hello,</Text>
                         <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMedium}>{userDetails.name}</Text>
                         <View style={{ flexDirection: 'row' }}>
                             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>{userDetails.registrationNumber}</Text>
@@ -108,7 +108,7 @@ export default function Header({ userDetails, navigation }) {
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.AttendanceContainer} onPress={loading ? () => { } : () => navigation.navigate('Attendance')}>
-                        <Text style={{ fontWeight: '500', color: '#ffffffb5' }}>Attendance</Text>
+                        <Text style={{ fontWeight: '500', color: colors.whiteLight }}>Attendance</Text>
                         {loading ?
                             <>
                                 <LottieView
@@ -213,7 +213,7 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start'
     },
     text1: {
-        color: '#ffffffb5'
+        color: colors.whiteLight
     },
     textSmall: { marginRight: 15, fontSize: 15, fontWeight: '400', color: 'white' },
     textMedium: { fontSize: 25, fontWeight: 'bold', color: 'white' }

@@ -53,7 +53,7 @@ const searchStudents = async (req, res) => {
     };
 
     try {
-        Student.find(searchLogic).select({ section: 1, name: 1, registrationNumber: 1,photoURL:1,_id:0 })
+        Student.find(searchLogic).select({ section: 1, name: 1, registrationNumber: 1,photoURL:1,_id:1 })
             .then((documents) => {
                 res.status(200).json(documents);
             }).catch((err)=>res.send(err))

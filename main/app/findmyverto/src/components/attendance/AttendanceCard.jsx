@@ -8,7 +8,7 @@ export default function AttendanceCard({ attendance, colors }) {
     return (
         <LinearGradient
             colors={colors}
-            style={[styles.cardContainer, globalStyles.elevation]}
+            style={[styles.cardContainer, globalStyles.elevationMin]}
             start={{ x: 0, y: 0 }} // Start from the left
             end={{ x: 1, y: 0 }}
         >

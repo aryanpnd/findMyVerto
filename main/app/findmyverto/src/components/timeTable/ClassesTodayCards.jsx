@@ -1,7 +1,6 @@
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, Image } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image } from 'react-native'
 import React, { useContext } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
-import { Entypo, MaterialCommunityIcons } from '@expo/vector-icons';
 import { AppContext } from '../../../context/MainApp';
 import isTimeEqual from '../../constants/funtions';
 import { colors } from '../../constants/colors';

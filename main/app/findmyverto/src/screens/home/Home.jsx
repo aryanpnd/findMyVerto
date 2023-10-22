@@ -22,8 +22,8 @@ export default function Home({navigation}) {
         let user = await AsyncStorage.getItem("USER");
         if (!user) {
           await axios.post(`${API_URL}/api/student/getStudentInfo`, { password: auth.pass }).then(async (result) => {
-            await AsyncStorage.setItem("USER", JSON.stringify(result.data))
-            setuserDetails(result.data)
+            await AsyncStorage.setItem("USER", JSON.stringify(result.data.data))
+            setuserDetails(result.data.data)
             setLoading(false)
             // console.log({ "inside if then": result });
           }).catch((err) => {
@@ -50,8 +50,9 @@ export default function Home({navigation}) {
       <View style={{ zIndex: 2 }}>
         <Toast />
       </View>
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container,{backgroundColor:'transparent'}]} >
         <View style={styles.container}>
+          {/* <Text>hi</Text> */}
             <Header userDetails={userDetails} attendence={10} navigation={navigation}/>
             <Body logout={logout} navigation={navigation} />
         </View>

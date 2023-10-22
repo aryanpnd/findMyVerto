@@ -213,7 +213,6 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 25,
   },
   topScroll2: {
-    // alignItems:"center"
   },
   headerItem: {
     paddingHorizontal: 20,
@@ -243,13 +242,13 @@ const styles = StyleSheet.create({
     height: '100%',
     width: width,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignItems: 'center',
+    // backgroundColor:'red'
   },
   items: {
     height: "100%",
     width: "100%",
-    alignItems: 'center',
-    // backgroundColor:'red'
+    // alignItems: 'center',
   }
   ,
 
