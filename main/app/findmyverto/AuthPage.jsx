@@ -7,6 +7,7 @@ import Attendance from './src/screens/Attendance/Attendance';
 import { colors } from './src/constants/colors';
 import TimeTable from './src/screens/TimeTable/TimeTable';
 import VertoSearch from './src/screens/search/VertoSearch';
+import FriendRequests from './src/screens/friendRequests/FriendRequests';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,6 +21,7 @@ export default function AuthPage() {
             <Stack.Screen name="Attendance" component={Attendance} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false}} />
             <Stack.Screen name="Timetable" component={TimeTable} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false}} />
             <Stack.Screen name="VertoSearch" component={VertoSearch} />
+            <Stack.Screen name="FriendRequests" component={FriendRequests} />
             {/* <Stack.Screen name="Test" component={Test} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false}} />
             <Stack.Screen name="CardSwiper" component={CardSwiper} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false}} /> */}
         </React.Fragment>

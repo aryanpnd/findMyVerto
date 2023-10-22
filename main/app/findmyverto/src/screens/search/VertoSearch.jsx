@@ -19,7 +19,9 @@ export default function VertoSearch({ navigation }) {
     const [isFocused, setFocused] = useState(false);
     const [students, setStudents] = useState([])
     const [friends, setfriends] = useState([])
+    const [friendsRequests, setfriendsRequests] = useState([])
     const [sentFriendRequests, setSentFriendRequests] = useState([])
+    const [disableBtn, setDisableBtn] = useState(false)
 
     async function searchStudents() {
         if (query.length < 4) {
@@ -37,7 +39,9 @@ export default function VertoSearch({ navigation }) {
             .then(async (result) => {
                 const friendList =  await axios.post(`${API_URL}/api/student/getFriendList`)
                 const sentfriendReqList =  await axios.post(`${API_URL}/api/student/getSentFriendRequests`)
+                const friendReqList =  await axios.post(`${API_URL}/api/student/getFriendRequests`)
                 setfriends(friendList.data.friends)
+                setfriendsRequests(friendReqList.data.friendRequests)
                 setSentFriendRequests(sentfriendReqList.data.sentFriendRequests)
                 setStudents(result.data);
                 setLoading(false);
@@ -140,7 +144,14 @@ export default function VertoSearch({ navigation }) {
                                 // results mapping
                                 students.map((value, index) => (
                                     //searched students cards mapping
-                                    <StudentCard key={index} student={value} friends={friends} sentFriendRequests={sentFriendRequests}/>
+                                    <StudentCard 
+                                    key={index} student={value} 
+                                    friends={friends} 
+                                    friendsRequests={friendsRequests} 
+                                    sentFriendRequests={sentFriendRequests} setSentFriendRequests={setSentFriendRequests}
+                                    navigation={navigation} 
+                                    disableBtn={disableBtn} setDisableBtn={setDisableBtn}
+                                    />
                                 ))
                         :
 
