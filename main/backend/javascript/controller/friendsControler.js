@@ -140,11 +140,13 @@ const addFriend = async (req, res) => {
                         // saving the student into student friend list and removing us from his sentRequestList list
                         toAcceptfrndReqStudent.friends.push(student.id)
                         toAcceptfrndReqStudent.sentFriendRequests.pop(student.id)
+                        toAcceptfrndReqStudent.friendRequests.pop(student.id)
                         toAcceptfrndReqStudent.save()
                             .then(() => {
                                 // saving the student (to whome add to friend) into student friend list
                                 student.friends.push(toAcceptfrndReqStudent.id)
                                 student.friendRequests.pop(toAcceptfrndReqStudent.id)
+                                student.sentFriendRequests.pop(toAcceptfrndReqStudent.id)
                                 student.save()
                                     .then(() => {
                                         res.send({ success: true, msg: "Added to friend" })

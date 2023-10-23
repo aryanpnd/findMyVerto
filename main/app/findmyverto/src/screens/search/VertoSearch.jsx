@@ -146,8 +146,8 @@ export default function VertoSearch({ navigation }) {
                                     //searched students cards mapping
                                     <StudentCard 
                                     key={index} student={value} 
-                                    friends={friends} 
-                                    friendsRequests={friendsRequests} 
+                                    friends={friends}  setfriends={setfriends}
+                                    friendsRequests={friendsRequests} setfriendsRequests={setfriendsRequests}
                                     sentFriendRequests={sentFriendRequests} setSentFriendRequests={setSentFriendRequests}
                                     navigation={navigation} 
                                     disableBtn={disableBtn} setDisableBtn={setDisableBtn}

@@ -11,7 +11,7 @@ import LottieView from 'lottie-react-native';
 
 const { height, width } = Dimensions.get('window');
 
-export default function SearchedStudentCard({ student, friends, sentFriendRequests, setSentFriendRequests, friendsRequests, navigation,disableBtn, setDisableBtn }) {
+export default function SearchedStudentCard({ forRequest, student, friends, setfriends, sentFriendRequests, setSentFriendRequests, friendsRequests, setfriendsRequests, navigation, disableBtn, setDisableBtn }) {
     const [isFriend, setIsFriend] = useState(false)
     const [isInRequestList, setIsInRequestList] = useState(false)
     const [isInSentList, setIsInSentList] = useState(false)
@@ -92,6 +92,55 @@ export default function SearchedStudentCard({ student, friends, sentFriendReques
             })
     }
 
+    async function addFriend() {
+        setLoading(true)
+        setDisableBtn(true)
+        await axios.post(`${API_URL}/api/student/addFriend`, { studentId: student._id })
+            .then(async (result) => {
+                Toast.show({
+                    type: 'success',
+                    text1: result.data.msg,
+                });
+                const updatedStudents = friendsRequests.filter(std => std.registrationNumber !== student.registrationNumber);
+                setfriendsRequests(updatedStudents);
+                setfriends([...friends, student]);
+                setLoading(false);
+                setDisableBtn(false)
+            }).catch((err) => {
+                Toast.show({
+                    type: 'error',
+                    text1: err,
+                });
+                console.log(err);
+                setLoading(false)
+                setDisableBtn(false)
+            })
+    }
+
+    async function cancelRequest() {
+        setLoading(true)
+        setDisableBtn(true)
+        await axios.post(`${API_URL}/api/student/removeFromFriendRequest`, { studentId: student._id })
+            .then(async (result) => {
+                Toast.show({
+                    type: 'success',
+                    text1: result.data.msg,
+                });
+                const updatedStudents = friendsRequests.filter(std => std.registrationNumber !== student.registrationNumber);
+                setfriends(updatedStudents);
+                setLoading(false);
+                setDisableBtn(false)
+            }).catch((err) => {
+                Toast.show({
+                    type: 'error',
+                    text1: err,
+                });
+                console.log(err);
+                setLoading(false)
+                setDisableBtn(false)
+            })
+    }
+
     return (
         <View style={[style.container, globalStyles.elevationMin]}>
             <View style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
@@ -102,62 +151,109 @@ export default function SearchedStudentCard({ student, friends, sentFriendReques
                 />
             </View>
 
-            <View style={{ width: "55%", paddingHorizontal: 10, justifyContent: "center" }}>
+            <View style={{ width: forRequest ? "40%" : "55%", paddingHorizontal: 10, justifyContent: "center" }}>
                 <Text ellipsizeMode='clip' numberOfLines={1} style={{ fontWeight: "bold" }}>{student.name}</Text>
                 <Text>{student.registrationNumber}</Text>
                 <Text>{student.section}</Text>
             </View>
 
             {/* Button  */}
-            <View style={{ justifyContent: "center", width: "30%" }}>
-                <TouchableOpacity
-                    disabled={disableBtn ? true : false}
-                    onPress={() => {
-                        if (isFriend) {
-                            return
-                        } else if (isInRequestList) {
-                            navigation.navigate('FriendRequests');
-                        } else if (isInSentList) {
-                            cancelSentRequest();
-                        } else {
-                            sendRequest();
-                        }
-                    }}
-                    style={{
-                        width: "100%",
-                        borderRadius: 15,
-                        backgroundColor: isFriend ? colors.green : isInRequestList ? colors.orange : isInSentList ? colors.btn1 : colors.lightDark,
-                        padding: 10,
-                        justifyContent: "center",
-                        flexDirection: "row",
-                        alignItems: "center",
-                        gap: 5
-                    }}
-                >
-                    {
-                        loading ?
-                            <>
-                                <ActivityIndicator size="small" color={isInSentList?"black":"white"} />
-                            </>
-                            :
-                            <>
-                                <Text style={{ color: isInSentList ? "grey" : "white", textAlign: "center", fontWeight: "bold" }}>
-                                    {isFriend ? "Friends" : isInRequestList ? "Requested you" : isInSentList ? "Cancel" : "Send"}
-                                </Text>
-                                {
-                                    isInSentList ?
-                                        <Ionicons name='time' color={"grey"} />
-                                        : isInRequestList ?
-                                            <></>
-                                            :
-                                            isFriend ?
-                                                <FontAwesome5 name="user-check" color={"white"} />
-                                                :
-                                                <Ionicons name='person-add-sharp' color={"white"} />
+            <View style={{ justifyContent: "center", width: forRequest ? "45%" : "30%" }}>
+                {
+                    forRequest ?
+                        <View style={{ flexDirection: "row", width: "100%", justifyContent: 'space-between' }}>
+                            <TouchableOpacity
+                                disabled={disableBtn ? true : false}
+                                onPress={addFriend}
+                                style={{
+                                    width: "45%",
+                                    borderRadius: 15,
+                                    backgroundColor: colors.green,
+                                    padding: 10,
+                                    justifyContent: "center",
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    gap: 5
+                                }}
+                            >
+                                {loading ? <ActivityIndicator size="small" color={isInSentList ? "black" : "white"} />
+                                    :
+                                    <Text style={{ color: "white", fontWeight: '500' }}>Accept</Text>
                                 }
-                            </>
-                    }
-                </TouchableOpacity>
+                            </TouchableOpacity>
+
+                            <TouchableOpacity
+                                disabled={disableBtn ? true : false}
+                                onPress={cancelRequest}
+                                style={{
+                                    width: "45%",
+                                    borderRadius: 15,
+                                    backgroundColor: colors.btn1,
+                                    padding: 10,
+                                    justifyContent: "center",
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    gap: 5
+                                }}
+                            >
+                                {loading ? <ActivityIndicator size="small" color={isInSentList ? "black" : "white"} />
+                                    :
+                                    <Text style={{ color: "grey", fontWeight: '500' }}>Cancel</Text>
+                                }
+                            </TouchableOpacity>
+                        </View>
+                        :
+
+                        // button for all other requests except friendrequests
+                        <TouchableOpacity
+                            disabled={disableBtn ? true : false}
+                            onPress={() => {
+                                if (isFriend) {
+                                    return
+                                } else if (isInRequestList) {
+                                    navigation.navigate('FriendRequests');
+                                } else if (isInSentList) {
+                                    cancelSentRequest();
+                                } else {
+                                    sendRequest();
+                                }
+                            }}
+                            style={{
+                                width: "100%",
+                                borderRadius: 15,
+                                backgroundColor: isFriend ? colors.green : isInRequestList ? colors.orange : isInSentList ? colors.btn1 : colors.lightDark,
+                                padding: 10,
+                                justifyContent: "center",
+                                flexDirection: "row",
+                                alignItems: "center",
+                                gap: 5
+                            }}
+                        >
+                            {
+                                loading ?
+                                    <>
+                                        <ActivityIndicator size="small" color={isInSentList ? "black" : "white"} />
+                                    </>
+                                    :
+                                    <>
+                                        <Text style={{ color: isInSentList ? "grey" : "white", textAlign: "center", fontWeight: "bold" }}>
+                                            {isFriend ? "Friends" : isInRequestList ? "Requested you" : isInSentList ? "Cancel" : "Send"}
+                                        </Text>
+                                        {
+                                            isInSentList ?
+                                                <Ionicons name='time' color={"grey"} />
+                                                : isInRequestList ?
+                                                    <></>
+                                                    :
+                                                    isFriend ?
+                                                        <FontAwesome5 name="user-check" color={"white"} />
+                                                        :
+                                                        <Ionicons name='person-add-sharp' color={"white"} />
+                                        }
+                                    </>
+                            }
+                        </TouchableOpacity>
+                }
             </View>
 
         </View>
