@@ -21,7 +21,10 @@ const studentLogin = async (req, res) => {
                 const loginMsg = await umsScrapper.login();
                 // updating UMS Password if the UMS password is correct
                 if (loginMsg.status) {
-                    await Student.findOneAndUpdate({ registrationNumber: req.regNo }, { password: req.body.password }, { new: true }).select({ _id: 0, __v: 0 })
+                    await Student.findOneAndUpdate(
+                        { registrationNumber: req.body.regNo },
+                        { password: req.body.password },
+                      )                      
                         .then((result) => {
                             const token = jwt.sign({ userId: req.body.regNo }, secretKey, { expiresIn: "30d" });
                             res.status(200).json({ status: true, message: "Login success", token: token });

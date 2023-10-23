@@ -7,30 +7,34 @@ const { TimeTable } = require('../models/studentTimeTable');
 
 const getStudentInfo = async (req, res) => {
     try {
-        const user = await Student.findOne({ registrationNumber: req.regNo, password: req.body.password });
+        const user = await Student.findOne({ registrationNumber: req.regNo });
         if (user) {
-            if(req.body.sync){
+            if (req.body.sync) {
                 const umsScrapper = new UmsScrapper(req.regNo.toString(), req.body.password);
                 await umsScrapper.init();
                 const loginSuccess = await umsScrapper.login();
-                if(loginSuccess.status){
+                if (loginSuccess.status) {
                     const userInfo = await umsScrapper.get_user_info();
-                    await Student.findOneAndUpdate({registrationNumber:req.body.regNo},userInfo)
-                    .then((result) => {
-                        res.status(200).send({ status: true, message: "Data synced", data: result })
-                    })
-                    .catch((error) => {
-                        res.status(400).send({ status: false, message: "Error occurred", data: error});
-                    });
-                }else{
-                    res.status(400).send({ status: false, message: "Login failed", data: ""});
+                    await Student.findOneAndUpdate({ registrationNumber: req.regNo },
+                        {
+                            userInfo,
+                            lastSync: new Date()
+                        },{new:true})
+                        .then((result) => {
+                            res.status(200).send({ status: true, message: "Data synced", data: result })
+                        })
+                        .catch((error) => {
+                            res.status(400).send({ status: false, message: "Error occurred", data: error });
+                        });
+                } else {
+                    res.status(400).send({ status: false, message: "Login failed", data: "" });
                 }
 
-            }else{
+            } else {
                 res.status(200).json({ status: true, message: "Info fetched", data: user })
             }
         } else {
-            res.status(200).json({ status: false, message: "Student not found", data: ""})
+            res.status(200).json({ status: false, message: "Student not found", data: "" })
         }
     } catch (e) {
         res.status(500).send(e);
@@ -53,10 +57,10 @@ const searchStudents = async (req, res) => {
     };
 
     try {
-        Student.find(searchLogic).select({ section: 1, name: 1, registrationNumber: 1,photoURL:1,_id:1 })
+        Student.find(searchLogic).select({ section: 1, name: 1, registrationNumber: 1, photoURL: 1, _id: 1 })
             .then((documents) => {
                 res.status(200).json(documents);
-            }).catch((err)=>res.send(err))
+            }).catch((err) => res.send(err))
     } catch (err) {
         res.status(400).send(`Some error occurred: ${err}`);
     }
@@ -177,4 +181,4 @@ const getStudentAttendance = async (req, res) => {
 }
 
 
-module.exports = {  getStudentInfo,getStudentTimeTable, getStudentAttendance,searchStudents }
+module.exports = { getStudentInfo, getStudentTimeTable, getStudentAttendance, searchStudents }

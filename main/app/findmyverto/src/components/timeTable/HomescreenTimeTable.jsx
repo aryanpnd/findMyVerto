@@ -58,6 +58,10 @@ export default function HomescreenTimeTable({ navigation, setClassesToday, timeT
         fetchDataLocally();
     }, []);
 
+    useEffect(() => {
+        fetchDataLocally();
+    }, [navigation]);
+
 
     return (
         <>

@@ -20,53 +20,55 @@ export default function Header({ userDetails, navigation }) {
     const [attendence, setattendence] = useState({})
     const [loading, setLoading] = useState(false)
 
+    async function fetchDataLocally() {
+        try {
+            setLoading(true)
+            let userAttendance = await AsyncStorage.getItem("ATTENDANCE");
+            let Courses = await AsyncStorage.getItem("COURSES");
+            if (!userAttendance) {
+                await axios.post(`${API_URL}/api/student/getStudentAttendance`, { password: auth.pass }).then(async (result) => {
+                    await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(result.data));
+                    setattendence(result.data)
 
+                    // fetching courses
+                    const courses = {}
+                    const aH = result.data.attendanceHistory.slice(0, -1)
+                    await aH.map((value) => courses[value.course.split(":")[0]] = value.course.split(":")[1])
+                    setCourses(courses)
+                    await AsyncStorage.setItem("COURSES", JSON.stringify(courses));
+
+                    setLoading(false)
+                }).catch((err) => {
+                    Toast.show({
+                        type: 'error',
+                        text1: 'Error fetching Attendance',
+                        text2: `${err}`,
+                    });
+                    console.log({ "inside catch": err });
+                    setLoading(false)
+                })
+                return
+            }
+            setLoading(false)
+            setattendence(JSON.parse(userAttendance))
+            setCourses(JSON.parse(Courses))
+        } catch (error) {
+            console.error(error);
+            setLoading(false)
+        }
+    }
 
     useEffect(() => {
-        async function fetchDataLocally() {
-            try {
-                setLoading(true)
-                let userAttendance = await AsyncStorage.getItem("ATTENDANCE");
-                let Courses = await AsyncStorage.getItem("COURSES");
-                if (!userAttendance) {
-                    await axios.post(`${API_URL}/api/student/getStudentAttendance`, { password: auth.pass }).then(async (result) => {
-                        await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(result.data));
-                        setattendence(result.data)
-
-                        // fetching courses
-                        const courses = {}
-                        const aH = result.data.attendanceHistory.slice(0, -1)
-                        await aH.map((value) => courses[value.course.split(":")[0]] = value.course.split(":")[1])
-                        setCourses(courses)
-                        await AsyncStorage.setItem("COURSES", JSON.stringify(courses));
-
-                        setLoading(false)
-                    }).catch((err) => {
-                        Toast.show({
-                            type: 'error',
-                            text1: 'Error fetching Attendance',
-                            text2: `${err}`,
-                        });
-                        console.log({ "inside catch": err });
-                        setLoading(false)
-                    })
-                    return
-                }
-                setLoading(false)
-                setattendence(JSON.parse(userAttendance))
-                setCourses(JSON.parse(Courses))
-            } catch (error) {
-                console.error(error);
-                setLoading(false)
-            }
-        }
         fetchDataLocally();
-
     }, []);
+
+    useEffect(() => {
+        fetchDataLocally();
+    }, [navigation]);
 
 
     return (
-        <LinearGradient style={styles.container} colors={[colors.blue2,colors.blue]}>
+        <LinearGradient style={styles.container} colors={[colors.blue2, colors.blue]}>
 
             <View style={styles.header}>
                 <View style={{ height: '20%', alignItems: 'center' }}></View>
@@ -81,12 +83,15 @@ export default function Header({ userDetails, navigation }) {
 
                     <View style={styles.iconContainer}>
                         <View style={{ width: '35%', alignItems: "center" }}>
-                            <TouchableOpacity style={styles.button2}><FontAwesome5 name='user-friends' size={17} color={colors.whiteLight} /></TouchableOpacity>
-                            <Text style={{ color: 'white', fontSize: 11 }}>Friends</Text>
+                            <TouchableOpacity
+                                onPress={() => navigation.navigate('FriendRequests')}
+                                style={styles.button2}><Octicons name='person-add' size={15}
+                                    color={colors.whiteLight} /></TouchableOpacity>
+                            <Text style={{ color: 'white', fontSize: 10 }}>Requests</Text>
                         </View>
                         <View style={{ width: '35%', alignItems: "center" }}>
-                            <TouchableOpacity style={styles.button2} onPress={logout}><FontAwesome5 name='user' size={17} color={colors.whiteLight} /></TouchableOpacity>
-                            <Text style={{ color: 'white', fontSize: 11 }}>Profile</Text>
+                            <TouchableOpacity style={styles.button2} onPress={logout}><FontAwesome5 name='user' size={15} color={colors.whiteLight} /></TouchableOpacity>
+                            <Text style={{ color: 'white', fontSize: 10 }}>Profile</Text>
                         </View>
                     </View>
                 </View>
@@ -147,22 +152,22 @@ const styles = StyleSheet.create({
         height: '40%',
         width: '90%',
     },
-    headerContainer:{
-        width:'100%',
-        justifyContent:'space-between',
+    headerContainer: {
+        width: '100%',
+        justifyContent: 'space-between',
         // backgroundColor:"yellow",
-        flexDirection:"row"
+        flexDirection: "row"
     },
     body: {
         flexDirection: 'row',
         justifyContent: 'space-center',
         height: '55%',
         // backgroundColor:'#00000026',
-        backgroundColor:colors.blueTransparency,
-        alignItems:'center',
-        marginBottom:13,
-        padding:10,
-        borderRadius:15,
+        backgroundColor: colors.blueTransparency,
+        alignItems: 'center',
+        marginBottom: 13,
+        padding: 10,
+        borderRadius: 15,
         // width: '95%'
     },
     bodyContainer: {
@@ -178,11 +183,11 @@ const styles = StyleSheet.create({
     greeting: {
         width: '70%',
         overflow: 'hidden',
-        paddingLeft:5,
+        paddingLeft: 5,
     },
     AttendanceContainer: {
         width: '30%',
-        height:95,
+        height: 95,
         backgroundColor: colors.btn1,
         borderRadius: 25,
         alignItems: 'center',
