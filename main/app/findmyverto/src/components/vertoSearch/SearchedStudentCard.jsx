@@ -127,7 +127,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
                     text1: result.data.msg,
                 });
                 const updatedStudents = friendsRequests.filter(std => std.registrationNumber !== student.registrationNumber);
-                setfriends(updatedStudents);
+                setfriendsRequests(updatedStudents);
                 setLoading(false);
                 setDisableBtn(false)
             }).catch((err) => {
