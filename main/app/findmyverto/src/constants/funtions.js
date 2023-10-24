@@ -1,4 +1,4 @@
-export default function isTimeEqual(timeStr) {
+export default function isTimeEqual(timeStr, areClassesOver) {
     let period = timeStr.match(/[ap]m/i)[0];
     let time = timeStr.split("-")[0]
     if (period === "PM" && time < 12) {
@@ -9,7 +9,7 @@ export default function isTimeEqual(timeStr) {
 
     const currentDate = new Date();
     const hours = currentDate.getHours();
-    const isEqual = hours==parseInt(time)
+    const isEqual = areClassesOver ? hours > parseInt(time) : hours == parseInt(time)
 
     return isEqual;
 }

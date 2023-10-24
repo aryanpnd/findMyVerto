@@ -17,6 +17,7 @@ import { colors } from '../../constants/colors'
 import { MaterialIcons } from '@expo/vector-icons'
 import SearchedStudentCard from '../../components/vertoSearch/SearchedStudentCard'
 import LottieView from 'lottie-react-native';
+import EmptyRequests from '../../components/miscellaneous/EmptyRequests'
 
 
 const { height, width } = Dimensions.get('window');
@@ -27,6 +28,7 @@ export default function FriendRequests({ navigation }) {
   const buttons = ['Requests', 'Sent requests'];
   const onCLick = i => this.scrollView.scrollTo({ x: i * width });
 
+  
   const [friends, setfriends] = useState([])
   const [friendsRequests, setfriendsRequests] = useState([])
   const [sentFriendRequests, setSentFriendRequests] = useState([])
@@ -172,17 +174,17 @@ function RequestsContainer({
           {
             index ?
               sentFriendRequests.length < 1 ?
-                <EmptyRequests navigation={navigation} friendRequestCard={false} />
+                <EmptyRequests navigation={navigation} btnText={"Find Friends"}  withButton={true} text={"You have 0 sent requests right now"} route={"VertoSearch"}/>
                 :
                 sentFriendRequests.map((value, index) => (
-                  <SearchedStudentCard friends={friends} disableBtn={disableBtn} friendsRequests={friendsRequests} sentFriendRequests={sentFriendRequests} navigation={navigation} setDisableBtn={setDisableBtn} setSentFriendRequests={setSentFriendRequests} student={value} />
+                  <SearchedStudentCard key={index} friends={friends} disableBtn={disableBtn} friendsRequests={friendsRequests} sentFriendRequests={sentFriendRequests} navigation={navigation} setDisableBtn={setDisableBtn} setSentFriendRequests={setSentFriendRequests} student={value} />
                 ))
               :
               friendsRequests.length < 1 ?
-                <EmptyRequests navigation={navigation} friendRequestCard={true} />
+                <EmptyRequests text={"Your request list is empty"}/>
                 :
                 friendsRequests.map((value, index) => (
-                  <SearchedStudentCard forRequest={true} setfriends={setfriends} friends={friends} disableBtn={disableBtn} friendsRequests={friendsRequests} setfriendsRequests={setfriendsRequests} sentFriendRequests={sentFriendRequests} navigation={navigation} setDisableBtn={setDisableBtn} setSentFriendRequests={setSentFriendRequests} student={value} />
+                  <SearchedStudentCard key={index} forRequest={true} setfriends={setfriends} friends={friends} disableBtn={disableBtn} friendsRequests={friendsRequests} setfriendsRequests={setfriendsRequests} sentFriendRequests={sentFriendRequests} navigation={navigation} setDisableBtn={setDisableBtn} setSentFriendRequests={setSentFriendRequests} student={value} />
                 ))
           }
         </ScrollView>}
@@ -232,30 +234,6 @@ function ButtonContainer({ buttons, onClick, scrollX }) {
       </Animated.View>
     </View>
   );
-}
-
-
-function EmptyRequests({ friendRequestCard, navigation }) {
-  return (
-    <View style={{ height: height * 0.5, justifyContent: "center", gap: 10, alignItems: "center" }}>
-      <LottieView
-        autoPlay
-        style={{
-          width: width * 0.5,
-          height: width * 0.5,
-          opacity: 0.8
-        }}
-        source={require('../../../assets/lotties/empty.json')}
-      />
-      <View style={{ justifyContent: "center", alignItems: "center" }}>
-        {friendRequestCard ? <Text style={styles.text1}>Your request list is empty</Text> : <Text style={styles.text1}>You have 0 sent requests right now</Text>}
-
-        {!friendRequestCard && <TouchableOpacity onPress={() => navigation.navigate("VertoSearch")}>
-          <Text style={{ backgroundColor: colors.lightDark, color: "white", padding: 10, paddingHorizontal: 15, borderRadius: 25, marginTop: 5, fontWeight: "500" }}>Find Friends</Text>
-        </TouchableOpacity>}
-      </View>
-    </View>
-  )
 }
 
 const styles = StyleSheet.create({

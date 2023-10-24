@@ -59,7 +59,6 @@ export default function TimeTable() {
         type: 'success',
         text1: 'Data synced successfully',
       });
-      console.log(result.data);
     }).catch((err) => {
       Toast.show({
         type: 'error',

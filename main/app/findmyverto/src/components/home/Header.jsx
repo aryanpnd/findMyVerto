@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { FontAwesome5, Octicons } from '@expo/vector-icons'
 import AttendanceProgressBar from '../miscellaneous/AttendanceProgressBar'
@@ -14,6 +14,7 @@ import { colors } from '../../constants/colors'
 
 
 
+const { height, width } = Dimensions.get('window');
 export default function Header({ userDetails, navigation }) {
     const { auth, logout } = useContext(AuthContext)
     const { setCourses } = useContext(AppContext)
@@ -141,7 +142,6 @@ export default function Header({ userDetails, navigation }) {
 const styles = StyleSheet.create({
     container: {
         flex: 2,
-        height: '100%',
         width: '100%',
         justifyContent: 'space-between',
         alignItems: 'center',

@@ -163,7 +163,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
                     forRequest ?
                         <View style={{ flexDirection: "row", width: "100%", justifyContent: 'space-between' }}>
                             <TouchableOpacity
-                                disabled={disableBtn ? true : false}
+                                disabled={disableBtn ? true : isFriend ? false : true}
                                 onPress={addFriend}
                                 style={{
                                     width: "45%",
@@ -183,7 +183,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                disabled={disableBtn ? true : false}
+                                disabled={disableBtn ? true : isFriend ? false : true}
                                 onPress={cancelRequest}
                                 style={{
                                     width: "45%",
@@ -206,7 +206,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
 
                         // button for all other requests except friendrequests
                         <TouchableOpacity
-                            disabled={disableBtn ? true : false}
+                            disabled={isFriend ? true : disableBtn ? true : false}
                             onPress={() => {
                                 if (isFriend) {
                                     return
@@ -265,7 +265,7 @@ const style = StyleSheet.create({
         backgroundColor: "white",
         padding: 10,
         height: height * 0.1,
-        width: "93%",
+        width: "96%",
         borderRadius: 15,
         flexDirection: "row"
     }
