@@ -86,8 +86,13 @@ export default function TimeTable() {
         <Toast />
       </View>
       <SyncData self={true} syncNow={syncTimetableData} time={lastSynced} color={"white"} bg={colors.blue2} />
-      <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, It may take few seconds"} />
-      <TimeTableScreen timeTable={Object.entries(timeTable)} />
+      {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, It may take some minutes"} />}
+      {
+        loading?
+        <></>
+        :
+        <TimeTableScreen timeTable={Object.entries(timeTable)} />
+      }
     </>
   )
 }

@@ -9,6 +9,7 @@ import axios from 'axios'
 import SearchedStudentCard from '../../components/vertoSearch/SearchedStudentCard'
 import LottieView from 'lottie-react-native';
 import EmptyRequests from '../../components/miscellaneous/EmptyRequests'
+import { StatusBar } from 'expo-status-bar'
 
 
 const { height, width } = Dimensions.get('window');
@@ -91,6 +92,7 @@ export default function Friends({ navigation }) {
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]}>
+            <StatusBar style='auto'/>
             <View style={[styles.header]}>
                 {/* Back naviagtion button */}
                 <View style={[styles.backBtn]}>

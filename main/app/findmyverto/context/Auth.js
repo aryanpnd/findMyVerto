@@ -2,10 +2,11 @@ import axios from 'axios';
 import React, { createContext, useEffect, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Alert } from 'react-native';
 
 const AuthContext = createContext();
 
-// export const API_URL = "http://192.168.191.229:8080"
+// export const API_URL = "http://192.168.3.229:8080"
 export const API_URL = "https://findmyverto.onrender.com"
 
 const AuthProvider = ({ children }) => {
@@ -39,12 +40,21 @@ const AuthProvider = ({ children }) => {
   }, [])
 
   const logout = async ()=>{
-    await SecureStore.setItemAsync("AUTHENTICATED",JSON.stringify(false));
-    await SecureStore.deleteItemAsync("REGNO");
-    await SecureStore.deleteItemAsync("PASS");
-    await SecureStore.deleteItemAsync("TOKEN");
-    await AsyncStorage.clear()
-    setAuth({ ...auth, authenticated: false })
+    Alert.alert('Logout', 'Are you sure you want to logout?', [
+      {
+        text: 'Cancel',
+        onPress: () => {},
+        style: 'cancel',
+      },
+      {text: 'Logout', onPress: async () => {
+        await SecureStore.setItemAsync("AUTHENTICATED",JSON.stringify(false));
+        await SecureStore.deleteItemAsync("REGNO");
+        await SecureStore.deleteItemAsync("PASS");
+        await SecureStore.deleteItemAsync("TOKEN");
+        await AsyncStorage.clear()
+        setAuth({ ...auth, authenticated: false })
+      }},
+    ]);
   }
 
 

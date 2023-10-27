@@ -13,10 +13,8 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { colors } from '../../constants/colors'
 
 
-
-const { height, width } = Dimensions.get('window');
 export default function Header({ userDetails, navigation }) {
-    const { auth, logout } = useContext(AuthContext)
+    const { auth } = useContext(AuthContext)
     const { setCourses } = useContext(AppContext)
     const [attendence, setattendence] = useState({})
     const [loading, setLoading] = useState(false)
@@ -91,7 +89,7 @@ export default function Header({ userDetails, navigation }) {
                             <Text style={{ color: 'white', fontSize: 10 }}>Requests</Text>
                         </View>
                         <View style={{ width: '35%', alignItems: "center" }}>
-                            <TouchableOpacity style={styles.button2} onPress={logout}><FontAwesome5 name='user' size={15} color={colors.whiteLight} /></TouchableOpacity>
+                            <TouchableOpacity style={styles.button2} onPress={() => navigation.navigate('MyProfile')}><FontAwesome5 name='user' size={15} color={colors.whiteLight} /></TouchableOpacity>
                             <Text style={{ color: 'white', fontSize: 10 }}>Profile</Text>
                         </View>
                     </View>

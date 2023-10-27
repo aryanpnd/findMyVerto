@@ -9,7 +9,7 @@ import Toast from 'react-native-toast-message';
 import LottieView from 'lottie-react-native';
 
 
-const { height, width } = Dimensions.get('window');
+const { height} = Dimensions.get('window');
 
 export default function SearchedStudentCard({ forRequest, student, friends, setfriends, sentFriendRequests, setSentFriendRequests, friendsRequests, setfriendsRequests, navigation, disableBtn, setDisableBtn }) {
     const [isFriend, setIsFriend] = useState(false)
@@ -163,7 +163,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
                     forRequest ?
                         <View style={{ flexDirection: "row", width: "100%", justifyContent: 'space-between' }}>
                             <TouchableOpacity
-                                disabled={disableBtn ? true : isFriend ? false : true}
+                                disabled={disableBtn ? true : isFriend ? true : false}
                                 onPress={addFriend}
                                 style={{
                                     width: "45%",
@@ -176,14 +176,14 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
                                     gap: 5
                                 }}
                             >
-                                {loading ? <ActivityIndicator size="small" color={isInSentList ? "black" : "white"} />
+                                {loading ? <ActivityIndicator size="small" color={"white"} />
                                     :
                                     <Text style={{ color: "white", fontWeight: '500' }}>Accept</Text>
                                 }
                             </TouchableOpacity>
 
                             <TouchableOpacity
-                                disabled={disableBtn ? true : isFriend ? false : true}
+                                disabled={disableBtn ? true : isFriend ? true : false}
                                 onPress={cancelRequest}
                                 style={{
                                     width: "45%",

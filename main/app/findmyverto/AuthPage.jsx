@@ -9,6 +9,7 @@ import TimeTable from './src/screens/TimeTable/TimeTable';
 import VertoSearch from './src/screens/search/VertoSearch';
 import FriendRequests from './src/screens/friendRequests/FriendRequests';
 import Friends from './src/screens/friends/Friends';
+import MyProfile from './src/screens/MyProfile/MyProfile';
 
 const Stack = createNativeStackNavigator();
 
@@ -24,6 +25,7 @@ export default function AuthPage() {
             <Stack.Screen name="VertoSearch" component={VertoSearch} />
             <Stack.Screen name="FriendRequests" component={FriendRequests} />
             <Stack.Screen name="Friends" component={Friends} />
+            <Stack.Screen name="MyProfile" component={MyProfile} />
             {/* <Stack.Screen name="Test" component={Test} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false}} />
             <Stack.Screen name="CardSwiper" component={CardSwiper} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false}} /> */}
         </React.Fragment>

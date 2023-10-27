@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import Header from '../../components/home/Header';
 import Body from '../../components/home/Body';
 import { colors } from '../../constants/colors';
+import { StatusBar } from 'expo-status-bar';
 
 
 export default function Home({navigation}) {
@@ -51,6 +52,7 @@ export default function Home({navigation}) {
         <Toast />
       </View>
       <SafeAreaView style={[styles.container,{backgroundColor:'transparent'}]} >
+      <StatusBar style='auto'/>
         <View style={styles.container}>
           {/* <Text>hi</Text> */}
             <Header userDetails={userDetails} attendence={10} navigation={navigation}/>
