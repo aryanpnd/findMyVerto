@@ -57,11 +57,20 @@ const AuthProvider = ({ children }) => {
     ]);
   }
 
+  const logout2 = async ()=>{
+        await SecureStore.setItemAsync("AUTHENTICATED",JSON.stringify(false));
+        await SecureStore.deleteItemAsync("REGNO");
+        await SecureStore.deleteItemAsync("PASS");
+        await SecureStore.deleteItemAsync("TOKEN");
+        await AsyncStorage.clear()
+        setAuth({ ...auth, authenticated: false })
+  }
+
 
   return (
     <AuthContext.Provider value={{
-      auth, setAuth,logout
-    }}>
+      auth, setAuth,logout,logout2
+         }}>
       {children}
     </AuthContext.Provider>
   );

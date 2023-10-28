@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, ActivityIndicator } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { globalStyles } from '../../constants/styles'
 import { colors } from '../../constants/colors';
@@ -141,21 +141,33 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
             })
     }
 
+    function navigateToFriend() {
+        if(!isFriend){
+            Toast.show({
+                type:"error",
+                text1:"Not your friend!",
+                text2:"You have to be friends to see the details"
+            })
+            return
+        }
+        navigation.navigate('FriendProfile',student)
+    }
+
     return (
         <View style={[style.container, globalStyles.elevationMin]}>
-            <View style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
+            <TouchableOpacity onPress={navigateToFriend} style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
                 <Image
                     source={require("../../../assets/icons/profileAvatar.png")}
                     style={{ height: 60, width: 60 }}
                     transition={1000}
                 />
-            </View>
+            </TouchableOpacity>
 
-            <View style={{ width: forRequest ? "40%" : "55%", paddingHorizontal: 10, justifyContent: "center" }}>
+            <TouchableOpacity onPress={navigateToFriend} style={{ width: forRequest ? "40%" : "55%", paddingHorizontal: 10, justifyContent: "center" }}>
                 <Text ellipsizeMode='clip' numberOfLines={1} style={{ fontWeight: "bold" }}>{student.name}</Text>
                 <Text>{student.registrationNumber}</Text>
                 <Text>{student.section}</Text>
-            </View>
+            </TouchableOpacity>
 
             {/* Button  */}
             <View style={{ justifyContent: "center", width: forRequest ? "45%" : "30%" }}>

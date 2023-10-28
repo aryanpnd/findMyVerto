@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, RefreshControl } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, RefreshControl, Alert } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -18,7 +18,7 @@ import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
 const { height, width } = Dimensions.get('window');
 
 export default function MyProfile({ navigation }) {
-    const { auth, logout } = useContext(AuthContext)
+    const { auth, logout,logout2 } = useContext(AuthContext)
 
     const [student, setStudent] = useState({})
     const [loading, setLoading] = useState(false)
@@ -37,6 +37,11 @@ export default function MyProfile({ navigation }) {
                 type: 'error',
                 text1: `${err}`,
             });
+            if (sync) {
+                Alert.alert('Logout', 'Due to error while syncing your data from the UMS server you have been logout, This because you might have changed your UMS password or it has been expired, try it again after logging with your new password, if it still happens then it would be something from our end, try it after some time :) ', [
+                    { text: 'Okay', onPress: async () => logout2() },
+                ]);
+            }
             console.log({ "inside catch": err });
             setLoading(false)
             setRefreshing(false)
@@ -84,9 +89,9 @@ export default function MyProfile({ navigation }) {
 
                 {/* Logout */}
                 <View style={[styles.backBtn]}>
-                    <TouchableOpacity onPress={logout}>
+                    {/* <TouchableOpacity onPress={logout}>
                         <MaterialIcons name='logout' size={25} color={colors.lightDark} />
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
 
             </View>
@@ -99,19 +104,25 @@ export default function MyProfile({ navigation }) {
 
             {/* Body */}
             <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}
-                // refreshControl={
-                //     <RefreshControl
-                //         tintColor={colors.blue2}
-                //         colors={[colors.blue2]}
-                //         refreshing={refreshing}
-                //         onRefresh={() => {
-                //             fetchData()
-                //         }}
-                //     />
-                // }
-                >
+            // refreshControl={
+            //     <RefreshControl
+            //         tintColor={colors.blue2}
+            //         colors={[colors.blue2]}
+            //         refreshing={refreshing}
+            //         onRefresh={() => {
+            //             fetchData()
+            //         }}
+            //     />
+            // }
+            >
                 <StudentProfile student={student} />
             </ScrollView>
+
+            <View style={styles.footer}>
+                <TouchableOpacity onPress={logout} style={styles.footerBtn}>
+                    <Text style={{ color: "grey" }}>Logout</Text>
+                </TouchableOpacity>
+            </View>
         </SafeAreaView>
     )
 }
@@ -147,6 +158,21 @@ const styles = StyleSheet.create({
     // Body
     body: {
         width: '100%',
-        paddingVertical: 10
+        paddingVertical: 10,
     },
+
+    footer: {
+        height: height * 0.1,
+        alignItems: "center"
+    },
+    footerBtn: {
+        width: width * 0.8,
+        height: height * 0.05,
+        borderRadius: 10,
+        justifyContent: "center",
+        alignItems: "center",
+        borderColor: colors.blueTransparency,
+        borderWidth: 2
+    }
+
 })

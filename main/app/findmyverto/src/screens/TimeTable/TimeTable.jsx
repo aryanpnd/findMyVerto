@@ -1,4 +1,4 @@
-import { View, Text } from 'react-native'
+import { View, Text, Alert } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import TimeTableScreen from '../../components/timeTable/TimeTableScreen'
 import AsyncStorage from '@react-native-async-storage/async-storage'
@@ -11,7 +11,7 @@ import formatTimeAgo from '../../constants/dateFormatter'
 import Toast from 'react-native-toast-message'
 
 export default function TimeTable() {
-  const { auth } = useContext(AuthContext)
+  const { auth,logout2 } = useContext(AuthContext)
   const [classesToday, setClassesToday] = useState(0)
   const [timeTable, settimeTable] = useState([])
   const [loading, setLoading] = useState(false)
@@ -65,6 +65,9 @@ export default function TimeTable() {
         text1: 'Login failed',
         text2: `${err}`,
       });
+      Alert.alert('Logout', 'Due to error while syncing your data from the UMS server you have been logout, This because you might have changed your UMS password or it has been expired, try it again after logging with your new password, if it still happens then it would be something from our end, try it after some time :) ', [
+        {text: 'Okay', onPress: async () => logout2()},
+      ]);
       console.log({ "inside catch": err });
       setLoading(false)
     })

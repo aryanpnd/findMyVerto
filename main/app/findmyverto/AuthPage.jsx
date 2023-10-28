@@ -10,6 +10,9 @@ import VertoSearch from './src/screens/search/VertoSearch';
 import FriendRequests from './src/screens/friendRequests/FriendRequests';
 import Friends from './src/screens/friends/Friends';
 import MyProfile from './src/screens/MyProfile/MyProfile';
+import FriendProfile from './src/screens/friendProfile/FriendProfile';
+import FriendAttendance from './src/components/friendProfile/FriendAttendance';
+import FriendTimetable from './src/components/friendProfile/FriendTimetable';
 
 const Stack = createNativeStackNavigator();
 
@@ -26,8 +29,9 @@ export default function AuthPage() {
             <Stack.Screen name="FriendRequests" component={FriendRequests} />
             <Stack.Screen name="Friends" component={Friends} />
             <Stack.Screen name="MyProfile" component={MyProfile} />
-            {/* <Stack.Screen name="Test" component={Test} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false}} />
-            <Stack.Screen name="CardSwiper" component={CardSwiper} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false}} /> */}
+            <Stack.Screen name="FriendProfile" component={FriendProfile} />
+            <Stack.Screen name="FriendAttendance" component={FriendAttendance} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false,title:"Friend's Attendance"}}/>
+            <Stack.Screen name="FriendTimetable" component={FriendTimetable} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.blue2},headerShadowVisible:false,title:"Friend's Attendance"}}/>
         </React.Fragment>
         :
         <React.Fragment>

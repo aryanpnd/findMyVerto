@@ -39,7 +39,6 @@ export default function TimeTableScreen({ timeTable }) {
 
   useEffect(() => {
     getDay(setDay)
-    console.log(timeTable);
   }, [])
 
 

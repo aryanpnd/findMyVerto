@@ -4,9 +4,10 @@ import { API_URL, AuthContext } from '../../../context/Auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import AttendanceScreen from '../../components/attendance/AttendanceScreen'
+import { Alert } from 'react-native'
 
 export default function Attendance({ navigation }) {
-  const { auth } = useContext(AuthContext)
+  const { auth,logout2 } = useContext(AuthContext)
   const [attendance, setattendance] = useState({})
   const [loading, setLoading] = useState(false)
 
@@ -35,6 +36,9 @@ export default function Attendance({ navigation }) {
         text1: 'Login failed',
         text2: `${err}`,
       });
+      Alert.alert('Logout', 'Due to error while syncing your data from the UMS server you have been logout, This because you might have changed your UMS password or it has been expired, try it again after logging with your new password, if it still happens then it would be something from our end, try it after some time :) ', [
+        {text: 'Okay', onPress: async () => logout2()},
+      ]);
       console.log({ "inside catch": err });
       setLoading(false)
     })
