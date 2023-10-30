@@ -6,3 +6,5 @@
 # features
 - welcome screen
 - OTA updates
+- profile photos sync through UMS
+- notification if in same building
