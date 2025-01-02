@@ -75,11 +75,7 @@ class UmsScrapper {
         try {
             const student_details = {};
 
-            await this.page.goto('https://ums.lpu.in/lpuums/default3.aspx');
-            // get url of img of id "p_picture"
-            const student_photo = await this.page.$eval('#p_picture', el => el.src);
-            student_details["photoURL"] = student_photo;
-            
+
             await this.page.goto('https://ums.lpu.in/lpuums/default3.aspx');
 
             const student_name = await this.page.$eval('#ctl00_cphHeading_Logoutout1_lblId', el => el.textContent);
@@ -213,15 +209,15 @@ class UmsScrapper {
 // For testing purposes
 // (async () => {
 //     try {
-//         const umsScrapper = new UmsScrapper("YOUR_REGISTRATION_NUMBER", "YOUR_PASSWORD", false);
+//         // const umsScrapper = new UmsScrapper("YOUR_REGISTRATION_NUMBER", "YOUR_PASSWORD", false);
 //         await umsScrapper.init();
 //         await umsScrapper.login();
 //         const studentDetails = await umsScrapper.get_user_info();
 //         console.log(studentDetails);
-//         const timeTable = await umsScrapper.get_time_table();
-//         console.log(timeTable);
-//         const attendance = await umsScrapper.get_user_attendance();
-//         console.log(attendance);
+//         // const timeTable = await umsScrapper.get_time_table();
+//         // console.log(timeTable);
+//         // const attendance = await umsScrapper.get_user_attendance();
+//         // console.log(attendance);
 //         umsScrapper.close()
 //     } catch (error) {
 //         console.error(error);
