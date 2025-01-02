@@ -25,7 +25,7 @@ const studentLogin = async (req, res) => {
                         { registrationNumber: req.body.regNo },
                         { password: req.body.password },
                       )                      
-                        .then((result) => {
+                        .then(() => {
                             const token = jwt.sign({ userId: req.body.regNo }, secretKey, { expiresIn: "30d" });
                             res.status(200).json({ status: true, message: "Login success", token: token });
                         }).catch((error) => {
@@ -55,7 +55,7 @@ const studentLogin = async (req, res) => {
             umsScrapper.close()
         }
     } catch (e) {
-        res.status(500).send(e);
+        res.status(500).send(`error occured ${e}`);
     }
 }
 
@@ -68,7 +68,7 @@ const studentSignup = async (req, res) => {
         const student = new Student(studentDetails);
         await student
             .save()
-            .then((docs) => {
+            .then(() => {
                 res.status(200).send(`Account created successfully`);
             })
             .catch((err) => {

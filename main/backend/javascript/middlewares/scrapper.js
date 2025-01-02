@@ -37,7 +37,7 @@ class UmsScrapper {
             await this.page.type('#TxtpwdAutoId_8767', this.password);
             await Promise.all([
                 this.page.waitForNavigation(),
-                this.page.click('#iBtnLogins'),
+                this.page.click('[id^=iBtnLogins]'),
             ]);
             const pName = await this.page.$x('/html/body/div[3]/div/div[2]');
             if (pName.length > 0) {
@@ -73,9 +73,14 @@ class UmsScrapper {
 
 
         try {
-            await this.page.goto('https://ums.lpu.in/lpuums/default3.aspx');
-
             const student_details = {};
+
+            await this.page.goto('https://ums.lpu.in/lpuums/default3.aspx');
+            // get url of img of id "p_picture"
+            const student_photo = await this.page.$eval('#p_picture', el => el.src);
+            student_details["photoURL"] = student_photo;
+            
+            await this.page.goto('https://ums.lpu.in/lpuums/default3.aspx');
 
             const student_name = await this.page.$eval('#ctl00_cphHeading_Logoutout1_lblId', el => el.textContent);
             student_details["name"] = student_name.split(' (')[0];
@@ -165,8 +170,11 @@ class UmsScrapper {
         // this.bypasModal()
 
         try {
+            await this.page.goto('https://ums.lpu.in/lpuums/StudentDashboard.aspx');
             await this.page.click('#AttPercent');
-            await this.page.waitForXPath('/html/body/form/main/div/div[10]/div/div/div[2]/div/div/div/div[1]/div/table/tbody/tr[1]')
+            await this.page.waitForResponse(response =>
+                response.url().includes('StudentAttendanceDetail') && response.status() === 200
+            );
             const data = await this.page.evaluate(() => {
                 const table = document.getElementById('AttSummary');
                 const rows = table.querySelectorAll('tr');
@@ -202,14 +210,19 @@ class UmsScrapper {
     }
 }
 
+// For testing purposes
 // (async () => {
 //     try {
-//         const umsScrapper = new UmsScrapper("registration number", "password", false);
+//         const umsScrapper = new UmsScrapper("YOUR_REGISTRATION_NUMBER", "YOUR_PASSWORD", false);
 //         await umsScrapper.init();
 //         await umsScrapper.login();
-//         const studentDetails = await umsScrapper.bypasModal();
+//         const studentDetails = await umsScrapper.get_user_info();
 //         console.log(studentDetails);
-//         // umsScrapper.close()
+//         const timeTable = await umsScrapper.get_time_table();
+//         console.log(timeTable);
+//         const attendance = await umsScrapper.get_user_attendance();
+//         console.log(attendance);
+//         umsScrapper.close()
 //     } catch (error) {
 //         console.error(error);
 //     }
