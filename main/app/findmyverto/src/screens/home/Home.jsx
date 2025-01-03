@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    backgroundColor:colors.blue
+    backgroundColor:colors.primary
   },
   textSmall: { fontWeight: '400' },
   textLarge: { fontSize: 45, fontWeight: 'bold', color: '#333' },

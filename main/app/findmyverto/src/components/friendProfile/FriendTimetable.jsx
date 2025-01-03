@@ -66,7 +66,7 @@ export default function FriendTimetable({ navigation, route }) {
             <View style={{ zIndex: 2 }}>
                 <Toast />
             </View>
-            {lastSynced && <SyncData self={false} time={lastSynced} color={"white"} bg={colors.blue2} />}
+            {lastSynced && <SyncData self={false} time={lastSynced} color={"white"} bg={colors.secondary} />}
             {
                 loading ?
                     <></>

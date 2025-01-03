@@ -88,7 +88,7 @@ export default function TimeTable() {
       <View style={{ zIndex: 2 }}>
         <Toast />
       </View>
-      <SyncData self={true} syncNow={syncTimetableData} time={lastSynced} color={"white"} bg={colors.blue2} />
+      <SyncData self={true} syncNow={syncTimetableData} time={lastSynced} color={"white"} bg={colors.secondary} />
       {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, It may take some minutes"} />}
       {
         loading?

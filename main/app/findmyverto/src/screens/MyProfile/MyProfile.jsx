@@ -27,9 +27,12 @@ export default function MyProfile({ navigation }) {
     async function fetchData(sync) {
         setLoading(true)
         setRefreshing(true)
+        console.log(auth);
+        
         await axios.post(`${API_URL}/api/student/getStudentInfo`, { password: auth.pass, sync: sync ? true : false }).then(async (result) => {
             await AsyncStorage.setItem("USER", JSON.stringify(result.data.data))
             setStudent(result.data.data)
+            console.log({ "inside then": result.data.data });
             setLoading(false)
             setRefreshing(false)
         }).catch((err) => {
@@ -100,14 +103,14 @@ export default function MyProfile({ navigation }) {
 
             {/* Last sync container */}
             {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, It may take some minutes"} />}
-            <SyncData color={"white"} self={true} syncNow={() => fetchData(true)} time={formatTimeAgo(student.lastSync)} bg={colors.blue2} />
+            <SyncData color={"white"} self={true} syncNow={() => fetchData(false)} time={formatTimeAgo(student.lastSync)} bg={colors.secondary} />
 
             {/* Body */}
             <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}
             // refreshControl={
             //     <RefreshControl
-            //         tintColor={colors.blue2}
-            //         colors={[colors.blue2]}
+            //         tintColor={colors.secondary}
+            //         colors={[colors.secondary]}
             //         refreshing={refreshing}
             //         onRefresh={() => {
             //             fetchData()

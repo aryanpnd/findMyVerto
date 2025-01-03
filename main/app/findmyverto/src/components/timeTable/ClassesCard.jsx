@@ -10,7 +10,7 @@ export default function ClassesCard({ time, value }) {
 
   return (
     <LinearGradient
-      // colors={[colors.blue, colors.blue2]}
+      // colors={[colors.blue, colors.secondary]}
       colors={["white", "white"]}
       // colors={['#373b44', '#2c5364']}
       style={[styles.container, globalStyles.elevationMin]}

@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
   topScroll: {
     flexGrow: 0,
     height: '8%',
-    backgroundColor: colors.blue2,
+    backgroundColor: colors.secondary,
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
   },

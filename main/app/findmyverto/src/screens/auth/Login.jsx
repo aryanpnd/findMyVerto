@@ -8,6 +8,7 @@ import { FontAwesome5 } from '@expo/vector-icons';
 import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading';
+import { colors } from '../../constants/colors';
 
 
 export default function Login() {
@@ -126,7 +127,7 @@ export default function Login() {
                   <FontAwesome5
                     name={showPassword ? 'eye-slash' : 'eye'}
                     size={24}
-                    color={showPassword ? '#aaa' : '#d66f0c'}
+                    color={showPassword ? '#aaa' : colors.primary}
                     style={styles.icon}
                     onPress={() => setShowPassword(!showPassword)}
                   />
@@ -135,7 +136,7 @@ export default function Login() {
 
               <View style={{ flex: 4 }}>
                 <TouchableOpacity onPress={login} style={{
-                  width: "100%", backgroundColor: '#d66f0c', height: 60, borderRadius: 15, flex: 1, alignItems: 'center', justifyContent: 'center'
+                  width: "100%", backgroundColor: colors.primary, height: 60, borderRadius: 15, flex: 1, alignItems: 'center', justifyContent: 'center'
                 }}>
                   <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Login</Text>
                 </TouchableOpacity>

@@ -67,7 +67,7 @@ export default function Header({ userDetails, navigation }) {
 
 
     return (
-        <LinearGradient style={styles.container} colors={[colors.blue2, colors.blue]}>
+        <LinearGradient style={styles.container} colors={[colors.secondary, colors.primary]}>
 
             <View style={styles.header}>
                 <View style={{ height: '20%', alignItems: 'center' }}></View>

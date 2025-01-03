@@ -164,8 +164,8 @@ function RequestsContainer({
         <ScrollView
           refreshControl={
             <RefreshControl
-              tintColor={colors.blue2}
-              colors={[colors.blue2]}
+              tintColor={colors.secondary}
+              colors={[colors.secondary]}
               refreshing={refreshing}
               onRefresh={onRefresh}
             />
@@ -291,7 +291,7 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: "center",
     overflow: 'hidden',
-    backgroundColor: colors.blue,
+    backgroundColor: colors.primary,
   },
   animatedBtn: {
     height: 40,

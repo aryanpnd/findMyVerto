@@ -3,7 +3,7 @@ import AuthPage from './AuthPage';
 import { AuthProvider } from './context/Auth';
 import { AppProvider } from './context/MainApp';
 
-export default function App() {
+export default function App() { 
   return (
     <AuthProvider>
       <AppProvider>

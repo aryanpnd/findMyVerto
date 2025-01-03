@@ -130,8 +130,8 @@ export default function Friends({ navigation }) {
                 <ScrollView
                     refreshControl={
                         <RefreshControl
-                            tintColor={colors.blue2}
-                            colors={[colors.blue2]}
+                            tintColor={colors.secondary}
+                            colors={[colors.secondary]}
                             refreshing={refreshing}
                             onRefresh={() => getFriendList()}
                         />

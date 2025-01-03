@@ -98,8 +98,8 @@ export default function HomescreenTimeTable({ navigation, setClassesToday, timeT
                             snapToInterval={itemWidth + gap}
                             refreshControl={
                                 <RefreshControl
-                                    tintColor={colors.blue2}
-                                    colors={[colors.blue2]}
+                                    tintColor={colors.secondary}
+                                    colors={[colors.secondary]}
                                     refreshing={refreshing}
                                     onRefresh={()=>{
                                         fetchDataLocally()

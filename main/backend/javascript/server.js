@@ -26,6 +26,10 @@ mongoose
     console.log("Error while connecting to DB");
   });
 
+// ping the server to receive a pong
+app.get('/ping', (req, res) => {
+  res.send('pong');
+});
 
 // rest apis
 app.use("/api/auth/", AuthRoutes);
