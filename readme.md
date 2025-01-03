@@ -156,5 +156,3 @@ This project is licensed under the MIT License. See the LICENSE file for details
 For any inquiries, please contact [aryanpnd3@gmail.com](mailto:aryanpnd3@gmail.com).
 
 --- 
-
-Feel free to share any additional details or tweaks you'd like to incorporate!
