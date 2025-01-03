@@ -1,6 +1,6 @@
-# Find My Verto
+# Find My Verto (backend)
 
-Find My Verto is a Node.js platform designed for LPU students to manage and view their details, timetable, attendance, and friends' information. It scrapes data from the LPU UMS (University Management System) portal and provides various features to enhance the student experience.
+Find My Verto is a platform designed for LPU students to manage and view their details, timetable, attendance, and friends' information. It scrapes data from the LPU UMS (University Management System) portal and provides various features to enhance the student experience.
 
 ## Features
 
@@ -15,12 +15,10 @@ Find My Verto is a Node.js platform designed for LPU students to manage and view
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/aryanpnd/find-my-verto-backend.git
+    git clone https://github.com/aryanpnd/findMyVerto/tree/main/backend/javascript
     ```
-2. Navigate to the project directory:
-    ```sh
-    cd find-my-verto
-    ```
+2. Navigate to the project directory
+
 3. Install the dependencies:
     ```sh
     npm install

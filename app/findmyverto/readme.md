@@ -1,4 +1,4 @@
-# Find My Verto
+# Find My Verto (app)
 
 Find My Verto is a platform designed for LPU students to manage and view their details, timetable, attendance, and friends' information. It scrapes data from the LPU UMS (University Management System) portal (this happens on the server side, don't relate this with the app, this is where the API is coming from) and provides various features to enhance the student experience.
 
@@ -59,15 +59,15 @@ src/
 
 1. Clone the repository:
     ```sh
-    git clone https://github.com/aryanpnd/find-my-verto.git
+    git clone https://github.com/aryanpnd/findMyVerto/tree/main/app/findmyverto
+    ```
+    ```sh
     cd find-my-verto
     ```
 
 2. Install dependencies:
     ```sh
-    npm install
-    # or
-    yarn install
+    npm install --legacy-peer-deps
     ```
 
 3. Start the development server:
