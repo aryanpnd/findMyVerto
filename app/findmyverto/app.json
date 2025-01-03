@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "findmyverto",
+    "slug": "findmyverto",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "splash": {
+      "image": "./assets/splash.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#5360e3"
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundColor": "#ffffff",
+        "softwareKeyboardLayoutMode": "pan"
+      },
+      "package": "com.loudpear.findmyverto"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0a6d9a25-0f88-4076-82ae-9a860501e6b9"
+      }
+    }
+  }
+}
