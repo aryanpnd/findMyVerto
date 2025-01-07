@@ -5,7 +5,6 @@ const { ScrappingRoutes } = require("./routes/scrappingRoutes");
 const { StudentRoutes } = require("./routes/studentRoutes");
 const { AuthRoutes } = require("./routes/authRoutes");
 const { authenticate } = require("./controller/auth");
-const http = require('http');
 
 // initializing express
 const app = express();
