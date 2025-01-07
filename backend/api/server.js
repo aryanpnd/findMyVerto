@@ -1,7 +1,6 @@
 require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
-const { ScrappingRoutes } = require("./routes/scrappingRoutes");
 const { StudentRoutes } = require("./routes/studentRoutes");
 const { AuthRoutes } = require("./routes/authRoutes");
 const { authenticate } = require("./controller/auth");
@@ -32,7 +31,6 @@ app.get('/ping', (req, res) => {
 
 // rest apis
 app.use("/api/auth/", AuthRoutes);
-app.use("/api/scrap/", authenticate, ScrappingRoutes);
 app.use("/api/student/", authenticate,StudentRoutes);
 
 // handling main and auth page not found routes
