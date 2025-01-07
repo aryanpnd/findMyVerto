@@ -13,8 +13,6 @@ import SyncData from '../../components/miscellaneous/SyncData'
 import formatTimeAgo from '../../constants/dateFormatter'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
 
-
-
 const { height, width } = Dimensions.get('window');
 
 export default function MyProfile({ navigation }) {

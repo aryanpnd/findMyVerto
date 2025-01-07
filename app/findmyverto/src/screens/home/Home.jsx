@@ -10,6 +10,7 @@ import Header from '../../components/home/Header';
 import Body from '../../components/home/Body';
 import { colors } from '../../constants/colors';
 import { StatusBar } from 'expo-status-bar';
+import useNotifications from '../../../hooks/useNotifications';
 
 
 export default function Home({navigation}) {
@@ -45,6 +46,24 @@ export default function Home({navigation}) {
     fetchDataLocally();
   }, []);
 
+  const { setNotification, removeNotification } = useNotifications();
+  const handleSetNotification = () => {
+      const taskName = 'dailyReminder';
+      const content = {
+        title: 'Daily Reminder',
+        body: 'This is your daily reminder!',
+      };
+      const time = { hour: 3, minute: 55 }; // 9:00 AM
+      
+      console.log('Setting notification');
+      setNotification(taskName, content, time);
+    };
+  
+    const handleRemoveNotification = () => {
+      const taskName = 'dailyReminder';
+      removeNotification(taskName);
+    };
+
 
   return (
     <>
@@ -56,6 +75,12 @@ export default function Home({navigation}) {
         <View style={styles.container}>
           {/* <Text>hi</Text> */}
             <Header userDetails={userDetails} attendence={10} navigation={navigation}/>
+            <TouchableOpacity onPress={() => handleSetNotification()} style={{ padding: 10, backgroundColor: 'white', borderRadius: 10 }}>
+              <Text style={{ color: 'black' }}>Start the notification</Text>
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => handleRemoveNotification()} style={{ padding: 10, backgroundColor: 'white', borderRadius: 10 }}>
+              <Text style={{ color: 'black' }}>End the notification</Text>
+            </TouchableOpacity>
             <Body logout={logout} navigation={navigation} />
         </View>
       </SafeAreaView>
