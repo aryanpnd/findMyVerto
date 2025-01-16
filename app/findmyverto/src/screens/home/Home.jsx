@@ -75,12 +75,12 @@ export default function Home({navigation}) {
         <View style={styles.container}>
           {/* <Text>hi</Text> */}
             <Header userDetails={userDetails} attendence={10} navigation={navigation}/>
-            <TouchableOpacity onPress={() => handleSetNotification()} style={{ padding: 10, backgroundColor: 'white', borderRadius: 10 }}>
+            {/* <TouchableOpacity onPress={() => handleSetNotification()} style={{ padding: 10, backgroundColor: 'white', borderRadius: 10 }}>
               <Text style={{ color: 'black' }}>Start the notification</Text>
             </TouchableOpacity>
             <TouchableOpacity onPress={() => handleRemoveNotification()} style={{ padding: 10, backgroundColor: 'white', borderRadius: 10 }}>
               <Text style={{ color: 'black' }}>End the notification</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
             <Body logout={logout} navigation={navigation} />
         </View>
       </SafeAreaView>

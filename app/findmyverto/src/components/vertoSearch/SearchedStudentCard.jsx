@@ -153,12 +153,14 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
         navigation.navigate('FriendProfile',student)
     }
 
+    const imageSource = student.photoURL ? { uri: student.photoURL } : require("../../../assets/icons/profileAvatar.png");
+
     return (
         <View style={[style.container, globalStyles.elevationMin]}>
             <TouchableOpacity onPress={navigateToFriend} style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
                 <Image
-                    source={require("../../../assets/icons/profileAvatar.png")}
-                    style={{ height: 60, width: 60 }}
+                    source={imageSource}
+                    style={{ height: 60, width: 60, borderRadius: 60 / 2 }}
                     transition={1000}
                 />
             </TouchableOpacity>

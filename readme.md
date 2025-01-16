@@ -8,7 +8,9 @@ Find My Verto is a platform designed for LPU students to manage and view their d
 findMyVerto/
 │
 ├── app/findmyverto        # React Native app for mobile users
-├── backend/javascript     # Backend service for data scraping and API
+├── backend/               
+    └── api                # Backend service for API
+    └── scrapper           # Backend service for data scraping
 └── .gitignore
 ```
 
@@ -45,21 +47,38 @@ findMyVerto/
 #### Backend
 1. Clone the backend repository:
     ```sh
-    git clone https://github.com/aryanpnd/findMyVerto/tree/main/backend/javascript
-    cd javascript
+    git clone https://github.com/aryanpnd/findMyVerto/tree/main/backend/
+    ```
+    ```sh
+    cd api
+    ```
+    or
+    ```sh
+    cd scrapper
     ```
 2. Install dependencies:
     ```sh
     npm install
     ```
-3. Create a `.env` file in the root directory and add your LPU UMS credentials:
+3. Create a `.env` file in the root directory:
+    
+    for `api`
     ```env
-    USERNAME=your_username
-    PASSWORD=your_password
+    DBURL=_MONGO_DB_URL_
+    PORT=_PORT_
+    SECRETKEY=_JWT_SECRET_
+    SCRAPPER_BASE_URL=_BASE_URL_OF_THE_SCRAPPER_
+    ```
+    for `scrapper`
+    ```env
+    PORT=_PORT_
+    CLOUDINARY_CLOUD_NAME=_CLOUDINARY_CLOUD_NAME_
+    CLOUDINARY_API_KEY=_CLOUDINARY_API_KEY_
+    CLOUDINARY_API_SECRET=_CLOUDINARY_API_SECRET_
     ```
 4. Start the backend:
     ```sh
-    node scrapper.js
+    node server.js
     ```
 
 #### App
@@ -70,7 +89,7 @@ findMyVerto/
     ```
 2. Install dependencies:
     ```sh
-    npm install --legacy-peer-deps
+    npm install
     ```
 3. Start the development server:
     ```sh
@@ -83,30 +102,6 @@ findMyVerto/
 
 ---
 
-## Usage
-
-### Backend Example
-```javascript
-const UmsScrapper = require('./middlewares/scrapper');
-
-(async () => {
-    try {
-        const umsScrapper = new UmsScrapper("your_username", "your_password", false);
-        await umsScrapper.init();
-        await umsScrapper.login();
-        const studentDetails = await umsScrapper.get_user_info();
-        console.log(studentDetails);
-        const timeTable = await umsScrapper.get_time_table();
-        console.log(timeTable);
-        const attendance = await umsScrapper.get_user_attendance();
-        console.log(attendance);
-        umsScrapper.close();
-    } catch (error) {
-        console.error(error);
-    }
-})();
-```
-
 ### App
 1. Start the backend service.
 2. Use the app to log in and sync data with the backend.
@@ -115,13 +110,6 @@ const UmsScrapper = require('./middlewares/scrapper');
 
 ## Project Structure
 
-### Backend
-```
-backend/javascript/
-├── middlewares/          # Puppeteer scrapers and utilities
-├── scrapper.js           # Entry point for the backend service
-└── package.json          # Dependencies and scripts
-```
 
 ### App
 ```

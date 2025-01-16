@@ -16,7 +16,7 @@ const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
 const gap = (width - itemWidth) / 4;
 
-export default function HomescreenTimeTable({ navigation, setClassesToday, timeTable, settimeTable,today }) {
+export default function HomescreenTimeTable({ navigation, setClassesToday, timeTable, settimeTable, today }) {
     const { auth } = useContext(AuthContext)
     const [loading, setLoading] = useState(false)
     const [day, setDay] = useState(1)
@@ -53,6 +53,8 @@ export default function HomescreenTimeTable({ navigation, setClassesToday, timeT
             const tt = formatTimetableToClasses(JSON.parse(userTimeTable))
             setClassesToday(tt.length)
             settimeTable(tt)
+            console.log({ "from local": tt });
+
         } catch (error) {
             console.error(error);
             setLoading(false)
@@ -101,7 +103,7 @@ export default function HomescreenTimeTable({ navigation, setClassesToday, timeT
                                     tintColor={colors.secondary}
                                     colors={[colors.secondary]}
                                     refreshing={refreshing}
-                                    onRefresh={()=>{
+                                    onRefresh={() => {
                                         fetchDataLocally()
                                         getDay(setDay)
                                         today()
@@ -126,7 +128,24 @@ export default function HomescreenTimeTable({ navigation, setClassesToday, timeT
                                     :
                                     timeTable?.map((value, index) => (
                                         <ClassesTodayCards key={index} value={value} index={index} />
-                                    ))}
+                                    ))
+                            }
+
+                            {
+                                timeTable && timeTable.length === 0 &&
+                                <View style={{ alignItems: "center", justifyContent: "center", gap: 8, width: width * 0.85 }}>
+                                    <LottieView
+                                        autoPlay
+                                        style={{
+                                            width: 100,
+                                            height: 100,
+                                        }}
+                                        source={require('../../../assets/lotties/sleep.json')}
+                                    />
+                                    <Text style={styles.text1}>No classes for today</Text>
+                                </View>
+
+                            }
 
                         </ScrollView>
             }
