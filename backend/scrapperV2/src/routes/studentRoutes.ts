@@ -1,0 +1,79 @@
+import express from 'express';
+import { getStudentBasicInfo  } from '../controllers/studentController';
+import { getStudentLogin } from '../controllers/studentAuthController';
+import { getStudentTimeTable } from '../controllers/studentTimetableController';
+export const studentRoutes = express.Router();
+
+/**
+ * @swagger
+ * /api/v2/student/login:
+ *   post:
+ *     summary: Login to UMS
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *                 example: "12203693"
+ *               password:
+ *                 type: string
+ *                 example: "MrCat@9870"
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/login', getStudentLogin); 
+
+/**
+ * @swagger
+ * /api/v2/student/basicInfo:
+ *   post:
+ *     summary: Get student basic information
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/basicInfo', getStudentBasicInfo);
+
+/**
+ * @swagger
+ * /api/v2/student/timetable:
+ *   post:
+ *     summary: Get student timetable
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/timetable', getStudentTimeTable);
