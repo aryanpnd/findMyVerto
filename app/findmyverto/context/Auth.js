@@ -7,7 +7,7 @@ import { Alert } from 'react-native';
 const AuthContext = createContext();
 
 // export const API_URL = "http://192.168.1.4:8080"
-export const API_URL = "https://findmyverto.onrender.com"
+export const API_URL = "https://findmyvertov2.onrender.com"
 
 const AuthProvider = ({ children }) => {
 

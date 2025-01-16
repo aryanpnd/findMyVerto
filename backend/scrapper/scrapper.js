@@ -1,5 +1,7 @@
 const puppeteer = require('puppeteer');
 require("dotenv").config()
+const fs = require('fs');
+const { saveImage } = require('./helper/imageHandler');
 
 class UmsScrapper {
     constructor(username, password, headless = true) {
@@ -104,6 +106,10 @@ class UmsScrapper {
             const student_program_text = await this.page.evaluate(element => element.textContent, student_program[0]);
             student_details["program"] = student_program_text.split("Programme -")[1].split("View Programme Outcome")[0].trim();
 
+            const imageElement = await this.page.$('#ctl00_cphHeading_ImageStudent');
+            const imageUrl = await imageElement.evaluate(img => img.src);
+            const savedImageUrl = await saveImage(this.page, imageUrl, this.username);
+            student_details["photoURL"] = savedImageUrl;
 
             return student_details;
         } catch (error) {
