@@ -4,7 +4,6 @@ import { umsHeaders } from '../constants/headers'
 import { umsLogin } from '../services/umsLogin';
 import { umsLoginReturn } from '../types/servicesReturnTypes';
 import { User } from '../types/userTypes';
-import { checkUserCookieState } from '../utils/checkUserCookieState';
 
 export const scrapeStudentBasicInfo = async (user: User) => {
     try {
