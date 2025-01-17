@@ -18,10 +18,10 @@ export const studentRoutes = express.Router();
  *             properties:
  *               reg_no:
  *                 type: string
- *                 example: "12203693"
+ *                 example: string
  *               password:
  *                 type: string
- *                 example: "MrCat@9870"
+ *                 example: string
  *     responses:
  *       200:
  *         description: Successful response
@@ -77,3 +77,27 @@ studentRoutes.post('/basicInfo', getStudentBasicInfo);
  *         description: Internal server error
  */
 studentRoutes.post('/timetable', getStudentTimeTable);
+
+/**
+ * @swagger
+ * /api/v2/student/attendance:
+ *   post:
+ *     summary: Get student attendance
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/attendance', getStudentTimeTable);
