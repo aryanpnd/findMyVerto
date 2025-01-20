@@ -11,12 +11,28 @@ export const API_URL = "https://findmyvertov2.onrender.com"
 
 const AuthProvider = ({ children }) => {
 
-  const [auth, setAuth] = useState({
+  const [auth, setAuthState] = useState({
     token: "",
     authenticated: false,
     regNo: "",
     pass: ""
   })
+
+  const setAuth = async (data) => {
+    setAuthState({...auth, ...data})
+    if(data.reg_no){
+      await SecureStore.setItemAsync("REGNO", data.reg_no)
+    }
+    if(data.password){
+      await SecureStore.setItemAsync("PASS", data.password)
+    }
+    if(data.token){
+      await SecureStore.setItemAsync("TOKEN", data.token)
+    }
+    if(data.authenticated){
+      await SecureStore.setItemAsync("AUTHENTICATED", JSON.stringify(data.authenticated))
+    }
+  }
 
   const loadAuth = async () => {
     return new Promise(async (resolve, reject) => {
