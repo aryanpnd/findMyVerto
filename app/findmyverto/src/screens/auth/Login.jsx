@@ -9,7 +9,8 @@ import axios from 'axios';
 import * as SecureStore from 'expo-secure-store';
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading';
 import { colors } from '../../constants/colors';
-import { getStudentLogin } from '../../../backend/controller/studentAuthController';
+import { getUmsCookie, validateUmsCookie } from '../../../backend/controller/studentAuthController';
+import { scrapeStudentTimetable } from '../../../backend/scrapper/studentTimetableScrapper';
 
 
 export default function Login() {
@@ -32,36 +33,42 @@ export default function Login() {
       return
     }
 
+    // setLoading(true)
+    // const tt = await scrapeStudentTimetable({ reg_no: regno, password: password })
+    // console.log(tt);
+    // setLoading(false)
+
     setLoading(true)
-    await getStudentLogin({ reg_no: regno, password: password }).then(async (result) => {
+    await getUmsCookie({ reg_no: regno, password: password }).then(async (result) => {
       console.log(result);
+      await validateUmsCookie("result.cookie")
       setLoading(false)
-      // if (result.data.status) {
-      //   setAuth({
-      //     token: result.data.token,
-      //     regNo: regno,
-      //     pass: password,
-      //     authenticated: true
-      //   })
-      //   axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`
-      //   await SecureStore.setItemAsync("TOKEN", result.data.token)
-      //   await SecureStore.setItemAsync("REGNO", regno)
-      //   await SecureStore.setItemAsync("PASS", password)
-      //   Toast.show({
-      //     type: 'success',
-      //     text1: `${result.data.message}`,
-      //   });
-      //   await SecureStore.setItemAsync("AUTHENTICATED", JSON.stringify(true));
-      //   setLoading(false)
-      // } else {
-      //   Toast.show({
-      //     type: 'error',
-      //     text1: 'Login failed',
-      //     text2: `Wrong Ums username and password`,
-      //   });
-      //   alert("Wrong Ums username and password")
-      //   setLoading(false)
-      // }
+      //   // if (result.data.status) {
+      //   //   setAuth({
+      //   //     token: result.data.token,
+      //   //     regNo: regno,
+      //   //     pass: password,
+      //   //     authenticated: true
+      //   //   })
+      //   //   axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`
+      //   //   await SecureStore.setItemAsync("TOKEN", result.data.token)
+      //   //   await SecureStore.setItemAsync("REGNO", regno)
+      //   //   await SecureStore.setItemAsync("PASS", password)
+      //   //   Toast.show({
+      //   //     type: 'success',
+      //   //     text1: `${result.data.message}`,
+      //   //   });
+      //   //   await SecureStore.setItemAsync("AUTHENTICATED", JSON.stringify(true));
+      //   //   setLoading(false)
+      //   // } else {
+      //   //   Toast.show({
+      //   //     type: 'error',
+      //   //     text1: 'Login failed',
+      //   //     text2: `Wrong Ums username and password`,
+      //   //   });
+      //   //   alert("Wrong Ums username and password")
+      //   //   setLoading(false)
+      //   // }
     }).catch((err) => {
       Toast.show({
         type: 'error',

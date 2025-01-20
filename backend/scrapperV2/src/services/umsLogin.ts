@@ -25,7 +25,7 @@ export async function umsLogin(user: User): Promise<umsLoginReturn> {
     let response = await client.get(url);
     let $ = load(response.data);
 
-    let __VIEWSTATE = $("#__VIEWSTATE").val() as string;
+    let __VIEWSTATE = $("#__VIEWSTATE").val() as string
     let __VIEWSTATEGENERATOR = $("#__VIEWSTATEGENERATOR").val() as string;
     let __EVENTVALIDATION = $("#__EVENTVALIDATION").val() as string;
 

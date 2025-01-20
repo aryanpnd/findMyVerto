@@ -2,6 +2,7 @@ import express from 'express';
 import { getStudentBasicInfo  } from '../controllers/studentController';
 import { getStudentLogin } from '../controllers/studentAuthController';
 import { getStudentTimeTable } from '../controllers/studentTimetableController';
+import { getStudentAttendance } from '../controllers/studentAttendanceController';
 export const studentRoutes = express.Router();
 
 /**
@@ -80,9 +81,9 @@ studentRoutes.post('/timetable', getStudentTimeTable);
 
 /**
  * @swagger
- * /api/v2/student/attendance:
+ * /api/v2/student/timetable:
  *   post:
- *     summary: Get student attendance
+ *     summary: Get student timetabl
  *     requestBody:
  *       required: true
  *       content:
@@ -100,4 +101,4 @@ studentRoutes.post('/timetable', getStudentTimeTable);
  *       500:
  *         description: Internal server error
  */
-studentRoutes.post('/attendance', getStudentTimeTable);
+studentRoutes.post('/attendance', getStudentAttendance);
