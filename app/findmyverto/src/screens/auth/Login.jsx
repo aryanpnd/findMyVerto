@@ -6,69 +6,46 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import LottieView from 'lottie-react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import axios from 'axios';
-import * as SecureStore from 'expo-secure-store';
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading';
 import { colors } from '../../constants/colors';
-import { getUmsCookie, validateUmsCookie } from '../../../backend/controller/studentAuthController';
-import { scrapeStudentTimetable } from '../../../backend/scrapper/studentTimetableScrapper';
-
+import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert';
+import Button from '../../components/miscellaneous/Button';
 
 export default function Login() {
   const { setAuth } = useContext(AuthContext)
+  const customAlert = useCustomAlert();
 
   const [regno, setRegno] = useState(null);
   const [password, setPassword] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false)
-
   const passwordRef = useRef(null);
 
   const login = async () => {
     if (!regno) {
-      alert('Please fill the registration number')
+      customAlert.show('Please enter the registration number')
       return
     }
     else if (!password) {
-      alert('Please fill the password')
+      customAlert.show('Please enter the password')
       return
     }
 
-    // setLoading(true)
-    // const tt = await scrapeStudentTimetable({ reg_no: regno, password: password })
-    // console.log(tt);
-    // setLoading(false)
-
     setLoading(true)
-    await getUmsCookie({ reg_no: regno, password: password }).then(async (result) => {
-      console.log(result);
-      await validateUmsCookie("result.cookie")
-      setLoading(false)
-      //   // if (result.data.status) {
-      //   //   setAuth({
-      //   //     token: result.data.token,
-      //   //     regNo: regno,
-      //   //     pass: password,
-      //   //     authenticated: true
-      //   //   })
-      //   //   axios.defaults.headers.common['Authorization'] = `Bearer ${result.data.token}`
-      //   //   await SecureStore.setItemAsync("TOKEN", result.data.token)
-      //   //   await SecureStore.setItemAsync("REGNO", regno)
-      //   //   await SecureStore.setItemAsync("PASS", password)
-      //   //   Toast.show({
-      //   //     type: 'success',
-      //   //     text1: `${result.data.message}`,
-      //   //   });
-      //   //   await SecureStore.setItemAsync("AUTHENTICATED", JSON.stringify(true));
-      //   //   setLoading(false)
-      //   // } else {
-      //   //   Toast.show({
-      //   //     type: 'error',
-      //   //     text1: 'Login failed',
-      //   //     text2: `Wrong Ums username and password`,
-      //   //   });
-      //   //   alert("Wrong Ums username and password")
-      //   //   setLoading(false)
-      //   // }
+    await axios.post(`${API_URL}/student/login`, { reg_no: regno, password: password }).then(async (result) => {
+      if (result.data.login) {
+        Toast.show({
+          type: 'success',
+          text1: 'Login successful',
+        });
+        await setAuth({ authenticated: true, reg_no: regno, password: password, passwordExpiry: result.data.passwordExpiry })
+        setLoading(false)
+      } else {
+        customAlert.show('Login failed', result.data.message, [
+          { text: 'OK', onPress: () => console.log('Confirmed') }
+        ])
+        setLoading(false)
+      }
     }).catch((err) => {
       Toast.show({
         type: 'error',
@@ -85,10 +62,10 @@ export default function Login() {
     <>
       <View style={{ zIndex: 2 }}>
         <Toast />
+        <CustomAlert />
       </View>
       <SafeAreaView style={styles.container}>
-        <OverlayLoading loading={loading} loadAnim={"amongus"} loadingMsg={"This may take 40-50 seconds if you're Logging for the first time, Depending upon UMS server"} loadingText={"Logging..."} />
-
+        {/* <OverlayLoading loading={loading} loadAnim={"amongus"} loadingMsg={"This may take 40-50 seconds if you're Logging for the first time, Depending upon UMS server"} loadingText={"Logging..."} /> */}
         <View style={styles.container}>
           <View style={{ flex: 3, justifyContent: 'center', alignItems: "center" }}>
             <Text style={{ flex: 2, fontSize: 20, fontWeight: '500' }}>FindMyVerto</Text>
@@ -145,11 +122,7 @@ export default function Login() {
               </View>
 
               <View style={{ flex: 4 }}>
-                <TouchableOpacity onPress={login} style={{
-                  width: "100%", backgroundColor: colors.primary, height: 60, borderRadius: 15, flex: 1, alignItems: 'center', justifyContent: 'center'
-                }}>
-                  <Text style={{ fontSize: 20, fontWeight: 'bold', color: 'white' }}>Login</Text>
-                </TouchableOpacity>
+                <Button title="Login" onPress={login} loading={loading} setLoading={setLoading} bg={colors.primary} loadingTitle="Logging...it will take a few seconds" loadAnim={"amongus"} />
               </View>
             </ScrollView>
           </View>

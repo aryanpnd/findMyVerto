@@ -6,28 +6,33 @@ import { Alert } from 'react-native';
 
 const AuthContext = createContext();
 
-// export const API_URL = "http://192.168.1.4:8080"
-export const API_URL = "https://findmyvertov2.onrender.com"
+let API_URL;
+if (process.env.NODE_ENV==='development') {
+  API_URL = "http://192.168.93.229:3000/api/v2";
+} else {
+  API_URL = `${process.env.EXPO_PUBLIC_FMV_API_URL}`;
+}
+export { API_URL };
 
 const AuthProvider = ({ children }) => {
 
   const [auth, setAuthState] = useState({
-    token: "",
     authenticated: false,
-    regNo: "",
-    pass: ""
+    reg_no: "",
+    password: "",
+    passwordExpiry:""
   })
 
   const setAuth = async (data) => {
     setAuthState({...auth, ...data})
     if(data.reg_no){
-      await SecureStore.setItemAsync("REGNO", data.reg_no)
+      await SecureStore.setItemAsync("REG_NO", data.reg_no)
     }
     if(data.password){
-      await SecureStore.setItemAsync("PASS", data.password)
+      await SecureStore.setItemAsync("PASSWORD", data.password)
     }
-    if(data.token){
-      await SecureStore.setItemAsync("TOKEN", data.token)
+    if(data.passwordExpiry){
+      await SecureStore.setItemAsync("PASSWORDEXPIRY", data.passwordExpiry)
     }
     if(data.authenticated){
       await SecureStore.setItemAsync("AUTHENTICATED", JSON.stringify(data.authenticated))
@@ -37,18 +42,19 @@ const AuthProvider = ({ children }) => {
   const loadAuth = async () => {
     return new Promise(async (resolve, reject) => {
       try {
-        let regNo = await SecureStore.getItemAsync("REGNO");
-        let pass = await SecureStore.getItemAsync("PASS");
-        let token = await SecureStore.getItemAsync("TOKEN");
+        let regNo = await SecureStore.getItemAsync("REG_NO");
+        let pass = await SecureStore.getItemAsync("PASSWORD");
         let authenticated = await SecureStore.getItemAsync("AUTHENTICATED");
+        let passwordExpiry = await SecureStore.getItemAsync("PASSWORDEXPIRY");
         if (authenticated) {
-          setAuth({
-            token: token,
+          setAuthState({
             authenticated: JSON.parse(authenticated),
-            regNo: regNo,
-            pass: pass
-          })
-          axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+            reg_no: regNo || "",
+            password: pass || "",
+            passwordExpiry: passwordExpiry || ""
+          });
+          
+          // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
         }
         resolve()
       } catch (error) {
@@ -69,7 +75,7 @@ const AuthProvider = ({ children }) => {
           await SecureStore.setItemAsync("AUTHENTICATED", JSON.stringify(false));
           await SecureStore.deleteItemAsync("REGNO");
           await SecureStore.deleteItemAsync("PASS");
-          await SecureStore.deleteItemAsync("TOKEN");
+          await SecureStore.deleteItemAsync("PASSWORDEXPIRY");
           await AsyncStorage.clear()
           setAuth({ ...auth, authenticated: false })
         }
@@ -81,7 +87,7 @@ const AuthProvider = ({ children }) => {
     await SecureStore.setItemAsync("AUTHENTICATED", JSON.stringify(false));
     await SecureStore.deleteItemAsync("REGNO");
     await SecureStore.deleteItemAsync("PASS");
-    await SecureStore.deleteItemAsync("TOKEN");
+    await SecureStore.deleteItemAsync("PASSWORDEXPIRY");
     await AsyncStorage.clear()
     setAuth({ ...auth, authenticated: false })
   }

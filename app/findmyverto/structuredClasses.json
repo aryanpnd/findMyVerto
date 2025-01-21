@@ -1,0 +1,113 @@
+[
+  {
+    "time": "09-10 AM",
+    "class": [
+      {
+        "type": "Lecture",
+        "group": "All",
+        "class": "PEAS02",
+        "className": "ANALYTICAL - II",
+        "room": "36-701",
+        "section": "9W073"
+      }
+    ]
+  },
+  {
+    "time": "10-11 AM",
+    "class": [
+      {
+        "type": "Lecture",
+        "group": "All",
+        "class": "PEAS02",
+        "className": "ANALYTICAL - II",
+        "room": "36-701",
+        "section": "9W073"
+      }
+    ]
+  },
+  {
+    "time": "11-12 PM",
+    "break": true
+  },
+  {
+    "time": "12-01 PM",
+    "class": [
+      {
+        "type": "Lecture",
+        "group": "All",
+        "class": "CSES003",
+        "className": "EXTRENAL EXPERT INPUT - DATA STRUCTURE",
+        "room": "36-701",
+        "section": "9W073"
+      }
+    ]
+  },
+  {
+    "time": "01-02 PM",
+    "class": [
+      {
+        "type": "Lecture",
+        "group": "All",
+        "class": "CSES003",
+        "className": "EXTRENAL EXPERT INPUT - DATA STRUCTURE",
+        "room": "36-701",
+        "section": "9W073"
+      },
+      {
+        "type": "Practical",
+        "group": "0",
+        "class": "CSM344",
+        "className": "NATURAL LANGUAGE PROCESSING",
+        "room": "34-606",
+        "section": "K22UR"
+      }
+    ]
+  },
+  {
+    "time": "02-03 PM",
+    "class": [
+      {
+        "type": "Practical",
+        "group": "0",
+        "class": "CSM355",
+        "className": "MACHINE LEARNING PROJECT",
+        "room": "28-506",
+        "section": "K22UR"
+      }
+    ]
+  },
+  {
+    "time": "03-04 PM",
+    "class": [
+      {
+        "type": "Lecture",
+        "group": "All",
+        "class": "CSES001",
+        "className": "FUNDAMENTALS OF COMPUTERS-I",
+        "room": "36-701",
+        "section": "9W073"
+      },
+      {
+        "type": "Practical",
+        "group": "0",
+        "class": "CSM355",
+        "className": "MACHINE LEARNING PROJECT",
+        "room": "28-506",
+        "section": "K22UR"
+      }
+    ]
+  },
+  {
+    "time": "04-05 PM",
+    "class": [
+      {
+        "type": "Lecture",
+        "group": "All",
+        "class": "CSES001",
+        "className": "FUNDAMENTALS OF COMPUTERS-I",
+        "room": "36-701",
+        "section": "9W073"
+      }
+    ]
+  }
+]

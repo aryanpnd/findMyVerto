@@ -6,6 +6,7 @@ export const  colors = {
     btn1:"#d4d8dc69",
     green:"#2ecc71",
     whiteLight:'#ffffffb5',
-    lightDark:"#242323"
+    lightDark:"#242323",
+    disabledBackground:"#b8bcc085",
     // blue:"#300030"
 }

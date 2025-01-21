@@ -103,7 +103,7 @@ export async function umsLogin(user: User): Promise<umsLoginReturn> {
       passwordExpiry: fgPassword
     };
   } catch (error: any) {
-    console.error(error);
+    // console.error(error);
     return {
       login: false,
       message: error.message,
