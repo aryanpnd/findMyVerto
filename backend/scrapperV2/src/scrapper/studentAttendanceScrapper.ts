@@ -18,22 +18,22 @@ export const scrapeAttendanceSummary = async (cookie: string) => {
     const fixedHtml = `<table>${html}</table>`;
     const $ = cheerio.load(fixedHtml);
     
-    const attendance: StudentAttendanceSummary = { summary: [], attendance_details: null };
+    const attendance: StudentAttendanceSummary = { attendance_summary: [], total_details: null };
 
     $('tr').each((idx, tr) => {
         const tds = $(tr).find('td');
         if (tds.length < 6) return;  // Skip empty or invalid rows
 
         if ($(tds[0]).text().trim().includes('* Aggregate Attendance')) {
-            attendance.attendance_details = {
-                total_duty_leaves: $(tds[2]).text().trim(),
-                total_lectures_attended: $(tds[4]).text().trim(),
-                total_lectures_delivered: $(tds[3]).text().trim(),
-                total_agg_attendance: $(tds[5]).text().trim()
+            attendance.total_details = {
+                duty_leaves: $(tds[2]).text().trim(),
+                total_attended: $(tds[4]).text().trim(),
+                total_delivered: $(tds[3]).text().trim(),
+                agg_attendance: $(tds[5]).text().trim()
             };
         } else {
             const subject_name_and_code = $(tds[0]).text().trim().split(':');
-            attendance.summary.push({
+            attendance.attendance_summary.push({
                 subject_code: subject_name_and_code[0],
                 subject_name: subject_name_and_code[1] || '',
                 last_attended: $(tds[1]).text().trim(),

@@ -12,7 +12,13 @@ export const scrapeStudentBasicInfo = async (user: User) => {
 
         const login: umsLoginReturn = await umsLogin({ reg_no: user.reg_no, password: user.password });
         if (!login.login) {
-            throw new Error('Failed to login: ' + login.message);
+            return {
+                data: {},
+                requestTime: "",
+                message: "Failed to login: ",
+                status: false,
+                errorMessage: login.message
+            }
         }
 
         headers = {
@@ -24,14 +30,32 @@ export const scrapeStudentBasicInfo = async (user: User) => {
             headers: headers
         });
 
+        const studentInfoRaw = studentInfoResponse.data.d[0];
+
+        const studentInfo = {
+            reg_no: studentInfoRaw.Registrationnumber,
+            program: studentInfoRaw.Program,
+            section: studentInfoRaw.Section,
+            studentName: studentInfoRaw.StudentName,
+            studentPicture: studentInfoRaw.StudentPicture,
+            dateofBirth: studentInfoRaw.DateofBirth,
+            attendance: studentInfoRaw.AggAttendance,
+            cgpa: studentInfoRaw.CGPA,
+            rollNumber: studentInfoRaw.RollNumber,
+            pendingFee: studentInfoRaw.PendingFee,
+            encryptedDob: studentInfoRaw.EncryptedDob,
+            studentUid: studentInfoRaw.StudentUid,
+            stuUIDName: studentInfoRaw.StuUIDName
+        }
+
         return {
-            data: studentInfoResponse.data.d[0],
+            data: studentInfo,
             requestTime: new Date().toISOString(),
             message: "Data fetched successfully",
-            status: false
+            status: true
         }
     } catch (error: any) {
-        console.error(error);
+        // console.error(error);
         return {
             data: {},
             requestTime: "",

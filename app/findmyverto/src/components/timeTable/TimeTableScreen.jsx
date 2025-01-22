@@ -16,15 +16,27 @@ import Animated, {
   useDerivedValue,
   useSharedValue
 } from 'react-native-reanimated';
-import trimEmptySlots from '../../constants/trimEmptySlots';
-import ClassesCard from './ClassesCard';
-import BreakCard from './BreakCard';
 import { colors } from '../../constants/colors';
-import { globalStyles } from '../../constants/styles';
-const { width } = Dimensions.get('screen');
-import getDay from '../../constants/getDay';
+import BreakCard from '../timeTable/BreakCard';
+import ClassesCard from '../timeTable/ClassesCard';
+import getDay from '../../utils/helperFunctions/dataAndTimeHelpers';
+import LottieView from 'lottie-react-native';
 
-const headers = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const { width } = Dimensions.get('screen');
+
+const headers = [
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
+
+const getCurrentDayIndex = () => {
+  const day = new Date().getDay();
+  return day === 0 || day === 7 ? 0 : day - 1;
+};
 
 const getHeaderWidths = () => {
   const obj = {};
@@ -35,45 +47,34 @@ const getHeaderWidths = () => {
 };
 
 export default function TimeTableScreen({ timeTable }) {
-  const [day, setDay] = useState(0)
-
-  useEffect(() => {
-    getDay(setDay)
-  }, [])
-
-
-  //store each tab widths
   const headerWidths = getHeaderWidths();
-
-  //scroll values of both Scrollview
   const scrollY = useSharedValue(0);
   const topScrollY = useSharedValue(0);
 
-  //values to handle auto scroll of bottom ScrollView
   const bottomScrollRef = useAnimatedRef();
-  const scroll1 = useSharedValue(0);
+  const scroll1 = useSharedValue(getCurrentDayIndex());
   useDerivedValue(() => {
     scrollTo(bottomScrollRef, scroll1.value * width, 0, true);
   });
 
-  //values to handle auto scroll of top ScrollView
   const topScrollRef = useAnimatedRef();
   const scroll2 = useSharedValue(0);
   useDerivedValue(() => {
     scrollTo(topScrollRef, scroll2.value, 0, true);
   });
 
-  // listener to store scroll value of bottom ScrollView
+  useEffect(() => {
+    scroll1.value = getCurrentDayIndex();
+  }, []);
+
   const scrollHandler = useAnimatedScrollHandler(event => {
     scrollY.value = event.contentOffset.x;
   });
 
-  // listener to store scroll value of top ScrollView
   const topScrollHandler = useAnimatedScrollHandler(event => {
     topScrollY.value = event.contentOffset.x;
   });
 
-  // generate dynamic width of moving bar
   const barWidthStyle = useAnimatedStyle(() => {
     const input = [];
     const output1 = [];
@@ -89,7 +90,6 @@ export default function TimeTableScreen({ timeTable }) {
     });
     const moveValue = interpolate(scrollY.value, input, output2);
     const barWidth = interpolate(scrollY.value, input, output1);
-    // next line handle auto scroll of top ScrollView
     scroll2.value = moveValue + barWidth / 2 - width / 2;
     return {
       width: barWidth,
@@ -101,109 +101,96 @@ export default function TimeTableScreen({ timeTable }) {
     };
   });
 
-  // generate dynamic translateX of moving bar
   const barMovingStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: -topScrollY.value }],
   }));
 
   const onPressHeader = index => {
-    // next line handle auto scroll of bottom ScrollView
     scroll1.value = index;
   };
 
   return (
     <View style={styles.flex}>
-
-      {/* header tabs */}
-      <Animated.ScrollView style={[styles.topScroll]}
-        contentContainerStyle={styles.topScroll2}
+      <Animated.ScrollView
         ref={topScrollRef}
+        style={styles.topScroll}
         horizontal
         showsHorizontalScrollIndicator={false}
         onScroll={topScrollHandler}>
-
         {headers.map((item, index) => (
           <View
             onLayout={e =>
               (headerWidths[index].value = e.nativeEvent.layout.width)
             }
             key={item}
-            style={{ flex: index === 1 ? 2 : 1 }}>
+            style={{ flex: 1 }}>
             <TouchableOpacity
               style={[styles.headerItem]}
               onPress={() => onPressHeader(index)}>
-              <Text style={{ color: day-1 == index ?"yellow":"#ffffffb5",fontWeight: day-1 == index ?"bold":"400",fontSize: day-1 == index ?16:15}}>{item}</Text>
+              <Text style={{ color: scroll1.value == index ? "yellow" : "#ffffffb5", fontWeight: scroll1.value == index ? "bold" : "400", fontSize: scroll1.value == index ? 16 : 15 }}>{item}</Text>
             </TouchableOpacity>
           </View>
         ))}
       </Animated.ScrollView>
 
-      {/* header scrolling bar */}
       <Animated.View style={[styles.bar, barWidthStyle]}>
         <Animated.View
           style={[StyleSheet.absoluteFill, styles.barInner, barMovingStyle]}
-        >
-        </Animated.View>
+        />
       </Animated.View>
 
-      {/* Timetable body */}
-      <Animated.ScrollView contentContainerStyle={styles.list}
+      <Animated.ScrollView
         ref={bottomScrollRef}
         pagingEnabled
+        contentContainerStyle={styles.list}
         horizontal
         showsHorizontalScrollIndicator={false}
         onScroll={scrollHandler}>
-        {headers.map((item, index) => (
-          <Item index={index} key={item} timeTable={timeTable[index]} />
-        ))}
+        {headers.map((item, index) =>
+          <Item index={index} key={item} classes={timeTable[headers[index]] || []} />
+        )}
       </Animated.ScrollView>
     </View>
   );
 }
 
-function Item({ index, timeTable }) {
-  const [timeTableOfday, setTimeTableOfday] = useState({})
-  const [timeTableOfdayTrimed, setTimeTableOfdayTrimed] = useState({})
-
-  useEffect(() => {
-    if (timeTable && timeTable.length > 0) {
-      setTimeTableOfday(timeTable[1])
-    }
-  }, [timeTable])
-
-  useEffect(() => {
-    Object.keys(timeTableOfday).map((value, index) => {
-      setTimeTableOfdayTrimed(trimEmptySlots(timeTableOfday))
-    })
-  }, [timeTableOfday])
-
+function Item({ classes, index }) {
   return (
-    <>
-      {
-        <Animated.View style={styles.itemContainer}>
-          <View style={[styles.items]}>
-            <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 10, paddingVertical: 10, paddingHorizontal: 8 }}>
-              {
-                Object.keys(timeTableOfdayTrimed).reverse().map((value, index) => (
-                  timeTableOfdayTrimed[value].length > 1 ?
-                    (<ClassesCard key={index} time={value} value={timeTableOfdayTrimed[value]} />)
-                    :
-                    (<BreakCard key={index} time={value} />)
-                ))
-
-              }
-            </ScrollView>
+    <Animated.View style={styles.itemContainer}>
+      <View style={[styles.items]}>
+        {!classes[0]?.time ?
+          <View style={{ alignItems: "center", justifyContent: "center", gap: 8, width: width, height: "100%" }}>
+            <LottieView
+              autoPlay
+              style={{
+                width: 200,
+                height: 200,
+              }}
+              source={require('../../../assets/lotties/sleep.json')}
+            />
+            <Text style={styles.text1}>No classes for today</Text>
+            <Text style={styles.text1}>Have fun...</Text>
           </View>
-        </Animated.View>
-      }
-    </>
+          :
+          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 10, paddingVertical: 10, paddingHorizontal: 8 }}>
+            {
+              classes?.map((classDetails, index) => {
+                return classDetails?.break ?
+                  (<BreakCard key={index} time={classDetails?.time} day={index} />)
+                  :
+                  (<ClassesCard key={index} time={classDetails?.time} classes={classDetails?.class} day={index} />);
+              })
+            }
+          </ScrollView>
+        }
+      </View>
+    </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
   flex: {
     flex: 1,
-    justifyContent: 'space-between'
   },
   topScroll: {
     flexGrow: 0,
@@ -211,32 +198,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
-  },
-  topScroll2: {
-  },
-  headerItem: {
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-  },
-  bar: {
-    height: 35,
-    width: 25,
-    top: 4,
-    position: 'absolute',
-    alignSelf: 'flex-start',
-  },
-  barInner: {
-    marginLeft: 8,
-    width: "80%",
-    backgroundColor: "#ffffff1a",
-    borderWidth: 2,
-    borderColor: "white",
-    borderRadius: 20
-  },
-  list: {
-    // height:"88%",
-    justifyContent: 'center',
-    alignItems: "center"
   },
   itemContainer: {
     height: '100%',
@@ -249,11 +210,36 @@ const styles = StyleSheet.create({
     height: "100%",
     width: "100%",
     // alignItems: 'center',
-  }
-  ,
-
+  },
+  headerItem: {
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+  },
+  activeHeader: {
+    backgroundColor: '#ddd',
+    borderRadius: 10,
+  },
+  bar: {
+    height: 35,
+    width: 25,
+    top: 4,
+    position: 'absolute',
+    alignSelf: 'flex-start'
+  },
+  barInner: {
+    marginLeft: 8,
+    width: "85%",
+    backgroundColor: "#ffffff1a",
+    borderWidth: 2,
+    borderColor: "white",
+    borderRadius: 20
+  },
   txt: {
     fontSize: 30,
     color: '#fff',
   },
+  text1: {
+    color: "grey",
+    fontWeight: "500"
+  }
 });

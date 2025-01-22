@@ -5,7 +5,7 @@ import { globalStyles } from '../../constants/styles';
 import { LinearGradient } from 'expo-linear-gradient';
 
 
-export default function BreakCard({ time }) {
+export default function BreakCard({ time,day }) {
   return (
 
     <LinearGradient

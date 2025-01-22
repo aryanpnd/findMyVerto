@@ -1,9 +1,9 @@
 export interface StudentAttendanceSummary {
-    summary: any[],
-    attendance_details: {
-        total_duty_leaves: string,
-        total_lectures_attended: string,
-        total_lectures_delivered: string,
-        total_agg_attendance: string
+    attendance_summary: any[],
+    total_details: {
+        duty_leaves: string,
+        total_attended: string,
+        total_delivered: string,
+        agg_attendance: string
     } | null
 }

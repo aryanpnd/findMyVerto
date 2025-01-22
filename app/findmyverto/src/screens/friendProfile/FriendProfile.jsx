@@ -1,7 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, Pressable, Image } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import SyncData from '../../components/miscellaneous/SyncData';
-import formatTimeAgo from '../../constants/dateFormatter';
 import { colors } from '../../constants/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';

@@ -1,81 +1,113 @@
 import { View, Text, StyleSheet, Dimensions, Image } from 'react-native'
-import React, { useContext } from 'react'
+import React, { use, useContext, useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { AppContext } from '../../../context/MainApp';
-import isTimeEqual from '../../constants/funtions';
+import isTimeEqual from '../../utils/helperFunctions/funtions';
 import { colors } from '../../constants/colors';
 import { globalStyles } from '../../constants/styles';
+import BreakCard from './BreakCard';
+import LottieView from 'lottie-react-native';
 
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
 const gap = (width - itemWidth) / 4;
 
-export default function ClassesTodayCards({ value,index }) {
+export default function ClassesTodayCards({ value, index }) {
     const { courses } = useContext(AppContext)
-
+    const [isTimeEqualState, setIsTimeEqualState] = useState(false)
+    useEffect(() => {
+        setIsTimeEqualState(isTimeEqual(value.time))
+    }, [value.time])
     return (
         <LinearGradient
-            colors={isTimeEqual(value[0]) ? ['#11998e', '#32cf6d'] : ["white", "transparent"]}
+            colors={isTimeEqualState ? ['#11998e', '#32cf6d'] : ["white", "transparent"]}
             style={[styles.cardContainer, globalStyles.elevationMin]}
             start={{ x: 0, y: 0 }} // Start from the left
             end={{ x: 1, y: 0 }}
         >
 
-
-            {/* Course name */}
-            <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'center'}}>
-                <Text numberOfLines={2} style={[isTimeEqual(value[0]) ? styles.text2 : styles.text1, { fontWeight: 'bold', fontSize: 14 }]}>
-                {index+1}. {"("}{value[1]?.split("/")[1].split(" ")[2].split(":")[1]}{")"}  {courses[value[1]?.split("/")[1].split(" ")[2].split(":")[1]]}
+            <View style={[styles.timeContainer, { backgroundColor: isTimeEqualState ? colors.orange : colors.btn1 }]}>
+                <Image
+                    source={require("../../../assets/icons/clock.png")}
+                    style={{ height: 20, width: 20 }}
+                    transition={1000}
+                />
+                <Text numberOfLines={2} style={[isTimeEqualState ? styles.text2 : styles.text1, { fontWeight: "500" }]}>
+                    {isTimeEqualState ? `Ongoing (${value.time})` : value.time}
                 </Text>
             </View>
 
-            {/* time and building */}
-            <View style={styles.cardElementsContainer}>
-                {value && value[0] && (
-                    <View style={[styles.cardElements,{backgroundColor: isTimeEqual(value[0]) ? colors.orange :colors.btn1}]}>
-                        <Image
-                            source={require("../../../assets/icons/clock.png")}
-                            style={{ height: 20, width: 20 }}
-                            transition={1000}
-                        />
-                        <Text numberOfLines={2} style={[isTimeEqual(value[0]) ? styles.text2 : styles.text1,{ fontWeight: "500" }]}>
-                            {isTimeEqual(value[0]) ? "Ongoing" : value[0]}
-                        </Text>
+            {
+                value.break ?
+                    <LinearGradient
+                        colors={['#a8e063', '#56ab2f']}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 1, y: 0 }} style={[styles.breakCard, globalStyles.elevationMin]}>
+                        <Text style={styles.breakCardText}>Break</Text>
+                    </LinearGradient>
+                    :
+
+                    <View style={styles.classWrapper}>
+
+                        {
+                            value?.class?.map((classDetail, index) => (
+                                <>
+                                    <View style={styles.classContainer}>
+                                        {/* Course name */}
+                                        <View style={{ flexDirection: 'row', gap: 10, justifyContent: 'center' }}>
+                                            <Text numberOfLines={2} style={[isTimeEqual(value["time"]) ? styles.text2 : styles.text1, { fontWeight: 'bold', fontSize: 14 }]}>
+                                                {`[${classDetail.class}] ${classDetail.className}`}
+                                            </Text>
+                                        </View>
+
+                                        {/* class type and building */}
+                                        <View style={styles.cardElementsContainer}>
+                                            <View style={[styles.cardElements, { backgroundColor: isTimeEqualState ? colors.blueTransparency : "" }]}>
+                                                {/* <Image
+                                                    source={require("../../../assets/icons/section.png")}
+                                                    style={{ height: 20, width: 20 }}
+                                                    transition={1000}
+                                                /> */}
+                                                <Text numberOfLines={2} style={[isTimeEqualState ? styles.text2 : styles.text1, { fontWeight: "500" }]}>
+                                                    <Text style={{ fontWeight: "bold", color:isTimeEqualState?"white":"black" }}>Section:</Text> {classDetail.section}
+                                                </Text>
+                                            </View>
+                                            <View style={[styles.cardElements, { backgroundColor: isTimeEqualState ? colors.blueTransparency : "", },]}>
+                                                <Image
+                                                    source={require("../../../assets/icons/building.png")}
+                                                    style={{ height: 20, width: 20 }}
+                                                    transition={1000}
+                                                />
+                                                <Text numberOfLines={2} style={[isTimeEqualState ? styles.text2 : styles.text1,]}>
+                                                    {classDetail.room}
+                                                </Text>
+                                            </View>
+                                        </View>
+
+                                        {/* class type and group */}
+                                        <View style={styles.cardElementsContainer}>
+                                            <View style={[styles.cardElements, { backgroundColor: isTimeEqualState ? colors.btn1 : "" }]}>
+                                                <Image source={require("../../../assets/icons/course.png")} style={{ height: 20, width: 20 }} transition={1000} />
+                                                <Text numberOfLines={2} style={[isTimeEqualState ? styles.text2 : styles.text1,]}>
+                                                    {classDetail.type}
+                                                </Text>
+                                            </View>
+                                            <View style={[styles.cardElements, { backgroundColor: isTimeEqualState ? colors.btn1 : "" }]}>
+                                                {/* <Image source={require("../../../assets/icons/group.png")} style={{ height: 20, width: 20 }} transition={1000} /> */}
+                                                <Text numberOfLines={2} style={[isTimeEqualState ? styles.text2 : styles.text1,]}>
+                                                    <Text style={{ fontWeight: "bold", color:isTimeEqualState?"white":"black" }}>Group:</Text> {classDetail.group}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    </View>
+                                    {value.class.length > 1 && index !== value.class.length - 1 && <View style={styles.divider}></View>}
+
+                                </>
+                            ))
+                        }
                     </View>
-                )}
-                {value && value[1] && value[1].split("/") && value[1].split("/")[2] && (
-                    <View style={[styles.cardElements,{backgroundColor: isTimeEqual(value[0]) ? colors.blueTransparency : "",},]}>
-                        <Image
-                            source={require("../../../assets/icons/building.png")}
-                            style={{ height: 20, width: 20 }}
-                            transition={1000}
-                        />
-                        <Text numberOfLines={2} style={[isTimeEqual(value[0]) ? styles.text2 : styles.text1,]}>
-                            {value[1].split("/")[2].split(" ")[2]}
-                        </Text>
-                    </View>
-                )}
-            </View>
-
-
-
-            {/* class type and group */}
-            <View style={styles.cardElementsContainer}>
-                <View style={[styles.cardElements, { backgroundColor: isTimeEqual(value[0]) ? colors.btn1 : "" }]}>
-                    <Image source={require("../../../assets/icons/course.png")} style={{ height: 20, width: 20 }} transition={1000} />
-                    <Text numberOfLines={2} style={[isTimeEqual(value[0]) ? styles.text2 : styles.text1,]}>
-                        {value[1]?.split("/")[0]}
-                    </Text>
-                </View>
-                <View style={[styles.cardElements, { backgroundColor: isTimeEqual(value[0]) ? colors.btn1 : "" }]}>
-                    <Image source={require("../../../assets/icons/group.png")} style={{ height: 20, width: 20 }} transition={1000} />
-                    <Text numberOfLines={2} style={[isTimeEqual(value[0]) ? styles.text2 : styles.text1,]}>
-                        {value[1]?.split("/")[1].split(" ")[1]}
-                    </Text>
-                </View>
-            </View>
-
+            }
         </LinearGradient>
     )
 }
@@ -83,13 +115,10 @@ export default function ClassesTodayCards({ value,index }) {
 const styles = StyleSheet.create({
     cardContainer: {
         height: "95%",
-        width: itemWidth + 20,
         backgroundColor: 'white',
-        justifyContent: "space-between",
+        // justifyContent: "space-between",
         marginRight: gap,
         borderRadius: 25,
-        padding: 15,
-        gap: 10,
     },
     cardElementsContainer: {
         flexDirection: 'row',
@@ -104,6 +133,27 @@ const styles = StyleSheet.create({
         padding: 6,
         borderRadius: 10,
     },
+    timeContainer: {
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        paddingVertical: 5,
+        paddingHorizontal: 20,
+        gap: 5,
+        borderTopLeftRadius: 25,
+        borderTopRightRadius: 25
+    },
+    classWrapper: {
+        flexDirection: "row",
+    },
+    classContainer: {
+        justifyContent: "space-between",
+        height: "90%",
+        width: itemWidth,
+        paddingHorizontal: 15,
+        paddingVertical: 10,
+        gap: 10
+    },
     text1: {
         color: '#6d6c6c',
         fontSize: 13,
@@ -113,5 +163,24 @@ const styles = StyleSheet.create({
         color: 'white',
         fontSize: 13,
         fontWeight: '400'
+    },
+    breakCard: {
+        height: "85%",
+        justifyContent: "center",
+        alignItems: "center",
+        borderBottomLeftRadius: 25,
+        borderBottomRightRadius: 25
+    },
+    breakCardText: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "white"
+    },
+    divider: {
+        height: "80%",
+        width: 1,
+        backgroundColor: colors.disabledBackground,
+        marginHorizontal: 5,
+        alignSelf: "center"
     }
 })

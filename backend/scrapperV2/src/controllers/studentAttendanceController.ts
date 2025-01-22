@@ -14,14 +14,23 @@ export const getStudentAttendance = async (req: Request, res: Response): Promise
     const login: umsLoginReturn = await umsLogin({ reg_no, password });
 
     if (!login.login) {
-      throw new Error('Failed to login: ' + login.message);
+      res.status(401).json({
+        summary: {},
+        details: {},
+        message: "Failed to login",
+        status: false,
+        errorMessage: login.message
+      });
     }
 
     const studentAttendance = {
       summary: {},
-      detail: {},
-      last_updated: new Date().toISOString() // Setting the current timestamp
-    };
+      details: {},
+      last_updated: new Date().toISOString(),
+      message: "",
+      status: false,
+      errorMessage: ""
+    }
 
     // Fetch attendance summary and detail in parallel
     const [summary, detail] = await Promise.all([
@@ -31,10 +40,18 @@ export const getStudentAttendance = async (req: Request, res: Response): Promise
 
     // Append the fetched data to the studentAttendance object
     studentAttendance.summary = summary;
-    studentAttendance.detail = detail;
-
+    studentAttendance.details = detail;
+    studentAttendance.message = "Data fetched successfully";
+    studentAttendance.status = true;
     res.status(200).json(studentAttendance);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ 
+      summary: {},
+      details: {},
+      last_updated: "",
+      message: "Unable to fetch the data",
+      status: false,
+      errorMessage: error.message
+     });
   }
 };

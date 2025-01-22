@@ -1,10 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Dimensions, TouchableHighlight, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import SyncData from '../miscellaneous/SyncData'
+import React from 'react'
 import HomescreenTimeTable from '../timeTable/HomescreenTimeTable'
 import { colors } from '../../constants/colors';
-import isTimeEqual from '../../constants/funtions';
-import getDay from '../../constants/getDay';
 
 
 const { height, width } = Dimensions.get('window');
@@ -22,40 +19,17 @@ const navigations = [
   },
 ]
 
-const days  = ["Sunday","Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
 export default function Body({ navigation }) {
-  const [classesToday, setClassesToday] = useState(0)
-  const [timeTable, settimeTable] = useState([])
-  const [day, setDay] = useState(0)
-
-  function today() {
-    const td = new Date()
-    setDay(td.getDay())
-  }
-  useEffect(() => {
-    today()
-  }, [])
-  
+ 
 
   return (
     <View style={styles.body}>
 
       {/* Classes Today */}
       <View style={styles.classTodayContainer}>
-        <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-          <Text style={styles.text1}>
-            <Text style={{color:"grey"}}>Classes today:</Text> {timeTable && timeTable.length > 0 && isTimeEqual(timeTable[timeTable.length - 1][0], true) ?"Over":classesToday}
-            </Text>
-          {timeTable.length == 0 ?
-            <></> :
-            <Text style={styles.text1}>
-              {days[day]}
-            </Text>
-          }
-
-        </View>
-        <HomescreenTimeTable navigation={navigation} setClassesToday={setClassesToday} timeTable={timeTable} settimeTable={settimeTable} today={today} />
+        
+        <HomescreenTimeTable navigation={navigation} />
 
       </View>
 

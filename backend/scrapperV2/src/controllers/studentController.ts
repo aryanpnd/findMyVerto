@@ -9,6 +9,7 @@ import { scrapeStudentBasicInfo } from '../scrapper/studentDetailsScrapper';
 export const getStudentBasicInfo = async (req: Request, res: Response): Promise<void> => {
   try {
     const { reg_no, password } = req.body;
+    
     const studentInfo = await scrapeStudentBasicInfo({reg_no, password});
     res.status(200).json(studentInfo);
   } catch (error: any) {

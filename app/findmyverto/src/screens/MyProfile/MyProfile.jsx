@@ -10,52 +10,54 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import Toast from 'react-native-toast-message'
 import SyncData from '../../components/miscellaneous/SyncData'
-import formatTimeAgo from '../../constants/dateFormatter'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
+import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
 
 const { height, width } = Dimensions.get('window');
 
 export default function MyProfile({ navigation }) {
-    const { auth, logout,logout2 } = useContext(AuthContext)
+    const { auth, logout, logout2 } = useContext(AuthContext)
 
     const [student, setStudent] = useState({})
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
 
-    async function fetchData(sync) {
-        setLoading(true)
-        setRefreshing(true)
-        console.log(auth);
-        
-        await axios.post(`${API_URL}/api/student/getStudentInfo`, { password: auth.pass, sync: sync ? true : false }).then(async (result) => {
-            await AsyncStorage.setItem("USER", JSON.stringify(result.data.data))
-            setStudent(result.data.data)
-            console.log({ "inside then": result.data.data });
+    async function fetchData() {
+        try {
+            setLoading(true)
+            const result = await axios.post(`${API_URL}/student/basicInfo`, { reg_no: auth.reg_no, password: auth.password });
+            if (result.data.status) {
+                await AsyncStorage.setItem("STUDENT_BASIC_DETAILS", JSON.stringify(result.data));
+                setStudent(result.data)
+                Toast.show({
+                    type: 'success',
+                    text1: `${result.data.message}`
+                });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: `${result.data.message}`,
+                    text2: `${result.data.errorMessage}`,
+                });
+            }
             setLoading(false)
-            setRefreshing(false)
-        }).catch((err) => {
+        } catch (error) {
             Toast.show({
                 type: 'error',
-                text1: `${err}`,
+                text1: 'Error fetching Details',
+                text2: `${err.message}`,
             });
-            if (sync) {
-                Alert.alert('Logout', 'Due to error while syncing your data from the UMS server you have been logout, This because you might have changed your UMS password or it has been expired, try it again after logging with your new password, if it still happens then it would be something from our end, try it after some time :) ', [
-                    { text: 'Okay', onPress: async () => logout2() },
-                ]);
-            }
-            console.log({ "inside catch": err });
+            console.error(error.message);
             setLoading(false)
-            setRefreshing(false)
-        })
-        return
+        }
     }
 
     async function fetchDataLocally() {
         try {
             setLoading(true)
-            let user = await AsyncStorage.getItem("USER");
+            let user = await AsyncStorage.getItem("STUDENT_BASIC_DETAILS");
             if (!user) {
-                fetchData(false)
+                fetchData()
                 setLoading(false)
                 return
             }
@@ -73,58 +75,63 @@ export default function MyProfile({ navigation }) {
 
 
     return (
-        <SafeAreaView style={[styles.container]} >
-            <Toast />
-            <StatusBar style='auto' />
-            <View style={[styles.header]}>
-                {/* Back naviagtion button */}
-                <View style={[styles.backBtn]}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <MaterialIcons name='arrow-back-ios' size={25} color={colors.lightDark} />
-                    </TouchableOpacity>
-                </View>
-                {/* title */}
-                <View style={[styles.title]}>
-                    <Text style={{ fontSize: 18, fontWeight: "500" }}>My Profile</Text>
-                </View>
+        <>
+            <View style={{ zIndex: 2 }}>
+                <Toast />
+            </View>
+            <SafeAreaView style={[styles.container]} >
 
-                {/* Logout */}
-                <View style={[styles.backBtn]}>
-                    {/* <TouchableOpacity onPress={logout}>
+                <StatusBar style='auto' />
+                <View style={[styles.header]}>
+                    {/* Back naviagtion button */}
+                    <View style={[styles.backBtn]}>
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <MaterialIcons name='arrow-back-ios' size={25} color={colors.lightDark} />
+                        </TouchableOpacity>
+                    </View>
+                    {/* title */}
+                    <View style={[styles.title]}>
+                        <Text style={{ fontSize: 18, fontWeight: "500" }}>My Profile</Text>
+                    </View>
+
+                    {/* Logout */}
+                    <View style={[styles.backBtn]}>
+                        {/* <TouchableOpacity onPress={logout}>
                         <MaterialIcons name='logout' size={25} color={colors.lightDark} />
                     </TouchableOpacity> */}
+                    </View>
+
                 </View>
 
-            </View>
 
 
+                {/* Last sync container */}
+                {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, it may take a few seconds"} />}
+                <SyncData color={"white"} self={true} syncNow={() => fetchData()} time={formatTimeAgo(student.requestTime)} bg={colors.secondary} />
 
-            {/* Last sync container */}
-            {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, It may take some minutes"} />}
-            <SyncData color={"white"} self={true} syncNow={() => fetchData(false)} time={formatTimeAgo(student.lastSync)} bg={colors.secondary} />
+                {/* Body */}
+                <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}
+                // refreshControl={
+                //     <RefreshControl
+                //         tintColor={colors.secondary}
+                //         colors={[colors.secondary]}
+                //         refreshing={refreshing}
+                //         onRefresh={() => {
+                //             fetchData()
+                //         }}
+                //     />
+                // }
+                >
+                    <StudentProfile student={student?.data} />
+                </ScrollView>
 
-            {/* Body */}
-            <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}
-            // refreshControl={
-            //     <RefreshControl
-            //         tintColor={colors.secondary}
-            //         colors={[colors.secondary]}
-            //         refreshing={refreshing}
-            //         onRefresh={() => {
-            //             fetchData()
-            //         }}
-            //     />
-            // }
-            >
-                <StudentProfile student={student} />
-            </ScrollView>
-
-            <View style={styles.footer}>
-                <TouchableOpacity onPress={logout} style={styles.footerBtn}>
-                    <Text style={{ color: "grey" }}>Logout</Text>
-                </TouchableOpacity>
-            </View>
-        </SafeAreaView>
+                <View style={styles.footer}>
+                    <TouchableOpacity onPress={logout} style={styles.footerBtn}>
+                        <Text style={{ color: "grey" }}>Logout</Text>
+                    </TouchableOpacity>
+                </View>
+            </SafeAreaView>
+        </>
     )
 }
 

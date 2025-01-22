@@ -13,7 +13,13 @@ export const scrapeStudentTimetable = async (user: User) => {
     try {
         const login: umsLoginReturn = await umsLogin({ reg_no: user.reg_no, password: user.password });
         if (!login.login) {
-            throw new Error('Failed to login: ' + login.message);
+            return {
+                data: {},
+                requestTime: "",
+                message: "Failed to login: ",
+                status: false,
+                errorMessage: login.message
+            }
         }
 
         const requestedTimetable = await requestTimetable(login.cookie)
@@ -23,7 +29,7 @@ export const scrapeStudentTimetable = async (user: User) => {
             data: parsedTimetable,
             requestTime: new Date().toISOString(),
             message: "Data fetched successfully",
-            status: false
+            status: true
         }
     } catch (error: any) {
         console.error(error);

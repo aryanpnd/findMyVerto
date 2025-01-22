@@ -4,7 +4,7 @@ import { colors } from '../../constants/colors';
 
 const { height, width } = Dimensions.get('window');
 export default function StudentProfile({ student }) {
-  const imageSource = student.photoURL ? { uri: student.photoURL } : require("../../../assets/icons/profileAvatar.png");
+  const imageSource = student?.studentPicture ? { uri: `data:image/png;base64,${student?.studentPicture}` } : require("../../../assets/icons/profileAvatar.png");
 
   return (
     <View style={styles.container}>
@@ -20,38 +20,38 @@ export default function StudentProfile({ student }) {
 
       {/* name */}
       <View style={{ alignItems: "center", width: "100%", gap: 10 }}>
-        <Text style={[styles.textL, { fontWeight: "500" }]}>{student.name}</Text>
-        <Text style={[styles.textL, { color: "grey" }]}>{student.registrationNumber}</Text>
+        <Text style={[styles.textL, { fontWeight: "500" }]}>{student?.studentName}</Text>
+        <Text style={[styles.textL, { color: "grey" }]}>{student?.reg_no}</Text>
       </View>
 
       <View style={styles.otherInfo}>
         <View style={styles.otherInfoSub}>
           <View style={styles.otherInfoSub2}>
             <Text style={styles.textM}>Section</Text>
-            <Text>{student.section}</Text>
+            <Text>{student?.section}</Text>
           </View>
 
           <View style={styles.otherInfoSub2}>
-            <Text style={[styles.textM, { textAlign: "right" }]}>Group</Text>
-            <Text style={{ textAlign: "right" }}>{student.group}</Text>
+            <Text style={[styles.textM, { textAlign: "right" }]}>Roll No</Text>
+            <Text style={{ textAlign: "right" }}>{student?.rollNumber?.split(student?.section)[1]}</Text>
           </View>
         </View>
 
-        <View style={styles.otherInfoSub}>
+        {/* <View style={styles.otherInfoSub}>
           <View style={styles.otherInfoSub2}>
             <Text style={styles.textM}>Roll no.</Text>
-            <Text>{student.rollNo}</Text>
+            <Text>{student?.rollNo}</Text>
           </View>
 
           <View style={styles.otherInfoSub2}>
             <Text style={[styles.textM, { textAlign: "right" }]}>Term</Text>
-            <Text style={{ textAlign: "right" }}>{student.term}</Text>
+            <Text style={{ textAlign: "right" }}>{student?.term}</Text>
           </View>
-        </View>
+        </View> */}
 
         <View style={{ alignItems: "center" }}>
           <Text style={styles.textM}>Program</Text>
-          <Text>{student.program}</Text>
+          <Text>{student?.program}</Text>
         </View>
 
       </View>

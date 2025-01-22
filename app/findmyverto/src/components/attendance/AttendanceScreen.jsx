@@ -3,20 +3,20 @@ import React, { useEffect, useState } from 'react'
 import Toast from 'react-native-toast-message'
 import AttendanceCard from '../../components/attendance/AttendanceCard'
 import { colors } from '../../constants/colors'
-import formatTimeAgo from '../../constants/dateFormatter'
 import SyncData from '../../components/miscellaneous/SyncData'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
+import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
 
-export default function AttendanceScreen({ attendance, fetchDataLocally, syncAttendaceData, loading, self }) {
-  const [lastSynced, setLastSynced] = useState("")
+export default function AttendanceScreen({ attendance, fetchAttendance,lastSynced, loading, self }) {
+  const [lastSyncedState, setLastSyncedState] = useState("")
 
   useEffect(() => {
-    fetchDataLocally();
+    fetchAttendance(false);
   }, []);
 
   useEffect(() => {
-    setLastSynced(formatTimeAgo(attendance.lastSync))
-  }, [attendance]);
+    setLastSyncedState(formatTimeAgo(lastSynced))
+  }, [lastSynced]);
 
 
   return (
@@ -25,21 +25,21 @@ export default function AttendanceScreen({ attendance, fetchDataLocally, syncAtt
         <Toast />
       </View>
 
-      {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, It may take some minutes"} />}
+      {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} />}
       
       <View style={styles.container}>
-        <SyncData time={lastSynced} syncNow={syncAttendaceData} self={self} color={'white'} bg={colors.secondary} />
+        <SyncData time={lastSyncedState} syncNow={()=>fetchAttendance(true)} self={self} color={'white'} bg={colors.secondary} />
 
         <View style={styles.TotalAttendanceContainer}>
-          <AttendanceCard colors={['#2657eb', '#de6161']} attendance={attendance?.attendanceHistory?.[attendance.attendanceHistory?.length - 1] ?? 0} />
+          <AttendanceCard colors={['#2657eb', '#de6161']} attendance={attendance?.total_details} />
         </View>
 
         <View style={styles.AttendanceContainer}>
           <ScrollView>
             {
-              attendance?.attendanceHistory?.slice(0, -1).map((value) => {
+              attendance?.attendance_summary?.map((value,index) => {
                 return (
-                  <View style={styles.cardContainer} key={value._id}>
+                  <View style={styles.cardContainer} key={index}>
                     <AttendanceCard colors={['#0f2027', '#2c5364']} attendance={value} />
                   </View>
                 );

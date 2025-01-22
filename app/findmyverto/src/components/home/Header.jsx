@@ -6,69 +6,74 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import { API_URL, AuthContext } from '../../../context/Auth'
 import Toast from 'react-native-toast-message'
-import formatTimeAgo from '../../constants/dateFormatter'
 import LottieView from 'lottie-react-native';
 import { AppContext } from '../../../context/MainApp'
 import { LinearGradient } from 'expo-linear-gradient'
 import { colors } from '../../constants/colors'
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'; // Import the shimmer placeholder
+
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create shimmer placeholder
 
 
-export default function Header({ userDetails, navigation }) {
+export default function Header({ navigation }) {
     const { auth } = useContext(AuthContext)
     const { setCourses } = useContext(AppContext)
-    const [attendence, setattendence] = useState({})
+    const [attendance, setattendance] = useState(null)
     const [loading, setLoading] = useState(false)
-
-    async function fetchDataLocally() {
-        try {
-            setLoading(true)
-            let userAttendance = await AsyncStorage.getItem("ATTENDANCE");
-            let Courses = await AsyncStorage.getItem("COURSES");
-            if (!userAttendance) {
-                await axios.post(`${API_URL}/api/student/getStudentAttendance`, { password: auth.pass }).then(async (result) => {
-                    await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(result.data));
-                    setattendence(result.data)
-
-                    // fetching courses
-                    const courses = {}
-                    const aH = result.data.attendanceHistory.slice(0, -1)
-                    await aH.map((value) => courses[value.course.split(":")[0]] = value.course.split(":")[1])
-                    setCourses(courses)
-                    await AsyncStorage.setItem("COURSES", JSON.stringify(courses));
-
-                    setLoading(false)
-                }).catch((err) => {
-                    Toast.show({
-                        type: 'error',
-                        text1: 'Error fetching Attendance',
-                        text2: `${err}`,
-                    });
-                    console.log({ "inside catch": err });
-                    setLoading(false)
-                })
-                return
-            }
-            setLoading(false)
-            setattendence(JSON.parse(userAttendance))
-            setCourses(JSON.parse(Courses))
-        } catch (error) {
-            console.error(error);
-            setLoading(false)
-        }
-    }
+    const [userDetails, setuserDetails] = useState({})
 
     useEffect(() => {
+        async function fetchDataLocally() {
+            try {
+                setLoading(true)
+                let studentBasicDetails = await AsyncStorage.getItem("STUDENT_BASIC_DETAILS");
+                let parsedDetails = studentBasicDetails ? JSON.parse(studentBasicDetails) : null;
+                // Check if details exist and are valid
+                if (!parsedDetails) {
+                    if (!parsedDetails || parsedDetails.status === false) {
+                        const result = await axios.post(`${API_URL}/student/basicInfo`, { reg_no: auth.reg_no, password: auth.password });
+                        if (result.data.status) {
+                            await AsyncStorage.setItem("STUDENT_BASIC_DETAILS", JSON.stringify(result.data));
+                            setuserDetails(result.data.data)
+                        } else {
+                            Toast.show({
+                                type: 'error',
+                                text1: `${result.data.message}`,
+                                text2: `${result.data.errorMessage}`,
+                            });
+                        }
+                    } else {
+                        setuserDetails(parsedDetails.data)
+                    }
+                } else {
+                    setuserDetails(parsedDetails.data)
+                }
+                setLoading(false)
+            } catch (error) {
+                Toast.show({
+                    type: 'error',
+                    text1: 'Error fetching Details',
+                    text2: `${err.message}`,
+                });
+                console.error(error.message);
+                setLoading(false)
+            }
+        }
         fetchDataLocally();
     }, []);
 
+
+    // useEffect(() => {
+    //     fetchDataLocally();
+    // }, []);
+
     useEffect(() => {
-        fetchDataLocally();
+        // fetchDataLocally();
     }, [navigation]);
 
 
     return (
         <LinearGradient style={styles.container} colors={[colors.secondary, colors.primary]}>
-
             <View style={styles.header}>
                 <View style={{ height: '20%', alignItems: 'center' }}></View>
 
@@ -103,13 +108,32 @@ export default function Header({ userDetails, navigation }) {
 
                     <TouchableOpacity style={styles.greeting}>
                         <Text style={{ fontSize: 20, color: colors.whiteLight, fontWeight: 'bold' }}>Hello,</Text>
-                        <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMedium}>{userDetails.name}</Text>
-                        <View style={{ flexDirection: 'row' }}>
-                            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>{userDetails.registrationNumber}</Text>
-                            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>{userDetails.section}</Text>
-                            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>Group: {userDetails.group}</Text>
+
+                        {loading ? 
+                        <ShimmerPlaceHolder visible={false} style={[styles.textMedium, styles.nameShimmerStyles]} /> :
+                            <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMedium}>
+                                {loading ? "" : userDetails.studentName}
+                            </Text>}
+
+                        <View style={{ flexDirection:"row" }}>
+                            {loading ? 
+                            <ShimmerPlaceHolder visible={false} style={[styles.textSmall, styles.shimmerStyles]} /> :
+                                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>
+                                    {loading ? "" : userDetails.reg_no}
+                                </Text>}
+                            {loading ? 
+                            <ShimmerPlaceHolder visible={false} style={[styles.textSmall, styles.shimmerStyles]} /> :
+                                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>
+                                    {loading ? "" : userDetails.section}
+                                </Text>}
+                            {loading ? 
+                            <ShimmerPlaceHolder visible={false} style={[styles.textSmall, styles.shimmerStyles]} /> :
+                                <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>
+                                    {loading ? "" : userDetails?.rollNumber?.split(userDetails.section)[1]}
+                                </Text>}
                         </View>
                     </TouchableOpacity>
+
 
                     <TouchableOpacity style={styles.AttendanceContainer} onPress={loading ? () => { } : () => navigation.navigate('Attendance')}>
                         <Text style={{ fontWeight: '500', color: colors.whiteLight }}>Attendance</Text>
@@ -125,7 +149,7 @@ export default function Header({ userDetails, navigation }) {
                                 />
                             </> :
                             <>
-                                <AttendanceProgressBar size={50} attendance={parseInt(attendence?.attendanceHistory?.[attendence.attendanceHistory?.length - 1]?.totalPercentage ?? 0)} />
+                                <AttendanceProgressBar size={50} attendance={userDetails.attendance ? parseInt(userDetails.attendance) : 0} />
                             </>
                         }
                     </TouchableOpacity>
@@ -181,7 +205,7 @@ const styles = StyleSheet.create({
     greeting: {
         width: '70%',
         overflow: 'hidden',
-        paddingLeft: 5,
+        paddingLeft: 5
     },
     AttendanceContainer: {
         width: '30%',
@@ -219,5 +243,17 @@ const styles = StyleSheet.create({
         color: colors.whiteLight
     },
     textSmall: { marginRight: 15, fontSize: 15, fontWeight: '400', color: 'white' },
-    textMedium: { fontSize: 25, fontWeight: 'bold', color: 'white' }
+    textMedium: { fontSize: 25, fontWeight: 'bold', color: 'white' },
+    nameShimmerStyles:{
+        borderRadius: 5,
+        height: "30%",
+        margin: 2,
+        marginBottom:10
+    },
+    shimmerStyles: {
+        borderRadius: 5,
+        height: 20,
+        margin: 2,
+        width:"24%"
+    }
 })

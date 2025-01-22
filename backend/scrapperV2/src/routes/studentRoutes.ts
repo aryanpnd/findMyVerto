@@ -19,10 +19,10 @@ export const studentRoutes = express.Router();
  *             properties:
  *               reg_no:
  *                 type: string
- *                 example: string
+ *                 example: "12203693"
  *               password:
  *                 type: string
- *                 example: string
+ *                 example: "MrCat@9870"
  *     responses:
  *       200:
  *         description: Successful response
@@ -81,9 +81,9 @@ studentRoutes.post('/timetable', getStudentTimeTable);
 
 /**
  * @swagger
- * /api/v2/student/timetable:
+ * /api/v2/student/attendance:
  *   post:
- *     summary: Get student timetabl
+ *     summary: Get student attendance
  *     requestBody:
  *       required: true
  *       content:
