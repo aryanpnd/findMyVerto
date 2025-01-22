@@ -1,12 +1,26 @@
 import { View, Text, StyleSheet, Image } from 'react-native'
-import React, { useContext } from 'react'
+import React, { use, useContext, useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { globalStyles } from '../../constants/styles'
 import { AppContext } from '../../../context/MainApp'
 import { colors } from '../../constants/colors'
+import isTimeEqual from '../../utils/helperFunctions/funtions'
+import getDay from '../../utils/helperFunctions/dataAndTimeHelpers'
 
-export default function ClassesCard({ time, value }) {
+export default function ClassesCard({ time, classes, day }) {
   const { courses } = useContext(AppContext)
+  const [ongoing, setOngoing] = useState(false)
+
+  // const checkOngoing = () => {
+  //   const isOngoing = isTimeEqual(time) && getDay() && day === getDay()
+  //   // console.log("Is time equal: ",isTimeEqual(time),"Day: ", day,"Today: ", new Date().getDay());
+  //   console.log(day);
+    
+  //   setOngoing(isOngoing)
+  // }
+  // useEffect(() => {
+  //   checkOngoing()
+  // }, [classes])
 
   return (
     <LinearGradient
@@ -25,35 +39,57 @@ export default function ClassesCard({ time, value }) {
           transition={1000}
         />
         <Text style={styles.text2}>{time}</Text>
+        {/* {ongoing && <Text style={{ color: colors.orange, fontWeight: 'bold' }}>Ongoing</Text>} */}
       </View>
 
-      {/* Rest values */}
-      <View style={styles.restValues}>
-        {/* Course name and code  */}
-        <View>
-          <Text style={styles.text1}>
-            {"("}{value?.split("/")[1].split(" ")[2].split(":")[1]}{")"}  {courses[value?.split("/")[1].split(" ")[2].split(":")[1]]}
-          </Text>
-        </View>
+      <View style={styles.classesContainer}>
+        {
+          classes?.map((classDetail, index) => (
+            <View style={styles.classValues} key={index}>
+              {/* Course name and code  */}
+              <View>
+                <Text style={styles.text1}>
+                  {classDetail.class} - {classDetail.className}
+                </Text>
+              </View>
 
-        <View style={styles.buildingAndGroupContainer}>
-          <View style={styles.btnEffect}>
-            <Image
-              source={require("../../../assets/icons/building.png")}
-              style={{ height: 20, width: 20 }}
-              transition={1000}
-            />
-            <Text style={styles.text2}>{value?.split("/")[2]?.split(":")[1]}</Text>
-          </View>
+              <View style={styles.classInfoContainer}>
+                <View style={styles.btnEffect}>
+                  <Image
+                    source={require("../../../assets/icons/building.png")}
+                    style={{ height: 20, width: 20 }}
+                    transition={1000}
+                  />
+                  <Text style={styles.text2}>{classDetail.room}</Text>
+                </View>
 
-          <View style={styles.btnEffect}>
-            <Image source={require("../../../assets/icons/course.png")} style={{ height: 20, width: 20 }} transition={1000} />
-            <Text style={styles.text2}>Group: {value?.split("/")[1]?.split(" ")[1]?.split(":")[1]}</Text>
-          </View>
-        </View>
+                <View style={styles.btnEffect}>
+                  <Image
+                    source={require("../../../assets/icons/section.png")}
+                    style={{ height: 20, width: 20 }}
+                    transition={1000}
+                  />
+                  <Text style={styles.text2}>{classDetail.section}</Text>
+                </View>
+              </View>
+              <View style={styles.classInfoContainer}>
+
+                <View style={styles.btnEffect}>
+                  {/* <Image source={require("../../../assets/icons/course.png")} style={{ height: 20, width: 20 }} transition={1000} /> */}
+                  <Text style={styles.text2}>Group: {classDetail.group}</Text>
+                </View>
+
+                <View style={styles.btnEffect}>
+                  {/* <Image source={require("../../../assets/icons/course.png")} style={{ height: 20, width: 20 }} transition={1000} /> */}
+                  <Text style={styles.text2}>Type: {classDetail.type}</Text>
+                </View>
+              </View>
+              {classes.length > 1 && index !== classes.length - 1 && <View style={styles.divider}></View>}
+            </View>
+          ))
+        }
 
       </View>
-
 
     </LinearGradient>
   )
@@ -61,13 +97,13 @@ export default function ClassesCard({ time, value }) {
 
 const styles = StyleSheet.create({
   container: {
-    height: 100,
+    // height: 100,
     // width: 360,
     borderRadius: 20,
     flexDirection: 'row',
     padding: 10,
     justifyContent: 'space-between',
-    gap: 10
+    // gap: 5
   },
   timeContainer: {
     borderWidth: 1,
@@ -78,13 +114,21 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     gap: 10
   },
-  restValues: {
+  classesContainer: {
     // backgroundColor:'red',
     justifyContent: 'space-between',
-    width: '70%',
-    padding: 2
+    width: '75%',
+    // padding: 2,
+    gap: 10
   },
-  buildingAndGroupContainer: {
+  classValues: {
+    // backgroundColor:'red',
+    justifyContent: 'space-between',
+    // width: '100%',
+    padding: 2,
+    gap: 10
+  },
+  classInfoContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between'
   },
@@ -93,9 +137,9 @@ const styles = StyleSheet.create({
     backgroundColor: colors.btn1,
     borderRadius: 10,
     flexDirection: 'row',
-    justifyContent:'center',
-    alignItems:'center',
-    gap:5
+    justifyContent: 'center',
+    alignItems: 'center',
+    gap: 5
   },
   text1: {
     color: "grey",
@@ -105,5 +149,12 @@ const styles = StyleSheet.create({
   text2: {
     // color: 'white',
     color: "grey",
+  },
+  divider: {
+    width: "80%",
+    height: 1,
+    backgroundColor: colors.disabledBackground,
+    marginVertical: 5,
+    alignSelf: "center"
   }
 })

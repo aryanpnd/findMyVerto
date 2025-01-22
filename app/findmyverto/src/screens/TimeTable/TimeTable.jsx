@@ -7,15 +7,23 @@ import SyncData from '../../components/miscellaneous/SyncData'
 import { colors } from '../../constants/colors'
 import { API_URL, AuthContext } from '../../../context/Auth'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
-import formatTimeAgo from '../../constants/dateFormatter'
 import Toast from 'react-native-toast-message'
+import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
+import { AppContext } from '../../../context/MainApp'
+import { fetchTimetable } from '../../utils/fetchUtils/timeTableFetch'
+import Test from '../../components/home/Test'
 
 export default function TimeTable() {
-  const { auth,logout2 } = useContext(AuthContext)
+  const { auth, logout2 } = useContext(AuthContext)
+  const { timetableLoading, setTimetableLoading } = useContext(AppContext)
   const [classesToday, setClassesToday] = useState(0)
   const [timeTable, settimeTable] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [day, setDay] = useState(0)
+
+  const [refreshing, setRefreshing] = useState(false);
+  const [isError, setIsError] = useState(false);
   const [lastSynced, setLastSynced] = useState("")
+  const [lastUpdated, setLastUpdated] = useState("")
 
 
   async function fetchTimeTableData() {
@@ -66,7 +74,7 @@ export default function TimeTable() {
         text2: `${err}`,
       });
       Alert.alert('Logout', 'Due to error while syncing your data from the UMS server you have been logout, This because you might have changed your UMS password or it has been expired, try it again after logging with your new password, if it still happens then it would be something from our end, try it after some time :) ', [
-        {text: 'Okay', onPress: async () => logout2()},
+        { text: 'Okay', onPress: async () => logout2() },
       ]);
       console.log({ "inside catch": err });
       setLoading(false)
@@ -74,27 +82,30 @@ export default function TimeTable() {
     return
   }
 
-  useEffect(() => {
-    fetchTimeTableData()
-  }, [])
+  const handleFetchTimetable = async (sync) => {
+    if (timetableLoading) return
+    fetchTimetable(setTimetableLoading, setRefreshing, settimeTable, setClassesToday, auth, setIsError, sync, false, setLastSynced, setLastUpdated)
+  }
 
   useEffect(() => {
-    setLastSynced(formatTimeAgo(timeTable.lastSync))
-  }, [timeTable]);
+    handleFetchTimetable(false)
+  }, [])
 
 
   return (
     <>
       <View style={{ zIndex: 2 }}>
         <Toast />
+      <SyncData self={true} syncNow={() => handleFetchTimetable(true)} time={formatTimeAgo(lastSynced)} color={"white"} bg={colors.secondary} />
       </View>
-      <SyncData self={true} syncNow={syncTimetableData} time={lastSynced} color={"white"} bg={colors.secondary} />
-      {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, It may take some minutes"} />}
+      {self && <OverlayLoading loading={timetableLoading} loadingText={"Syncing..."}/>}
       {
-        loading?
-        <></>
+        timeTable ?
+        // <TimeTableScreen timeTable={Object.entries(timeTable)} />
+        <TimeTableScreen timeTable={timeTable}/>
         :
-        <TimeTableScreen timeTable={Object.entries(timeTable)} />
+        <></>
+          // <></>
       }
     </>
   )

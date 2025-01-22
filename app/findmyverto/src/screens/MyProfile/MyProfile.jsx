@@ -10,8 +10,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import Toast from 'react-native-toast-message'
 import SyncData from '../../components/miscellaneous/SyncData'
-import formatTimeAgo from '../../constants/dateFormatter'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
+import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
 
 const { height, width } = Dimensions.get('window');
 
@@ -75,58 +75,63 @@ export default function MyProfile({ navigation }) {
 
 
     return (
-        <SafeAreaView style={[styles.container]} >
-            <Toast />
-            <StatusBar style='auto' />
-            <View style={[styles.header]}>
-                {/* Back naviagtion button */}
-                <View style={[styles.backBtn]}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <MaterialIcons name='arrow-back-ios' size={25} color={colors.lightDark} />
-                    </TouchableOpacity>
-                </View>
-                {/* title */}
-                <View style={[styles.title]}>
-                    <Text style={{ fontSize: 18, fontWeight: "500" }}>My Profile</Text>
-                </View>
+        <>
+            <View style={{ zIndex: 2 }}>
+                <Toast />
+            </View>
+            <SafeAreaView style={[styles.container]} >
 
-                {/* Logout */}
-                <View style={[styles.backBtn]}>
-                    {/* <TouchableOpacity onPress={logout}>
+                <StatusBar style='auto' />
+                <View style={[styles.header]}>
+                    {/* Back naviagtion button */}
+                    <View style={[styles.backBtn]}>
+                        <TouchableOpacity onPress={() => navigation.goBack()}>
+                            <MaterialIcons name='arrow-back-ios' size={25} color={colors.lightDark} />
+                        </TouchableOpacity>
+                    </View>
+                    {/* title */}
+                    <View style={[styles.title]}>
+                        <Text style={{ fontSize: 18, fontWeight: "500" }}>My Profile</Text>
+                    </View>
+
+                    {/* Logout */}
+                    <View style={[styles.backBtn]}>
+                        {/* <TouchableOpacity onPress={logout}>
                         <MaterialIcons name='logout' size={25} color={colors.lightDark} />
                     </TouchableOpacity> */}
+                    </View>
+
                 </View>
 
-            </View>
 
 
+                {/* Last sync container */}
+                {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, it may take a few seconds"} />}
+                <SyncData color={"white"} self={true} syncNow={() => fetchData()} time={formatTimeAgo(student.requestTime)} bg={colors.secondary} />
 
-            {/* Last sync container */}
-            {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, it may take a few seconds"} />}
-            <SyncData color={"white"} self={true} syncNow={() => fetchData()} time={formatTimeAgo(student.requestTime)} bg={colors.secondary} />
+                {/* Body */}
+                <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}
+                // refreshControl={
+                //     <RefreshControl
+                //         tintColor={colors.secondary}
+                //         colors={[colors.secondary]}
+                //         refreshing={refreshing}
+                //         onRefresh={() => {
+                //             fetchData()
+                //         }}
+                //     />
+                // }
+                >
+                    <StudentProfile student={student?.data} />
+                </ScrollView>
 
-            {/* Body */}
-            <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}
-            // refreshControl={
-            //     <RefreshControl
-            //         tintColor={colors.secondary}
-            //         colors={[colors.secondary]}
-            //         refreshing={refreshing}
-            //         onRefresh={() => {
-            //             fetchData()
-            //         }}
-            //     />
-            // }
-            >
-                <StudentProfile student={student?.data} />
-            </ScrollView>
-
-            <View style={styles.footer}>
-                <TouchableOpacity onPress={logout} style={styles.footerBtn}>
-                    <Text style={{ color: "grey" }}>Logout</Text>
-                </TouchableOpacity>
-            </View>
-        </SafeAreaView>
+                <View style={styles.footer}>
+                    <TouchableOpacity onPress={logout} style={styles.footerBtn}>
+                        <Text style={{ color: "grey" }}>Logout</Text>
+                    </TouchableOpacity>
+                </View>
+            </SafeAreaView>
+        </>
     )
 }
 

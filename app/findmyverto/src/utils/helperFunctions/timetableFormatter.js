@@ -1,5 +1,4 @@
 export default function formatTimetable(ttToFormat, courses = {}, formatToClasses = false) {
-
     let formattedTimetable = {};
     if (ttToFormat && Object.keys(ttToFormat).length > 0) {
         if (formatToClasses) {
@@ -12,9 +11,9 @@ export default function formatTimetable(ttToFormat, courses = {}, formatToClasse
                 const classes = Object.entries(tt)
                     .filter(([_, value]) => value.length > 1)
                     .map(([time, classes]) => {
-                        const classList = classes?.split(', ').map(classString => {
+                        const classList = classes.split(', ').map(classString => {
                             const regex = /(\w+) \/ G:(\w+) C:(\w+) \/ R: (\S+) \/ S:(\S+)/;
-                            const match = classString?.match(regex);
+                            const match = classString.match(regex);
                             if (match) {
                                 return {
                                     type: match[1],
@@ -32,7 +31,9 @@ export default function formatTimetable(ttToFormat, courses = {}, formatToClasse
                             class: classList
                         };
                     });
-                formattedTimetable = addBreaksToSchedule(classes);
+                formattedTimetable = classes.length ? addBreaksToSchedule(classes) : [{}];
+            }else {
+                formattedTimetable = [{}];
             }
         } else {
             formattedTimetable = Object.fromEntries(
@@ -60,7 +61,7 @@ export default function formatTimetable(ttToFormat, courses = {}, formatToClasse
                                 class: classList
                             };
                         });
-                    return [day, addBreaksToSchedule(dailyClasses)];
+                        return [day, dailyClasses.length ? addBreaksToSchedule(dailyClasses) : [{}]];
                 })
             );
         }

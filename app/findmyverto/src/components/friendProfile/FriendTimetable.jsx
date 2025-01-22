@@ -7,8 +7,8 @@ import SyncData from '../../components/miscellaneous/SyncData'
 import { colors } from '../../constants/colors'
 import { API_URL, AuthContext } from '../../../context/Auth'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
-import formatTimeAgo from '../../constants/dateFormatter'
 import Toast from 'react-native-toast-message'
+import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
 
 export default function FriendTimetable({ navigation, route }) {
     const { _id, } = route.params;

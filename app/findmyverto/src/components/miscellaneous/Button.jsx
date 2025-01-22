@@ -19,7 +19,7 @@ export default function Button({ children, title, onPress, loading, styles, text
                         source={loadAnim === "amongus" ? require('../../../assets/lotties/loading4.json') : require('../../../assets/lotties/loading1.json')} />
                 </View>
                 :
-                <Text style={[{ fontSize: 20, fontWeight: 'bold', color: 'white' }, textStyles]}>Login</Text>
+                <Text style={[{ fontSize: 20, fontWeight: 'bold', color: 'white' }, textStyles]}>{title}</Text>
             }
         </Pressable>
     )

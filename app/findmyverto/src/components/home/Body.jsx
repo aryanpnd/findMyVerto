@@ -1,10 +1,7 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Dimensions, TouchableHighlight, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import SyncData from '../miscellaneous/SyncData'
+import React from 'react'
 import HomescreenTimeTable from '../timeTable/HomescreenTimeTable'
 import { colors } from '../../constants/colors';
-import isTimeEqual from '../../constants/funtions';
-import getDay from '../../constants/getDay';
 
 
 const { height, width } = Dimensions.get('window');

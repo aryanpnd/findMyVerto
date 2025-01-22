@@ -6,7 +6,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import { API_URL, AuthContext } from '../../../context/Auth'
 import Toast from 'react-native-toast-message'
-import formatTimeAgo from '../../constants/dateFormatter'
 import LottieView from 'lottie-react-native';
 import { AppContext } from '../../../context/MainApp'
 import { LinearGradient } from 'expo-linear-gradient'
@@ -110,21 +109,25 @@ export default function Header({ navigation }) {
                     <TouchableOpacity style={styles.greeting}>
                         <Text style={{ fontSize: 20, color: colors.whiteLight, fontWeight: 'bold' }}>Hello,</Text>
 
-                        {loading ? <ShimmerPlaceHolder visible={false} style={[styles.textMedium, styles.shimmerStyles]} /> :
+                        {loading ? 
+                        <ShimmerPlaceHolder visible={false} style={[styles.textMedium, styles.nameShimmerStyles]} /> :
                             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMedium}>
                                 {loading ? "" : userDetails.studentName}
                             </Text>}
 
-                        <View style={{ flexDirection: loading ? 'column' : "row" }}>
-                            {loading ? <ShimmerPlaceHolder visible={false} style={[styles.textSmall, styles.shimmerStyles]} /> :
+                        <View style={{ flexDirection:"row" }}>
+                            {loading ? 
+                            <ShimmerPlaceHolder visible={false} style={[styles.textSmall, styles.shimmerStyles]} /> :
                                 <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>
                                     {loading ? "" : userDetails.reg_no}
                                 </Text>}
-                            {loading ? <ShimmerPlaceHolder visible={false} style={[styles.textSmall, styles.shimmerStyles]} /> :
+                            {loading ? 
+                            <ShimmerPlaceHolder visible={false} style={[styles.textSmall, styles.shimmerStyles]} /> :
                                 <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>
                                     {loading ? "" : userDetails.section}
                                 </Text>}
-                            {loading ? <ShimmerPlaceHolder visible={false} style={[styles.textSmall, styles.shimmerStyles]} /> :
+                            {loading ? 
+                            <ShimmerPlaceHolder visible={false} style={[styles.textSmall, styles.shimmerStyles]} /> :
                                 <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textSmall}>
                                     {loading ? "" : userDetails?.rollNumber?.split(userDetails.section)[1]}
                                 </Text>}
@@ -241,8 +244,16 @@ const styles = StyleSheet.create({
     },
     textSmall: { marginRight: 15, fontSize: 15, fontWeight: '400', color: 'white' },
     textMedium: { fontSize: 25, fontWeight: 'bold', color: 'white' },
+    nameShimmerStyles:{
+        borderRadius: 5,
+        height: "30%",
+        margin: 2,
+        marginBottom:10
+    },
     shimmerStyles: {
         borderRadius: 5,
-        margin:2
+        height: 20,
+        margin: 2,
+        width:"24%"
     }
 })

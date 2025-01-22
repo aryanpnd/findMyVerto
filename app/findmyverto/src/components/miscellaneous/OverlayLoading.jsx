@@ -21,23 +21,23 @@ export default function OverlayLoading({ loading, loadingText, loadingMsg, loadA
         display: loading ? "" : "none",
         backgroundColor: 'white',
         borderRadius: 10,
-        width: '60%',
+        width: loadingMsg?'50%':"40%",
         maxHeight: '80%',
         justifyContent: 'center',
         alignItems: 'center',
-        paddingHorizontal: 5
+        paddingHorizontal: loadingMsg?10:0
       }, globalStyles.elevation]}>
         <LottieView
           autoPlay
           style={{
-            width: 150,
-            height: 150,
+            width: 100,
+            height: 100,
             // backgroundColor:'red'
           }}
           source={loadAnim === "amongus" ? require('../../../assets/lotties/loading4.json') : require('../../../assets/lotties/loading1.json')}
         />
-        <Text style={{ fontSize: 20, fontWeight: 'bold', marginVertical: 10 }}>{loadingText}</Text>
-        <Text style={[styles.textSmall, { marginBottom: 5, marginBottom: 40 }]}>{loadingMsg}</Text>
+        {loadingText&&<Text style={{ fontSize: 20, fontWeight: 'bold', marginBottom: 20 }}>{loadingText}</Text>}
+        {loadingMsg&&<Text style={[styles.textSmall, { marginBottom: 5, marginBottom: 40 }]}>{loadingMsg}</Text>}
 
       </View>
     </View>

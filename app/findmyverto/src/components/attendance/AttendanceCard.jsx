@@ -12,20 +12,27 @@ export default function AttendanceCard({ attendance, colors }) {
             start={{ x: 0, y: 0 }} // Start from the left
             end={{ x: 1, y: 0 }}
         >
-            <Text style={[styles.textCourse, { marginLeft:10 }]}>{attendance?.course ?? ''}</Text>
+            <Text style={[styles.textCourse, { marginLeft: 10 }]}>{
+                attendance?.subject_name ? `${attendance.subject_code}: ${attendance.subject_name}` : "Aggregate Attendance"
+            }</Text>
 
-            <View style={{flex:4,flexDirection:'row'}}>
+            <View style={{ flex: 4, flexDirection: 'row' }}>
 
                 <View style={styles.detailsContainer}>
 
                     <View style={{ flex: 4.5, justifyContent: "space-evenly", paddingLeft: 5 }}>
-                        <Text style={[styles.textAttendanceDetails, { display: (attendance?.lastAttended ?? '') === "" ? "none" : "flex" }]}>Last Attended: <Text style={styles.textCourse}>{attendance?.lastAttended ?? 0}</Text></Text>
+                        <Text style={[
+                            styles.textAttendanceDetails,
+                            { display: (attendance?.last_attended ?? '') === "" ? "none" : "flex" }
+                        ]}>Last Attended:
+                            <Text style={styles.textCourse}> {attendance?.last_attended ?? 0}</Text>
+                        </Text>
 
-                        <Text style={styles.textAttendanceDetails}>Duty leaves: <Text style={styles.textCourse}>{parseInt(attendance?.dutyLeave ?? 0)}</Text></Text>
+                        <Text style={styles.textAttendanceDetails}>Duty leaves: <Text style={styles.textCourse}>{parseInt(attendance?.duty_leaves ?? 0)}</Text></Text>
 
-                        <Text style={styles.textAttendanceDetails}>Total classes: <Text style={styles.textCourse}>{parseInt(attendance?.totalDelivered ?? 0)}</Text></Text>
+                        <Text style={styles.textAttendanceDetails}>Total classes: <Text style={styles.textCourse}>{parseInt(attendance?.total_delivered ?? 0)}</Text></Text>
 
-                        <Text style={styles.textAttendanceDetails}>Total Attended: <Text style={styles.textCourse}>{parseInt(attendance?.totalAttended ?? 0)}</Text></Text>
+                        <Text style={styles.textAttendanceDetails}>Total Attended: <Text style={styles.textCourse}>{parseInt(attendance?.total_attended ?? 0)}</Text></Text>
                     </View>
                 </View>
 
@@ -33,11 +40,11 @@ export default function AttendanceCard({ attendance, colors }) {
                     <AnimatedCircularProgress
                         size={95}
                         width={8}
-                        fill={parseInt(attendance?.totalPercentage ?? 0)}
+                        fill={parseInt(attendance?.agg_attendance ?? 0)}
                         rotation={360}
-                        tintColor={parseInt(attendance?.totalPercentage ?? 0) > 75 ? "#2ecc71" : parseInt(attendance?.totalPercentage ?? 0) > 60 ? '#686de0' : '#ea2027'}
+                        tintColor={parseInt(attendance?.agg_attendance ?? 0) > 75 ? "#2ecc71" : parseInt(attendance?.totalPercentage ?? 0) > 60 ? '#686de0' : '#ea2027'}
                         backgroundColor="#ffffff87" />
-                    <Text style={{ position: 'absolute', justifyContent: "center", color: 'white', fontSize: 25, fontWeight: '500' }}>{parseInt(attendance?.totalPercentage ?? 0)}%</Text>
+                    <Text style={{ position: 'absolute', justifyContent: "center", color: 'white', fontSize: 25, fontWeight: '500' }}>{parseInt(attendance?.agg_attendance ?? 0)}%</Text>
                 </View>
             </View>
         </LinearGradient>

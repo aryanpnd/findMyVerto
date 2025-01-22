@@ -1,8 +1,8 @@
 import { View, Text, StyleSheet, Dimensions, Image } from 'react-native'
-import React, { useContext } from 'react'
+import React, { use, useContext, useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { AppContext } from '../../../context/MainApp';
-import isTimeEqual from '../../constants/funtions';
+import isTimeEqual from '../../utils/helperFunctions/funtions';
 import { colors } from '../../constants/colors';
 import { globalStyles } from '../../constants/styles';
 import BreakCard from './BreakCard';
@@ -15,22 +15,26 @@ const gap = (width - itemWidth) / 4;
 
 export default function ClassesTodayCards({ value, index }) {
     const { courses } = useContext(AppContext)
+    const [isTimeEqualState, setIsTimeEqualState] = useState(false)
+    useEffect(() => {
+        setIsTimeEqualState(isTimeEqual(value.time))
+    }, [value.time])
     return (
         <LinearGradient
-            colors={isTimeEqual(value.time) ? ['#11998e', '#32cf6d'] : ["white", "transparent"]}
+            colors={isTimeEqualState ? ['#11998e', '#32cf6d'] : ["white", "transparent"]}
             style={[styles.cardContainer, globalStyles.elevationMin]}
             start={{ x: 0, y: 0 }} // Start from the left
             end={{ x: 1, y: 0 }}
         >
 
-            <View style={[styles.timeContainer, { backgroundColor: isTimeEqual(value.time) ? colors.orange : colors.btn1 }]}>
+            <View style={[styles.timeContainer, { backgroundColor: isTimeEqualState ? colors.orange : colors.btn1 }]}>
                 <Image
                     source={require("../../../assets/icons/clock.png")}
                     style={{ height: 20, width: 20 }}
                     transition={1000}
                 />
-                <Text numberOfLines={2} style={[isTimeEqual(value.time) ? styles.text2 : styles.text1, { fontWeight: "500" }]}>
-                    {isTimeEqual(value.time) ? `Ongoing (${value.time})` : value.time}
+                <Text numberOfLines={2} style={[isTimeEqualState ? styles.text2 : styles.text1, { fontWeight: "500" }]}>
+                    {isTimeEqualState ? `Ongoing (${value.time})` : value.time}
                 </Text>
             </View>
 
@@ -40,7 +44,7 @@ export default function ClassesTodayCards({ value, index }) {
                         colors={['#a8e063', '#56ab2f']}
                         start={{ x: 0, y: 0 }}
                         end={{ x: 1, y: 0 }} style={[styles.breakCard, globalStyles.elevationMin]}>
-                            <Text style={styles.breakCardText}>Break</Text>
+                        <Text style={styles.breakCardText}>Break</Text>
                     </LinearGradient>
                     :
 
@@ -59,23 +63,23 @@ export default function ClassesTodayCards({ value, index }) {
 
                                         {/* class type and building */}
                                         <View style={styles.cardElementsContainer}>
-                                            <View style={[styles.cardElements, { backgroundColor: isTimeEqual(value.time) ? colors.blueTransparency : "" }]}>
-                                                <Image
+                                            <View style={[styles.cardElements, { backgroundColor: isTimeEqualState ? colors.blueTransparency : "" }]}>
+                                                {/* <Image
                                                     source={require("../../../assets/icons/section.png")}
                                                     style={{ height: 20, width: 20 }}
                                                     transition={1000}
-                                                />
-                                                <Text numberOfLines={2} style={[isTimeEqual(value.time) ? styles.text2 : styles.text1, { fontWeight: "500" }]}>
-                                                    {classDetail.section}
+                                                /> */}
+                                                <Text numberOfLines={2} style={[isTimeEqualState ? styles.text2 : styles.text1, { fontWeight: "500" }]}>
+                                                    <Text style={{ fontWeight: "bold", color:isTimeEqualState?"white":"black" }}>Section:</Text> {classDetail.section}
                                                 </Text>
                                             </View>
-                                            <View style={[styles.cardElements, { backgroundColor: isTimeEqual(value.time) ? colors.blueTransparency : "", },]}>
+                                            <View style={[styles.cardElements, { backgroundColor: isTimeEqualState ? colors.blueTransparency : "", },]}>
                                                 <Image
                                                     source={require("../../../assets/icons/building.png")}
                                                     style={{ height: 20, width: 20 }}
                                                     transition={1000}
                                                 />
-                                                <Text numberOfLines={2} style={[isTimeEqual(value.time) ? styles.text2 : styles.text1,]}>
+                                                <Text numberOfLines={2} style={[isTimeEqualState ? styles.text2 : styles.text1,]}>
                                                     {classDetail.room}
                                                 </Text>
                                             </View>
@@ -83,16 +87,16 @@ export default function ClassesTodayCards({ value, index }) {
 
                                         {/* class type and group */}
                                         <View style={styles.cardElementsContainer}>
-                                            <View style={[styles.cardElements, { backgroundColor: isTimeEqual(value.time) ? colors.btn1 : "" }]}>
+                                            <View style={[styles.cardElements, { backgroundColor: isTimeEqualState ? colors.btn1 : "" }]}>
                                                 <Image source={require("../../../assets/icons/course.png")} style={{ height: 20, width: 20 }} transition={1000} />
-                                                <Text numberOfLines={2} style={[isTimeEqual(value.time) ? styles.text2 : styles.text1,]}>
+                                                <Text numberOfLines={2} style={[isTimeEqualState ? styles.text2 : styles.text1,]}>
                                                     {classDetail.type}
                                                 </Text>
                                             </View>
-                                            <View style={[styles.cardElements, { backgroundColor: isTimeEqual(value.time) ? colors.btn1 : "" }]}>
+                                            <View style={[styles.cardElements, { backgroundColor: isTimeEqualState ? colors.btn1 : "" }]}>
                                                 {/* <Image source={require("../../../assets/icons/group.png")} style={{ height: 20, width: 20 }} transition={1000} /> */}
-                                                <Text numberOfLines={2} style={[isTimeEqual(value.time) ? styles.text2 : styles.text1,]}>
-                                                    <Text style={{ fontWeight: "bold" }}>Group:</Text> {classDetail.group}
+                                                <Text numberOfLines={2} style={[isTimeEqualState ? styles.text2 : styles.text1,]}>
+                                                    <Text style={{ fontWeight: "bold", color:isTimeEqualState?"white":"black" }}>Group:</Text> {classDetail.group}
                                                 </Text>
                                             </View>
                                         </View>
@@ -167,10 +171,10 @@ const styles = StyleSheet.create({
         borderBottomLeftRadius: 25,
         borderBottomRightRadius: 25
     },
-    breakCardText:{
-        fontSize:20,
-        fontWeight:"bold",
-        color:"white"
+    breakCardText: {
+        fontSize: 20,
+        fontWeight: "bold",
+        color: "white"
     },
     divider: {
         height: "80%",

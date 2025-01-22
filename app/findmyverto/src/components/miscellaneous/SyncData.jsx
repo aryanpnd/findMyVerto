@@ -7,7 +7,7 @@ import CustomAlert, { useCustomAlert } from './CustomAlert'
 export default function SyncData({ time, syncNow, self, color, bg }) {
   const customAlert = useCustomAlert();
   function SyncData() {
-    customAlert.show('Are you sure?', 'Are you sure you wan to sync your data. It will take some seconds', [
+    customAlert.show('Sync Data?', 'Are you sure you wan to sync your data. It will take some time', [
       {
         text: 'Sync now', onPress: async () => {
           syncNow()
