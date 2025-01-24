@@ -13,7 +13,7 @@ export const getStudentBasicInfo = async (req: Request, res: Response): Promise<
     const studentInfo = await scrapeStudentBasicInfo({reg_no, password});
     res.status(200).json(studentInfo);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    res.json({ error: error.message });
   }
 };
 

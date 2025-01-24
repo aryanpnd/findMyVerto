@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { AuthContext } from '../../../context/Auth';
 import Loading1 from '../miscellaneous/Loading1';
@@ -9,6 +9,7 @@ import isTimeEqual from '../../utils/helperFunctions/funtions';
 import { AppContext } from '../../../context/MainApp';
 import { fetchTimetable } from '../../utils/fetchUtils/timeTableFetch';
 import Button from '../miscellaneous/Button';
+import { useFocusEffect } from '@react-navigation/native';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
@@ -28,6 +29,13 @@ export default function HomescreenTimeTable({ navigation }) {
     const [refreshing, setRefreshing] = useState(false);
     const [isError, setIsError] = useState(false);
 
+    const scrollViewRef = useRef(null);
+
+    useEffect(() => {
+        setDay(new Date().getDay());
+        handleFetchTimetable();
+    }, []);
+
     function today() {
         const td = new Date()
         setDay(td.getDay())
@@ -42,6 +50,19 @@ export default function HomescreenTimeTable({ navigation }) {
         today()
         handleFetchTimetable()
     }, []);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (timeTable.length > 0) {
+                const ongoingIndex = timeTable.findIndex(classItem => isTimeEqual(classItem.time));
+                if (ongoingIndex !== -1 && scrollViewRef.current) {
+                    const scrollPosition = ongoingIndex * (itemWidth + gap);
+                    scrollViewRef.current.scrollTo({ x: scrollPosition, animated: true });
+                }
+            }
+        }, [timeTable])
+    );
+
 
     return (
         <>
@@ -75,17 +96,18 @@ export default function HomescreenTimeTable({ navigation }) {
                                     <SundayMessage navigation={navigation} />
                                     :
                                     <ScrollView
+                                        ref={scrollViewRef}
                                         horizontal
-                                        pagingEnabled
-                                        decelerationRate="fast"
+                                        // pagingEnabled
+                                        decelerationRate="normal"
                                         contentContainerStyle={styles.scrollView}
                                         showsHorizontalScrollIndicator={false}
-                                        snapToInterval={itemWidth + gap}
+                                        // snapToInterval={itemWidth + gap}
                                         refreshControl={
                                             <RefreshControl
                                                 tintColor={colors.secondary}
                                                 colors={[colors.secondary]}
-                                                refreshing={refreshing}
+                                                refreshing={timetableLoading}
                                                 onRefresh={() => {
                                                     handleFetchTimetable()
                                                     today()
@@ -102,7 +124,7 @@ export default function HomescreenTimeTable({ navigation }) {
                                                 <NoClassesMessage />
                                                 :
                                                 timeTable?.map((value, index) => (
-                                                    <ClassesTodayCards key={index} value={value} index={index} />
+                                                    <ClassesTodayCards key={index} value={value} index={index} navigation={navigation} />
                                                 ))
                                         }
 
@@ -138,7 +160,7 @@ const NoClassesMessage = () => {
                 }}
                 source={require('../../../assets/lotties/sleep.json')}
             />
-            <Text style={styles.text1}>No classes for today</Text>
+            <Text style={styles.text1}>No classes are left for today</Text>
             <Text style={styles.text1}>Have fun...</Text>
         </View>
     )

@@ -19,8 +19,9 @@ import Animated, {
 import { colors } from '../../constants/colors';
 import BreakCard from '../timeTable/BreakCard';
 import ClassesCard from '../timeTable/ClassesCard';
-import getDay from '../../utils/helperFunctions/dataAndTimeHelpers';
+import {getDay} from '../../utils/helperFunctions/dataAndTimeHelpers';
 import LottieView from 'lottie-react-native';
+import isTimeEqual from '../../utils/helperFunctions/funtions';
 
 const { width } = Dimensions.get('screen');
 
@@ -108,6 +109,7 @@ export default function TimeTableScreen({ timeTable }) {
   const onPressHeader = index => {
     scroll1.value = index;
   };
+  
 
   return (
     <View style={styles.flex}>
@@ -155,10 +157,27 @@ export default function TimeTableScreen({ timeTable }) {
 }
 
 function Item({ classes, index }) {
+  const scrollViewRef = React.useRef(null);
+
+  useEffect(() => {
+    // Find index of the ongoing class
+    const ongoingIndex = classes.findIndex(classDetails =>
+      isTimeEqual(classDetails?.time) && getDay() === index
+    );
+
+    if (ongoingIndex !== -1 && scrollViewRef.current) {
+      // Scroll to the ongoing class
+      scrollViewRef.current.scrollTo({
+        y: ongoingIndex * 100, // Assuming each card has a height of ~100px, adjust accordingly
+        animated: true,
+      });
+    }
+  }, [classes]);
+
   return (
     <Animated.View style={styles.itemContainer}>
       <View style={[styles.items]}>
-        {!classes[0]?.time ?
+        {!classes[0]?.time ? (
           <View style={{ alignItems: "center", justifyContent: "center", gap: 8, width: width, height: "100%" }}>
             <LottieView
               autoPlay
@@ -171,22 +190,26 @@ function Item({ classes, index }) {
             <Text style={styles.text1}>No classes for today</Text>
             <Text style={styles.text1}>Have fun...</Text>
           </View>
-          :
-          <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={{ gap: 10, paddingVertical: 10, paddingHorizontal: 8 }}>
-            {
-              classes?.map((classDetails, index) => {
-                return classDetails?.break ?
-                  (<BreakCard key={index} time={classDetails?.time} day={index} />)
-                  :
-                  (<ClassesCard key={index} time={classDetails?.time} classes={classDetails?.class} day={index} />);
-              })
-            }
+        ) : (
+          <ScrollView
+            ref={scrollViewRef}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={{ gap: 10, paddingVertical: 10, paddingHorizontal: 8 }}
+          >
+            {classes.map((classDetails, idx) =>
+              classDetails?.break ? (
+                <BreakCard key={idx} time={classDetails?.time} day={index} />
+              ) : (
+                <ClassesCard key={idx} time={classDetails?.time} classes={classDetails?.class} day={index} />
+              )
+            )}
           </ScrollView>
-        }
+        )}
       </View>
     </Animated.View>
   );
 }
+
 
 const styles = StyleSheet.create({
   flex: {

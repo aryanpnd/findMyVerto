@@ -7,6 +7,6 @@ export const getStudentLogin = async (req: Request, res: Response): Promise<void
     const studentInfo = await umsLogin({ reg_no, password });
     res.status(200).json(studentInfo);
   } catch (error: any) {
-    res.status(500).json({ error: error.message });
+    res.json({ error: error.message });
   }
 }

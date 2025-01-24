@@ -45,7 +45,7 @@ export const getStudentAttendance = async (req: Request, res: Response): Promise
     studentAttendance.status = true;
     res.status(200).json(studentAttendance);
   } catch (error: any) {
-    res.status(500).json({ 
+    res.json({ 
       summary: {},
       details: {},
       last_updated: "",

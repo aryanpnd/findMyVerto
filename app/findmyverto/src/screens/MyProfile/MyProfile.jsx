@@ -12,72 +12,47 @@ import Toast from 'react-native-toast-message'
 import SyncData from '../../components/miscellaneous/SyncData'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
 import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
-
+import { fetchBasicDetails } from '../../utils/fetchUtils/basicDetailsFetch'
+import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert'
 const { height, width } = Dimensions.get('window');
 
 export default function MyProfile({ navigation }) {
-    const { auth, logout, logout2 } = useContext(AuthContext)
-
+    const { auth, logout } = useContext(AuthContext)
+    const customAlert = useCustomAlert();
+    
     const [student, setStudent] = useState({})
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
+    const [isError, setIsError] = useState(false);
+    const [lastSynced, setLastSynced] = useState("")
 
-    async function fetchData() {
-        try {
-            setLoading(true)
-            const result = await axios.post(`${API_URL}/student/basicInfo`, { reg_no: auth.reg_no, password: auth.password });
-            if (result.data.status) {
-                await AsyncStorage.setItem("STUDENT_BASIC_DETAILS", JSON.stringify(result.data));
-                setStudent(result.data)
-                Toast.show({
-                    type: 'success',
-                    text1: `${result.data.message}`
-                });
-            } else {
-                Toast.show({
-                    type: 'error',
-                    text1: `${result.data.message}`,
-                    text2: `${result.data.errorMessage}`,
-                });
-            }
-            setLoading(false)
-        } catch (error) {
-            Toast.show({
-                type: 'error',
-                text1: 'Error fetching Details',
-                text2: `${err.message}`,
-            });
-            console.error(error.message);
-            setLoading(false)
-        }
-    }
-
-    async function fetchDataLocally() {
-        try {
-            setLoading(true)
-            let user = await AsyncStorage.getItem("STUDENT_BASIC_DETAILS");
-            if (!user) {
-                fetchData()
-                setLoading(false)
-                return
-            }
-            setStudent(JSON.parse(user))
-            setLoading(false)
-        } catch (error) {
-            setLoading(false)
-            console.error(error);
-        }
+    const handleDataFetch = (sync) => {
+        fetchBasicDetails(setLoading, setRefreshing, setStudent, auth,setIsError, sync, setLastSynced)
     }
 
     useEffect(() => {
-        fetchDataLocally()
+        handleDataFetch(false)
     }, [])
 
+    const handleLogout = () => {
+        customAlert.show(
+            "Logout",
+            "Are you sure you want to logout?",
+            [
+                {
+                    text: "Cancel",
+                    onPress: () => console.log("Cancel Pressed"),
+                },
+                { text: "OK", onPress: logout }
+            ]
+        );
+    }
 
     return (
         <>
             <View style={{ zIndex: 2 }}>
                 <Toast />
+                <CustomAlert />
             </View>
             <SafeAreaView style={[styles.container]} >
 
@@ -107,7 +82,7 @@ export default function MyProfile({ navigation }) {
 
                 {/* Last sync container */}
                 {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, it may take a few seconds"} />}
-                <SyncData color={"white"} self={true} syncNow={() => fetchData()} time={formatTimeAgo(student.requestTime)} bg={colors.secondary} />
+                <SyncData color={"white"} self={true} syncNow={() => handleDataFetch(true)} time={formatTimeAgo(student.requestTime)} bg={colors.secondary} />
 
                 {/* Body */}
                 <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}
@@ -126,7 +101,7 @@ export default function MyProfile({ navigation }) {
                 </ScrollView>
 
                 <View style={styles.footer}>
-                    <TouchableOpacity onPress={logout} style={styles.footerBtn}>
+                    <TouchableOpacity onPress={handleLogout} style={styles.footerBtn}>
                         <Text style={{ color: "grey" }}>Logout</Text>
                     </TouchableOpacity>
                 </View>

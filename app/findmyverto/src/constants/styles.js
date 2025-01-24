@@ -1,3 +1,5 @@
+import { Dimensions } from "react-native";
+
 export const globalStyles = {
 
     elevation: {
@@ -21,3 +23,6 @@ export const globalStyles = {
       elevation: 3
     },
 }
+
+export const WIDTH = (value)=> Dimensions.get('window').width * value / 100;
+export const HEIGHT = (value)=> Dimensions.get('window').height * value / 100;

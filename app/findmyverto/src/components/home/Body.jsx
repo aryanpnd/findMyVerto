@@ -1,7 +1,9 @@
 import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Dimensions, TouchableHighlight, Pressable } from 'react-native'
-import React from 'react'
+import React, { use, useContext, useEffect } from 'react'
 import HomescreenTimeTable from '../timeTable/HomescreenTimeTable'
 import { colors } from '../../constants/colors';
+import { AuthContext } from '../../../context/Auth';
+import { FontAwesome6 } from '@expo/vector-icons';
 
 
 const { height, width } = Dimensions.get('window');
@@ -21,14 +23,21 @@ const navigations = [
 
 
 export default function Body({ navigation }) {
- 
-
+  const { auth } = useContext(AuthContext) 
+  useEffect(() => {
+    console.log(auth)
+  }, [auth])
   return (
     <View style={styles.body}>
+      <View style={styles.passwordExpiryContainer}>
+        <Text style={styles.text2}>
+          Password Expires in {auth.passwordExpiry.days} {auth.passwordExpiry.days>1?"days":"day"}. {"("}{auth.passwordExpiry.updatedAt?.split("T")[0]}{")"}
+          </Text>
+      </View>
 
       {/* Classes Today */}
       <View style={styles.classTodayContainer}>
-        
+
         <HomescreenTimeTable navigation={navigation} />
 
       </View>
@@ -43,7 +52,7 @@ export default function Body({ navigation }) {
                 key={value.title} style={styles.NavigationsCard} >
                 <Image
                   source={value.icon}
-                  style={{ height: width*0.12, width: width*0.12 }}
+                  style={{ height: width * 0.12, width: width * 0.12 }}
                   transition={1000}
                 />
                 <Text style={styles.text2}>{value.title}</Text>
@@ -62,24 +71,31 @@ const styles = StyleSheet.create({
     flex: 5,
     width: '100%',
     height: '100%',
-    padding: 10,
+    // padding: 10,
     backgroundColor: '#ecf0f1',
     // backgroundColor: 'white',
     borderTopRightRadius: 45,
     borderTopLeftRadius: 45,
   },
+  passwordExpiryContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderTopRightRadius: 45,
+    borderTopLeftRadius: 45,
+    padding: 5,
+  },
   classTodayContainer: {
     // backgroundColor: 'red',
-    padding: 10,
+    padding: 20,
     height: height * 0.30,
-    marginTop: 15,
+    // marginTop: 15,
     // marginHorizontal: 5,
     borderRadius: 15
   },
   NavigationsContainer: {
     // backgroundColor: "yellow",
     width: "100%",
-    padding: 10,
+    padding: 20,
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 10,
@@ -90,8 +106,8 @@ const styles = StyleSheet.create({
     height: height * 0.14,
     width: width * 0.28,
     borderRadius: 20,
-    justifyContent:"space-evenly",
-    alignItems:"center",
+    justifyContent: "space-evenly",
+    alignItems: "center",
   },
 
   text1: {

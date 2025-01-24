@@ -7,7 +7,7 @@ import SyncData from '../../components/miscellaneous/SyncData'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
 import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
 
-export default function AttendanceScreen({ attendance, fetchAttendance,lastSynced, loading, self }) {
+export default function AttendanceScreen({ attendance, fetchAttendance, lastSynced, loading, self, navigation, attendanceDetails }) {
   const [lastSyncedState, setLastSyncedState] = useState("")
 
   useEffect(() => {
@@ -26,9 +26,9 @@ export default function AttendanceScreen({ attendance, fetchAttendance,lastSynce
       </View>
 
       {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} />}
-      
+
       <View style={styles.container}>
-        <SyncData time={lastSyncedState} syncNow={()=>fetchAttendance(true)} self={self} color={'white'} bg={colors.secondary} />
+        <SyncData time={lastSyncedState} syncNow={() => fetchAttendance(true)} self={self} color={'white'} bg={colors.secondary} />
 
         <View style={styles.TotalAttendanceContainer}>
           <AttendanceCard colors={['#2657eb', '#de6161']} attendance={attendance?.total_details} />
@@ -37,10 +37,11 @@ export default function AttendanceScreen({ attendance, fetchAttendance,lastSynce
         <View style={styles.AttendanceContainer}>
           <ScrollView>
             {
-              attendance?.attendance_summary?.map((value,index) => {
+              attendance?.attendance_summary?.map((value, index) => {
                 return (
                   <View style={styles.cardContainer} key={index}>
-                    <AttendanceCard colors={['#0f2027', '#2c5364']} attendance={value} />
+                    <AttendanceCard colors={['#0f2027', '#2c5364']} attendance={value} navigation={navigation}
+                      isAggregateCard={attendance.subject_name ? false : true} attendanceDetails={attendanceDetails[value.subject_code]}/>
                   </View>
                 );
               })
