@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext } from './context/Auth'
+import React, { useContext, useEffect, useState } from 'react';
+import { AuthContext } from './context/Auth';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Home from './src/screens/home/Home';
 import Login from './src/screens/auth/Login';
@@ -14,11 +14,12 @@ import FriendProfile from './src/screens/friendProfile/FriendProfile';
 import FriendAttendance from './src/components/friendProfile/FriendAttendance';
 import FriendTimetable from './src/components/friendProfile/FriendTimetable';
 import * as SplashScreen from 'expo-splash-screen';
+import AttendanceDetails from './src/screens/Attendance/AttendanceDetails';
 
 const Stack = createNativeStackNavigator();
 
 export default function AuthPage() {
-  const { auth,loadAuth } = useContext(AuthContext)
+  const { auth, loadAuth } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,26 +38,33 @@ export default function AuthPage() {
 
     prepare();
   }, []);
+
+  useEffect(() => {
+    console.log(auth);
+    console.log("Auth changed");
+  }, [auth]);
+
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false,animationTypeForReplace:'push',animation:'slide_from_right'}}>
-      { !loading && auth.authenticated ?
+    <Stack.Navigator screenOptions={{ headerShown: false, animationTypeForReplace: 'push', animation: 'slide_from_right' }}>
+      {!loading && auth.authenticated ? (
         <React.Fragment>
-            <Stack.Screen name="Home" component={Home} />
-            <Stack.Screen name="Attendance" component={Attendance} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.secondary},headerShadowVisible:false}} />
-            <Stack.Screen name="Timetable" component={TimeTable} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.secondary},headerShadowVisible:false}} />
-            <Stack.Screen name="VertoSearch" component={VertoSearch} />
-            <Stack.Screen name="FriendRequests" component={FriendRequests} />
-            <Stack.Screen name="Friends" component={Friends} />
-            <Stack.Screen name="MyProfile" component={MyProfile} />
-            <Stack.Screen name="FriendProfile" component={FriendProfile} />
-            <Stack.Screen name="FriendAttendance" component={FriendAttendance} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.secondary},headerShadowVisible:false,title:"Friend's Attendance"}}/>
-            <Stack.Screen name="FriendTimetable" component={FriendTimetable} options={{headerShown:true,headerTitleAlign:'center',headerTintColor:'white',headerStyle:{backgroundColor:colors.secondary},headerShadowVisible:false,title:"Friend's Attendance"}}/>
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Attendance" component={Attendance} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false }} />
+          <Stack.Screen name="AttendanceDetails" component={AttendanceDetails} />
+          <Stack.Screen name="Timetable" component={TimeTable} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false }} />
+          <Stack.Screen name="VertoSearch" component={VertoSearch} />
+          <Stack.Screen name="FriendRequests" component={FriendRequests} />
+          <Stack.Screen name="Friends" component={Friends} />
+          <Stack.Screen name="MyProfile" component={MyProfile} />
+          <Stack.Screen name="FriendProfile" component={FriendProfile} />
+          <Stack.Screen name="FriendAttendance" component={FriendAttendance} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "Friend's Attendance" }} />
+          <Stack.Screen name="FriendTimetable" component={FriendTimetable} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "Friend's Attendance" }} />
         </React.Fragment>
-        :
+      ) : (
         <React.Fragment>
-            <Stack.Screen name="Login" component={Login} />
+          <Stack.Screen name="Login" component={Login} />
         </React.Fragment>
-      }
+      )}
     </Stack.Navigator>
-  )
+  );
 }

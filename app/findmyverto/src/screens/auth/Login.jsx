@@ -38,8 +38,13 @@ export default function Login() {
           type: 'success',
           text1: 'Login successful',
         });
-        await setAuth({ authenticated: true, reg_no: regno, password: password, passwordExpiry: result.data.passwordExpiry })
-        setLoading(false)
+        const daysLeft = result.data.passwordExpiry?.match(/\d+(?= days)/);
+        const expiry = {
+          days: daysLeft ? parseInt(daysLeft[0]) : 0,
+          updatedAt: new Date().toISOString()
+        };
+        await setAuth({ authenticated: true, reg_no: regno, password: password, passwordExpiry: expiry });
+        setLoading(false);
       } else {
         customAlert.show('Login failed', result.data.message, [
           { text: 'OK', onPress: () => console.log('Confirmed') }

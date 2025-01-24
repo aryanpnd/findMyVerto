@@ -8,6 +8,7 @@ export async function fetchAttendance(
     setAttendanceLoading,
     setRefreshing,
     setAttendance,
+    setAttendanceDetails,
     auth,
     setIsError,
     sync,
@@ -24,6 +25,7 @@ export async function fetchAttendance(
                 if (result.data.status) {
                     await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(result.data));
                     setAttendance(result.data.summary)
+                    setAttendanceDetails(result.data.details)
                     setLastSynced(result.data.last_updated)
                 } else {
                     Toast.show({
@@ -36,6 +38,7 @@ export async function fetchAttendance(
 
         } else {
             setAttendance(userAttendance.summary)
+            setAttendanceDetails(userAttendance.details)
             setLastSynced(userAttendance.last_updated)
         }
         setAttendanceLoading(false)
@@ -48,7 +51,7 @@ export async function fetchAttendance(
         setIsError(true)
         Toast.show({
             type: 'error',
-            text1: "Error fetching timetable",
+            text1: "Error fetching Attendance",
             text2: `${error.message}`
         });
     }

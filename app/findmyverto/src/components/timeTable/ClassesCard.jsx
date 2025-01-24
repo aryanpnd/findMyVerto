@@ -2,25 +2,20 @@ import { View, Text, StyleSheet, Image } from 'react-native'
 import React, { use, useContext, useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { globalStyles } from '../../constants/styles'
-import { AppContext } from '../../../context/MainApp'
 import { colors } from '../../constants/colors'
 import isTimeEqual from '../../utils/helperFunctions/funtions'
-import getDay from '../../utils/helperFunctions/dataAndTimeHelpers'
+import { getDay } from '../../utils/helperFunctions/dataAndTimeHelpers'
 
 export default function ClassesCard({ time, classes, day }) {
-  const { courses } = useContext(AppContext)
   const [ongoing, setOngoing] = useState(false)
 
-  // const checkOngoing = () => {
-  //   const isOngoing = isTimeEqual(time) && getDay() && day === getDay()
-  //   // console.log("Is time equal: ",isTimeEqual(time),"Day: ", day,"Today: ", new Date().getDay());
-  //   console.log(day);
-    
-  //   setOngoing(isOngoing)
-  // }
-  // useEffect(() => {
-  //   checkOngoing()
-  // }, [classes])
+  const checkOngoing = () => {
+    const isOngoing = isTimeEqual(time) && getDay() && day === getDay()
+    setOngoing(isOngoing)
+  }
+  useEffect(() => {
+    checkOngoing()
+  }, [classes])
 
   return (
     <LinearGradient
@@ -32,15 +27,17 @@ export default function ClassesCard({ time, classes, day }) {
       end={{ x: 1, y: 0 }}>
 
       {/* Class Time */}
-      <View style={styles.timeContainer}>
+      <LinearGradient colors={ongoing ? ['#a8e063', '#56ab2f'] : ["white", "white"]}
+      style={[styles.timeContainer, ongoing&&{ borderWidth:0 }]}
+      >
         <Image
           source={require("../../../assets/icons/clock.png")}
           style={{ height: 20, width: 20 }}
           transition={1000}
         />
-        <Text style={styles.text2}>{time}</Text>
-        {/* {ongoing && <Text style={{ color: colors.orange, fontWeight: 'bold' }}>Ongoing</Text>} */}
-      </View>
+        <Text style={[styles.text2, ongoing && { color: "white" }]}>{time}</Text>
+        {ongoing && <Text style={{ color: "white", fontWeight: 'bold' }}>Ongoing</Text>}
+      </LinearGradient>
 
       <View style={styles.classesContainer}>
         {

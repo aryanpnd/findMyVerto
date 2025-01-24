@@ -12,17 +12,18 @@ export default function Attendance({ navigation }) {
   const { auth, logout2 } = useContext(AuthContext)
   const { attendanceLoading, setAttendanceLoading } = useContext(AppContext)
   const [attendance, setattendance] = useState({})
+  const [attendanceDetails, setAttendanceDetails] = useState({})
   const [refreshing, setRefreshing] = useState(false);
   const [isError, setIsError] = useState(false);
   const [lastSynced, setLastSynced] = useState("")
 
   const handleAttendanceFetch = async (sync) => {
-    fetchAttendance(setAttendanceLoading, setRefreshing, setattendance, auth, setIsError, sync, setLastSynced)
+    fetchAttendance(setAttendanceLoading, setRefreshing, setattendance, setAttendanceDetails, auth, setIsError, sync, setLastSynced)
   }
 
   return (
     <>
-      <AttendanceScreen attendance={attendance} fetchAttendance={handleAttendanceFetch} lastSynced={lastSynced} loading={attendanceLoading} self={true}/>
+      <AttendanceScreen attendance={attendance} fetchAttendance={handleAttendanceFetch} lastSynced={lastSynced} loading={attendanceLoading} self={true} navigation={navigation} attendanceDetails={attendanceDetails}/>
     </>
   )
 }
