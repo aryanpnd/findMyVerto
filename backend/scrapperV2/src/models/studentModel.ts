@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 const studentschema = new Schema({
     name: { type: String },
-    reg_no: { type: String, required: [true, "Registration Number required"], unique: [true, "Registration Number already exists"] },
+    reg_no: { type: String, required: [true, "Registration Number required"], unique: true }, // Remove index here
     password: { type: String, required: [true, "Password required"] },
     program: { type: String },
     section: { type: String },
@@ -30,7 +30,6 @@ const studentschema = new Schema({
         ref: 'Student'
     }],
     lastSync: { type: Date },
+    allowedFieldsToShow: { type: Array },
 });
-
-const Student = mongoose.model("Student", studentschema);
-module.exports = { Student };
+export const Student = mongoose.model("Student", studentschema);

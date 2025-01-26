@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { scrapeAttendanceDetail, scrapeAttendanceSummary } from "../scrapper/studentAttendanceScrapper";
-import { umsLogin } from "../services/umsLogin";
-import { umsLoginReturn } from "../types/servicesReturnTypes";
+import { umsLogin } from "../scrapper/umsLogin";
+import { umsLoginReturn } from "../types/scrapperTypes";
 
 /**
  * Get student attendance information asynchronously
@@ -11,6 +11,18 @@ import { umsLoginReturn } from "../types/servicesReturnTypes";
 export const getStudentAttendance = async (req: Request, res: Response): Promise<void> => {
   try {
     const { reg_no, password } = req.body;
+
+    if (!reg_no || !password) {
+      res.status(400).json({
+        summary: {},
+        details: {},
+        message: "Registration number and password are required",
+        status: false,
+        errorMessage: "Missing required fields"
+      });
+      return;
+    }
+
     const login: umsLoginReturn = await umsLogin({ reg_no, password });
 
     if (!login.login) {
@@ -19,8 +31,9 @@ export const getStudentAttendance = async (req: Request, res: Response): Promise
         details: {},
         message: "Failed to login",
         status: false,
-        errorMessage: login.message
+        errorMessage: login.message || "Invalid credentials"
       });
+      return;
     }
 
     const studentAttendance = {
@@ -30,28 +43,54 @@ export const getStudentAttendance = async (req: Request, res: Response): Promise
       message: "",
       status: false,
       errorMessage: ""
+    };
+
+    try {
+      // Fetch attendance summary and detail in parallel
+      const [summary, detail] = await Promise.all([
+        scrapeAttendanceSummary(login.cookie),
+        scrapeAttendanceDetail(login.cookie)
+      ]);
+
+      // Check if any of the responses has status: false
+      if (!summary.status || !detail.status) {
+        res.status(500).json({
+          summary: {},
+          details: {},
+          message: "Failed to fetch attendance data",
+          status: false,
+          errorMessage: summary.errorMessage || detail.errorMessage || "Unknown error"
+        });
+        return;
+      }
+
+      // Append the fetched data to the studentAttendance object
+      studentAttendance.summary = summary;
+      studentAttendance.details = detail;
+      studentAttendance.message = "Data fetched successfully";
+      studentAttendance.status = true;
+
+      res.status(200).json(studentAttendance);
+    } catch (attendanceError: any) {
+      console.error("Attendance fetch error:", attendanceError);
+      res.status(500).json({
+        summary: {},
+        details: {},
+        message: "Error while fetching attendance data",
+        status: false,
+        errorMessage: attendanceError.message || "Internal server error"
+      });
     }
 
-    // Fetch attendance summary and detail in parallel
-    const [summary, detail] = await Promise.all([
-      scrapeAttendanceSummary(login.cookie),
-      scrapeAttendanceDetail(login.cookie)
-    ]);
-
-    // Append the fetched data to the studentAttendance object
-    studentAttendance.summary = summary;
-    studentAttendance.details = detail;
-    studentAttendance.message = "Data fetched successfully";
-    studentAttendance.status = true;
-    res.status(200).json(studentAttendance);
   } catch (error: any) {
-    res.json({ 
+    console.error("Unexpected error:", error);
+    res.status(500).json({
       summary: {},
       details: {},
       last_updated: "",
       message: "Unable to fetch the data",
       status: false,
-      errorMessage: error.message
-     });
+      errorMessage: error.message || "An unexpected error occurred"
+    });
   }
 };

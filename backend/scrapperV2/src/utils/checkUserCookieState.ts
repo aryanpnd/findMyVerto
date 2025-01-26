@@ -1,5 +1,5 @@
 import axios from "axios";
-import { checkUserCookieStateReturnType } from "../types/utilsReturnTypes";
+import { checkUserCookieStateReturnType } from "../types/scrapperTypes";
 
 export const checkUserCookieState = async (cookie: string, headers: any, url: string, body: any): Promise<checkUserCookieStateReturnType> => {
 

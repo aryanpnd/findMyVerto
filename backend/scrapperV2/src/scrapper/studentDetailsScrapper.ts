@@ -1,9 +1,8 @@
 import axios from 'axios';
 import { umsUrls } from '../constants/umsUrls';
 import { umsHeaders } from '../constants/headers'
-import { umsLogin } from '../services/umsLogin';
-import { umsLoginReturn } from '../types/servicesReturnTypes';
-import { User } from '../types/userTypes';
+import { umsLogin } from './umsLogin';
+import { umsLoginReturn, User } from '../types/scrapperTypes';
 
 export const scrapeStudentBasicInfo = async (user: User) => {
     try {

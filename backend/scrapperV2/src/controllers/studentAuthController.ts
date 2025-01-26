@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { umsLogin } from "../services/umsLogin";
+import { umsLogin } from "../scrapper/umsLogin";
 
 export const getStudentLogin = async (req: Request, res: Response): Promise<void> => {
   try {

@@ -9,6 +9,7 @@ export const studentRoutes = express.Router();
  * @swagger
  * /api/v2/student/login:
  *   post:
+ *     tags: [Auth]
  *     summary: Login to UMS
  *     requestBody:
  *       required: true
@@ -19,10 +20,8 @@ export const studentRoutes = express.Router();
  *             properties:
  *               reg_no:
  *                 type: string
- *                 example: "12203693"
  *               password:
  *                 type: string
- *                 example: "MrCat@9870"
  *     responses:
  *       200:
  *         description: Successful response
@@ -35,6 +34,7 @@ studentRoutes.post('/login', getStudentLogin);
  * @swagger
  * /api/v2/student/basicInfo:
  *   post:
+ *     tags: [Student]
  *     summary: Get student basic information
  *     requestBody:
  *       required: true
@@ -59,6 +59,7 @@ studentRoutes.post('/basicInfo', getStudentBasicInfo);
  * @swagger
  * /api/v2/student/timetable:
  *   post:
+ *     tags: [Student]
  *     summary: Get student timetable
  *     requestBody:
  *       required: true
@@ -83,6 +84,7 @@ studentRoutes.post('/timetable', getStudentTimeTable);
  * @swagger
  * /api/v2/student/attendance:
  *   post:
+ *     tags: [Student]
  *     summary: Get student attendance
  *     requestBody:
  *       required: true

@@ -1,0 +1,8 @@
+{
+    "appService.zipIgnorePattern": [
+        "node_modules{,/**}",
+        ".vscode{,/**}"
+    ],
+    "appService.defaultWebAppToDeploy": "/subscriptions/9770f382-d4a3-4502-affd-b7e1d7f52edf/resourceGroups/findmyvertoDev/providers/Microsoft.Web/sites/findmyverto",
+    "appService.deploySubpath": "."
+}

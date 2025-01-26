@@ -4,8 +4,7 @@ import { CookieJar } from 'tough-cookie';
 import { wrapper } from 'axios-cookiejar-support';
 import { umsUrls } from '../constants/umsUrls';
 import { umsHeaders } from '../constants/headers';
-import { User } from '../types/userTypes';
-import { umsLoginReturn } from '../types/servicesReturnTypes';
+import { umsLoginReturn, User } from '../types/scrapperTypes';
 
 /**
  * Function to get UMS cookie

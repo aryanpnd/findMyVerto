@@ -1,13 +1,11 @@
 import axios from "axios";
 import { umsHeaders } from "../constants/headers";
 import { umsUrls } from "../constants/umsUrls";
-import { umsLogin } from "../services/umsLogin";
-import { umsLoginReturn } from "../types/servicesReturnTypes";
-import { User } from "../types/userTypes";
+import { umsLogin } from "./umsLogin";
+import { TimeTable, umsLoginReturn, User } from "../types/scrapperTypes";
 import { load } from 'cheerio'
 import { CookieJar } from "tough-cookie";
 import { wrapper } from "axios-cookiejar-support";
-import { TimeTable } from "../types/timetableTypes";
 
 export const scrapeStudentTimetable = async (user: User) => {
     try {
@@ -45,51 +43,50 @@ export const scrapeStudentTimetable = async (user: User) => {
 
 
 const requestTimetable = async (cookie: string) => {
-  const headers: any = umsHeaders;
+    const headers: any = umsHeaders;
 
-  const jar = new CookieJar();
-  const client = wrapper(axios.create({ jar, headers: headers.USER_AGENT_JSON_PLAIN }));
+    try {
+        const jar = new CookieJar();
+        const client = wrapper(axios.create({ jar, headers: headers.USER_AGENT_JSON_PLAIN }));
+        // Manually set the session cookie in the jar
+        jar.setCookieSync(cookie, umsUrls.STUDENT_TIME_TABLE);
 
-  try {
-    // Manually set the session cookie in the jar
-    jar.setCookieSync(cookie, umsUrls.STUDENT_TIME_TABLE);
+        // Access the time table page
+        const initialResponse = await client.get(umsUrls.STUDENT_TIME_TABLE);
 
-    // Access the time table page
-    const initialResponse = await client.get(umsUrls.STUDENT_TIME_TABLE);
+        const $ = load(initialResponse.data);
 
-    const $ = load(initialResponse.data);
+        const regx = /ReportViewerabcd\$ctl..\$Reserved_AsyncLoadTarget/;
+        const mo = initialResponse.data.match(regx);
+        if (!mo) {
+            throw new Error('Regex match failed');
+        }
+        const state_v = mo[0];
 
-    const regx = /ReportViewerabcd\$ctl..\$Reserved_AsyncLoadTarget/;
-    const mo = initialResponse.data.match(regx);
-    if (!mo) {
-        throw new Error('Regex match failed');
+        const __VSTATE = $('input#__VSTATE').val();
+        const __EVENTVALIDATION = $('input#__EVENTVALIDATION').val();
+
+        const payload = new URLSearchParams({
+            "__EVENTTARGET": state_v,
+            "__VSTATE": __VSTATE as any,
+            "__EVENTVALIDATION": __EVENTVALIDATION as any
+        });
+
+        const response = await client.post(umsUrls.STUDENT_TIME_TABLE, payload.toString());
+        return response.data
+
+    } catch (error) {
+        console.error('Error making request:', error);
+        throw error;
     }
-    const state_v = mo[0];
-
-    const __VSTATE = $('input#__VSTATE').val();
-    const __EVENTVALIDATION = $('input#__EVENTVALIDATION').val();
-
-    const payload = new URLSearchParams({
-      "__EVENTTARGET": state_v,
-      "__VSTATE": __VSTATE as any,
-      "__EVENTVALIDATION": __EVENTVALIDATION as any
-    });
-        
-    const response = await client.post(umsUrls.STUDENT_TIME_TABLE, payload.toString());
-    return response.data
-
-  } catch (error) {
-    console.error('Error making request:', error);
-    return null;
-  }
 };
 
 
 const parseTimetable = async (html: string): Promise<TimeTable | null> => {
-  try {
-    if (!html) return null;
+    try {
+        if (!html) return null;
 
-    const $ = load(html);
+        const $ = load(html);
 
 
         const section = $('td > table').eq(4).text().trim();
@@ -168,8 +165,8 @@ const parseTimetable = async (html: string): Promise<TimeTable | null> => {
 
         timeTable.courses = courseDetails;
         return timeTable;
-  } catch (error) {
-    console.error('Error getting timetable details:', error);
-    return null;
-  }
+    } catch (error) {
+        console.error('Error getting timetable details:', error);
+        return null;
+    }
 };
