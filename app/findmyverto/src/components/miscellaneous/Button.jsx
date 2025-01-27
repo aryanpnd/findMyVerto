@@ -3,12 +3,14 @@ import React from 'react'
 import { colors } from '../../constants/colors'
 import LottieView from 'lottie-react-native'
 
-export default function Button({ children, title, onPress, loading, styles, textStyles, bg, loadingTitle = "",loadAnim }) {
+export default function Button({ children, title, onPress, loading, styles, textStyles, bg, loadingTitle = "", loadAnim, disabledTextStyles, disabledBg }) {
     return (
-        <Pressable onPress={onPress} style={[buttonStyles, styles, { backgroundColor: loading ? colors.disabledBackground : bg }]} disabled={loading}>
+        <Pressable onPress={onPress} style={[buttonStyles, styles, {
+            backgroundColor: loading ? disabledBg ? disabledBg : colors.disabledBackground : bg
+        }]} disabled={loading}>
             {loading ?
                 <View style={{ justifyContent: 'center', alignItems: 'center', flexDirection: 'row' }}>
-                    <Text style={{ color: 'white', fontSize: 16 }}>{loadingTitle}</Text>
+                    <Text style={[{ color: 'white', fontSize: 16 },disabledTextStyles]}>{loadingTitle}</Text>
                     <LottieView
                         autoPlay
                         style={{

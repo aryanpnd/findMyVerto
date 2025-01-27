@@ -3,7 +3,12 @@ const { Schema } = mongoose;
 
 const studentschema = new Schema({
     name: { type: String },
-    reg_no: { type: String, required: [true, "Registration Number required"], unique: true }, // Remove index here
+    reg_no: {
+        type: String,
+        required: [true, "Registration Number required"],
+        unique: true,
+        // sparse: true // Add this to allow multiple null values
+    },
     password: { type: String, required: [true, "Password required"] },
     program: { type: String },
     section: { type: String },

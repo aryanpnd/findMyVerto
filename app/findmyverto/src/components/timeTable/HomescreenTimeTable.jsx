@@ -70,7 +70,7 @@ export default function HomescreenTimeTable({ navigation }) {
                 <ErrorMessage handleFetchTimetable={handleFetchTimetable} timetableLoading={timetableLoading} />
                 :
                 timetableLoading ?
-                    <Loading1 loading={timetableLoading} loadAnim={"amongus"} loadingText={"Getting your Timetable"} loadingMsg={"it may take some seconds for the first time"} />
+                    <Loading1 loading={timetableLoading} loadAnim={"amongus"} loadingText={"Getting your Timetable"} loadingMsg={"it may take some seconds for the first time"} textColor={"black"} />
                     :
                     !timeTable[0]?.time ?
                         <NoClassesComponent day={day} />

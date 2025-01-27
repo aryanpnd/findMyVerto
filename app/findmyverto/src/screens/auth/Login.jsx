@@ -12,26 +12,26 @@ import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/Cust
 import Button from '../../components/miscellaneous/Button';
 
 export default function Login() {
-  const { setAuth } = useContext(AuthContext)
+  const { setAuth } = useContext(AuthContext);
   const customAlert = useCustomAlert();
 
   const [regno, setRegno] = useState(null);
   const [password, setPassword] = useState(null);
   const [showPassword, setShowPassword] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
+  const [isFocused, setIsFocused] = useState(false);
   const passwordRef = useRef(null);
 
   const login = async () => {
     if (!regno) {
-      customAlert.show('Please enter the registration number')
-      return
-    }
-    else if (!password) {
-      customAlert.show('Please enter the password')
-      return
+      customAlert.show('Please enter the registration number');
+      return;
+    } else if (!password) {
+      customAlert.show('Please enter the password');
+      return;
     }
 
-    setLoading(true)
+    setLoading(true);
     await axios.post(`${API_URL}/student/login`, { reg_no: regno, password: password }).then(async (result) => {
       if (result.data.login) {
         Toast.show({
@@ -41,15 +41,15 @@ export default function Login() {
         const daysLeft = result.data.passwordExpiry?.match(/\d+(?= days)/);
         const expiry = {
           days: daysLeft ? parseInt(daysLeft[0]) : 0,
-          updatedAt: new Date().toISOString()
+          updatedAt: new Date().toISOString(),
         };
         await setAuth({ authenticated: true, reg_no: regno, password: password, passwordExpiry: expiry });
         setLoading(false);
       } else {
         customAlert.show('Login failed', result.data.message, [
-          { text: 'OK', onPress: () => console.log('Confirmed') }
-        ])
-        setLoading(false)
+          { text: 'OK', onPress: () => console.log('Confirmed') },
+        ]);
+        setLoading(false);
       }
     }).catch((err) => {
       Toast.show({
@@ -58,10 +58,9 @@ export default function Login() {
         text2: `${err}`,
       });
       console.log(err);
-      setLoading(false)
-    })
-  }
-
+      setLoading(false);
+    });
+  };
 
   return (
     <>
@@ -70,28 +69,26 @@ export default function Login() {
         <CustomAlert />
       </View>
       <SafeAreaView style={styles.container}>
-        {/* <OverlayLoading loading={loading} loadAnim={"amongus"} loadingMsg={"This may take 40-50 seconds if you're Logging for the first time, Depending upon UMS server"} loadingText={"Logging..."} /> */}
         <View style={styles.container}>
-          <View style={{ flex: 3, justifyContent: 'center', alignItems: "center" }}>
-            <Text style={{ flex: 2, fontSize: 20, fontWeight: '500' }}>FindMyVerto</Text>
-            <LottieView
-              autoPlay
-              style={{
-                flex: 10,
-                width: 500,
-                height: 500,
-              }}
-              source={require('../../../assets/lotties/loginAnim2.json')}
-            />
-          </View>
+          {/* Hide logo and animation when text input is focused */}
+          {!isFocused && (
+            <View style={{ justifyContent: 'space-between', alignItems: 'center', paddingTop: 20, height: '50%' }}>
+              <Text style={{ fontSize: 25, fontWeight: '500', color: 'white' }}>FindMyVerto</Text>
+              <LottieView
+                autoPlay
+                style={{
+                  width: 350,
+                  height: 350,
+                }}
+                source={require('../../../assets/lotties/loginAnim2.json')}
+              />
+            </View>
+          )}
 
           {/* login container */}
-          <View style={styles.loginContainer}>
-            {/* login text */}
-
-            {/* login input container */}
-            <ScrollView >
-              <View style={{ flex: 5, justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 5, marginBottom: 50, marginTop: 40 }}>
+          <View style={[styles.loginContainer, isFocused && styles.focusedLoginContainer]}>
+            <ScrollView keyboardShouldPersistTaps="handled">
+              <View style={{ justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 5, marginBottom: 30 }}>
                 <Text style={styles.textLarge}>LOGIN</Text>
                 <Text style={styles.textSmall}>with your UMS Credentials</Text>
               </View>
@@ -104,6 +101,8 @@ export default function Login() {
                   keyboardType='decimal-pad'
                   cursorColor={'orange'}
                   onSubmitEditing={() => passwordRef.current.focus()}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
                 />
                 <View style={{ flex: 1 }}>
                   <TextInput
@@ -112,9 +111,11 @@ export default function Login() {
                     value={password}
                     onChangeText={setPassword}
                     style={styles.input}
-                    placeholder="Ums Password"
+                    placeholder="UMS Password"
                     cursorColor={'orange'}
                     onSubmitEditing={() => Keyboard.dismiss()}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
                   />
                   <FontAwesome5
                     name={showPassword ? 'eye-slash' : 'eye'}
@@ -127,12 +128,11 @@ export default function Login() {
               </View>
 
               <View style={{ flex: 4 }}>
-                <Button title="Login" onPress={login} loading={loading} setLoading={setLoading} bg={colors.primary} loadingTitle="Logging...it will take a few seconds" loadAnim={"amongus"} />
+                <Button title="Login" onPress={login} loading={loading} setLoading={setLoading} bg={colors.primary} loadingTitle="Logging..." loadAnim={"amongus"} disabledBg={colors.disabledBackground} />
               </View>
             </ScrollView>
           </View>
         </View>
-
       </SafeAreaView>
     </>
   );
@@ -140,22 +140,27 @@ export default function Login() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: '#ecf0f1',
-    justifyContent: 'center',
+    justifyContent: 'space-between',
     alignItems: 'center',
     width: '100%',
     height: '100%',
-    padding: 6,
+    backgroundColor: colors.primary,
   },
   loginContainer: {
-    flex: 4,
-    height: '100%',
-    width: '100%'
+    height:"45%",
+    width: '100%',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 10,
+    backgroundColor: "#f1f1f1",
   },
-  keyboardContainer: {
-    flex: 7,
-    padding: 10,
+  focusedLoginContainer: {
+    height: '100%',
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
   },
   input: {
     height: 65,
@@ -168,9 +173,8 @@ const styles = StyleSheet.create({
   icon: {
     position: 'absolute',
     right: 20,
-    top: 20
+    top: 20,
   },
-  textSmall: { fontWeight: '400' },
-  textLarge: { fontSize: 45, fontWeight: 'bold', color: '#333' },
-
+  textSmall: { fontSize: 12, fontWeight: '400', color: 'grey' },
+  textLarge: { fontSize: 30, fontWeight: 'bold', color: '#333' },
 });

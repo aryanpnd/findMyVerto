@@ -11,7 +11,7 @@ export default function BreakCard({ time, day }) {
   const [ongoing, setOngoing] = useState(false)
 
   const checkOngoing = () => {
-    const isOngoing = isTimeEqual(time) && getDay() && day === getDay()
+    const isOngoing = isTimeEqual(time) && day === getDay()
     setOngoing(isOngoing)
   }
   useEffect(() => {

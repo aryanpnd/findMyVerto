@@ -31,7 +31,7 @@ export const getStudentBasicInfo = async (req: Request, res: Response): Promise<
     const studentDetails: StudentDetails = {
       ...studentInfo.data,
       name: studentInfo.data.studentName,
-      reg_no: studentInfo.data.reg_no,
+      reg_no: reg_no,
       password: password,
       lastSync: new Date().toISOString()
     };

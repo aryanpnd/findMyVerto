@@ -12,18 +12,17 @@ export const saveStudentDetails = async (studentDetails: StudentDetails) => {
                 runValidators: false // run model validators
             }
         );
-
         return {
             status: true,
             message: "Student details saved successfully",
             data: student
         }
     } catch (error: any) {
-        console.error(error);
+        console.error(error.message);
         return {
             status: false,
             message: error.message,
-            data: null
+            data: {}
         }
     }
 }

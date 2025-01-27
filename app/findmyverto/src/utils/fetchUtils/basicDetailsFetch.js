@@ -25,22 +25,24 @@ export async function fetchBasicDetails(
                     await AsyncStorage.setItem("STUDENT_BASIC_DETAILS", JSON.stringify(result.data));
                     setDetails(result.data)
                     setLastSynced(result.data.requestTime)
+                    setIsError(false)
                 } else {
                     Toast.show({
                         type: 'error',
                         text1: `${result.data.message}`,
                         text2: `${result.data.errorMessage}`,
                     });
+                    setIsError(true)
                 }
             }
 
         } else {
             setDetails(userDetails)
             setLastSynced(userDetails.last_updated)
+            setIsError(false)
         }
         setProfileLoading(false)
         setRefreshing(false)
-        setIsError(false)
     } catch (error) {
         console.error(error);
         setProfileLoading(false)
