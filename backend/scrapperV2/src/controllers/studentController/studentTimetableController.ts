@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { scrapeStudentTimetable } from "../scrapper/studentTimetableScrapper";
-import { saveStudentTimeTable } from "../services/saveToDB/studentTimetable";
-import { StudentTimeTable } from "../types/DB_ServicesTypes";
+import { scrapeStudentTimetable } from "../../scrapper/studentTimetableScrapper";
+import { saveStudentTimeTable } from "../../services/saveToDB/studentTimetable";
+import { StudentTimeTable } from "../../types/DB_ServicesTypes";
 
 export const getStudentTimeTable = async (req: Request, res: Response): Promise<void> => {
   try {

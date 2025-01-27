@@ -1,10 +1,12 @@
 import { View, Text, Image, StyleSheet, Dimensions } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { colors } from '../../constants/colors';
+import { API_URL_ROOT } from '../../../context/Auth';
 
 const { height, width } = Dimensions.get('window');
 export default function StudentProfile({ student }) {
-  const imageSource = student?.studentPicture ? { uri: `data:image/png;base64,${student?.studentPicture}` } : require("../../../assets/icons/profileAvatar.png");
+  // const imageSource = student?.studentPicture ? { uri: `data:image/png;base64,${student?.studentPicture}` } : require("../../../assets/icons/profileAvatar.png");
+  const imageSource = student?.studentPicture ? { uri: `${API_URL_ROOT}${student?.studentPicture}` } : require("../../../assets/icons/profileAvatar.png");
 
   return (
     <View style={styles.container}>
@@ -13,7 +15,7 @@ export default function StudentProfile({ student }) {
       <View style={{ justifyContent: "center", alignItems: "center", width: "100%" }}>
         <Image
           source={imageSource}
-          style={{ height: height * 0.15, width: height * 0.15, borderRadius: height * 0.15 / 2 }}
+          style={{ height: height * 0.15, width: height * 0.15, borderRadius: height * 0.15 / 2,objectFit:"fill" }}
           transition={1000}
         />
       </View>

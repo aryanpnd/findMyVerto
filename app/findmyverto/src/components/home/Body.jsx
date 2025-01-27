@@ -24,9 +24,6 @@ const navigations = [
 
 export default function Body({ navigation }) {
   const { auth } = useContext(AuthContext) 
-  useEffect(() => {
-    console.log(auth)
-  }, [auth])
   return (
     <View style={styles.body}>
       <View style={styles.passwordExpiryContainer}>

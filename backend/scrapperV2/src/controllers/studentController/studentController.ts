@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { scrapeStudentBasicInfo } from '../scrapper/studentDetailsScrapper';
-import { saveStudentDetails } from "../services/saveToDB/studentDetails";
-import { StudentDetails } from "../types/DB_ServicesTypes";
+import { scrapeStudentBasicInfo } from '../../scrapper/studentDetailsScrapper';
+import { saveStudentDetails } from "../../services/saveToDB/studentDetails";
+import { StudentDetails } from "../../types/DB_ServicesTypes";
 
 /**
  * Get student basic information

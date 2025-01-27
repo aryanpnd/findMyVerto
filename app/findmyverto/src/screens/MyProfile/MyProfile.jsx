@@ -71,9 +71,6 @@ export default function MyProfile({ navigation }) {
 
                     {/* Logout */}
                     <View style={[styles.backBtn]}>
-                        {/* <TouchableOpacity onPress={logout}>
-                        <MaterialIcons name='logout' size={25} color={colors.lightDark} />
-                    </TouchableOpacity> */}
                     </View>
 
                 </View>
@@ -81,22 +78,11 @@ export default function MyProfile({ navigation }) {
 
 
                 {/* Last sync container */}
-                {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} loadingMsg={"please wait, it may take a few seconds"} />}
+                {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} />}
                 <SyncData color={"white"} self={true} syncNow={() => handleDataFetch(true)} time={formatTimeAgo(student.requestTime)} bg={colors.secondary} />
 
                 {/* Body */}
-                <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}
-                // refreshControl={
-                //     <RefreshControl
-                //         tintColor={colors.secondary}
-                //         colors={[colors.secondary]}
-                //         refreshing={refreshing}
-                //         onRefresh={() => {
-                //             fetchData()
-                //         }}
-                //     />
-                // }
-                >
+                <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}>
                     <StudentProfile student={student?.data} />
                 </ScrollView>
 

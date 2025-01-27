@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { scrapeAttendanceDetail, scrapeAttendanceSummary } from "../scrapper/studentAttendanceScrapper";
-import { umsLogin } from "../scrapper/umsLogin";
-import { umsLoginReturn } from "../types/scrapperTypes";
+import { scrapeAttendanceDetail, scrapeAttendanceSummary } from "../../scrapper/studentAttendanceScrapper";
+import { umsLogin } from "../../scrapper/umsLogin";
+import { umsLoginReturn } from "../../types/scrapperTypes";
 
 /**
  * Get student attendance information asynchronously

@@ -1,8 +1,9 @@
 import express from 'express';
-import { getStudentBasicInfo  } from '../controllers/studentController';
-import { getStudentLogin } from '../controllers/studentAuthController';
-import { getStudentTimeTable } from '../controllers/studentTimetableController';
-import { getStudentAttendance } from '../controllers/studentAttendanceController';
+import { getStudentBasicInfo  } from '../controllers/studentController/studentController';
+import { getStudentLogin } from '../controllers/studentController/studentAuthController';
+import { getStudentTimeTable } from '../controllers/studentController/studentTimetableController';
+import { getStudentAttendance } from '../controllers/studentController/studentAttendanceController';
+import { searchStudent } from '../controllers/studentController/studentSearchController';
 export const studentRoutes = express.Router();
 
 /**
@@ -28,8 +29,27 @@ export const studentRoutes = express.Router();
  *       500:
  *         description: Internal server error
  */
-studentRoutes.post('/login', getStudentLogin); 
-
+studentRoutes.post('/login', getStudentLogin);
+/**
+ * @swagger
+ * /api/v2/student/search:
+ *   get:
+ *     tags: [Student]
+ *     summary: Search student
+ *     parameters:
+ *       - in: query
+ *         name: reg_no
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Student registration number
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */ 
+studentRoutes.get('/search', searchStudent);
 /**
  * @swagger
  * /api/v2/student/basicInfo:
@@ -54,7 +74,6 @@ studentRoutes.post('/login', getStudentLogin);
  *         description: Internal server error
  */
 studentRoutes.post('/basicInfo', getStudentBasicInfo);
-
 /**
  * @swagger
  * /api/v2/student/timetable:
@@ -79,7 +98,6 @@ studentRoutes.post('/basicInfo', getStudentBasicInfo);
  *         description: Internal server error
  */
 studentRoutes.post('/timetable', getStudentTimeTable);
-
 /**
  * @swagger
  * /api/v2/student/attendance:

@@ -4,6 +4,8 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
 import { getCalculatedDate } from '../src/utils/helperFunctions/dataAndTimeHelpers';
+import { set } from 'mongoose';
+import Toast from 'react-native-toast-message';
 
 const AuthContext = createContext();
 
@@ -16,7 +18,16 @@ if (process.env.NODE_ENV === 'development') {
   // API_URL = `${process.env.EXPO_PUBLIC_FMV_API_URL}`;
   API_URL = "https://findmyvertov2-8wup.onrender.com/api/v2";
 }
-export { API_URL };
+let API_URL_ROOT;
+if (process.env.NODE_ENV === 'development') {
+  API_URL_ROOT = "http://192.168.93.229:3000";
+  // API_URL = "https://findmyvertov2-8wup.onrender.com";
+  // API_URL = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net";
+} else {
+  // API_URL = `${process.env.EXPO_PUBLIC_FMV_API_URL}`;
+  API_URL_ROOT = "https://findmyvertov2-8wup.onrender.com";
+}
+export { API_URL, API_URL_ROOT };
 
 const AuthProvider = ({ children }) => {
 
@@ -59,12 +70,27 @@ const AuthProvider = ({ children }) => {
             days: calculatedDate.daysLeft,
             updatedAt: calculatedDate.updateBefore
           }
-          setAuthState({
-            authenticated: JSON.parse(authenticated),
-            reg_no: regNo || "",
-            password: pass || "",
-            passwordExpiry: pwdExp
-          });
+          if (calculatedDate.daysLeft <= 0) {
+            setAuthState({
+              authenticated: false,
+              reg_no: "",
+              password: "",
+              passwordExpiry: pwdExp
+            });
+            Toast.show({
+              type: 'error',
+              position: 'top',
+              text1: 'Password Expired',
+              text2: 'Please login again'
+            });
+          } else {
+            setAuthState({
+              authenticated: JSON.parse(authenticated),
+              reg_no: regNo || "",
+              password: pass || "",
+              passwordExpiry: pwdExp
+            });
+          }
 
           // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
         }
