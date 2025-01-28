@@ -35,21 +35,38 @@ studentRoutes.post('/login', getStudentLogin);
  * /api/v2/student/search:
  *   get:
  *     tags: [Student]
- *     summary: Search student
+ *     summary: Search for students based on query
  *     parameters:
  *       - in: query
- *         name: reg_no
+ *         name: q
  *         schema:
  *           type: string
  *         required: true
- *         description: Student registration number
+ *         description: Search query (name, registration number, or section)
+ *       - in: query
+ *         name: r
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Registration number for authentication (optional)
+ *       - in: query
+ *         name: p
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Password for authentication (optional)
  *     responses:
  *       200:
  *         description: Successful response
+ *       400:
+ *         description: Invalid search query
+ *       404:
+ *         description: No student found
  *       500:
  *         description: Internal server error
- */ 
+ */
 studentRoutes.get('/search', searchStudent);
+
 /**
  * @swagger
  * /api/v2/student/basicInfo:

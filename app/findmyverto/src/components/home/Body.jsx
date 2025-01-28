@@ -4,6 +4,7 @@ import HomescreenTimeTable from '../timeTable/HomescreenTimeTable'
 import { colors } from '../../constants/colors';
 import { AuthContext } from '../../../context/Auth';
 import { FontAwesome6 } from '@expo/vector-icons';
+import { HEIGHT } from '../../constants/styles';
 
 
 const { height, width } = Dimensions.get('window');
@@ -82,10 +83,10 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   classTodayContainer: {
-    // backgroundColor: 'red',
-    padding: 20,
-    height: height * 0.30,
-    // marginTop: 15,
+    // paddingHorizontal: 20,
+    // paddingTop: 20,
+    maxHeight:HEIGHT(30),
+    marginTop: 15,
     // marginHorizontal: 5,
     borderRadius: 15
   },

@@ -7,6 +7,7 @@ import { getFriendRequests } from '../controllers/friendsController/getFriendReq
 import { getSentFriendRequests } from '../controllers/friendsController/getSentFriendRequests';
 import { removeFromRequest } from '../controllers/friendsController/removeFromRequest';
 import { cancelRequest } from '../controllers/friendsController/cancelRequest';
+import { removeFriend } from '../controllers/friendsController/removeFriend';
 
 export const friendRoutes = express.Router();
 
@@ -106,8 +107,6 @@ friendRoutes.post('/addFriend', addFriend);
  *                 type: string
  *               password:
  *                 type: string
- *               studentId:
- *                 type: string
  *     responses:
  *       200:
  *         description: Successful response
@@ -132,8 +131,6 @@ friendRoutes.post('/getRequests', getFriendRequests);
  *               reg_no:
  *                 type: string
  *               password:
- *                 type: string
- *               studentId:
  *                 type: string
  *     responses:
  *       200:
@@ -249,4 +246,4 @@ friendRoutes.post('/getFriendInfo', getFriendData);
  *       500:
  *         description: Internal server error
  */
-friendRoutes.post('/removeFriend', getFriendList);
+friendRoutes.post('/removeFriend', removeFriend);

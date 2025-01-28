@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { Student } from "../../models/studentModel";
+import { error } from "console";
 
 const excludingFields = { password: 0, friendRequests: 0, sentFriendRequests: 0, friends: 0 };
 
@@ -18,6 +19,7 @@ export const getFriendList = async (req: Request, res: Response) => {
             res.status(200).json({
                 friends: [],
                 message: "User not found",
+                errorMessage: "Inavid credentials",
                 status: false,
             })
         }

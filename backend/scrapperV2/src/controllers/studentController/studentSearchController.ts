@@ -6,7 +6,7 @@ export const searchStudent = async (req: Request, res: Response) => {
         const searchQuery = req.query.q as string;
         if (!searchQuery) {
             res.status(400).json({
-                data: [],
+                students: [],
                 requestTime: new Date().toISOString(),
                 message: "Invalid search query",
                 status: false,
@@ -24,16 +24,16 @@ export const searchStudent = async (req: Request, res: Response) => {
         };
 
         const students = await Student.find(searchLogic).select({
-            section: 1, 
-            name: 1, 
-            reg_no: 1, 
-            studentPicture: 1, 
+            section: 1,
+            name: 1,
+            reg_no: 1,
+            studentPicture: 1,
             _id: 1
         });
 
         if (students.length === 0) {
-            res.status(404).json({
-                data: [],
+            res.status(200).json({
+                students: [],
                 requestTime: new Date().toISOString(),
                 message: "No student found",
                 status: false,
@@ -42,8 +42,43 @@ export const searchStudent = async (req: Request, res: Response) => {
             return;
         }
 
+        if (req.query.r && req.query.p) {
+            const friendRequests = [];
+            const friendList = [];
+            const sentFriendRequests = [];
+            const user = await Student.findOne({ reg_no: req.query.r, password: req.query.p })
+                .populate("friendRequests", { studentPicture: 1, name: 1, reg_no: 1, section: 1, rollNumber: 1 })
+                .populate("friends", { studentPicture: 1, name: 1, reg_no: 1, section: 1, rollNumber: 1 })
+                .populate("sentFriendRequests", { studentPicture: 1, name: 1, reg_no: 1, section: 1, rollNumber: 1 })
+                .select({ _id: 0, friendRequests: 1, friends: 1, sentFriendRequests: 1 });
+            if (user) {
+                friendRequests.push(...user.friendRequests);
+                friendList.push(...user.friends);
+                sentFriendRequests.push(...user.sentFriendRequests);
+                res.status(200).json({
+                    students: students,
+                    friendRequests: friendRequests,
+                    friends: friendList,
+                    sentFriendRequests: sentFriendRequests,
+                    requestTime: new Date().toISOString(),
+                    message: "Student found",
+                    status: true,
+                    errorMessage: ""
+                });
+                return
+            } else {
+                res.status(200).json({
+                    friendRequests: [],
+                    message: "User not found",
+                    errorMessage: "Invalid credentials",
+                    status: false,
+                })
+                return
+            }
+        }
+
         res.status(200).json({
-            data: students,
+            students: students,
             requestTime: new Date().toISOString(),
             message: "Student found",
             status: true,
@@ -52,9 +87,9 @@ export const searchStudent = async (req: Request, res: Response) => {
 
     } catch (error: any) {
         res.status(500).json({
-            data: [],
+            students: [],
             requestTime: new Date().toISOString(),
-            message: "Unable to fetch the data",
+            message: "Unable to fetch the students",
             status: false,
             errorMessage: error.message
         });

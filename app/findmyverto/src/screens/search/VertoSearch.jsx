@@ -1,18 +1,20 @@
 import { View, Text, StyleSheet, TouchableOpacity, TextInput, ScrollView, Dimensions, Image, Keyboard } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { colors } from '../../constants/colors';
 import LottieView from 'lottie-react-native';
-import { API_URL } from '../../../context/Auth';
+import { API_URL, AuthContext } from '../../../context/Auth';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import StudentCard from '../../components/vertoSearch/SearchedStudentCard';
+import { searchStudents } from '../../utils/fetchUtils/searchStudents';
 
 
 const { height, width } = Dimensions.get('window');
 
 export default function VertoSearch({ navigation }) {
+    const { auth } = useContext(AuthContext)
     const [query, setQuery] = useState("")
     const [search, setSearch] = useState(false)
     const [loading, setLoading] = useState(false)
@@ -23,42 +25,18 @@ export default function VertoSearch({ navigation }) {
     const [sentFriendRequests, setSentFriendRequests] = useState([])
     const [disableBtn, setDisableBtn] = useState(false)
 
-    async function searchStudents() {
-        if (query.length < 4) {
+    async function handleSearchStudents() {
+        if (query.length < 2) {
             Toast.show({
                 type: 'error',
-                text1: 'Search query must be greater than 5',
+                text1: 'Search query must be greater than 2',
             })
             return
         }
-
         Keyboard.dismiss()
-        setSearch(true)
-        setLoading(true)
-        await axios.post(`${API_URL}/api/student/searchStudents`, { query: query })
-            .then(async (result) => {
-                const friendList =  await axios.post(`${API_URL}/api/student/getFriendList`)
-                const sentfriendReqList =  await axios.post(`${API_URL}/api/student/getSentFriendRequests`)
-                const friendReqList =  await axios.post(`${API_URL}/api/student/getFriendRequests`)
-                setfriends(friendList.data.friends)
-                setfriendsRequests(friendReqList.data.friendRequests)
-                setSentFriendRequests(sentfriendReqList.data.sentFriendRequests)
-                setStudents(result.data);
-                setLoading(false);
-            }).catch((err) => {
-                Toast.show({
-                    type: 'error',
-                    text1: 'Error while searching',
-                    text2: `${err}`,
-                });
-                console.log(err);
-                setLoading(false)
-            })
-        setQuery([])
+        await searchStudents(auth, query, setSearch, setLoading, setStudents, setfriends, setfriendsRequests, setSentFriendRequests)
+        // setQuery("")
     }
-
-
-
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]}>
             <View style={{ zIndex: 2 }}>
@@ -77,7 +55,7 @@ export default function VertoSearch({ navigation }) {
                 <TextInput
                     onChangeText={(text) => setQuery(text)}
                     style={[styles.searchBar, {
-                        width: isFocused && query.length > 4 ? "80%" : "90%",
+                        width: isFocused && query.length > 2 ? "80%" : "90%",
                         borderColor: isFocused ? colors.lightDark : 'transparent',
                         backgroundColor: isFocused ? "transparent" : colors.btn1,
                     }]}
@@ -85,13 +63,13 @@ export default function VertoSearch({ navigation }) {
                     placeholderTextColor={"grey"}
                     onFocus={() => setFocused(true)}
                     onBlur={() => setFocused(false)}
-                    onSubmitEditing={searchStudents}
+                    onSubmitEditing={handleSearchStudents}
                 />
 
                 {/* search button */}
-                <View style={[styles.backBtn, { display: isFocused && query.length > 4 ? "flex" : "none" }]}>
-                    <TouchableOpacity onPress={searchStudents}>
-                        <FontAwesome5 name='arrow-right' size={25} color={colors.lightDark} />
+                <View style={[styles.backBtn, { display: isFocused && query.length > 2 ? "flex" : "none" }]}>
+                    <TouchableOpacity onPress={handleSearchStudents}>
+                        <FontAwesome5 name='arrow-right' size={20} color={colors.lightDark} />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -123,7 +101,7 @@ export default function VertoSearch({ navigation }) {
                                 <Text style={styles.text1}>Looking for them...</Text>
                             </View>
                             :
-                            students.length <1 ?
+                            students.length < 1 ?
                                 // no result found container
                                 <View style={{ height: height * 0.7, justifyContent: "center" }}>
                                     <LottieView
@@ -144,13 +122,13 @@ export default function VertoSearch({ navigation }) {
                                 // results mapping
                                 students.map((value, index) => (
                                     //searched students cards mapping
-                                    <StudentCard 
-                                    key={index} student={value} 
-                                    friends={friends}  setfriends={setfriends}
-                                    friendsRequests={friendsRequests} setfriendsRequests={setfriendsRequests}
-                                    sentFriendRequests={sentFriendRequests} setSentFriendRequests={setSentFriendRequests}
-                                    navigation={navigation} 
-                                    disableBtn={disableBtn} setDisableBtn={setDisableBtn}
+                                    value.reg_no !== auth.reg_no && <StudentCard
+                                        key={index} student={value}
+                                        friends={friends} setfriends={setfriends}
+                                        friendsRequests={friendsRequests} setfriendsRequests={setfriendsRequests}
+                                        sentFriendRequests={sentFriendRequests} setSentFriendRequests={setSentFriendRequests}
+                                        navigation={navigation}
+                                        disableBtn={disableBtn} setDisableBtn={setDisableBtn}
                                     />
                                 ))
                         :
@@ -162,7 +140,7 @@ export default function VertoSearch({ navigation }) {
                                 style={{ height: width * 0.7, width: width * 0.9, opacity: 0.3 }}
                                 transition={1000}
                             />
-                            <Text style={styles.text1}>Seach in Student's name, Section, or registration number</Text>
+                            <Text style={styles.text1}>Search in Student's name, Section, or registration number</Text>
                         </View>
                     }
 
@@ -216,6 +194,6 @@ const styles = StyleSheet.create({
     },
 
     // miscellaneous
-    text1: { fontSize: 16, textAlign: "center", fontWeight: "500", color: "grey" },
-    text2: { fontSize: 18, fontWeight: "500", color: colors.lightDark }
+    text1: { fontSize: 12, textAlign: "center", color: "grey" },
+    text2: { fontSize: 15, fontWeight: "500", color: colors.lightDark }
 })

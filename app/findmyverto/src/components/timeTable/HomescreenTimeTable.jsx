@@ -10,6 +10,7 @@ import { AppContext } from '../../../context/MainApp';
 import { fetchTimetable } from '../../utils/fetchUtils/timeTableFetch';
 import Button from '../miscellaneous/Button';
 import { useFocusEffect } from '@react-navigation/native';
+import { HEIGHT } from '../../constants/styles';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
@@ -75,7 +76,7 @@ export default function HomescreenTimeTable({ navigation }) {
                     !timeTable[0]?.time ?
                         <NoClassesComponent day={day} />
                         :
-                        <>
+                        <View style={{ width: "100%", justifyContent: 'space-evenly' }}>
                             <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
                                 <Text style={styles.text1}>
                                     <Text style={{ color: "grey" }}>Classes today:</Text> {
@@ -96,12 +97,13 @@ export default function HomescreenTimeTable({ navigation }) {
                                     <SundayMessage navigation={navigation} />
                                     :
                                     <ScrollView
-                                        ref={scrollViewRef}
-                                        horizontal
-                                        // pagingEnabled
-                                        decelerationRate="normal"
-                                        contentContainerStyle={styles.scrollView}
-                                        showsHorizontalScrollIndicator={false}
+                                    ref={scrollViewRef}
+                                    horizontal
+                                    // nestedScrollEnabled={true}
+                                    decelerationRate="normal"
+                                    contentContainerStyle={styles.scrollView}
+                                    showsHorizontalScrollIndicator={false}
+                                        // style={{maxHeight:HEIGHT(25)}}
                                         // snapToInterval={itemWidth + gap}
                                         refreshControl={
                                             <RefreshControl
@@ -118,7 +120,7 @@ export default function HomescreenTimeTable({ navigation }) {
 
                                         {
                                             // checking if the classes are over
-                                            timeTable && timeTable?.length > 0
+                                            !timeTable && timeTable?.length > 0
                                                 && isTimeEqual(timeTable[timeTable.length - 1]?.time, true)
                                                 ?
                                                 <NoClassesMessage />
@@ -130,7 +132,7 @@ export default function HomescreenTimeTable({ navigation }) {
 
                                     </ScrollView>
                             }
-                        </>
+                        </View>
             }
         </>
     );
@@ -214,7 +216,7 @@ const ErrorMessage = ({ handleFetchTimetable, timetableLoading }) => {
 
 const styles = StyleSheet.create({
     scrollView: {
-        paddingHorizontal: 5,
+        padding:10,
         alignItems: 'center',
     },
     text1: {

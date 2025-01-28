@@ -1,15 +1,15 @@
-import { View, Text, StyleSheet, Dimensions, Image, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, Pressable, ScrollView } from 'react-native'
 import React, { use, useContext, useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { AppContext } from '../../../context/MainApp';
 import isTimeEqual from '../../utils/helperFunctions/funtions';
 import { colors } from '../../constants/colors';
-import { globalStyles } from '../../constants/styles';
+import { globalStyles, HEIGHT } from '../../constants/styles';
 import BreakCard from './BreakCard';
 import LottieView from 'lottie-react-native';
 
 
-const { width } = Dimensions.get('window');
+const { width,height } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
 const gap = (width - itemWidth) / 4;
 
@@ -20,7 +20,7 @@ export default function ClassesTodayCards({ value, index, navigation }) {
         setIsTimeEqualState(isTimeEqual(value.time))
     }, [value.time])
     return (
-        <Pressable onPress={() => navigation.navigate("Timetable")}>
+        // <Pressable onPress={() => navigation.navigate("Timetable")}>
             <LinearGradient
                 colors={isTimeEqualState ? ['#11998e', '#32cf6d'] : ["white", "transparent"]}
                 style={[styles.cardContainer, globalStyles.elevationMin]}
@@ -49,9 +49,8 @@ export default function ClassesTodayCards({ value, index, navigation }) {
                         </LinearGradient>
                         :
 
-                        <View style={styles.classWrapper}>
-
-                            {
+                        <View>
+                            {  
                                 value?.class?.map((classDetail, index) => (
                                     <React.Fragment key={index}>
                                         <View style={styles.classContainer}>
@@ -110,14 +109,15 @@ export default function ClassesTodayCards({ value, index, navigation }) {
                         </View>
                 }
             </LinearGradient>
-        </Pressable>
+        // </Pressable>
     )
 }
 
 const styles = StyleSheet.create({
     cardContainer: {
-        height: "95%",
+        // height: HEIGHT(25),
         backgroundColor: 'white',
+        maxHeight: HEIGHT(25),
         // justifyContent: "space-between",
         marginRight: gap,
         borderRadius: 25,
@@ -126,6 +126,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 10,
         justifyContent: 'space-between',
+        
     },
     cardElements: {
         flexDirection: 'row',
@@ -146,11 +147,11 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 25
     },
     classWrapper: {
-        flexDirection: "row",
+        flexDirection: "row"
     },
     classContainer: {
         justifyContent: "space-between",
-        height: "90%",
+        // height: "90%",
         width: itemWidth,
         paddingHorizontal: 15,
         paddingVertical: 10,
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
         fontWeight: '400'
     },
     breakCard: {
-        height: "85%",
+        height: HEIGHT(15),
         justifyContent: "center",
         alignItems: "center",
         borderBottomLeftRadius: 25,

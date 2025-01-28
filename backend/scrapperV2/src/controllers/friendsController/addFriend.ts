@@ -35,7 +35,7 @@ export const addFriend = async (req: Request, res: Response) => {
                                     .then(() => {
                                         res.status(200).send({
                                             success: true,
-                                            message: "Friend added successfully"
+                                            message: "Friend added"
                                         });
                                     })
                                     .catch((e) => {
