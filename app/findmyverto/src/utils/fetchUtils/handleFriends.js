@@ -1,6 +1,11 @@
 import axios from "axios";
 import { API_URL } from "../../../context/Auth";
 import Toast from "react-native-toast-message";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+// import { MMKV } from "react-native-mmkv";
+import formatTimetable from "../helperFunctions/timetableFormatter";
+import { mmkvStorage } from "../../../context/MainApp";
+import formatTimeAgo from "../helperFunctions/dateFormatter";
 
 export async function sendFriendRequest(auth, student, setSentFriendRequests, sentFriendRequests, setLoading, setDisableBtn) {
     setLoading(true)
@@ -121,5 +126,55 @@ export async function rejectFriendRequest(auth, student, setfriendRequests, frie
         .finally(() => {
             setLoading(false);
             setDisableBtn(false)
+        })
+}
+
+export async function getFriendRequests(auth, setfriendRequests, setLoading) {
+    setLoading(true)
+    await axios.post(`${API_URL}/friends/getRequests`, { reg_no: auth.reg_no, password: auth.password })
+        .then(async (result) => {
+            if (result.data.status) {
+                setfriendRequests(result.data.friendRequests);
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: result.data.message,
+                    text2: result.data.errorMessage,
+                })
+            }
+        }).catch((err) => {
+            Toast.show({
+                type: 'error',
+                text1: err.message,
+            });
+            console.log(err);
+        })
+        .finally(() => {
+            setLoading(false);
+        })
+}
+
+export async function getSentFriendRequests(auth, setSentFriendRequests, setLoading) {
+    setLoading(true)
+    await axios.post(`${API_URL}/friends/getSentRequests`, { reg_no: auth.reg_no, password: auth.password })
+        .then(async (result) => {
+            if (result.data.status) {
+                setSentFriendRequests(result.data.sentFriendRequests);
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: result.data.message,
+                    text2: result.data.errorMessage,
+                })
+            }
+        }).catch((err) => {
+            Toast.show({
+                type: 'error',
+                text1: err.message,
+            });
+            console.log(err);
+        })
+        .finally(() => {
+            setLoading(false);
         })
 }

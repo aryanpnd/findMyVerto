@@ -26,8 +26,9 @@ app.use(express.json());
 import { studentRoutes } from './src/routes/studentRoutes';
 import { setupSwagger } from './src/config/swagger';
 import { friendRoutes } from './src/routes/friendRoutes';
+import { friendScrapperRoutes } from './src/routes/friendScrapperRoutes';
 app.use('/api/v2/student', studentRoutes);
-app.use('/api/v2/friends', friendRoutes);
+app.use('/api/v2/friends', friendRoutes,friendScrapperRoutes);
 
 // Swagger
 setupSwagger(app);

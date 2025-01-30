@@ -7,7 +7,7 @@ export const searchStudent = async (req: Request, res: Response) => {
         if (!searchQuery) {
             res.status(400).json({
                 students: [],
-                requestTime: new Date().toISOString(),
+                lastSynced: new Date().toISOString(),
                 message: "Invalid search query",
                 status: false,
                 errorMessage: "Invalid search query"
@@ -34,7 +34,7 @@ export const searchStudent = async (req: Request, res: Response) => {
         if (students.length === 0) {
             res.status(200).json({
                 students: [],
-                requestTime: new Date().toISOString(),
+                lastSynced: new Date().toISOString(),
                 message: "No student found",
                 status: false,
                 errorMessage: "No student found"
@@ -60,7 +60,7 @@ export const searchStudent = async (req: Request, res: Response) => {
                     friendRequests: friendRequests,
                     friends: friendList,
                     sentFriendRequests: sentFriendRequests,
-                    requestTime: new Date().toISOString(),
+                    lastSynced: new Date().toISOString(),
                     message: "Student found",
                     status: true,
                     errorMessage: ""
@@ -79,7 +79,7 @@ export const searchStudent = async (req: Request, res: Response) => {
 
         res.status(200).json({
             students: students,
-            requestTime: new Date().toISOString(),
+            lastSynced: new Date().toISOString(),
             message: "Student found",
             status: true,
             errorMessage: ""
@@ -88,7 +88,7 @@ export const searchStudent = async (req: Request, res: Response) => {
     } catch (error: any) {
         res.status(500).json({
             students: [],
-            requestTime: new Date().toISOString(),
+            lastSynced: new Date().toISOString(),
             message: "Unable to fetch the students",
             status: false,
             errorMessage: error.message

@@ -14,6 +14,7 @@ import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'; // 
 import { fetchBasicDetails } from '../../utils/fetchUtils/basicDetailsFetch'
 import { useFocusEffect } from '@react-navigation/native'
 import { is } from 'react-native-cheerio/lib/api/attributes'
+import { WIDTH } from '../../constants/styles'
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create shimmer placeholder
 
@@ -106,15 +107,16 @@ export default function Header({ navigation }) {
                     </View>
 
                     <View style={styles.iconContainer}>
-                        <View style={{ width: '35%', alignItems: "center" }}>
+                        <View style={{ alignItems: "center" }}>
                             <TouchableOpacity
                                 onPress={() => navigation.navigate('FriendRequests')}
                                 style={styles.button2}><Octicons name='person-add' size={15}
                                     color={colors.whiteLight} /></TouchableOpacity>
                             <Text style={{ color: 'white', fontSize: 10 }}>Requests</Text>
                         </View>
-                        <View style={{ width: '35%', alignItems: "center" }}>
-                            <TouchableOpacity style={styles.button2} disabled={loading}
+                        <View style={{ alignItems: "center" }}>
+                            <TouchableOpacity
+                                style={styles.button2} disabled={loading}
                                 onPress={loading ? () => { } : () => navigation.navigate('MyProfile')}>
                                 <FontAwesome5 name='user' size={15} color={colors.whiteLight} />
                             </TouchableOpacity>
@@ -254,7 +256,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: '60%',
-        width: "100%"
+        minWidth: WIDTH(11),
     },
     iconContainer: {
         width: '35%',

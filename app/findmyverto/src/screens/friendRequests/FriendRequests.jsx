@@ -8,9 +8,9 @@ import {
   TouchableOpacity,
   View
 } from 'react-native'
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useContext } from 'react'
 import Toast from 'react-native-toast-message'
-import { API_URL } from '../../../context/Auth'
+import { API_URL, AuthContext } from '../../../context/Auth'
 import axios from 'axios'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors } from '../../constants/colors'
@@ -18,17 +18,20 @@ import { MaterialIcons } from '@expo/vector-icons'
 import SearchedStudentCard from '../../components/vertoSearch/SearchedStudentCard'
 import LottieView from 'lottie-react-native';
 import EmptyRequests from '../../components/miscellaneous/EmptyRequests'
+import { getFriendRequests, getSentFriendRequests } from '../../utils/fetchUtils/handleFriends'
 
 
 const { height, width } = Dimensions.get('window');
 
 export default function FriendRequests({ navigation }) {
+  const { auth } = useContext(AuthContext)
 
+  const scrollViewRef = useRef(null);
   const scrollX = useRef(new Animated.Value(0)).current;
-  const buttons = ['Requests', 'Sent requests'];
-  const onCLick = i => this.scrollView.scrollTo({ x: i * width });
 
-  
+  const buttons = ['Requests', 'Sent requests'];
+  const onCLick = i => scrollViewRef.current?.scrollTo({ x: i * width });
+
   const [friends, setfriends] = useState([])
   const [friendsRequests, setfriendsRequests] = useState([])
   const [sentFriendRequests, setSentFriendRequests] = useState([])
@@ -36,45 +39,18 @@ export default function FriendRequests({ navigation }) {
 
   const [loading, setLoading] = useState(false)
 
-  async function getFriendRequests() {
-    setLoading(true)
-    await axios.post(`${API_URL}/api/student/getFriendRequests`)
-      .then(async (result) => {
-        setfriendsRequests(result.data.friendRequests)
-        setLoading(false)
-      }).catch((err) => {
-        Toast.show({
-          type: 'error',
-          text1: 'Error while searching',
-          text2: `${err}`,
-        });
-        console.log(err);
-        setLoading(false)
-      })
+
+  function handleGetFriendRequests() {
+    getFriendRequests(auth, setfriendsRequests, setLoading)
   }
-  async function getSentFriendRequests() {
-    setLoading(true)
-    await axios.post(`${API_URL}/api/student/getSentFriendRequests`)
-      .then(async (result) => {
-        setSentFriendRequests(result.data.sentFriendRequests)
-        setLoading(false)
-      }).catch((err) => {
-        Toast.show({
-          type: 'error',
-          text1: 'Error while searching',
-          text2: `${err}`,
-        });
-        console.log(err);
-        setLoading(false)
-      })
+  function handleGetSentRequests() {
+    getSentFriendRequests(auth, setSentFriendRequests, setLoading)
   }
 
   useEffect(() => {
-    getFriendRequests()
-    getSentFriendRequests()
+    handleGetFriendRequests()
+    handleGetSentRequests()
   }, [])
-
-
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]}>
@@ -99,7 +75,7 @@ export default function FriendRequests({ navigation }) {
         <ButtonContainer buttons={buttons} onClick={onCLick} scrollX={scrollX} />
 
         <ScrollView
-          ref={e => (this.scrollView = e)}
+          ref={scrollViewRef}
           horizontal
           pagingEnabled
           decelerationRate="fast"
@@ -108,9 +84,9 @@ export default function FriendRequests({ navigation }) {
             [{ nativeEvent: { contentOffset: { x: scrollX } } }],
             { useNativeDriver: false },
           )}>
-          {buttons.map((x, index) => (
+          {buttons?.map((x, index) => (
             <RequestsContainer key={x} val={x} index={index}
-              getFriendRequests={getFriendRequests} getSentFriendRequests={getSentFriendRequests}
+              getFriendRequests={handleGetFriendRequests} getSentFriendRequests={handleGetSentRequests}
               friends={friends} setfriends={setfriends}
               friendsRequests={friendsRequests} setfriendsRequests={setfriendsRequests}
               sentFriendRequests={sentFriendRequests} setSentFriendRequests={setSentFriendRequests}
@@ -124,7 +100,6 @@ export default function FriendRequests({ navigation }) {
     </SafeAreaView>
   )
 }
-
 
 function RequestsContainer({
   val, index, friends, setfriends, sentFriendRequests, setSentFriendRequests, friendsRequests, setfriendsRequests, navigation, disableBtn, setDisableBtn, loading, setLoading, getFriendRequests, getSentFriendRequests
@@ -143,7 +118,7 @@ function RequestsContainer({
       {/* students found container */}
       <View style={styles.studentsFoundContainer}>
         <Text style={styles.text2}>{val}</Text>
-        <Text style={styles.text2}>{index ? sentFriendRequests.length : friendsRequests.length}</Text>
+        <Text style={styles.text2}>{index ? sentFriendRequests?.length : friendsRequests?.length}</Text>
       </View>
 
       {loading &&
@@ -173,17 +148,17 @@ function RequestsContainer({
           contentContainerStyle={{ alignItems: "center", paddingVertical: 15, gap: height * 0.01 }}>
           {
             index ?
-              sentFriendRequests.length < 1 ?
-                <EmptyRequests navigation={navigation} btnText={"Find Friends"}  withButton={true} text={"You have 0 sent requests right now"} route={"VertoSearch"}/>
+              sentFriendRequests?.length < 1 ?
+                <EmptyRequests navigation={navigation} btnText={"Find Friends"} withButton={true} text={"You have 0 sent requests right now"} route={"VertoSearch"} />
                 :
-                sentFriendRequests.map((value, index) => (
+                sentFriendRequests?.map((value, index) => (
                   <SearchedStudentCard key={index} friends={friends} disableBtn={disableBtn} friendsRequests={friendsRequests} sentFriendRequests={sentFriendRequests} navigation={navigation} setDisableBtn={setDisableBtn} setSentFriendRequests={setSentFriendRequests} student={value} />
                 ))
               :
-              friendsRequests.length < 1 ?
-                <EmptyRequests text={"Your request list is empty"}/>
+              friendsRequests?.length < 1 ?
+                <EmptyRequests text={"Your request list is empty"} />
                 :
-                friendsRequests.map((value, index) => (
+                friendsRequests?.map((value, index) => (
                   <SearchedStudentCard key={index} forRequest={true} setfriends={setfriends} friends={friends} disableBtn={disableBtn} friendsRequests={friendsRequests} setfriendsRequests={setfriendsRequests} sentFriendRequests={sentFriendRequests} navigation={navigation} setDisableBtn={setDisableBtn} setSentFriendRequests={setSentFriendRequests} student={value} />
                 ))
           }
@@ -195,7 +170,7 @@ function RequestsContainer({
 
 function ButtonContainer({ buttons, onClick, scrollX }) {
   const [btnContainerWidth, setWidth] = useState(0);
-  const btnWidth = btnContainerWidth / buttons.length;
+  const btnWidth = btnContainerWidth / buttons?.length;
   const translateX = scrollX.interpolate({
     inputRange: [0, width],
     outputRange: [0, btnWidth],
@@ -208,7 +183,7 @@ function ButtonContainer({ buttons, onClick, scrollX }) {
     <View
       style={styles.btnContainer}
       onLayout={e => setWidth(e.nativeEvent.layout.width)}>
-      {buttons.map((btn, i) => (
+      {buttons?.map((btn, i) => (
         <TouchableOpacity
           key={btn}
           style={styles.btn}
@@ -221,7 +196,7 @@ function ButtonContainer({ buttons, onClick, scrollX }) {
           styles.animatedBtnContainer,
           { width: btnWidth, transform: [{ translateX }] },
         ]}>
-        {buttons.map(btn => (
+        {buttons?.map(btn => (
           <Animated.View
             key={btn}
             style={[
@@ -267,7 +242,7 @@ const styles = StyleSheet.create({
     height: "92%",
     width: '100%',
     alignItems: "center",
-    gap: height * 0.05
+    gap: height * 0.02
   },
 
 
@@ -306,9 +281,9 @@ const styles = StyleSheet.create({
 
   RequestsContainer: {
     width: width - 10,
-    height: '95%',
+    height: '100%',
     marginHorizontal: 5,
-    borderRadius: 5,
+    borderRadius: 5
   },
 
   studentsFoundContainer: {

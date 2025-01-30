@@ -2,6 +2,8 @@ import { View, Text, Image, StyleSheet, Dimensions } from 'react-native'
 import React, { useEffect } from 'react'
 import { colors } from '../../constants/colors';
 import { API_URL_ROOT } from '../../../context/Auth';
+import SyncData from '../miscellaneous/SyncData';
+import formatTimeAgo from '../../utils/helperFunctions/dateFormatter';
 
 const { height, width } = Dimensions.get('window');
 export default function StudentProfile({ student }) {
@@ -10,12 +12,12 @@ export default function StudentProfile({ student }) {
 
   return (
     <View style={styles.container}>
-
+      {/* <SyncData self={false} time={formatTimeAgo(student?.lastSynced) || ""} color={"white"} bg={colors.secondary} /> */}
       {/* profile image */}
       <View style={{ justifyContent: "center", alignItems: "center", width: "100%" }}>
         <Image
           source={imageSource}
-          style={{ height: height * 0.15, width: height * 0.15, borderRadius: height * 0.15 / 2,objectFit:"fill" }}
+          style={{ height: height * 0.15, width: height * 0.15, borderRadius: height * 0.15 / 2, objectFit: "fill" }}
           transition={1000}
         />
       </View>

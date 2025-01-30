@@ -29,7 +29,7 @@ export async function fetchTimetable(
                     const tt = formatTimetable(result.data.data.time_table, result.data.data.courses, todayOnly)
                     settimeTable(tt)
                     setClassesToday(tt.length)
-                    setLastSynced(result.data.last_synced)
+                    setLastSynced(result.data.lastSynced)
                     setLastUpdated(result.data.data.last_updated)
                 } else {
                     Toast.show({
@@ -44,7 +44,7 @@ export async function fetchTimetable(
             const tt = formatTimetable(userTimeTable.data.time_table, userTimeTable.data.courses, todayOnly)
             setClassesToday(tt.length)
             settimeTable(tt)
-            setLastSynced(userTimeTable.requestTime)
+            setLastSynced(userTimeTable.lastSynced)
             setLastUpdated(userTimeTable.data.last_updated)
         }
         setTimetableLoading(false)

@@ -1,9 +1,9 @@
-import axios from 'axios';
 import React, { createContext, useEffect, useState } from 'react';
-import * as SecureStore from 'expo-secure-store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import { MMKV } from 'react-native-mmkv'
 
 const AppContext = createContext();
+
+// export const mmkvStorage = new MMKV()
 
 const AppProvider = ({ children }) => {
     const [courses, setCourses] = useState({})

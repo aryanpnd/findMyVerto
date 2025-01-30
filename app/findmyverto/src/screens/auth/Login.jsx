@@ -10,6 +10,7 @@ import OverlayLoading from '../../components/miscellaneous/OverlayLoading';
 import { colors } from '../../constants/colors';
 import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert';
 import Button from '../../components/miscellaneous/Button';
+import { StatusBar } from 'expo-status-bar';
 
 export default function Login() {
   const { setAuth } = useContext(AuthContext);
@@ -69,14 +70,16 @@ export default function Login() {
         <CustomAlert />
       </View>
       <SafeAreaView style={styles.container}>
+        <StatusBar backgroundColor={isFocused?colors.whitePrimary:colors.primary}/>
         <View style={styles.container}>
           {/* Hide logo and animation when text input is focused */}
           {!isFocused && (
-            <View style={{ justifyContent: 'space-between', alignItems: 'center', paddingTop: 20, height: '50%' }}>
+            <View style={styles.topContainer}>
               <Text style={{ fontSize: 25, fontWeight: '500', color: 'white' }}>FindMyVerto</Text>
               <LottieView
                 autoPlay
                 style={{
+                  flex: 1,
                   width: 350,
                   height: 350,
                 }}
@@ -87,7 +90,7 @@ export default function Login() {
 
           {/* login container */}
           <View style={[styles.loginContainer, isFocused && styles.focusedLoginContainer]}>
-            <ScrollView keyboardShouldPersistTaps="handled">
+            <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
               <View style={{ justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 5, marginBottom: 30 }}>
                 <Text style={styles.textLarge}>LOGIN</Text>
                 <Text style={styles.textSmall}>with your UMS Credentials</Text>
@@ -147,8 +150,14 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: colors.primary,
   },
+  topContainer: {
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingTop: 20,
+    flex: 4
+  },
   loginContainer: {
-    height:"45%",
+    flex: 4,
     width: '100%',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,

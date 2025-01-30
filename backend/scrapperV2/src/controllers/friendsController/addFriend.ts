@@ -61,7 +61,7 @@ export const addFriend = async (req: Request, res: Response) => {
                 })
         }
         else if (isStudentInFriendList) {
-            res.send({ succes: true, message: 'Already friends' });
+            res.send({ success: true, message: 'Already friends' });
         }
         else {
             res.send({ success: false, message: "Friend is not in request list" })

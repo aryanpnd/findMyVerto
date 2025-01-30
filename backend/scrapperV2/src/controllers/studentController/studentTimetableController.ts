@@ -2,54 +2,74 @@ import { Request, Response } from "express";
 import { scrapeStudentTimetable } from "../../scrapper/studentTimetableScrapper";
 import { saveStudentTimeTable } from "../../services/saveToDB/studentTimetable";
 import { StudentTimeTable } from "../../types/DB_ServicesTypes";
+import { FriendBody } from "../../types/scrapperTypes";
 
-export const getStudentTimeTable = async (req: Request, res: Response): Promise<void> => {
+export const getStudentTimeTable = async (req: Request, res: Response, friendBody?: FriendBody): Promise<void> => {
   try {
-    const { reg_no, password } = req.body;
-    const studentTimetable = await scrapeStudentTimetable({ reg_no, password });
+    const requestBody = friendBody || req.body;
 
-    // Check if scraping was successful
-    if (!studentTimetable.status || !studentTimetable.data || !('time_table' in studentTimetable.data)) {
+    // Ensure request body is valid
+    if (!requestBody || typeof requestBody !== "object") {
       res.status(400).json({
         status: false,
-        data: {},
-        message: studentTimetable.message || "Failed to fetch timetable",
-        requestTime: new Date().toISOString(),
-        errorMessage: studentTimetable.errorMessage || "Invalid timetable data"
+        message: "Invalid request data",
+        lastSynced: new Date().toISOString(),
       });
       return;
     }
 
-    // Prepare data for saving
+    const { reg_no, password } = requestBody;
+
+    // Validate required fields
+    if (!reg_no || !password) {
+      res.status(400).json({
+        status: false,
+        message: "Registration number and password are required",
+        lastSynced: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const studentTimetable = await scrapeStudentTimetable({ reg_no, password });
+
+    if (!studentTimetable.status || !studentTimetable.data || !("time_table" in studentTimetable.data)) {
+      res.status(400).json({
+        status: false,
+        data: {},
+        message: studentTimetable.message || "Failed to fetch timetable",
+        lastSynced: new Date().toISOString(),
+        errorMessage: studentTimetable.errorMessage || "Invalid timetable data",
+      });
+      return;
+    }
+
     const studentTimetableTemp: StudentTimeTable = {
-      reg_no: reg_no,
+      reg_no,
       data: studentTimetable.data,
-      requestTime: studentTimetable.requestTime
+      lastSynced: studentTimetable.lastSynced,
     };
 
-    // Save to database
     const saveResult = await saveStudentTimeTable(studentTimetableTemp);
     if (!saveResult.status) {
       res.status(400).json({
         status: false,
         data: {},
         message: "Failed to save student data",
-        requestTime: new Date().toISOString(),
-        errorMessage: saveResult.message
+        lastSynced: new Date().toISOString(),
+        errorMessage: saveResult.message,
       });
       return;
     }
 
-    // Send successful response
     res.status(200).json(studentTimetable);
-
   } catch (error: any) {
+    console.error(error);
     res.status(500).json({
       data: {},
-      requestTime: new Date().toISOString(),
+      lastSynced: new Date().toISOString(),
       message: "Unable to fetch the data",
       status: false,
-      errorMessage: error.message
+      errorMessage: error.message,
     });
   }
 };

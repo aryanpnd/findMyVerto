@@ -12,7 +12,7 @@ export const getFriendData = async (req: Request, res: Response) => {
 
         if (!student) {
             return res.status(404).json({
-                succes: false,
+                success: false,
                 data: {},
                 message: "Student not found"
             });
@@ -27,18 +27,14 @@ export const getFriendData = async (req: Request, res: Response) => {
                 })
                 .then(async result => {
                     if (result) {
-                        const timetable = await TimeTable.findOne({ reg_no: result.reg_no });
                         res.status(200).json({
-                            succes: true,
-                            data: {
-                                studentInfo: result,
-                                timetable: timetable
-                            },
-                            message: "Friend fetched successfully",
+                            success: true,
+                            data: result,
+                            message: "Friend details fetched successfully",
                         });
                     } else {
                         res.status(404).json({
-                            succes: false,
+                            success: false,
                             data: {},
                             message: "Friend not found",
                         });
@@ -46,15 +42,15 @@ export const getFriendData = async (req: Request, res: Response) => {
                 })
         } else {
             res.json({
-                succes: false,
+                success: false,
                 data: {},
                 message: "Not friends"
             })
         }
 
-    } catch (e:any) {
+    } catch (e: any) {
         res.status(500).json({
-            succes: false,
+            success: false,
             data: {},
             message: "Internal server error",
             errorMessage: e.message

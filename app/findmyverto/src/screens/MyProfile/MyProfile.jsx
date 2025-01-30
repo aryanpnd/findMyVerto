@@ -79,7 +79,7 @@ export default function MyProfile({ navigation }) {
 
                 {/* Last sync container */}
                 {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} />}
-                <SyncData color={"white"} self={true} syncNow={() => handleDataFetch(true)} time={formatTimeAgo(student.requestTime)} bg={colors.secondary} />
+                <SyncData color={"white"} self={true} syncNow={() => handleDataFetch(true)} time={formatTimeAgo(student.lastSynced)} bg={colors.secondary} />
 
                 {/* Body */}
                 <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}>

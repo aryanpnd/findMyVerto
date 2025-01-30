@@ -1,5 +1,5 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { Dimensions, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import React, { forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { Dimensions, Platform, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { AuthContext } from '../../../context/Auth';
 import Loading1 from '../miscellaneous/Loading1';
 import LottieView from 'lottie-react-native';
@@ -18,7 +18,7 @@ const gap = (width - itemWidth) / 4;
 
 const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 
-export default function HomescreenTimeTable({ navigation }) {
+const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
     const { auth } = useContext(AuthContext)
     const { timetableLoading, setTimetableLoading } = useContext(AppContext)
     const [classesToday, setClassesToday] = useState(0)
@@ -26,6 +26,7 @@ export default function HomescreenTimeTable({ navigation }) {
     const [lastSynced, setLastSynced] = useState("")
     const [lastUpdated, setLastUpdated] = useState("")
     const [day, setDay] = useState(0)
+    const [classesOver, setClassesOver] = useState(false)
 
     const [refreshing, setRefreshing] = useState(false);
     const [isError, setIsError] = useState(false);
@@ -51,13 +52,21 @@ export default function HomescreenTimeTable({ navigation }) {
         today()
         handleFetchTimetable()
     }, []);
+    useEffect(() => {
+        setClassesOver(timeTable && timeTable.length > 0
+            && isTimeEqual(timeTable[timeTable.length - 1]?.time, true))
+    }, [timeTable])
+    useImperativeHandle(ref, () => ({
+        handleFetchTimetable,
+        today
+    }));
 
     useFocusEffect(
         useCallback(() => {
             if (timeTable.length > 0) {
                 const ongoingIndex = timeTable.findIndex(classItem => isTimeEqual(classItem.time));
                 if (ongoingIndex !== -1 && scrollViewRef.current) {
-                    const scrollPosition = ongoingIndex * (itemWidth + gap);
+                    const scrollPosition = ongoingIndex * (itemWidth + gap) - gap;
                     scrollViewRef.current.scrollTo({ x: scrollPosition, animated: true });
                 }
             }
@@ -76,8 +85,8 @@ export default function HomescreenTimeTable({ navigation }) {
                     !timeTable[0]?.time ?
                         <NoClassesComponent day={day} />
                         :
-                        <View style={{ width: "100%", justifyContent: 'space-evenly' }}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+                        <View style={{ width: "100%", justifyContent: 'flex-start' }}>
+                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, paddingHorizontal: 20 }}>
                                 <Text style={styles.text1}>
                                     <Text style={{ color: "grey" }}>Classes today:</Text> {
                                         timeTable && timeTable.length > 0 && isTimeEqual(timeTable[timeTable.length - 1]?.time, true) ? "Over" : classesToday
@@ -91,36 +100,24 @@ export default function HomescreenTimeTable({ navigation }) {
                                 }
 
                             </View>
-                            {
 
+                            {
                                 day === 0 ?
                                     <SundayMessage navigation={navigation} />
                                     :
                                     <ScrollView
-                                    ref={scrollViewRef}
-                                    horizontal
-                                    // nestedScrollEnabled={true}
-                                    decelerationRate="normal"
-                                    contentContainerStyle={styles.scrollView}
-                                    showsHorizontalScrollIndicator={false}
-                                        // style={{maxHeight:HEIGHT(25)}}
-                                        // snapToInterval={itemWidth + gap}
-                                        refreshControl={
-                                            <RefreshControl
-                                                tintColor={colors.secondary}
-                                                colors={[colors.secondary]}
-                                                refreshing={timetableLoading}
-                                                onRefresh={() => {
-                                                    handleFetchTimetable()
-                                                    today()
-                                                }}
-                                            />
-                                        }
-                                    >
+                                        ref={scrollViewRef}
+                                        horizontal
+                                        nestedScrollEnabled={true}
+                                        decelerationRate="normal"
+                                        contentContainerStyle={styles.scrollView}
+                                        showsHorizontalScrollIndicator={false}
+                                        bounces={Platform.OS === 'ios' ? false : undefined}
+                                        alwaysBounceVertical={false}
+                                        overScrollMode={Platform.OS === 'android' ? 'never' : undefined}>
 
                                         {
-                                            // checking if the classes are over
-                                            !timeTable && timeTable?.length > 0
+                                            timeTable && timeTable.length > 0
                                                 && isTimeEqual(timeTable[timeTable.length - 1]?.time, true)
                                                 ?
                                                 <NoClassesMessage />
@@ -136,18 +133,21 @@ export default function HomescreenTimeTable({ navigation }) {
             }
         </>
     );
-}
+})
+export default HomescreenTimeTable;
 
 const NoClassesComponent = ({ day }) => {
     return (
-        <>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+        <View style={{ width: "100%" }}>
+            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, marginHorizontal: 20 }}>
                 <Text style={styles.text1}>
                     {days[day]}
                 </Text>
             </View>
-            <NoClassesMessage />
-        </>
+            <View style={{ width: "100%", justifyContent: "center", alignItems: "center" }}>
+                <NoClassesMessage />
+            </View>
+        </View>
     )
 }
 
@@ -216,8 +216,12 @@ const ErrorMessage = ({ handleFetchTimetable, timetableLoading }) => {
 
 const styles = StyleSheet.create({
     scrollView: {
-        padding:10,
+        padding: 10,
         alignItems: 'center',
+        // backgroundColor: "yellow",
+        // width:"100%",
+        justifyContent: 'center',
+        maxHeight: HEIGHT(30),
     },
     text1: {
         color: "grey",

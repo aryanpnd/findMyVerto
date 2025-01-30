@@ -39,16 +39,16 @@ export default function TimeTable() {
     <>
       <View style={{ zIndex: 2 }}>
         <Toast />
-      <SyncData self={true} syncNow={() => handleFetchTimetable(true)} time={formatTimeAgo(lastSynced)} color={"white"} bg={colors.secondary} />
+        <SyncData self={true} syncNow={() => handleFetchTimetable(true)} time={formatTimeAgo(lastSynced)} color={"white"} bg={colors.secondary} />
       </View>
-      {self && <OverlayLoading loading={timetableLoading} loadingText={"Syncing..."}/>}
+      {self && <OverlayLoading loading={timetableLoading} loadingText={"Syncing..."} />}
       {
         timeTable ?
-        // <TimeTableScreen timeTable={Object.entries(timeTable)} />
-        <TimeTableScreen timeTable={timeTable}/>
-        :
-        <></>
-          // <></>
+          // <TimeTableScreen timeTable={Object.entries(timeTable)} />
+          <TimeTableScreen timeTable={timeTable} />
+          :
+          <></>
+        // <></>
       }
     </>
   )

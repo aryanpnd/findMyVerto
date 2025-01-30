@@ -22,7 +22,7 @@ export const getStudentBasicInfo = async (req: Request, res: Response): Promise<
       res.status(400).json({
         status: false,
         message: "Invalid student data",
-        requestTime: new Date().toISOString(),
+        lastSynced: new Date().toISOString(),
         errorMessage: "Invalid student data",
       });
       return;
@@ -41,7 +41,7 @@ export const getStudentBasicInfo = async (req: Request, res: Response): Promise<
       res.status(400).json({
         status: false,
         message: "Failed to save student data",
-        requestTime: new Date().toISOString()
+        lastSynced: new Date().toISOString()
       });
       return;
     }
@@ -50,7 +50,7 @@ export const getStudentBasicInfo = async (req: Request, res: Response): Promise<
   } catch (error: any) {
     res.json({
       data: {},
-      requestTime: new Date().toISOString(),
+      lastSynced: new Date().toISOString(),
       message: "Unable to fetch the data",
       errorMessage: error.message,
       status: true

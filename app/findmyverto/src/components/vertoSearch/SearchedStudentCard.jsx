@@ -21,9 +21,9 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
 
 
     function configureButton() {
-        const isStudentInSentList = sentFriendRequests.some(std => std.reg_no === student.reg_no);
-        const isStudentInRequestList = friendsRequests.some(std => std.reg_no === student.reg_no);
-        const isStudentInFriendList = friends.some(std => std.reg_no === student.reg_no);
+        const isStudentInSentList = sentFriendRequests?.some(std => std.reg_no === student.reg_no);
+        const isStudentInRequestList = friendsRequests?.some(std => std.reg_no === student.reg_no);
+        const isStudentInFriendList = friends?.some(std => std.reg_no === student.reg_no);
         if (isStudentInSentList) {
             setIsInSentList(true)
         }
@@ -98,6 +98,50 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
 
             {/* Button  */}
             <View style={{ justifyContent: "center", width: forRequest ? "45%" : "30%" }}>
+                {
+                     forRequest ?
+                     <View style={{ flexDirection: "row", width: "100%", justifyContent: 'space-between' }}>
+                         <TouchableOpacity
+                             disabled={disableBtn ? true : isFriend ? true : false}
+                             onPress={handleAddFriend}
+                             style={{
+                                 width: "45%",
+                                 borderRadius: 15,
+                                 backgroundColor: colors.green,
+                                 padding: 10,
+                                 justifyContent: "center",
+                                 flexDirection: "row",
+                                 alignItems: "center",
+                                 gap: 5
+                             }}
+                         >
+                             {loading ? <ActivityIndicator size="small" color={"white"} />
+                                 :
+                                 <Text style={{ color: "white", fontWeight: '500' }}>Accept</Text>
+                             }
+                         </TouchableOpacity>
+
+                         <TouchableOpacity
+                             disabled={disableBtn ? true : isFriend ? true : false}
+                             onPress={handleRejectFriendRequest}
+                             style={{
+                                 width: "45%",
+                                 borderRadius: 15,
+                                 backgroundColor: colors.btn1,
+                                 padding: 10,
+                                 justifyContent: "center",
+                                 flexDirection: "row",
+                                 alignItems: "center",
+                                 gap: 5
+                             }}
+                         >
+                             {loading ? <ActivityIndicator size="small" color={isInSentList ? "black" : "white"} />
+                                 :
+                                 <Text style={{ color: "grey", fontWeight: '500' }}>Cancel</Text>
+                             }
+                         </TouchableOpacity>
+                     </View>
+                     :
                         <TouchableOpacity
                             disabled={isFriend || disableBtn}
                             onPress={() => {
@@ -146,7 +190,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
                                     </>
                             }
                         </TouchableOpacity>
-
+                }
             </View>
 
         </View>

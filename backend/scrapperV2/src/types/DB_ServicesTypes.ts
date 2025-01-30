@@ -57,5 +57,5 @@ export interface StudentDetails {
 export interface StudentTimeTable {
     reg_no: string;
     data: any;
-    requestTime: string;
+    lastSynced: string;
 }

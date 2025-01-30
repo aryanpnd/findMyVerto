@@ -35,3 +35,8 @@ export interface checkUserCookieStateReturnType {
     status: boolean,
     data: any
 }
+
+export interface FriendBody {
+    reg_no: string;
+    password: string;
+}

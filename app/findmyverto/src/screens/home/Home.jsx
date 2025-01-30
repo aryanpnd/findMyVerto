@@ -41,7 +41,7 @@ export default function Home({ navigation }) {
       <View style={{ zIndex: 2 }}>
         <Toast />
       </View>
-      <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]} >
+      <SafeAreaView style={[styles.container, { backgroundColor: colors.secondary }]} >
         <StatusBar style='auto' />
         <View style={styles.container}>
           <Header navigation={navigation} />

@@ -26,6 +26,11 @@ export async function fetchBasicDetails(
                     setDetails(result.data)
                     setLastSynced(result.data.requestTime)
                     setIsError(false)
+                    Toast.show({
+                        type: 'success',
+                        text1: 'Details Synced',
+                        text2: `Details synced successfully`,
+                    });
                 } else {
                     Toast.show({
                         type: 'error',

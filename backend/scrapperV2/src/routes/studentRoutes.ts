@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { Request, Response } from 'express';
 import { getStudentBasicInfo  } from '../controllers/studentController/studentController';
 import { getStudentLogin } from '../controllers/studentController/studentAuthController';
 import { getStudentTimeTable } from '../controllers/studentController/studentTimetableController';
@@ -114,7 +114,17 @@ studentRoutes.post('/basicInfo', getStudentBasicInfo);
  *       500:
  *         description: Internal server error
  */
-studentRoutes.post('/timetable', getStudentTimeTable);
+studentRoutes.post('/timetable', (req: Request, res: Response) => {
+    getStudentTimeTable(req, res).catch((err) => {
+      console.error(err);
+      res.status(500).json({
+        status: false,
+        message: "Unexpected server error",
+        errorMessage: err.message,
+      });
+    });
+  });
+  
 /**
  * @swagger
  * /api/v2/student/attendance:

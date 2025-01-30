@@ -1,5 +1,5 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Dimensions, TouchableHighlight, Pressable } from 'react-native'
-import React, { use, useContext, useEffect } from 'react'
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Dimensions, TouchableHighlight, Pressable, Platform, RefreshControl } from 'react-native'
+import React, { use, useCallback, useContext, useEffect, useRef, useState } from 'react'
 import HomescreenTimeTable from '../timeTable/HomescreenTimeTable'
 import { colors } from '../../constants/colors';
 import { AuthContext } from '../../../context/Auth';
@@ -24,24 +24,54 @@ const navigations = [
 
 
 export default function Body({ navigation }) {
-  const { auth } = useContext(AuthContext) 
+  const { auth } = useContext(AuthContext)
+  const [refreshing, setRefreshing] = useState(false);
+
+  // Reference to HomescreenTimeTable component
+  const timetableRef = useRef();
+
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+
+    // Refresh timetable if ref exists
+    if (timetableRef.current) {
+      await timetableRef.current.handleFetchTimetable();
+      timetableRef.current.today();
+    }
+
+    setRefreshing(false);
+  }, []);
   return (
     <View style={styles.body}>
-      <View style={styles.passwordExpiryContainer}>
-        <Text style={styles.text2}>
-          Password Expires in {auth.passwordExpiry.days} {auth.passwordExpiry.days>1?"days":"day"}. {"("}{auth.passwordExpiry.updatedAt?.split("T")[0]}{")"}
+      <ScrollView style={styles.body}
+        bounces={Platform.OS === 'ios' ? false : undefined}
+        alwaysBounceVertical={false}
+        overScrollMode={Platform.OS === 'android' ? 'never' : undefined}
+        showsVerticalScrollIndicator={false}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+            tintColor={colors.secondary}
+            colors={[colors.secondary]}
+          />
+        }>
+
+        <View style={styles.passwordExpiryContainer}>
+          <Text style={styles.text2}>
+            Password Expires in {auth.passwordExpiry.days} {auth.passwordExpiry.days > 1 ? "days" : "day"}. {"("}{auth.passwordExpiry.updatedAt?.split("T")[0]}{")"}
           </Text>
-      </View>
+        </View>
 
-      {/* Classes Today */}
-      <View style={styles.classTodayContainer}>
+        {/* Classes Today */}
+        <View style={styles.classTodayContainer}>
+          <HomescreenTimeTable
+            ref={timetableRef}
+            navigation={navigation}
+          />
+        </View>
 
-        <HomescreenTimeTable navigation={navigation} />
-
-      </View>
-
-      {/* Other navigations */}
-      <ScrollView showsVerticalScrollIndicator={false}>
+        {/* Other navigations */}
         <View style={styles.NavigationsContainer}>
           {
             navigations.map((value) => (
@@ -58,7 +88,6 @@ export default function Body({ navigation }) {
             ))
           }
         </View>
-
       </ScrollView>
     </View>
   )
@@ -85,15 +114,15 @@ const styles = StyleSheet.create({
   classTodayContainer: {
     // paddingHorizontal: 20,
     // paddingTop: 20,
-    maxHeight:HEIGHT(30),
+    maxHeight: HEIGHT(35),
     marginTop: 15,
     // marginHorizontal: 5,
     borderRadius: 15
   },
   NavigationsContainer: {
-    // backgroundColor: "yellow",
     width: "100%",
     padding: 20,
+    // paddingTop: 5,
     flexDirection: "row",
     flexWrap: "wrap",
     gap: 10,

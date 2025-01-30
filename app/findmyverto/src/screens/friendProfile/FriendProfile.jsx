@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, Pressable, Image } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { use, useContext, useEffect, useState } from 'react'
 import { colors } from '../../constants/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -10,6 +10,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import StudentProfile from '../../components/Profile/StudentProfile';
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading';
+// import { MMKV } from 'react-native-mmkv';
+import formatTimetable from '../../utils/helperFunctions/timetableFormatter';
+import { getFriendDetails } from '../../utils/fetchUtils/handleFriendsData';
+import SyncData from '../../components/miscellaneous/SyncData';
+import formatTimeAgo from '../../utils/helperFunctions/dateFormatter';
+// import { mmkvStorage } from '../../../context/MainApp';
 
 
 const { height, width } = Dimensions.get('window');
@@ -30,48 +36,42 @@ const navigations = [
 export default function FriendProfile({ navigation, route }) {
     const { _id, } = route.params;
 
+    const { auth } = useContext(AuthContext)
     const [student, setStudent] = useState({})
     const [loading, setLoading] = useState(true)
 
-    async function fetchData(sync) {
-        setLoading(true)
-        await axios.post(`${API_URL}/api/student/getFriendData`, { studentId: _id }).then(async (result) => {
-            await AsyncStorage.setItem(`${_id}`, JSON.stringify(result.data))
-            setStudent(result.data.studentInfo)
-            setLoading(false)
-        }).catch((err) => {
-            Toast.show({
-                type: 'error',
-                text1: `${err}`,
-            });
-            console.log({ "inside catch": err });
-            setLoading(false)
-        })
-        return
+    function handleFetchData() {
+        getFriendDetails(auth, _id, setStudent, setLoading)
     }
 
     async function fetchDataLocally() {
         try {
             setLoading(true)
-            let user = await AsyncStorage.getItem(`${_id}`);
-            if (!user) {
-                fetchData(false)
-                setLoading(false)
-                return
+            // let user = mmkvStorage.getString(`${_id}`);
+            const studentRaw = await AsyncStorage.getItem(`${_id}`);
+            console.log(JSON.stringify(studentRaw));
+
+            if (studentRaw) {
+                const student = JSON.parse(studentRaw)
+                setStudent(student)
+            } else {
+                handleFetchData()
             }
-            const studentParsed = JSON.parse(user)
-            setStudent(studentParsed.studentInfo)
             setLoading(false)
         } catch (error) {
             setLoading(false)
             console.error(error);
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: `${error.message}`
+            });
         }
     }
 
     useEffect(() => {
         fetchDataLocally()
     }, [])
-
 
     return (
         <SafeAreaView style={[styles.container]} >
@@ -98,16 +98,18 @@ export default function FriendProfile({ navigation, route }) {
                 </View>
 
             </View>
-
+            <View style={{ marginBottom: 20 }}>
+                <SyncData self={false} time={formatTimeAgo(student.lastSync)} color={"grey"} bg={colors.whitePrimary} />
+            </View>
 
             {/* Body */}
-            <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center",gap:height*0.05 }}>
+            <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center", gap: height * 0.05 }}>
                 <StudentProfile student={student} />
                 <View style={styles.NavigationsContainer}>
                     {
                         navigations.map((value) => (
                             <Pressable
-                                onPress={() => navigation.navigate(value.route,{_id:_id})}
+                                onPress={() => navigation.navigate(value.route, { _id: _id })}
                                 key={value.title} style={styles.NavigationsCard} >
                                 <Image
                                     source={value.icon}
@@ -164,8 +166,8 @@ const styles = StyleSheet.create({
         flexWrap: "wrap",
         gap: 10,
         justifyContent: "space-between",
-        alignItems:"center"
-      },
+        alignItems: "center"
+    },
     NavigationsCard: {
         backgroundColor: "white",
         height: height * 0.14,
