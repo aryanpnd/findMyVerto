@@ -1,6 +1,5 @@
 import { Request, Response } from "express";
-import { Student } from "../../models/studentModel";
-import { TimeTable } from "../../models/studentTimetableModel";
+import { Student } from "../../../models/studentModel";
 
 const excludingFields = { password: 0, friendRequests: 0, sentFriendRequests: 0, friends: 0 };
 

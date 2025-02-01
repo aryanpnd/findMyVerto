@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Student } from "../../models/studentModel";
+import { Student } from "../../../models/studentModel";
 
 export const removeFriend = async (req: Request, res: Response) => {
     try {

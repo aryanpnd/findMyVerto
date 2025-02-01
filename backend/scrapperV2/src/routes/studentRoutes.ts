@@ -1,5 +1,5 @@
 import express, { Request, Response } from 'express';
-import { getStudentBasicInfo  } from '../controllers/studentController/studentController';
+import { getStudentBasicInfo } from '../controllers/studentController/studentController';
 import { getStudentLogin } from '../controllers/studentController/studentAuthController';
 import { getStudentTimeTable } from '../controllers/studentController/studentTimetableController';
 import { getStudentAttendance } from '../controllers/studentController/studentAttendanceController';
@@ -30,6 +30,7 @@ export const studentRoutes = express.Router();
  *         description: Internal server error
  */
 studentRoutes.post('/login', getStudentLogin);
+
 /**
  * @swagger
  * /api/v2/student/search:
@@ -66,7 +67,6 @@ studentRoutes.post('/login', getStudentLogin);
  *         description: Internal server error
  */
 studentRoutes.get('/search', searchStudent);
-
 /**
  * @swagger
  * /api/v2/student/basicInfo:
@@ -115,16 +115,16 @@ studentRoutes.post('/basicInfo', getStudentBasicInfo);
  *         description: Internal server error
  */
 studentRoutes.post('/timetable', (req: Request, res: Response) => {
-    getStudentTimeTable(req, res).catch((err) => {
-      console.error(err);
-      res.status(500).json({
-        success: false,
-        message: "Unexpected server error",
-        errorMessage: err.message,
-      });
+  getStudentTimeTable(req, res).catch((err) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Unexpected server error",
+      errorMessage: err.message,
     });
   });
-  
+});
+
 /**
  * @swagger
  * /api/v2/student/attendance:
@@ -148,4 +148,13 @@ studentRoutes.post('/timetable', (req: Request, res: Response) => {
  *       500:
  *         description: Internal server error
  */
-studentRoutes.post('/attendance', getStudentAttendance);
+studentRoutes.post('/attendance', (req: Request, res: Response) => {
+  getStudentAttendance(req, res).catch((err) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      message: "Unexpected server error",
+      errorMessage: err.message,
+    });
+  });
+});

@@ -1,16 +1,28 @@
 import { Request, Response } from "express";
 import { scrapeAttendanceDetail, scrapeAttendanceSummary } from "../../scrapper/studentAttendanceScrapper";
 import { umsLogin } from "../../scrapper/umsLogin";
-import { umsLoginReturn } from "../../types/scrapperTypes";
+import { FriendBody, umsLoginReturn } from "../../types/scrapperTypes";
 
 /**
  * Get student attendance information asynchronously
  * @param req 
  * @param res 
  */
-export const getStudentAttendance = async (req: Request, res: Response): Promise<void> => {
+export const getStudentAttendance = async (req: Request, res: Response, friendBody?: FriendBody): Promise<void> => {
   try {
-    const { reg_no, password } = req.body;
+    const requestBody = friendBody || req.body;
+    if (!requestBody || typeof requestBody !== "object") {
+      res.status(400).json({
+        summary: {},
+        details: {},
+        message: "Invalid request data",
+        success: false,
+        errorMessage: "Invalid request data"
+      });
+      return;
+    }
+
+    const { reg_no, password } = requestBody;
 
     if (!reg_no || !password) {
       res.status(200).json({

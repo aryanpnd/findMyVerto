@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
-import { Student } from "../../models/studentModel";
-import { TimeTable } from "../../models/studentTimetableModel";
-import { getStudentTimeTable } from "../studentController/studentTimetableController";
+import { Student } from "../../../models/studentModel";
+import { TimeTable } from "../../../models/studentTimetableModel";
+import { getStudentTimeTable } from "../../studentController/studentTimetableController";
 
 export const getFriendTimetable = async (req: Request, res: Response) => {
   try {

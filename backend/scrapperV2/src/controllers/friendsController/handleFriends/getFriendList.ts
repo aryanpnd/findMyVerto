@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Student } from "../../models/studentModel";
+import { Student } from "../../../models/studentModel";
 import { error } from "console";
 
 const excludingFields = { password: 0, friendRequests: 0, sentFriendRequests: 0, friends: 0 };

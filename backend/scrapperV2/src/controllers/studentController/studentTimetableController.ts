@@ -8,7 +8,6 @@ export const getStudentTimeTable = async (req: Request, res: Response, friendBod
   try {
     const requestBody = friendBody || req.body;
 
-    // Ensure request body is valid
     if (!requestBody || typeof requestBody !== "object") {
       res.status(400).json({
         success: false,

@@ -1,13 +1,12 @@
 import express from 'express';
-import { getFriendList } from '../controllers/friendsController/getFriendList';
-import { sendFriendRequest } from '../controllers/friendsController/sendFriendRequest';
-import { getFriendData } from '../controllers/friendsController/getFriendData';
-import { addFriend } from '../controllers/friendsController/addFriend';
-import { getFriendRequests } from '../controllers/friendsController/getFriendRequests';
-import { getSentFriendRequests } from '../controllers/friendsController/getSentFriendRequests';
-import { removeFromRequest } from '../controllers/friendsController/removeFromRequest';
-import { cancelRequest } from '../controllers/friendsController/cancelRequest';
-import { removeFriend } from '../controllers/friendsController/removeFriend';
+import { getFriendList } from '../controllers/friendsController/handleFriends/getFriendList';
+import { sendFriendRequest } from '../controllers/friendsController/handleFriends/sendFriendRequest';
+import { addFriend } from '../controllers/friendsController/handleFriends/addFriend';
+import { getFriendRequests } from '../controllers/friendsController/handleFriends/getFriendRequests';
+import { getSentFriendRequests } from '../controllers/friendsController/handleFriends/getSentFriendRequests';
+import { removeFromRequest } from '../controllers/friendsController/handleFriends/removeFromRequest';
+import { cancelRequest } from '../controllers/friendsController/handleFriends/cancelRequest';
+import { removeFriend } from '../controllers/friendsController/handleFriends/removeFriend';
 
 export const friendRoutes = express.Router();
 
@@ -193,34 +192,6 @@ friendRoutes.post('/removeRequest', removeFromRequest);
  *         description: Internal server error
  */
 friendRoutes.post('/cancelRequest', cancelRequest);
-
-/**
- * @swagger
- * /api/v2/friends/getFriendInfo:
- *   post:
- *     tags: [Friends]
- *     summary: Get friend information
- *     requestBody:
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             type: object
- *             properties:
- *               reg_no:
- *                 type: string
- *               password:
- *                 type: string
- *               studentId:
- *                 type: string
- *     responses:
- *       200:
- *         description: Successful response
- *       500:
- *         description: Internal server error
- */
-friendRoutes.post('/getFriendInfo', getFriendData);
-
 /**
  * @swagger
  * /api/v2/friends/removeFriend:

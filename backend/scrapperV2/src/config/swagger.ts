@@ -6,9 +6,9 @@ const options = {
     definition: {
         openapi: '3.0.0',
         info: {
-            title: 'UMS API',
+            title: 'Find My Verto API',
             version: '1.0.0',
-            description: 'API documentation for UMS API',
+            description: 'API documentation for Find My Verto API endpoints and UMS Unofficial API endpoints',
         },
         tags: [
             {
