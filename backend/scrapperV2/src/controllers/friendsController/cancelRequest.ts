@@ -8,7 +8,7 @@ export const cancelRequest = async (req: Request, res: Response) => {
         const student = await Student.findOne({ reg_no: reg_no, password: password });
 
         if (!student) {
-            return res.status(404).send({ status: false, message: "Invalid credentials" });
+            return res.status(404).send({ success: false, message: "Invalid credentials" });
         }
 
         const isStudentInSentReqList = student.sentFriendRequests.some(std => std.equals(studentId));
@@ -26,26 +26,26 @@ export const cancelRequest = async (req: Request, res: Response) => {
                                 student.sentFriendRequests = student.sentFriendRequests.filter(id => !id.equals(toCancelSentReqListStudent.id))
                                 student.save()
                                     .then(() => {
-                                        res.send({ status: true, message: `${toCancelSentReqListStudent.name} has been Removed from your sent request list` })
+                                        res.send({ success: true, message: `${toCancelSentReqListStudent.name} has been Removed from your sent request list` })
                                     })
-                                    .catch((e) => res.send({ status: false, message: "Error while Removing from the sent request list" }))
+                                    .catch((e) => res.send({ success: false, message: "Error while Removing from the sent request list" }))
                                 return
                             })
-                            .catch((e) => res.send({ status: false, message: "Error while removing the sent request list" }))
+                            .catch((e) => res.send({ success: false, message: "Error while removing the sent request list" }))
                     } else {
-                        res.send({ status: false, message: "Student not found" })
+                        res.send({ success: false, message: "Student not found" })
                     }
                     return
                 })
-                .catch((e) => res.send({ status: false, message: "Not in your sent request list" }))
+                .catch((e) => res.send({ success: false, message: "Not in your sent request list" }))
         } else {
-            res.send({ status: false, message: "Not in your sent request list" })
+            res.send({ success: false, message: "Not in your sent request list" })
         }
 
     } catch (e: any) {
         res.status(500).json({
             message: "Internal Server Error",
-            status: false,
+            success: false,
             errorMessage: e.message,
         })
     }

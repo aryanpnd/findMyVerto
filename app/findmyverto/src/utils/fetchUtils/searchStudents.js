@@ -6,7 +6,7 @@ export async function searchStudents(auth, query, setSearch, setLoading, setStud
     setLoading(true)
     await axios.get(`${API_URL}/student/search?q=${query}&r=${auth.reg_no}&p=${auth.password}`, { query: query })
         .then(async (result) => {
-            if (result.data.status) {
+            if (result.data.success) {
                 setStudents(result.data.students)
                 setfriends(result.data.friends)
                 setfriendsRequests(result.data.friendRequests)

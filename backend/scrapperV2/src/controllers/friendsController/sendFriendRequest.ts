@@ -10,7 +10,7 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
         // Check if the student is valid
         if (!student) {
             return res.status(401).json({
-                status: false,
+                success: false,
                 message: "Wrong credentials",
             });
         }
@@ -18,7 +18,7 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
         // Prevent sending request to oneself
         if (student.id === studentId) {
             return res.status(400).json({
-                status: false,
+                success: false,
                 message: "You can't send a request to yourself",
             });
         }
@@ -29,14 +29,14 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
 
         if (isStudentInFriendList) {
             return res.status(400).json({
-                status: false,
+                success: false,
                 message: "Already friends",
             });
         }
 
         if (isStudentInSentList) {
             return res.status(400).json({
-                status: false,
+                success: false,
                 message: "Friend request already sent",
             });
         }
@@ -46,7 +46,7 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
 
         if (!toSendfrndReqStudent) {
             return res.status(404).json({
-                status: false,
+                success: false,
                 message: "Student not found",
             });
         }
@@ -59,13 +59,13 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
         await student.save();
 
         return res.status(200).json({
-            status: true,
+            success: true,
             message: "Friend request sent successfully",
         });
 
     } catch (error: any) {
         return res.status(500).json({
-            status: false,
+            success: false,
             message: "Internal Server Error",
             errorMessage: error.message,
         });

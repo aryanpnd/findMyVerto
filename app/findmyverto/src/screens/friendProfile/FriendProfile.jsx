@@ -1,21 +1,23 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, Pressable, Image } from 'react-native'
-import React, { use, useContext, useEffect, useState } from 'react'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, Pressable, Image, ActivityIndicator } from 'react-native'
+import React, { useContext, useEffect, useState } from 'react'
 import { colors } from '../../constants/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
 import { StatusBar } from 'expo-status-bar';
-import { MaterialIcons } from '@expo/vector-icons';
-import { API_URL, AuthContext } from '../../../context/Auth';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
+import { AuthContext } from '../../../context/Auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import axios from 'axios';
 import StudentProfile from '../../components/Profile/StudentProfile';
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading';
 // import { MMKV } from 'react-native-mmkv';
-import formatTimetable from '../../utils/helperFunctions/timetableFormatter';
 import { getFriendDetails } from '../../utils/fetchUtils/handleFriendsData';
 import SyncData from '../../components/miscellaneous/SyncData';
 import formatTimeAgo from '../../utils/helperFunctions/dateFormatter';
+import { removeFriend } from '../../utils/fetchUtils/handleFriends';
 // import { mmkvStorage } from '../../../context/MainApp';
+import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert'
+import { useNavigation } from '@react-navigation/native';
+import { AppContext } from '../../../context/MainApp';
 
 
 const { height, width } = Dimensions.get('window');
@@ -33,12 +35,17 @@ const navigations = [
     },
 ]
 
-export default function FriendProfile({ navigation, route }) {
+export default function FriendProfile({ route }) {
     const { _id, } = route.params;
+    const navigation = useNavigation();
 
     const { auth } = useContext(AuthContext)
+    const { friendsRefreshing, setFriendsRefreshing } = useContext(AppContext)
+
     const [student, setStudent] = useState({})
+    const [firstName, setFirstName] = useState("")
     const [loading, setLoading] = useState(true)
+    const [removeLoading, setRemoveLoading] = useState(false)
 
     function handleFetchData() {
         getFriendDetails(auth, _id, setStudent, setLoading)
@@ -49,8 +56,6 @@ export default function FriendProfile({ navigation, route }) {
             setLoading(true)
             // let user = mmkvStorage.getString(`${_id}`);
             const studentRaw = await AsyncStorage.getItem(`${_id}`);
-            console.log(JSON.stringify(studentRaw));
-
             if (studentRaw) {
                 const student = JSON.parse(studentRaw)
                 setStudent(student)
@@ -73,10 +78,36 @@ export default function FriendProfile({ navigation, route }) {
         fetchDataLocally()
     }, [])
 
+    useEffect(() => {
+        setFirstName(student?.studentName?.split(" ")[0])
+    }, [student])
+
+    async function handleRemoveFriend() {
+        const customAlert = useCustomAlert();
+
+        customAlert.show(`Remove ${firstName}?`, `Are you sure you want to remove ${firstName} as a friend?`, [
+            {
+                text: 'Remove',
+                onPress: async () => {
+                    await removeFriend(auth, _id, setRemoveLoading);
+                    await AsyncStorage.removeItem(_id);
+                    await AsyncStorage.removeItem(`${_id}-timetable`);
+                    navigation.goBack();
+                    setFriendsRefreshing(!friendsRefreshing)
+                },
+            },
+            { text: 'Cancel', onPress: () => { } },
+        ]);
+    }
+
+
     return (
         <SafeAreaView style={[styles.container]} >
-            <Toast />
-            <StatusBar style='auto' />
+            <View style={{ zIndex: 2 }}>
+                <Toast />
+                <StatusBar style='auto' />
+                <CustomAlert />
+            </View>
 
             <OverlayLoading loadAnim={""} loading={loading} loadingText={"Loading..."} loadingMsg={"Getting your Friend's data"} />
 
@@ -89,12 +120,17 @@ export default function FriendProfile({ navigation, route }) {
                 </View>
                 {/* title */}
                 <View style={[styles.title]}>
-                    <Text style={{ fontSize: 18, fontWeight: "500" }}>Friend</Text>
+                    <Text style={{ fontSize: 18, fontWeight: "500" }}>{firstName}</Text>
                 </View>
 
                 {/* Logout */}
                 <View style={[styles.backBtn]}>
-
+                    {removeLoading ?
+                        <ActivityIndicator size={25} color={"black"} />
+                        :
+                        <TouchableOpacity onPress={handleRemoveFriend}>
+                            <Ionicons name="person-remove-sharp" size={25} color={colors.lightDark} />
+                        </TouchableOpacity>}
                 </View>
 
             </View>
@@ -109,7 +145,7 @@ export default function FriendProfile({ navigation, route }) {
                     {
                         navigations.map((value) => (
                             <Pressable
-                                onPress={() => navigation.navigate(value.route, { _id: _id })}
+                                onPress={() => navigation.navigate(value.route, { id: _id })}
                                 key={value.title} style={styles.NavigationsCard} >
                                 <Image
                                     source={value.icon}

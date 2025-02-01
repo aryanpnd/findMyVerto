@@ -19,9 +19,9 @@ export async function fetchBasicDetails(
         let userDetailsRaw = await AsyncStorage.getItem("STUDENT_BASIC_DETAILS");
         let userDetails = userDetailsRaw ? JSON.parse(userDetailsRaw) : null;
         if (!userDetails || sync) {
-            if (!userDetails || userDetails.status === false || sync) {
+            if (!userDetails || userDetails.success === false || sync) {
                 const result = await axios.post(`${API_URL}/student/basicInfo`, { password: auth.password, reg_no: auth.reg_no });
-                if (result.data.status) {
+                if (result.data.success) {
                     await AsyncStorage.setItem("STUDENT_BASIC_DETAILS", JSON.stringify(result.data));
                     setDetails(result.data)
                     setLastSynced(result.data.requestTime)

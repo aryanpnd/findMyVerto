@@ -17,20 +17,25 @@ export async function fetchTimetable(
     setLastUpdated
 ) {
     try {
-        setTimetableLoading(true)
-        setRefreshing(true)
+        !sync && setTimetableLoading(true)
+        sync && setRefreshing(true)
         let userTimeTableRaw = await AsyncStorage.getItem("TIMETABLE");
         let userTimeTable = userTimeTableRaw ? JSON.parse(userTimeTableRaw) : null;
         if (!userTimeTable || sync) {
-            if (!userTimeTable || userTimeTable.status === false || sync) {
+            if (!userTimeTable || userTimeTable.success === false || sync) {
                 const result = await axios.post(`${API_URL}/student/timetable`, { password: auth.password, reg_no: auth.reg_no });
-                if (result.data.status) {
+                if (result.data.success) {
                     await AsyncStorage.setItem("TIMETABLE", JSON.stringify(result.data));
                     const tt = formatTimetable(result.data.data.time_table, result.data.data.courses, todayOnly)
                     settimeTable(tt)
                     setClassesToday(tt.length)
                     setLastSynced(result.data.lastSynced)
                     setLastUpdated(result.data.data.last_updated)
+                    Toast.show({
+                        type: 'success',
+                        text1: "Timetable Synced",
+                        text2: "Your timetable has been synced successfully",
+                    });
                 } else {
                     Toast.show({
                         type: 'error',

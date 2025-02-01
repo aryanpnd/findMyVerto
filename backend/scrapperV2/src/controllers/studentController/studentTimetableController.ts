@@ -11,7 +11,7 @@ export const getStudentTimeTable = async (req: Request, res: Response, friendBod
     // Ensure request body is valid
     if (!requestBody || typeof requestBody !== "object") {
       res.status(400).json({
-        status: false,
+        success: false,
         message: "Invalid request data",
         lastSynced: new Date().toISOString(),
       });
@@ -23,7 +23,7 @@ export const getStudentTimeTable = async (req: Request, res: Response, friendBod
     // Validate required fields
     if (!reg_no || !password) {
       res.status(400).json({
-        status: false,
+        success: false,
         message: "Registration number and password are required",
         lastSynced: new Date().toISOString(),
       });
@@ -32,9 +32,9 @@ export const getStudentTimeTable = async (req: Request, res: Response, friendBod
 
     const studentTimetable = await scrapeStudentTimetable({ reg_no, password });
 
-    if (!studentTimetable.status || !studentTimetable.data || !("time_table" in studentTimetable.data)) {
+    if (!studentTimetable.success || !studentTimetable.data || !("time_table" in studentTimetable.data)) {
       res.status(400).json({
-        status: false,
+        success: false,
         data: {},
         message: studentTimetable.message || "Failed to fetch timetable",
         lastSynced: new Date().toISOString(),
@@ -50,9 +50,9 @@ export const getStudentTimeTable = async (req: Request, res: Response, friendBod
     };
 
     const saveResult = await saveStudentTimeTable(studentTimetableTemp);
-    if (!saveResult.status) {
+    if (!saveResult.success) {
       res.status(400).json({
-        status: false,
+        success: false,
         data: {},
         message: "Failed to save student data",
         lastSynced: new Date().toISOString(),
@@ -68,7 +68,7 @@ export const getStudentTimeTable = async (req: Request, res: Response, friendBod
       data: {},
       lastSynced: new Date().toISOString(),
       message: "Unable to fetch the data",
-      status: false,
+      success: false,
       errorMessage: error.message,
     });
   }

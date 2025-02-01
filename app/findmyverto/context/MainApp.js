@@ -8,13 +8,15 @@ const AppContext = createContext();
 const AppProvider = ({ children }) => {
     const [courses, setCourses] = useState({})
     const [timetableLoading, setTimetableLoading] = useState(false)
-    const [attendanceLoading, setAttendanceLoading] = useState(false)    
+    const [attendanceLoading, setAttendanceLoading] = useState(false)  
+    const [friendsRefreshing, setFriendsRefreshing] = useState(false)
 
     return (
         <AppContext.Provider value={{
             courses,setCourses,
             timetableLoading, setTimetableLoading,
-            attendanceLoading, setAttendanceLoading
+            attendanceLoading, setAttendanceLoading,
+            friendsRefreshing, setFriendsRefreshing
             }}>
             {children}
         </AppContext.Provider>

@@ -14,14 +14,14 @@ export const saveStudentTimeTable = async (studentTimeTable: StudentTimeTable) =
         );
 
         return {
-            status: true,
+            success: true,
             message: "Student timetable saved successfully",
             data: student
         }
     } catch (error: any) {
         console.error(error);
         return {
-            status: false,
+            success: false,
             message: error.message,
             data: null
         }

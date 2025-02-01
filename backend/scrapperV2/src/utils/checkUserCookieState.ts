@@ -6,12 +6,12 @@ export const checkUserCookieState = async (cookie: string, headers: any, url: st
     const response = await axios.post(url, body, {headers:headers});
     if (response.data.d[0].length > 0) {
         return {
-            status: true,
+            success: true,
             data: response.data.d[0]
         }
     } else {
         return {
-            status: false,
+            success: false,
             data: {}
         }
     }

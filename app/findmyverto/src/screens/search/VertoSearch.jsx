@@ -9,6 +9,7 @@ import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import StudentCard from '../../components/vertoSearch/SearchedStudentCard';
 import { searchStudents } from '../../utils/fetchUtils/searchStudents';
+import { globalStyles } from '../../constants/styles';
 
 
 const { height, width } = Dimensions.get('window');
@@ -56,8 +57,8 @@ export default function VertoSearch({ navigation }) {
                     onChangeText={(text) => setQuery(text)}
                     style={[styles.searchBar, {
                         width: isFocused && query.length > 2 ? "80%" : "90%",
-                        borderColor: isFocused ? colors.lightDark : 'transparent',
-                        backgroundColor: isFocused ? "transparent" : colors.btn1,
+                        borderColor: isFocused ? "grey" : 'transparent',
+                        backgroundColor: isFocused ? "white" : colors.btn1,
                     }]}
                     placeholder={isFocused ? "" : 'Search in name, section, or registration number '}
                     placeholderTextColor={"grey"}

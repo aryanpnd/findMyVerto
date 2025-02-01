@@ -11,20 +11,20 @@ export const getFriendRequests = async (req: Request, res: Response) => {
             res.status(200).json({
                 friendRequests: user.friendRequests,
                 message: "Friend Requests fetched successfully",
-                status: true,
+                success: true,
             })
         } else {
             res.status(200).json({
                 friendRequests: [],
                 message: "User not found",
-                status: false,
+                success: false,
             })
         }
     } catch (e: any) {
         res.status(500).json({
             friendRequests: [],
             message: "Internal Server Error",
-            status: false,
+            success: false,
             errorMessage: e.message,
         })
     }

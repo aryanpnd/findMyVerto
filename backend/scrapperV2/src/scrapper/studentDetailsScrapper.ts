@@ -18,7 +18,7 @@ export const scrapeStudentBasicInfo = async (user: User) => {
                 data: {},
                 lastSynced: "",
                 message: "Failed to login",
-                status: false,
+                success: false,
                 errorMessage: login.message
             };
         }
@@ -60,14 +60,14 @@ export const scrapeStudentBasicInfo = async (user: User) => {
             data: studentInfo,
             lastSynced: new Date().toISOString(),
             message: "Data fetched successfully",
-            status: true
+            success: true
         };
     } catch (error: any) {
         return {
             data: {},
             lastSynced: "",
             message: "Unable to fetch the data",
-            status: false,
+            success: false,
             errorMessage: error.message
         };
     }

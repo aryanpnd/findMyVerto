@@ -15,7 +15,7 @@ export const scrapeStudentTimetable = async (user: User) => {
                 data: {},
                 lastSynced: "",
                 message: "Failed to login: ",
-                status: false,
+                success: false,
                 errorMessage: login.message
             }
         }
@@ -27,7 +27,7 @@ export const scrapeStudentTimetable = async (user: User) => {
             data: parsedTimetable,
             lastSynced: new Date().toISOString(),
             message: "Data fetched successfully",
-            status: true
+            success: true
         }
     } catch (error: any) {
         console.error(error);
@@ -35,7 +35,7 @@ export const scrapeStudentTimetable = async (user: User) => {
             data: {},
             lastSynced: "",
             message: "Unable to fetch the data",
-            status: false,
+            success: false,
             errorMessage: error.message
         }
     }

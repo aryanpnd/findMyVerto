@@ -8,7 +8,11 @@ import formatTimeAgo from '../../utils/helperFunctions/dateFormatter';
 const { height, width } = Dimensions.get('window');
 export default function StudentProfile({ student }) {
   // const imageSource = student?.studentPicture ? { uri: `data:image/png;base64,${student?.studentPicture}` } : require("../../../assets/icons/profileAvatar.png");
-  const imageSource = student?.studentPicture ? { uri: `${API_URL_ROOT}${student?.studentPicture}` } : require("../../../assets/icons/profileAvatar.png");
+  let imageSource = student?.studentPicture ? { uri: `${API_URL_ROOT}${student?.studentPicture}` } : require("../../../assets/icons/profileAvatar.png");
+
+  const onImageError = () => {
+    imageSource = require("../../../assets/icons/profileAvatar.png");
+  }
 
   return (
     <View style={styles.container}>
@@ -19,6 +23,7 @@ export default function StudentProfile({ student }) {
           source={imageSource}
           style={{ height: height * 0.15, width: height * 0.15, borderRadius: height * 0.15 / 2, objectFit: "fill" }}
           transition={1000}
+          onError={onImageError}
         />
       </View>
 

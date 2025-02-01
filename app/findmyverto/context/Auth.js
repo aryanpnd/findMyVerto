@@ -11,21 +11,23 @@ const AuthContext = createContext();
 
 let API_URL;
 if (process.env.NODE_ENV === 'development') {
-  API_URL = "http://192.168.132.229:3000/api/v2";
+  // API_URL = "http://192.168.132.229:3000/api/v2";
   // API_URL = "https://findmyvertov2-8wup.onrender.com/api/v2";
-  // API_URL = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net/api/v2";
+  API_URL = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net/api/v2";
 } else {
+  API_URL = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net/api/v2";
   // API_URL = `${process.env.EXPO_PUBLIC_FMV_API_URL}`;
-  API_URL = "https://findmyvertov2-8wup.onrender.com/api/v2";
+  // API_URL = "https://findmyvertov2-8wup.onrender.com/api/v2";
 }
 let API_URL_ROOT;
 if (process.env.NODE_ENV === 'development') {
-  API_URL_ROOT = "http://192.168.132.229:3000";
+  // API_URL_ROOT = "http://192.168.132.229:3000";
   // API_URL = "https://findmyvertov2-8wup.onrender.com";
-  // API_URL = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net";
+  API_URL_ROOT = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net";
 } else {
   // API_URL = `${process.env.EXPO_PUBLIC_FMV_API_URL}`;
-  API_URL_ROOT = "https://findmyvertov2-8wup.onrender.com";
+  // API_URL_ROOT = "https://findmyvertov2-8wup.onrender.com";
+  API_URL_ROOT = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net";
 }
 export { API_URL, API_URL_ROOT };
 

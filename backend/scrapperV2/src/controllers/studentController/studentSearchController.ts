@@ -9,7 +9,7 @@ export const searchStudent = async (req: Request, res: Response) => {
                 students: [],
                 lastSynced: new Date().toISOString(),
                 message: "Invalid search query",
-                status: false,
+                success: false,
                 errorMessage: "Invalid search query"
             });
             return;
@@ -36,7 +36,7 @@ export const searchStudent = async (req: Request, res: Response) => {
                 students: [],
                 lastSynced: new Date().toISOString(),
                 message: "No student found",
-                status: false,
+                success: false,
                 errorMessage: "No student found"
             });
             return;
@@ -62,7 +62,7 @@ export const searchStudent = async (req: Request, res: Response) => {
                     sentFriendRequests: sentFriendRequests,
                     lastSynced: new Date().toISOString(),
                     message: "Student found",
-                    status: true,
+                    success: true,
                     errorMessage: ""
                 });
                 return
@@ -71,7 +71,7 @@ export const searchStudent = async (req: Request, res: Response) => {
                     friendRequests: [],
                     message: "User not found",
                     errorMessage: "Invalid credentials",
-                    status: false,
+                    success: false,
                 })
                 return
             }
@@ -81,7 +81,7 @@ export const searchStudent = async (req: Request, res: Response) => {
             students: students,
             lastSynced: new Date().toISOString(),
             message: "Student found",
-            status: true,
+            success: true,
             errorMessage: ""
         });
 
@@ -90,7 +90,7 @@ export const searchStudent = async (req: Request, res: Response) => {
             students: [],
             lastSynced: new Date().toISOString(),
             message: "Unable to fetch the students",
-            status: false,
+            success: false,
             errorMessage: error.message
         });
     }

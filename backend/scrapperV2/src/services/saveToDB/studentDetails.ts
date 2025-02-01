@@ -13,14 +13,14 @@ export const saveStudentDetails = async (studentDetails: StudentDetails) => {
             }
         );
         return {
-            status: true,
+            success: true,
             message: "Student details saved successfully",
             data: student
         }
     } catch (error: any) {
         console.error(error.message);
         return {
-            status: false,
+            success: false,
             message: error.message,
             data: {}
         }

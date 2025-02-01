@@ -7,7 +7,7 @@ import SyncData from '../../components/miscellaneous/SyncData'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
 import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
 import { ErrorMessage } from '../miscellaneous/errorMessage'
-import AttendanceScreenShimmer from '../shimmers/attendanceScreenShimmer'
+import AttendanceScreenShimmer from '../shimmers/AttendanceScreenShimmer'
 import Loading1 from '../miscellaneous/Loading1'
 
 export default function AttendanceScreen({ attendance, fetchAttendance, lastSynced, loading, self, navigation, attendanceDetails, isError }) {

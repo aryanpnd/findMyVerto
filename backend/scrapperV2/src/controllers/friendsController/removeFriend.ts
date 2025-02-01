@@ -9,7 +9,7 @@ export const removeFriend = async (req: Request, res: Response) => {
 
         if (!student) {
             return res.status(404).json({
-                status: false,
+                success: false,
                 message: "Invalid credentials"
             });
         }
@@ -26,15 +26,15 @@ export const removeFriend = async (req: Request, res: Response) => {
                                 // removing the student from student friend list
                                 student.friends = student.friends.filter(id => !id.equals(toRemovefrndListStudent.id));
                                 student.save()
-                                    .then(() => {
+                                    .then(() => {                                        
                                         res.status(200).json({
-                                            status: true,
+                                            success: true,
                                             message: `${toRemovefrndListStudent.name} has been Removed from your friends list`
                                         })
                                     })
                                     .catch((e) => {
                                         res.status(500).json({
-                                            status: false,
+                                            success: false,
                                             message: "Error while removing the Friend list",
                                             errorMessage: e.message
                                         })
@@ -43,26 +43,26 @@ export const removeFriend = async (req: Request, res: Response) => {
                             })
                             .catch((e) => {
                                 res.status(500).json({
-                                    status: false,
+                                    success: false,
                                     message: "Error while removing the Friend list",
                                     errorMessage: e.message
                                 })
                             })
                     } else {
                         res.status(404).json({
-                            status: false,
+                            success: false,
                             message: "Student not found"
                         });
                     }
                     return
                 })
         } else {
-            res.send({ status: false, message: "Friend is Not in your friend list" })
+            res.send({ success: false, message: "Friend is Not in your friend list" })
         }
 
     } catch (e: any) {
         res.status(500).json({
-            status: false,
+            success: false,
             message: "Internal Server Error",
             errorMessage: e.message,
         })

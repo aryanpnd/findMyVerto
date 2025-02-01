@@ -118,7 +118,7 @@ studentRoutes.post('/timetable', (req: Request, res: Response) => {
     getStudentTimeTable(req, res).catch((err) => {
       console.error(err);
       res.status(500).json({
-        status: false,
+        success: false,
         message: "Unexpected server error",
         errorMessage: err.message,
       });

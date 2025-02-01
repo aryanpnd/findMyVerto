@@ -110,15 +110,14 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
                                         horizontal
                                         nestedScrollEnabled={true}
                                         decelerationRate="normal"
-                                        contentContainerStyle={styles.scrollView}
+                                        contentContainerStyle={[styles.scrollView,classesOver&&{width:"100%"}]}
                                         showsHorizontalScrollIndicator={false}
                                         bounces={Platform.OS === 'ios' ? false : undefined}
                                         alwaysBounceVertical={false}
                                         overScrollMode={Platform.OS === 'android' ? 'never' : undefined}>
 
                                         {
-                                            timeTable && timeTable.length > 0
-                                                && isTimeEqual(timeTable[timeTable.length - 1]?.time, true)
+                                            classesOver
                                                 ?
                                                 <NoClassesMessage />
                                                 :

@@ -32,7 +32,7 @@ export interface TimeTable {
 
 
 export interface checkUserCookieStateReturnType {
-    status: boolean,
+    success: boolean,
     data: any
 }
 

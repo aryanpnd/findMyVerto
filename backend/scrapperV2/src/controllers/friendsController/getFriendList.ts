@@ -13,21 +13,21 @@ export const getFriendList = async (req: Request, res: Response) => {
             res.status(200).json({
                 friends: user.friends,
                 message: "Friends fetched successfully",
-                status: true,
+                success: true,
             })
         } else {
             res.status(200).json({
                 friends: [],
                 message: "User not found",
                 errorMessage: "Inavid credentials",
-                status: false,
+                success: false,
             })
         }
     } catch (error: any) {
         res.status(500).json({
             friends: [],
             message: "Internal Server Error",
-            status: false,
+            success: false,
             errorMessage: error.message,
         })
     }

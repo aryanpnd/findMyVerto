@@ -13,7 +13,7 @@ export const scrapeAttendanceSummary = async (cookie: string) => {
         };
 
         const response = await axios.post(url, {}, { headers });
-        if (!response.data.d || response.data.d === null) return { status: false, errorMessage: 'No data found' };
+        if (!response.data.d || response.data.d === null) return { success: false, errorMessage: 'No data found' };
         const html = response.data.d;
 
         // Fix malformed HTML by wrapping in <table> tag
@@ -53,7 +53,7 @@ export const scrapeAttendanceSummary = async (cookie: string) => {
         return {
             attendance_summary: attendance.attendance_summary,
             total_details: attendance.total_details,
-            status: true
+            success: true
         };
     } catch (error: any) {
         console.log(error);
@@ -61,7 +61,7 @@ export const scrapeAttendanceSummary = async (cookie: string) => {
             attendance_summary: [],
             total_details: null,
             errorMessage: error.message,
-            status: false
+            success: false
         }
     }
 };
@@ -77,7 +77,7 @@ export const scrapeAttendanceDetail = async (cookie: string) => {
         };
 
         const response = await axios.post(url, {}, { headers });
-        if (!response.data.d || response.data.d === null) return { status: false, errorMessage: 'No data found' };
+        if (!response.data.d || response.data.d === null) return { success: false, errorMessage: 'No data found' };
         const html = response.data.d;
         const $ = cheerio.load(html);
         const attendance_details: { [key: string]: any[] } = {};
@@ -103,13 +103,13 @@ export const scrapeAttendanceDetail = async (cookie: string) => {
 
         return {
             attendance_details,
-            status: true
+            success: true
         };
     } catch (error: any) {
         console.log(error);
         return {
             errorMessage: error.message,
-            status: false
+            success: false
         }
     }
 };

@@ -13,11 +13,11 @@ export const getStudentAttendance = async (req: Request, res: Response): Promise
     const { reg_no, password } = req.body;
 
     if (!reg_no || !password) {
-      res.status(400).json({
+      res.status(200).json({
         summary: {},
         details: {},
         message: "Registration number and password are required",
-        status: false,
+        success: false,
         errorMessage: "Missing required fields"
       });
       return;
@@ -26,11 +26,11 @@ export const getStudentAttendance = async (req: Request, res: Response): Promise
     const login: umsLoginReturn = await umsLogin({ reg_no, password });
 
     if (!login.login) {
-      res.status(401).json({
+      res.status(200).json({
         summary: {},
         details: {},
         message: "Failed to login",
-        status: false,
+        success: false,
         errorMessage: login.message || "Invalid credentials"
       });
       return;
@@ -41,7 +41,7 @@ export const getStudentAttendance = async (req: Request, res: Response): Promise
       details: {},
       last_updated: new Date().toISOString(),
       message: "",
-      status: false,
+      success: false,
       errorMessage: ""
     };
 
@@ -52,13 +52,13 @@ export const getStudentAttendance = async (req: Request, res: Response): Promise
         scrapeAttendanceDetail(login.cookie)
       ]);
 
-      // Check if any of the responses has status: false
-      if (!summary.status || !detail.status) {
-        res.status(500).json({
+      // Check if any of the responses has success: false
+      if (!summary.success || !detail.success) {
+        res.status(200).json({
           summary: {},
           details: {},
           message: "Failed to fetch attendance data",
-          status: false,
+          success: false,
           errorMessage: summary.errorMessage || detail.errorMessage || "Unknown error"
         });
         return;
@@ -68,7 +68,7 @@ export const getStudentAttendance = async (req: Request, res: Response): Promise
       studentAttendance.summary = summary;
       studentAttendance.details = detail;
       studentAttendance.message = "Data fetched successfully";
-      studentAttendance.status = true;
+      studentAttendance.success = true;
 
       res.status(200).json(studentAttendance);
     } catch (attendanceError: any) {
@@ -77,7 +77,7 @@ export const getStudentAttendance = async (req: Request, res: Response): Promise
         summary: {},
         details: {},
         message: "Error while fetching attendance data",
-        status: false,
+        success: false,
         errorMessage: attendanceError.message || "Internal server error"
       });
     }
@@ -89,7 +89,7 @@ export const getStudentAttendance = async (req: Request, res: Response): Promise
       details: {},
       last_updated: "",
       message: "Unable to fetch the data",
-      status: false,
+      success: false,
       errorMessage: error.message || "An unexpected error occurred"
     });
   }

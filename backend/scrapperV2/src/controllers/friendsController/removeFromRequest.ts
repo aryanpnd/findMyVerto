@@ -9,7 +9,7 @@ export const removeFromRequest = async (req: Request, res: Response) => {
 
         if (!student) {
             return res.status(404).send({
-                status: false,
+                success: false,
                 message: "Invalid credentials"
             });
         }
@@ -30,13 +30,13 @@ export const removeFromRequest = async (req: Request, res: Response) => {
                                 student.save()
                                     .then(() => {
                                         res.status(200).send({
-                                            status: true,
+                                            success: true,
                                             message: "Removed from the Friends request list"
                                         });
                                     })
                                     .catch((e) => {
                                         res.status(500).send({
-                                            status: false,
+                                            success: false,
                                             message: "Error while removing the Friend request list",
                                             errorMessage: e.message
                                         })
@@ -45,33 +45,33 @@ export const removeFromRequest = async (req: Request, res: Response) => {
                             })
                             .catch((e) => {
                                 res.status(500).send({
-                                    status: false,
+                                    success: false,
                                     message: "Error while removing the Friend request list",
                                     errorMessage: e.message
                                 })
                             })
                     } else {
-                        res.status(404).send({ status: false, message: "Student not found" });
+                        res.status(404).send({ success: false, message: "Student not found" });
                     }
                     return
                 })
                 .catch((e) => {
                     res.status(500).send({
-                        status: false,
+                        success: false,
                         message: "Error while removing the Friend request list",
                         errorMessage: e.message
                     })
                 })
         } else {
             res.send({ 
-                status: true, 
+                success: true, 
                 message: "Not in friend request list"
              })
         }
 
     } catch (e: any) {
         res.status(500).json({
-            status: false,
+            success: false,
             message: "Internal server error",
             errorMessage: e.message
         })

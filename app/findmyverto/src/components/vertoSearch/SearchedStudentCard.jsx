@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { globalStyles } from '../../constants/styles'
+import { globalStyles, HEIGHT, WIDTH } from '../../constants/styles'
 import { colors } from '../../constants/colors';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { API_URL, API_URL_ROOT, AuthContext } from '../../../context/Auth';
@@ -57,7 +57,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
     }
 
     function handleAddFriend() {
-        acceptFriendRequest(auth, student, setfriendsRequests, friendsRequests, setfriends, friends, setLoading, setDisableBtn)
+        acceptFriendRequest(auth, student, setfriends, friends, setfriendsRequests, friendsRequests,setLoading, setDisableBtn)
     }
 
     function handleRejectFriendRequest() {
@@ -90,7 +90,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={navigateToFriend} style={{ width: forRequest ? "40%" : "55%", paddingHorizontal: 10, justifyContent: "center" }}>
+            <TouchableOpacity onPress={navigateToFriend} style={{ width: forRequest ? "35%" : "55%", paddingHorizontal: 10, justifyContent: "center" }}>
                 <Text ellipsizeMode='clip' numberOfLines={1} style={{ fontWeight: "bold" }}>{student.name}</Text>
                 <Text style={{fontSize:12,color:"grey"}}>{student.reg_no}</Text>
                 <Text style={{fontSize:12,color:"grey"}}>{student.section}</Text>
@@ -100,20 +100,11 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
             <View style={{ justifyContent: "center", width: forRequest ? "45%" : "30%" }}>
                 {
                      forRequest ?
-                     <View style={{ flexDirection: "row", width: "100%", justifyContent: 'space-between' }}>
+                     <View style={{ flexDirection: "row", width: WIDTH(43), justifyContent: 'space-between'}}>
                          <TouchableOpacity
                              disabled={disableBtn ? true : isFriend ? true : false}
                              onPress={handleAddFriend}
-                             style={{
-                                 width: "45%",
-                                 borderRadius: 15,
-                                 backgroundColor: colors.green,
-                                 padding: 10,
-                                 justifyContent: "center",
-                                 flexDirection: "row",
-                                 alignItems: "center",
-                                 gap: 5
-                             }}
+                             style={[style.acceptAndRejectBtn,{backgroundColor:colors.green}]}
                          >
                              {loading ? <ActivityIndicator size="small" color={"white"} />
                                  :
@@ -124,16 +115,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
                          <TouchableOpacity
                              disabled={disableBtn ? true : isFriend ? true : false}
                              onPress={handleRejectFriendRequest}
-                             style={{
-                                 width: "45%",
-                                 borderRadius: 15,
-                                 backgroundColor: colors.btn1,
-                                 padding: 10,
-                                 justifyContent: "center",
-                                 flexDirection: "row",
-                                 alignItems: "center",
-                                 gap: 5
-                             }}
+                             style={[style.acceptAndRejectBtn,{backgroundColor:colors.btn1}]}
                          >
                              {loading ? <ActivityIndicator size="small" color={isInSentList ? "black" : "white"} />
                                  :
@@ -205,5 +187,14 @@ const style = StyleSheet.create({
         width: "96%",
         borderRadius: 15,
         flexDirection: "row"
+    },
+    acceptAndRejectBtn: {
+        width: WIDTH(20),
+        borderRadius: 15,
+        padding: 10,
+        justifyContent: "center",
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 5
     }
 })
