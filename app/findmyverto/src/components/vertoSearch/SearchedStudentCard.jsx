@@ -1,17 +1,19 @@
 import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { globalStyles } from '../../constants/styles'
+import React, { useContext, useEffect, useState } from 'react'
+import { globalStyles, HEIGHT, WIDTH } from '../../constants/styles'
 import { colors } from '../../constants/colors';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
-import { API_URL } from '../../../context/Auth';
+import { API_URL, API_URL_ROOT, AuthContext } from '../../../context/Auth';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import LottieView from 'lottie-react-native';
+import { acceptFriendRequest, cancelSentRequest, rejectFriendRequest, sendFriendRequest } from '../../utils/fetchUtils/handleFriends';
 
 
 const { height} = Dimensions.get('window');
 
 export default function SearchedStudentCard({ forRequest, student, friends, setfriends, sentFriendRequests, setSentFriendRequests, friendsRequests, setfriendsRequests, navigation, disableBtn, setDisableBtn }) {
+    const {auth} = useContext(AuthContext)
     const [isFriend, setIsFriend] = useState(false)
     const [isInRequestList, setIsInRequestList] = useState(false)
     const [isInSentList, setIsInSentList] = useState(false)
@@ -19,9 +21,9 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
 
 
     function configureButton() {
-        const isStudentInSentList = sentFriendRequests.some(std => std.registrationNumber === student.registrationNumber);
-        const isStudentInRequestList = friendsRequests.some(std => std.registrationNumber === student.registrationNumber);
-        const isStudentInFriendList = friends.some(std => std.registrationNumber === student.registrationNumber);
+        const isStudentInSentList = sentFriendRequests?.some(std => std.reg_no === student.reg_no);
+        const isStudentInRequestList = friendsRequests?.some(std => std.reg_no === student.reg_no);
+        const isStudentInFriendList = friends?.some(std => std.reg_no === student.reg_no);
         if (isStudentInSentList) {
             setIsInSentList(true)
         }
@@ -37,109 +39,31 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
             setIsInSentList(false)
         }
     }
-
     useEffect(() => {
         configureButton()
     }, [])
+
     useEffect(() => {
-        configureButton()
-    }, [sentFriendRequests])
+        configureButton();
+    }, [sentFriendRequests, friendsRequests, friends, student]);
+    
 
-    async function sendRequest() {
-        setLoading(true)
-        setDisableBtn(true)
-        await axios.post(`${API_URL}/api/student/sendFriendRequest`, { studentId: student._id })
-            .then(async (result) => {
-                Toast.show({
-                    type: 'success',
-                    text1: result.data.msg,
-                });
-                setSentFriendRequests([...sentFriendRequests, student]);
-                setLoading(false);
-                setDisableBtn(false)
-            }).catch((err) => {
-                Toast.show({
-                    type: 'error',
-                    text1: err,
-                });
-                console.log(err);
-                setLoading(false)
-                setDisableBtn(false)
-            })
+    function handleSendRequest() {
+        sendFriendRequest(auth, student, setSentFriendRequests, sentFriendRequests, setLoading, setDisableBtn)
     }
 
-    async function cancelSentRequest() {
-        setLoading(true)
-        setDisableBtn(true)
-        await axios.post(`${API_URL}/api/student/cancelSentRequest`, { studentId: student._id })
-            .then(async (result) => {
-                Toast.show({
-                    type: 'success',
-                    text1: result.data.msg,
-                });
-                const updatedStudents = sentFriendRequests.filter(std => std.registrationNumber !== student.registrationNumber);
-                setSentFriendRequests(updatedStudents);
-                setLoading(false);
-                setDisableBtn(false)
-            }).catch((err) => {
-                Toast.show({
-                    type: 'error',
-                    text1: err,
-                });
-                console.log(err);
-                setLoading(false)
-                setDisableBtn(false)
-            })
+    function handleCancelRequest() {
+        cancelSentRequest(auth, student, setSentFriendRequests, sentFriendRequests, setLoading, setDisableBtn)
     }
 
-    async function addFriend() {
-        setLoading(true)
-        setDisableBtn(true)
-        await axios.post(`${API_URL}/api/student/addFriend`, { studentId: student._id })
-            .then(async (result) => {
-                Toast.show({
-                    type: 'success',
-                    text1: result.data.msg,
-                });
-                const updatedStudents = friendsRequests.filter(std => std.registrationNumber !== student.registrationNumber);
-                setfriendsRequests(updatedStudents);
-                setfriends([...friends, student]);
-                setLoading(false);
-                setDisableBtn(false)
-            }).catch((err) => {
-                Toast.show({
-                    type: 'error',
-                    text1: err,
-                });
-                console.log(err);
-                setLoading(false)
-                setDisableBtn(false)
-            })
+    function handleAddFriend() {
+        acceptFriendRequest(auth, student, setfriends, friends, setfriendsRequests, friendsRequests,setLoading, setDisableBtn)
     }
 
-    async function cancelRequest() {
-        setLoading(true)
-        setDisableBtn(true)
-        await axios.post(`${API_URL}/api/student/removeFromFriendRequest`, { studentId: student._id })
-            .then(async (result) => {
-                Toast.show({
-                    type: 'success',
-                    text1: result.data.msg,
-                });
-                const updatedStudents = friendsRequests.filter(std => std.registrationNumber !== student.registrationNumber);
-                setfriendsRequests(updatedStudents);
-                setLoading(false);
-                setDisableBtn(false)
-            }).catch((err) => {
-                Toast.show({
-                    type: 'error',
-                    text1: err,
-                });
-                console.log(err);
-                setLoading(false)
-                setDisableBtn(false)
-            })
+    function handleRejectFriendRequest() {
+        rejectFriendRequest(auth, student, setfriendsRequests, friendsRequests, setLoading, setDisableBtn)
     }
+
 
     function navigateToFriend() {
         if(!isFriend){
@@ -153,83 +77,64 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
         navigation.navigate('FriendProfile',student)
     }
 
-    const imageSource = student.photoURL ? { uri: student.photoURL } : require("../../../assets/icons/profileAvatar.png");
+    const imageSource = student?.studentPicture ? { uri: `${API_URL_ROOT}${student?.studentPicture}` } : require("../../../assets/icons/profileAvatar.png");
+
 
     return (
         <View style={[style.container, globalStyles.elevationMin]}>
             <TouchableOpacity onPress={navigateToFriend} style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
                 <Image
                     source={imageSource}
-                    style={{ height: 60, width: 60, borderRadius: 60 / 2 }}
+                    style={{ height: 60, width: 60, borderRadius: 60 / 2,objectFit:"fill" }}
                     transition={1000}
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={navigateToFriend} style={{ width: forRequest ? "40%" : "55%", paddingHorizontal: 10, justifyContent: "center" }}>
+            <TouchableOpacity onPress={navigateToFriend} style={{ width: forRequest ? "35%" : "55%", paddingHorizontal: 10, justifyContent: "center" }}>
                 <Text ellipsizeMode='clip' numberOfLines={1} style={{ fontWeight: "bold" }}>{student.name}</Text>
-                <Text>{student.registrationNumber}</Text>
-                <Text>{student.section}</Text>
+                <Text style={{fontSize:12,color:"grey"}}>{student.reg_no}</Text>
+                <Text style={{fontSize:12,color:"grey"}}>{student.section}</Text>
             </TouchableOpacity>
 
             {/* Button  */}
             <View style={{ justifyContent: "center", width: forRequest ? "45%" : "30%" }}>
                 {
-                    forRequest ?
-                        <View style={{ flexDirection: "row", width: "100%", justifyContent: 'space-between' }}>
-                            <TouchableOpacity
-                                disabled={disableBtn ? true : isFriend ? true : false}
-                                onPress={addFriend}
-                                style={{
-                                    width: "45%",
-                                    borderRadius: 15,
-                                    backgroundColor: colors.green,
-                                    padding: 10,
-                                    justifyContent: "center",
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    gap: 5
-                                }}
-                            >
-                                {loading ? <ActivityIndicator size="small" color={"white"} />
-                                    :
-                                    <Text style={{ color: "white", fontWeight: '500' }}>Accept</Text>
-                                }
-                            </TouchableOpacity>
+                     forRequest ?
+                     <View style={{ flexDirection: "row", width: WIDTH(43), justifyContent: 'space-between'}}>
+                         <TouchableOpacity
+                             disabled={disableBtn ? true : isFriend ? true : false}
+                             onPress={handleAddFriend}
+                             style={[style.acceptAndRejectBtn,{backgroundColor:colors.green}]}
+                         >
+                             {loading ? <ActivityIndicator size="small" color={"white"} />
+                                 :
+                                 <Text style={{ color: "white", fontWeight: '500' }}>Accept</Text>
+                             }
+                         </TouchableOpacity>
 
-                            <TouchableOpacity
-                                disabled={disableBtn ? true : isFriend ? true : false}
-                                onPress={cancelRequest}
-                                style={{
-                                    width: "45%",
-                                    borderRadius: 15,
-                                    backgroundColor: colors.btn1,
-                                    padding: 10,
-                                    justifyContent: "center",
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    gap: 5
-                                }}
-                            >
-                                {loading ? <ActivityIndicator size="small" color={isInSentList ? "black" : "white"} />
-                                    :
-                                    <Text style={{ color: "grey", fontWeight: '500' }}>Cancel</Text>
-                                }
-                            </TouchableOpacity>
-                        </View>
-                        :
-
-                        // button for all other requests except friendrequests
+                         <TouchableOpacity
+                             disabled={disableBtn ? true : isFriend ? true : false}
+                             onPress={handleRejectFriendRequest}
+                             style={[style.acceptAndRejectBtn,{backgroundColor:colors.btn1}]}
+                         >
+                             {loading ? <ActivityIndicator size="small" color={isInSentList ? "black" : "white"} />
+                                 :
+                                 <Text style={{ color: "grey", fontWeight: '500' }}>Cancel</Text>
+                             }
+                         </TouchableOpacity>
+                     </View>
+                     :
                         <TouchableOpacity
-                            disabled={isFriend ? true : disableBtn ? true : false}
+                            disabled={isFriend || disableBtn}
                             onPress={() => {
                                 if (isFriend) {
                                     return
                                 } else if (isInRequestList) {
                                     navigation.navigate('FriendRequests');
                                 } else if (isInSentList) {
-                                    cancelSentRequest();
+                                    handleCancelRequest();
                                 } else {
-                                    sendRequest();
+                                    handleSendRequest();
                                 }
                             }}
                             style={{
@@ -282,5 +187,14 @@ const style = StyleSheet.create({
         width: "96%",
         borderRadius: 15,
         flexDirection: "row"
+    },
+    acceptAndRejectBtn: {
+        width: WIDTH(20),
+        borderRadius: 15,
+        padding: 10,
+        justifyContent: "center",
+        flexDirection: "row",
+        alignItems: "center",
+        gap: 5
     }
 })

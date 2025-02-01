@@ -53,12 +53,14 @@ export default function AuthPage() {
           <Stack.Screen name="AttendanceDetails" component={AttendanceDetails} />
           <Stack.Screen name="Timetable" component={TimeTable} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false }} />
           <Stack.Screen name="VertoSearch" component={VertoSearch} />
+
+          
           <Stack.Screen name="FriendRequests" component={FriendRequests} />
           <Stack.Screen name="Friends" component={Friends} />
           <Stack.Screen name="MyProfile" component={MyProfile} />
           <Stack.Screen name="FriendProfile" component={FriendProfile} />
           <Stack.Screen name="FriendAttendance" component={FriendAttendance} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "Friend's Attendance" }} />
-          <Stack.Screen name="FriendTimetable" component={FriendTimetable} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "Friend's Attendance" }} />
+          <Stack.Screen name="FriendTimetable" component={FriendTimetable} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "Friend's Timetable" }} />
         </React.Fragment>
       ) : (
         <React.Fragment>

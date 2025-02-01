@@ -13,40 +13,85 @@ import { colors } from '../../constants/colors'
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'; // Import the shimmer placeholder
 import { fetchBasicDetails } from '../../utils/fetchUtils/basicDetailsFetch'
 import { useFocusEffect } from '@react-navigation/native'
+import { is } from 'react-native-cheerio/lib/api/attributes'
+import { WIDTH } from '../../constants/styles'
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create shimmer placeholder
 
-
 export default function Header({ navigation }) {
-    const { auth } = useContext(AuthContext)
+    const { auth } = useContext(AuthContext);
 
-    const [loading, setLoading] = useState(false)
+    const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [isError, setIsError] = useState(false);
-    const [lastSynced, setLastSynced] = useState("")
-    const [userDetails, setuserDetails] = useState({})
-    const [attendance, setAttendance] = useState(0)
+    const [lastSynced, setLastSynced] = useState("");
+    const [userDetails, setUserDetails] = useState({});
+    const [attendance, setAttendance] = useState(0);
+    const [retryAttempts, setRetryAttempts] = useState(0);
+    const [isRetryMaxValueReached, setIsRetryMaxValueReached] = useState(false);
+
+    const retryAttemptsValue = 5;
 
     const handleDataFetch = async (sync) => {
-        await fetchBasicDetails(setLoading, setRefreshing, setuserDetails, auth, setIsError, sync, setLastSynced)
-    }
+        await fetchBasicDetails(setLoading, setRefreshing, setUserDetails, auth, setIsError, sync, setLastSynced);
+    };
 
     const getAttendance = async () => {
-        const localAttendance = await AsyncStorage.getItem("ATTENDANCE")
-        if (localAttendance) {
-            setAttendance(parseInt(JSON.parse(localAttendance)?.summary.total_details?.agg_attendance) || 0)
-        } else {
-            setAttendance(parseInt(userDetails?.data?.attendance) || 0)
+        try {
+            const localAttendance = await AsyncStorage.getItem("ATTENDANCE");
+            if (localAttendance) {
+                const parsedAttendance = JSON.parse(localAttendance)?.summary?.total_details?.agg_attendance;
+                setAttendance(parsedAttendance ? parseInt(parsedAttendance) : 0);
+            } else {
+                setAttendance(userDetails?.data?.attendance ? parseInt(userDetails.data.attendance) : 0);
+            }
+        } catch (error) {
+            console.error("Error fetching attendance:", error);
+            setAttendance(0);
         }
-    }
+    };
 
     useEffect(() => {
-        handleDataFetch(false)
+        handleDataFetch(false);
     }, []);
 
     useEffect(() => {
-        getAttendance()
+        if (Object.keys(userDetails).length > 0) {
+            getAttendance();
+        }
     }, [userDetails]);
+
+    const handleRetry = async () => {
+        if (isError && retryAttempts < retryAttemptsValue) {
+            console.log("Error reattempt block", retryAttempts, isError);
+
+            setRetryAttempts((prev) => prev + 1);
+
+            await handleDataFetch(false);
+
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Fetching details again',
+                text2: `Attempt ${retryAttempts + 1}`,
+            });
+        } else if (retryAttempts >= retryAttemptsValue) {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Failed to fetch details',
+                text2: 'Please check your internet connection',
+            });
+            setIsRetryMaxValueReached(true);
+        }
+    };
+
+    useEffect(() => {
+        if (isError && !loading) {
+            handleRetry();
+        }
+    }, [isError, loading]);
+
 
     return (
         <LinearGradient style={styles.container} colors={[colors.secondary, colors.primary]}>
@@ -62,15 +107,16 @@ export default function Header({ navigation }) {
                     </View>
 
                     <View style={styles.iconContainer}>
-                        <View style={{ width: '35%', alignItems: "center" }}>
+                        <View style={{ alignItems: "center" }}>
                             <TouchableOpacity
                                 onPress={() => navigation.navigate('FriendRequests')}
                                 style={styles.button2}><Octicons name='person-add' size={15}
                                     color={colors.whiteLight} /></TouchableOpacity>
                             <Text style={{ color: 'white', fontSize: 10 }}>Requests</Text>
                         </View>
-                        <View style={{ width: '35%', alignItems: "center" }}>
-                            <TouchableOpacity style={styles.button2} disabled={loading}
+                        <View style={{ alignItems: "center" }}>
+                            <TouchableOpacity
+                                style={styles.button2} disabled={loading}
                                 onPress={loading ? () => { } : () => navigation.navigate('MyProfile')}>
                                 <FontAwesome5 name='user' size={15} color={colors.whiteLight} />
                             </TouchableOpacity>
@@ -86,7 +132,7 @@ export default function Header({ navigation }) {
                 <View style={styles.bodyContainer}>
 
                     <TouchableOpacity style={styles.greeting} onPress={loading ? () => { } : () => navigation.navigate('MyProfile')}>
-                        <Text style={{ fontSize: 20, color: colors.whiteLight, fontWeight: 'bold' }}>Hello,</Text>
+                        {!isRetryMaxValueReached && <Text style={{ fontSize: 20, color: colors.whiteLight, fontWeight: 'bold' }}>Hello,</Text>}
 
                         {loading ?
                             <ShimmerPlaceHolder visible={false} style={[styles.textMedium, styles.nameShimmerStyles]} /> :
@@ -210,7 +256,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         height: '60%',
-        width: "100%"
+        minWidth: WIDTH(11),
     },
     iconContainer: {
         width: '35%',

@@ -26,7 +26,7 @@ export default function AttendanceDetails({ navigation }) {
             </View>
             <ScrollView style={styles.body} contentContainerStyle={{ alignItems: 'center',gap:10,paddingBottom:20 }}>
                 {
-                    Details.map((value, index) => {
+                    Details?.map((value, index) => {
                         return (
                             <AttendanceDetailsCard key={index} details={value} />
                         );

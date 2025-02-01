@@ -1,8 +1,14 @@
-const dotenv = require('dotenv');
+import dotenv from 'dotenv';
 
 dotenv.config();
 
-// module.exports = {
-//   umsLoginUrl: "https://ums.lpu.in/lpuums/",
-//   umsStudentBasicInfoUrl: "https://ums.lpu.in/lpuums/StudentDashboard.aspx/GetStudentBasicInformation",
-// };
+export const config = {
+    port: process.env.PORT || 3000,
+    mongodb: {
+        uri: process.env.MONGODB_URI || '_MONGODB_URI_',
+        options: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true
+        }
+    }
+};

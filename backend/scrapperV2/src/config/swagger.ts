@@ -10,8 +10,40 @@ const options = {
             version: '1.0.0',
             description: 'API documentation for UMS API',
         },
+        tags: [
+            {
+                name: 'Auth',
+                description: 'Authentication endpoints'
+            },
+            {
+                name: 'Student',
+                description: 'Student information endpoints'
+            },
+            {
+                name: 'Friends',
+                description: 'Friend management endpoints'
+            }
+        ],
+        components: {
+            schemas: {
+                LoginRequest: {
+                    type: 'object',
+                    properties: {
+                        reg_no: {
+                            type: 'string',
+                            description: 'Student registration number'
+                        },
+                        password: {
+                            type: 'string',
+                            description: 'Student password'
+                        }
+                    },
+                    required: ['reg_no', 'password']
+                }
+            }
+        }
     },
-    apis: ['./src/routes/*.ts', './src/controllers/*.ts'],
+    apis: ['./src/routes/*.ts'],
 };
 
 const swaggerSpec = swaggerJsdoc(options);

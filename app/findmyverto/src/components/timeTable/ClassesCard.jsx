@@ -10,11 +10,11 @@ export default function ClassesCard({ time, classes, day }) {
   const [ongoing, setOngoing] = useState(false)
 
   const checkOngoing = () => {
-    const isOngoing = isTimeEqual(time) && getDay() && day === getDay()
+    const isOngoing = isTimeEqual(time) && day === getDay()
     setOngoing(isOngoing)
   }
   useEffect(() => {
-    checkOngoing()
+    checkOngoing()    
   }, [classes])
 
   return (
@@ -28,7 +28,7 @@ export default function ClassesCard({ time, classes, day }) {
 
       {/* Class Time */}
       <LinearGradient colors={ongoing ? ['#a8e063', '#56ab2f'] : ["white", "white"]}
-      style={[styles.timeContainer, ongoing&&{ borderWidth:0 }]}
+        style={[styles.timeContainer, ongoing && { borderWidth: 0 }]}
       >
         <Image
           source={require("../../../assets/icons/clock.png")}

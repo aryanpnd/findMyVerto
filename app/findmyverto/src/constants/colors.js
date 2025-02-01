@@ -7,6 +7,7 @@ export const  colors = {
     green:"#2ecc71",
     whiteLight:'#ffffffb5',
     lightDark:"#242323",
+    whitePrimary:"#f1f1f1",
     disabledBackground:"#b8bcc085",
     // blue:"#300030"
 }

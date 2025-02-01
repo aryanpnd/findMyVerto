@@ -4,8 +4,8 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
     "web": "expo start --web"
   },
   "dependencies": {
@@ -16,6 +16,7 @@
     "@react-navigation/native": "^6.1.8",
     "@react-navigation/native-stack": "^6.9.14",
     "@shopify/flash-list": "1.7.1",
+    "@types/mongoose": "^5.11.97",
     "axios": "^1.5.1",
     "expo": "^52.0.23",
     "expo-dev-client": "~5.0.8",
@@ -28,6 +29,7 @@
     "expo-task-manager": "~12.0.3",
     "expo-updates": "~0.26.10",
     "lottie-react-native": "7.1.0",
+    "mongoose": "^8.9.5",
     "react": "18.3.1",
     "react-native": "0.76.5",
     "react-native-cheerio": "^1.0.0-rc.4",
@@ -45,7 +47,8 @@
     "react-native-web": "~0.19.13"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "@react-native-community/cli": "latest"
   },
   "private": true
 }

@@ -1,14 +1,16 @@
-import express from 'express';
-import { getStudentBasicInfo  } from '../controllers/studentController';
-import { getStudentLogin } from '../controllers/studentAuthController';
-import { getStudentTimeTable } from '../controllers/studentTimetableController';
-import { getStudentAttendance } from '../controllers/studentAttendanceController';
+import express, { Request, Response } from 'express';
+import { getStudentBasicInfo  } from '../controllers/studentController/studentController';
+import { getStudentLogin } from '../controllers/studentController/studentAuthController';
+import { getStudentTimeTable } from '../controllers/studentController/studentTimetableController';
+import { getStudentAttendance } from '../controllers/studentController/studentAttendanceController';
+import { searchStudent } from '../controllers/studentController/studentSearchController';
 export const studentRoutes = express.Router();
 
 /**
  * @swagger
  * /api/v2/student/login:
  *   post:
+ *     tags: [Auth]
  *     summary: Login to UMS
  *     requestBody:
  *       required: true
@@ -19,22 +21,57 @@ export const studentRoutes = express.Router();
  *             properties:
  *               reg_no:
  *                 type: string
- *                 example: "12203693"
  *               password:
  *                 type: string
- *                 example: "MrCat@9870"
  *     responses:
  *       200:
  *         description: Successful response
  *       500:
  *         description: Internal server error
  */
-studentRoutes.post('/login', getStudentLogin); 
+studentRoutes.post('/login', getStudentLogin);
+/**
+ * @swagger
+ * /api/v2/student/search:
+ *   get:
+ *     tags: [Student]
+ *     summary: Search for students based on query
+ *     parameters:
+ *       - in: query
+ *         name: q
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: Search query (name, registration number, or section)
+ *       - in: query
+ *         name: r
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Registration number for authentication (optional)
+ *       - in: query
+ *         name: p
+ *         schema:
+ *           type: string
+ *         required: false
+ *         description: Password for authentication (optional)
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       400:
+ *         description: Invalid search query
+ *       404:
+ *         description: No student found
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.get('/search', searchStudent);
 
 /**
  * @swagger
  * /api/v2/student/basicInfo:
  *   post:
+ *     tags: [Student]
  *     summary: Get student basic information
  *     requestBody:
  *       required: true
@@ -54,11 +91,11 @@ studentRoutes.post('/login', getStudentLogin);
  *         description: Internal server error
  */
 studentRoutes.post('/basicInfo', getStudentBasicInfo);
-
 /**
  * @swagger
  * /api/v2/student/timetable:
  *   post:
+ *     tags: [Student]
  *     summary: Get student timetable
  *     requestBody:
  *       required: true
@@ -77,12 +114,22 @@ studentRoutes.post('/basicInfo', getStudentBasicInfo);
  *       500:
  *         description: Internal server error
  */
-studentRoutes.post('/timetable', getStudentTimeTable);
-
+studentRoutes.post('/timetable', (req: Request, res: Response) => {
+    getStudentTimeTable(req, res).catch((err) => {
+      console.error(err);
+      res.status(500).json({
+        success: false,
+        message: "Unexpected server error",
+        errorMessage: err.message,
+      });
+    });
+  });
+  
 /**
  * @swagger
  * /api/v2/student/attendance:
  *   post:
+ *     tags: [Student]
  *     summary: Get student attendance
  *     requestBody:
  *       required: true

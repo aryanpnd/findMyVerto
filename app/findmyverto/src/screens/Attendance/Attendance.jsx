@@ -23,7 +23,7 @@ export default function Attendance({ navigation }) {
 
   return (
     <>
-      <AttendanceScreen attendance={attendance} fetchAttendance={handleAttendanceFetch} lastSynced={lastSynced} loading={attendanceLoading} self={true} navigation={navigation} attendanceDetails={attendanceDetails}/>
+      <AttendanceScreen attendance={attendance} fetchAttendance={handleAttendanceFetch} lastSynced={lastSynced} loading={attendanceLoading} self={true} navigation={navigation} attendanceDetails={attendanceDetails} isError={isError}/>
     </>
   )
 }

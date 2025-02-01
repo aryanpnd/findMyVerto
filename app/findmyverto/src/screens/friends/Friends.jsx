@@ -1,20 +1,27 @@
 import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, ScrollView, RefreshControl } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MaterialIcons } from '@expo/vector-icons'
 import { colors } from '../../constants/colors'
 import AsyncStorage from '@react-native-async-storage/async-storage'
-import { API_URL } from '../../../context/Auth'
+import { API_URL, AuthContext } from '../../../context/Auth'
 import axios from 'axios'
 import SearchedStudentCard from '../../components/vertoSearch/SearchedStudentCard'
 import LottieView from 'lottie-react-native';
 import EmptyRequests from '../../components/miscellaneous/EmptyRequests'
 import { StatusBar } from 'expo-status-bar'
+import { getFriends } from '../../utils/fetchUtils/handleFriends'
+import TimetableScreenShimmer from '../../components/shimmers/TimetableScreenShimmer'
+import { HEIGHT } from '../../constants/styles'
+import { AppContext } from '../../../context/MainApp'
 
 
 const { height, width } = Dimensions.get('window');
 
-export default function Friends({ navigation }) {
+export default function Friends({ navigation, route }) {
+    const { auth } = useContext(AuthContext)
+    const { friendsRefreshing, setFriendsRefreshing } = useContext(AppContext)
+
     const [loading, setLoading] = useState(false)
     const [isFocused, setFocused] = useState(false);
 
@@ -25,10 +32,37 @@ export default function Friends({ navigation }) {
     const [disableBtn, setDisableBtn] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
 
+    function handleGetFriends(noRefreshing,noLoading) {
+        getFriends(auth, setfriends, setLoading, setRefreshing, noRefreshing, setupdatedFriends,noLoading)
+    }
+
+    async function getFriendListLocal() {
+        try {
+            setLoading(true)
+            let friendsLocally = await AsyncStorage.getItem("FRIENDS");
+            if (!friendsLocally) {
+                handleGetFriends(false,true)
+            } else {
+                const parsedFriends = JSON.parse(friendsLocally)
+                setfriends(parsedFriends)
+                setupdatedFriends(parsedFriends)
+            }
+            setLoading(false)
+        } catch (e) {
+            console.error(error);
+            setLoading(false)
+        }
+    }
+
+    useEffect(() => {
+        getFriendListLocal()
+    }, [])
+
+
     const [searchQuery, setSearchQuery] = useState('');
 
     const updateSearchQuery = (text) => {
-        const lowerCaseQuery = text.toLowerCase(); 
+        const lowerCaseQuery = text.toLowerCase();
 
         setSearchQuery(text);
 
@@ -43,56 +77,13 @@ export default function Friends({ navigation }) {
         setupdatedFriends(filteredFriends);
     };
 
-
-    async function getFriendListLocal() {
-        try {
-            setLoading(true)
-            let friendsLocally = await AsyncStorage.getItem("FRIENDS");
-            if (!friendsLocally) {
-                getFriendList()
-                setLoading(false)
-            } else {
-                setfriends(JSON.parse(friendsLocally))
-                setupdatedFriends(JSON.parse(friendsLocally))
-                setLoading(false)
-            }
-        } catch (e) {
-            console.error(error);
-            setLoading(false)
-        }
-    }
-
-    async function getFriendList() {
-        setLoading(true)
-        setRefreshing(true)
-        await axios.post(`${API_URL}/api/student/getFriendList`)
-            .then(async (result) => {
-                setfriends(result.data.friends)
-                setupdatedFriends(result.data.friends)
-                await AsyncStorage.setItem("FRIENDS", JSON.stringify(result.data.friends));
-                setLoading(false)
-                setRefreshing(false)
-            }).catch((err) => {
-                Toast.show({
-                    type: 'error',
-                    text1: 'Error loading friends',
-                    text2: `${err}`,
-                });
-                console.log(err);
-                setLoading(false)
-                setRefreshing(false)
-                return
-            })
-    }
-
     useEffect(() => {
-        getFriendListLocal()
-    }, [])
-
+        handleGetFriends(true,true)
+    }, [friendsRefreshing])
 
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]}>
-            <StatusBar style='auto'/>
+            <StatusBar style='auto' />
             <View style={[styles.header]}>
                 {/* Back naviagtion button */}
                 <View style={[styles.backBtn]}>
@@ -112,7 +103,7 @@ export default function Friends({ navigation }) {
                 <TextInput
                     style={[styles.searchBar, {
                         borderColor: isFocused ? colors.lightDark : 'transparent',
-                        backgroundColor: isFocused ? "transparent" : colors.btn1,
+                        backgroundColor: isFocused ? "white" : colors.btn1,
                     }]}
                     placeholder={isFocused ? "" : 'Search in name, section, or registration number '}
                     placeholderTextColor={"grey"}
@@ -133,17 +124,20 @@ export default function Friends({ navigation }) {
                             tintColor={colors.secondary}
                             colors={[colors.secondary]}
                             refreshing={refreshing}
-                            onRefresh={() => getFriendList()}
+                            onRefresh={() => handleGetFriends(false,false)}
                         />
                     }
                     contentContainerStyle={{ alignItems: "center", paddingVertical: 15, gap: height * 0.01 }}>
                     {
-                        updatedFriends.length < 1 ?
-                            <EmptyRequests navigation={navigation} btnText={"Find Friends"} withButton={true} text={"You have 0 friends right now"} route={"VertoSearch"} />
+                        loading || refreshing ?
+                            <TimetableScreenShimmer count={10} />
                             :
-                            updatedFriends.map((value, index) => (
-                                <SearchedStudentCard key={index} setfriends={setfriends} friends={friends} disableBtn={disableBtn} friendsRequests={friendsRequests} setfriendsRequests={setfriendsRequests} sentFriendRequests={sentFriendRequests} navigation={navigation} setDisableBtn={setDisableBtn} setSentFriendRequests={setSentFriendRequests} student={value} />
-                            ))
+                            updatedFriends.length < 1 ?
+                                <EmptyRequests navigation={navigation} btnText={"Find Friends"} withButton={true} text={"You have 0 friends right now"} route={"VertoSearch"} />
+                                :
+                                updatedFriends.map((value, index) => (
+                                    <SearchedStudentCard key={index} setfriends={setfriends} friends={friends} disableBtn={disableBtn} friendsRequests={friendsRequests} setfriendsRequests={setfriendsRequests} sentFriendRequests={sentFriendRequests} navigation={navigation} setDisableBtn={setDisableBtn} setSentFriendRequests={setSentFriendRequests} student={value} />
+                                ))
                     }
                 </ScrollView>
 
@@ -161,11 +155,11 @@ const styles = StyleSheet.create({
 
     // header
     header: {
-        height: 0.08 * height,
+        height: HEIGHT(8),
         width: '100%',
         flexDirection: "row",
         padding: 10,
-        gap: width * 0.02
+        gap: width * 0.02,
     },
     title: {
         alignItems: "center",
@@ -180,7 +174,7 @@ const styles = StyleSheet.create({
 
     // Body
     body: {
-        height: "92%",
+        height: HEIGHT(92),
         width: '100%',
         alignItems: "center",
         paddingVertical: 10
@@ -189,7 +183,7 @@ const styles = StyleSheet.create({
 
     searchBar: {
         width: "90%",
-        height: height * 0.07,
+        height: HEIGHT(6),
         borderWidth: 1,
         borderRadius: 30,
         paddingHorizontal: 15
@@ -197,7 +191,7 @@ const styles = StyleSheet.create({
 
     totalFriendsContainer: {
         width: "90%",
-        height: height * 0.08,
+        height: HEIGHT(8),
         justifyContent: "center",
     },
 

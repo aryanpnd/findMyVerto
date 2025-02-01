@@ -26,8 +26,8 @@ export default function TimeTable() {
   const [lastUpdated, setLastUpdated] = useState("")
 
   const handleFetchTimetable = async (sync) => {
-    if (timetableLoading) return
-    fetchTimetable(setTimetableLoading, setRefreshing, settimeTable, setClassesToday, auth, setIsError, sync, false, setLastSynced, setLastUpdated)
+    if (timetableLoading || refreshing) return
+    await fetchTimetable(setTimetableLoading, setRefreshing, settimeTable, setClassesToday, auth, setIsError, sync, false, setLastSynced, setLastUpdated)
   }
 
   useEffect(() => {
@@ -39,16 +39,16 @@ export default function TimeTable() {
     <>
       <View style={{ zIndex: 2 }}>
         <Toast />
-      <SyncData self={true} syncNow={() => handleFetchTimetable(true)} time={formatTimeAgo(lastSynced)} color={"white"} bg={colors.secondary} />
+        <SyncData self={true} syncNow={() => handleFetchTimetable(true)} time={formatTimeAgo(lastSynced)} color={"white"} bg={colors.secondary} loader={true} loading={refreshing} />
       </View>
-      {self && <OverlayLoading loading={timetableLoading} loadingText={"Syncing..."}/>}
+      {self && <OverlayLoading loading={timetableLoading} loadingText={"Syncing..."} />}
       {
         timeTable ?
-        // <TimeTableScreen timeTable={Object.entries(timeTable)} />
-        <TimeTableScreen timeTable={timeTable}/>
-        :
-        <></>
-          // <></>
+          // <TimeTableScreen timeTable={Object.entries(timeTable)} />
+          <TimeTableScreen timeTable={timeTable} />
+          :
+          <></>
+        // <></>
       }
     </>
   )
