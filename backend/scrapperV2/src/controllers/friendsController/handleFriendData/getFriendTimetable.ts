@@ -35,6 +35,15 @@ export const getFriendTimetable = async (req: Request, res: Response) => {
       });
     }
 
+    if (friend.allowedFieldsToShow.includes("timetable") === false) {
+      return res.status(403).json({
+        success: false,
+        data: {},
+        message: "Not allowed",
+        errorMessage: "Your friend has made his timetable private",
+      });
+    }
+
     if (!sync) {
       const friendTimetable = await TimeTable.findOne({ reg_no: friend.reg_no });
       if (friendTimetable) {

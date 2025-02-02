@@ -1,5 +1,5 @@
 import React, { forwardRef, useCallback, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { Dimensions, Platform, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, Image, Platform, RefreshControl, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { AuthContext } from '../../../context/Auth';
 import Loading1 from '../miscellaneous/Loading1';
 import LottieView from 'lottie-react-native';
@@ -10,7 +10,7 @@ import { AppContext } from '../../../context/MainApp';
 import { fetchTimetable } from '../../utils/fetchUtils/timeTableFetch';
 import Button from '../miscellaneous/Button';
 import { useFocusEffect } from '@react-navigation/native';
-import { HEIGHT } from '../../constants/styles';
+import { HEIGHT, WIDTH } from '../../constants/styles';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
@@ -82,35 +82,36 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
                 timetableLoading ?
                     <Loading1 loading={timetableLoading} loadAnim={"amongus"} loadingText={"Getting your Timetable"} loadingMsg={"it may take some seconds for the first time"} textColor={"black"} />
                     :
-                    !timeTable[0]?.time ?
-                        <NoClassesComponent day={day} />
+                    day === 0 ?
+                        <SundayMessage navigation={navigation} />
                         :
-                        <View style={{ width: "100%", justifyContent: 'flex-start' }}>
-                            <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, paddingHorizontal: 20 }}>
-                                <Text style={styles.text1}>
-                                    <Text style={{ color: "grey" }}>Classes today:</Text> {
-                                        timeTable && timeTable.length > 0 && isTimeEqual(timeTable[timeTable.length - 1]?.time, true) ? "Over" : classesToday
-                                    }
-                                </Text>
-                                {timeTable.length == 0 ?
-                                    <></> :
+                        !timeTable[0]?.time ?
+                            <NoClassesComponent day={day} />
+                            :
+                            <View style={{ width: "100%", justifyContent: 'flex-start' }}>
+                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, paddingHorizontal: 20 }}>
                                     <Text style={styles.text1}>
-                                        {days[day]}
+                                        <Text style={{ color: "grey" }}>Classes today:</Text> {
+                                            timeTable && timeTable.length > 0 && isTimeEqual(timeTable[timeTable.length - 1]?.time, true) ? "Over" : classesToday
+                                        }
                                     </Text>
-                                }
+                                    {timeTable.length == 0 ?
+                                        <></> :
+                                        <Text style={styles.text1}>
+                                            {days[day]}
+                                        </Text>
+                                    }
 
-                            </View>
+                                </View>
 
-                            {
-                                day === 0 ?
-                                    <SundayMessage navigation={navigation} />
-                                    :
+                                {
+
                                     <ScrollView
                                         ref={scrollViewRef}
                                         horizontal
                                         nestedScrollEnabled={true}
                                         decelerationRate="normal"
-                                        contentContainerStyle={[styles.scrollView,classesOver&&{width:"100%"}]}
+                                        contentContainerStyle={[styles.scrollView, classesOver && { width: "100%" }]}
                                         showsHorizontalScrollIndicator={false}
                                         bounces={Platform.OS === 'ios' ? false : undefined}
                                         alwaysBounceVertical={false}
@@ -127,8 +128,8 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
                                         }
 
                                     </ScrollView>
-                            }
-                        </View>
+                                }
+                            </View>
             }
         </>
     );
@@ -170,15 +171,12 @@ const NoClassesMessage = () => {
 const SundayMessage = ({ navigation }) => {
     return (
         <View style={{ alignItems: "center", justifyContent: "center", gap: 8 }}>
-            <LottieView
-                autoPlay
-                style={{
-                    width: 100,
-                    height: 100,
-                }}
-                source={require('../../../assets/lotties/sloth.json')}
+            <Image
+                source={require("../../../assets/illustrations/fun.png")}
+                style={{ height: HEIGHT(15), width: WIDTH(50),objectFit:"contain" }}
+                transition={1000}
             />
-            <Text style={styles.text1}>It's Sunday, No classes Today</Text>
+            <Text style={styles.text1}>It's Sunday, No classes for Today 🎉</Text>
 
             <TouchableOpacity style={{ flexDirection: 'row', gap: 5, backgroundColor: colors.btn1, paddingHorizontal: 15, paddingVertical: 3, borderRadius: 10 }} onPress={() => navigation.navigate('Timetable')}>
                 <Text style={{ fontSize: 12, color: 'grey' }}>View Timetable</Text>

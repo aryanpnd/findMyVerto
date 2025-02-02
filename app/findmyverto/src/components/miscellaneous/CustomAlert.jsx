@@ -24,6 +24,7 @@ const CustomAlert = (() => {
     return (
       <Modal
         transparent
+        statusBarTranslucent={true}
         animationType="fade"
         visible={visible}
         onRequestClose={() => setVisible(false)}

@@ -220,6 +220,8 @@ export async function removeFriend(auth, student_id, setLoading) {
                     type: 'success',
                     text1: result.data.message,
                 });
+                await AsyncStorage.removeItem(`${student_id}`);
+                await AsyncStorage.removeItem(`${student_id}-timetable`);
                 // status=true
             } else {
                 Toast.show({

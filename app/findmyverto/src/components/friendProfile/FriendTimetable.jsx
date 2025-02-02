@@ -36,12 +36,9 @@ export default function FriendTimetable({ route }) {
                 const student = JSON.parse(studentRaw)
                 const parsedTimetable = formatTimetable(student.data.time_table, student.data.courses)
                 settimeTable(parsedTimetable)
-                setLastSynced(formatTimeAgo(student.lastSynced))
-                console.log("no");
-                
+                setLastSynced(formatTimeAgo(student.lastSynced))                
             } else {
-                console.log("yes");
-                await handleFetchTimetable(true)
+                await handleFetchTimetable(false)
             }
             setLoading(false)
         } catch (error) {

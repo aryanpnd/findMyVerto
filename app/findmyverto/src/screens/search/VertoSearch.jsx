@@ -104,21 +104,25 @@ export default function VertoSearch({ navigation }) {
                             :
                             students.length < 1 ?
                                 // no result found container
-                                <View style={{ height: height * 0.7, justifyContent: "center" }}>
+                                <View style={{
+                                    height: height * 0.7,
+                                    justifyContent: "center",
+                                    alignItems: "center"
+                                  }}>
                                     <LottieView
-                                        autoPlay
-                                        style={{
-                                            width: width,
-                                            height: width,
-                                            opacity: 0.8
-                                        }}
-                                        source={require('../../../assets/lotties/notfound.json')}
+                                      autoPlay
+                                      style={{
+                                        width: width,
+                                        height: width,
+                                        opacity: 0.8
+                                      }}
+                                      source={require('../../../assets/lotties/notfound.json')}
                                     />
-                                    <Text style={styles.text1}>No student has found matching your query</Text>
+                                    <Text style={styles.text2}>No student found matching your query</Text>
                                     <Text style={styles.text1}>Please check your query again</Text>
                                     <Text style={styles.text1}>or</Text>
-                                    <Text style={styles.text1}>Maybe he/she has not yet login on this app</Text>
-                                </View>
+                                    <Text style={styles.text1}>They might not be registered on this app yet</Text>
+                                  </View>
                                 :
                                 // results mapping
                                 students.map((value, index) => (
@@ -137,8 +141,8 @@ export default function VertoSearch({ navigation }) {
                         // search vector image
                         <View style={{ alignItems: "center", height: height * 0.8, justifyContent: "center", gap: 20 }}>
                             <Image
-                                source={require("../../../assets/vectorArts/searchPeople.png")}
-                                style={{ height: width * 0.7, width: width * 0.9, opacity: 0.3 }}
+                                source={require("../../../assets/illustrations/search.png")}
+                                style={{ height: width * 0.7, width: width * 0.9, opacity: 0.8 }}
                                 transition={1000}
                             />
                             <Text style={styles.text1}>Search in Student's name, Section, or registration number</Text>

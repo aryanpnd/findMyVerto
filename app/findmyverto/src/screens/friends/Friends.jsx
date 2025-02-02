@@ -31,6 +31,7 @@ export default function Friends({ navigation, route }) {
     const [sentFriendRequests, setSentFriendRequests] = useState([])
     const [disableBtn, setDisableBtn] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     function handleGetFriends(noRefreshing,noLoading) {
         getFriends(auth, setfriends, setLoading, setRefreshing, noRefreshing, setupdatedFriends,noLoading)
@@ -57,9 +58,6 @@ export default function Friends({ navigation, route }) {
     useEffect(() => {
         getFriendListLocal()
     }, [])
-
-
-    const [searchQuery, setSearchQuery] = useState('');
 
     const updateSearchQuery = (text) => {
         const lowerCaseQuery = text.toLowerCase();

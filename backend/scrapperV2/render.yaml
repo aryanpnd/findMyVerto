@@ -1,6 +1,6 @@
 services:
   - type: web
-    name: ums-api
+    name: Find-My-Verto
     runtime: node
     plan: free
     buildCommand: npm run build

@@ -39,6 +39,16 @@ export const getFriendAttendance = async (req: Request, res: Response) => {
             });
         }
 
+        if(friend.allowedFieldsToShow.includes("attendance") === false){
+            return res.status(403).json({
+                summary: {},
+                details: {},
+                message: "Not allowed",
+                success: false,
+                errorMessage: "Your friend has made his attendance private",
+            });
+        }
+
         if (friend.reg_no && friend.password) {
             const friendBody = { reg_no: friend.reg_no, password: friend.password };
             return getStudentAttendance(req, res, friendBody);

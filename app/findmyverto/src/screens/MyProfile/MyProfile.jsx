@@ -14,12 +14,13 @@ import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
 import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
 import { fetchBasicDetails } from '../../utils/fetchUtils/basicDetailsFetch'
 import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert'
+import AllowedFieldsToShow from '../../components/settings/allowedFieldsToShow'
 const { height, width } = Dimensions.get('window');
 
 export default function MyProfile({ navigation }) {
     const { auth, logout } = useContext(AuthContext)
     const customAlert = useCustomAlert();
-    
+
     const [student, setStudent] = useState({})
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
@@ -27,7 +28,7 @@ export default function MyProfile({ navigation }) {
     const [lastSynced, setLastSynced] = useState("")
 
     const handleDataFetch = (sync) => {
-        fetchBasicDetails(setLoading, setRefreshing, setStudent, auth,setIsError, sync, setLastSynced)
+        fetchBasicDetails(setLoading, setRefreshing, setStudent, auth, setIsError, sync, setLastSynced)
     }
 
     useEffect(() => {
@@ -78,12 +79,13 @@ export default function MyProfile({ navigation }) {
 
 
                 {/* Last sync container */}
-                {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} />}
-                <SyncData color={"white"} self={true} syncNow={() => handleDataFetch(true)} time={formatTimeAgo(student.lastSynced)} bg={colors.secondary} />
+                {/* {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} />} */}
+                <SyncData color={"white"} self={true} syncNow={() => handleDataFetch(true)} time={formatTimeAgo(student.lastSynced)} bg={colors.secondary} loader={true} loading={loading}/>
 
                 {/* Body */}
                 <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}>
-                    <StudentProfile student={student?.data} />
+                    <StudentProfile student={student?.data} loading={loading}/>
+                    <AllowedFieldsToShow />
                 </ScrollView>
 
                 <View style={styles.footer}>
@@ -140,8 +142,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: "center",
         alignItems: "center",
-        borderColor: colors.blueTransparency,
-        borderWidth: 2
+        borderColor: "grey",
+        borderWidth: 1
     }
 
 })

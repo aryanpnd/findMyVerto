@@ -1,5 +1,5 @@
 {
-  "name": "ums-api",
+  "name": "find-my-verto",
   "version": "1.0.0",
   "main": "server.ts",
   "scripts": {

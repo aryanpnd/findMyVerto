@@ -1,5 +1,5 @@
 import { StyleSheet, View } from "react-native"
-import { globalStyles, HEIGHT, WIDTH } from "../../constants/styles"
+import { HEIGHT, WIDTH } from "../../constants/styles"
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import { LinearGradient } from 'expo-linear-gradient'
 

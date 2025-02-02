@@ -32,7 +32,7 @@ export default function AttendanceScreen({ attendance, fetchAttendance, lastSync
         <ErrorMessage handleFetch={() => fetchAttendance(true)} loading={loading} messageText={"...while fetching the attendance"} buttonStyles={{ height: "8%", width: "50%" }} />
         :
         <View style={styles.container}>
-          <SyncData time={lastSyncedState} syncNow={() => fetchAttendance(true)} self={self} color={'white'} bg={colors.secondary} />
+          <SyncData time={lastSyncedState} syncNow={() => fetchAttendance(true)} self={self} color={'white'} bg={colors.secondary} loader={true} loading={loading}/>
 
           <View style={styles.TotalAttendanceContainer}>
             {(self && loading) ?

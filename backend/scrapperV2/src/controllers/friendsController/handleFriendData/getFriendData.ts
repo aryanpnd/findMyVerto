@@ -22,7 +22,7 @@ export const getFriendData = async (req: Request, res: Response) => {
         if (isStudentInFriendList) {
             await Student.findById(studentId)
                 .select({
-                    ...excludingFields,
+                    ...excludingFields
                 })
                 .then(async result => {
                     if (result) {

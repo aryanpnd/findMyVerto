@@ -1,5 +1,5 @@
 import { View, Text, ScrollView, TouchableOpacity, StyleSheet, Dimensions, Pressable, Image, ActivityIndicator } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import React, { use, useContext, useEffect, useState } from 'react'
 import { colors } from '../../constants/colors';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Toast from 'react-native-toast-message';
@@ -24,11 +24,13 @@ const { height, width } = Dimensions.get('window');
 
 const navigations = [
     {
+        name: "attendance",
         title: "Attendance",
         icon: require('../../../assets/icons/attendance.png'),
         route: "FriendAttendance"
     },
     {
+        name: "timetable",
         title: "Timetable",
         icon: require('../../../assets/icons/schedule.png'),
         route: "FriendTimetable"
@@ -44,27 +46,27 @@ export default function FriendProfile({ route }) {
 
     const [student, setStudent] = useState({})
     const [firstName, setFirstName] = useState("")
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(false)
     const [removeLoading, setRemoveLoading] = useState(false)
+    const [refresh, setRefresh] = useState(false)
 
-    function handleFetchData() {
-        getFriendDetails(auth, _id, setStudent, setLoading)
+    async function handleFetchData(loader = false) {
+        await getFriendDetails(auth, _id, setStudent, setLoading, loader)
     }
 
     async function fetchDataLocally() {
         try {
-            setLoading(true)
             // let user = mmkvStorage.getString(`${_id}`);
             const studentRaw = await AsyncStorage.getItem(`${_id}`);
+
             if (studentRaw) {
                 const student = JSON.parse(studentRaw)
                 setStudent(student)
+                setRefresh(!refresh)
             } else {
-                handleFetchData()
+                await handleFetchData(setLoading)
             }
-            setLoading(false)
         } catch (error) {
-            setLoading(false)
             console.error(error);
             Toast.show({
                 type: 'error',
@@ -77,9 +79,12 @@ export default function FriendProfile({ route }) {
     useEffect(() => {
         fetchDataLocally()
     }, [])
+    useEffect(() => {
+        handleFetchData()
+    }, [refresh])
 
     useEffect(() => {
-        setFirstName(student?.studentName?.split(" ")[0])
+        setFirstName(student?.name?.split(" ")[0])
     }, [student])
 
     async function handleRemoveFriend() {
@@ -90,8 +95,6 @@ export default function FriendProfile({ route }) {
                 text: 'Remove',
                 onPress: async () => {
                     await removeFriend(auth, _id, setRemoveLoading);
-                    await AsyncStorage.removeItem(_id);
-                    await AsyncStorage.removeItem(`${_id}-timetable`);
                     navigation.goBack();
                     setFriendsRefreshing(!friendsRefreshing)
                 },
@@ -108,8 +111,6 @@ export default function FriendProfile({ route }) {
                 <StatusBar style='auto' />
                 <CustomAlert />
             </View>
-
-            <OverlayLoading loadAnim={""} loading={loading} loadingText={"Loading..."} loadingMsg={"Getting your Friend's data"} />
 
             <View style={[styles.header]}>
                 {/* Back naviagtion button */}
@@ -140,12 +141,13 @@ export default function FriendProfile({ route }) {
 
             {/* Body */}
             <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center", gap: height * 0.05 }}>
-                <StudentProfile student={student} />
+                <StudentProfile student={student} loading={loading}/>
                 <View style={styles.NavigationsContainer}>
                     {
                         navigations.map((value) => (
+                            student.allowedFieldsToShow?.includes(value.name) &&
                             <Pressable
-                                onPress={() => navigation.navigate(value.route, { id: _id })}
+                                onPress={() => navigation.navigate(value.route, { id: _id,name:firstName })}
                                 key={value.title} style={styles.NavigationsCard} >
                                 <Image
                                     source={value.icon}

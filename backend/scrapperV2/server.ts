@@ -27,7 +27,8 @@ import { studentRoutes } from './src/routes/studentRoutes';
 import { setupSwagger } from './src/config/swagger';
 import { friendRoutes } from './src/routes/friendRoutes';
 import { friendScrapperRoutes } from './src/routes/friendScrapperRoutes';
-app.use('/api/v2/student', studentRoutes);
+import { StudentSettingsRoutes } from './src/routes/studentsSettings';
+app.use('/api/v2/student', studentRoutes,StudentSettingsRoutes);
 app.use('/api/v2/friends', friendRoutes,friendScrapperRoutes);
 
 // Swagger
