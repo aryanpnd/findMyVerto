@@ -39,11 +39,6 @@ export default function AuthPage() {
     prepare();
   }, []);
 
-  useEffect(() => {
-    console.log(auth);
-    console.log("Auth changed");
-  }, [auth]);
-
   return (
     <Stack.Navigator screenOptions={{ headerShown: false, animationTypeForReplace: 'push', animation: 'slide_from_right' }}>
       {!loading && auth.authenticated ? (

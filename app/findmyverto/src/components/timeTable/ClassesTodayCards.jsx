@@ -22,7 +22,7 @@ export default function ClassesTodayCards({ value, index, navigation }) {
     return (
         <Pressable onPress={() => navigation.navigate("Timetable")}>
         <LinearGradient
-            colors={isTimeEqualState ? ['#11998e', '#32cf6d'] : ["white", "transparent"]}
+            colors={isTimeEqualState ? ['#11998e', '#32cf6d'] : ["white", "white"]}
             style={[styles.cardContainer, globalStyles.elevationMin]}
             start={{ x: 0, y: 0 }} // Start from the left
             end={{ x: 1, y: 0 }}

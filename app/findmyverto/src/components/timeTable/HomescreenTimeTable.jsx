@@ -30,6 +30,9 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
 
     const [refreshing, setRefreshing] = useState(false);
     const [isError, setIsError] = useState(false);
+    const [retryAttempts, setRetryAttempts] = useState(0);
+    const [isRetryMaxValueReached, setIsRetryMaxValueReached] = useState(false);
+    const retryAttemptsValue = 5;
 
     const scrollViewRef = useRef(null);
 
@@ -44,9 +47,23 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
     }
 
     const handleFetchTimetable = async () => {
-        if (timetableLoading) return
-        fetchTimetable(setTimetableLoading, setRefreshing, settimeTable, setClassesToday, auth, setIsError, false, true, setLastSynced, setLastUpdated)
-    }
+        // Before fetching, clear previous error state
+        setIsError(false);
+        // if (timetableLoading) return
+        await fetchTimetable(
+            setTimetableLoading,
+            setRefreshing,
+            settimeTable,
+            setClassesToday,
+            auth,
+            setIsError,
+            false,
+            true,
+            setLastSynced,
+            setLastUpdated
+        );
+    };
+
 
     useEffect(() => {
         today()
@@ -73,10 +90,31 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
         }, [timeTable])
     );
 
+    const handleRetry = async () => {
+        if (isError && retryAttempts < retryAttemptsValue) {
+            console.log("Error reattempt block", retryAttempts, isError);
+            setRetryAttempts((prev) => prev + 1);
+            await handleFetchTimetable();
+        } else if (retryAttempts >= retryAttemptsValue) {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Failed to fetch details',
+                text2: 'Please check your internet connection',
+            });
+            setIsRetryMaxValueReached(true);
+        }
+    };
+
+    useEffect(() => {
+        if (isError && !timetableLoading) {
+            handleRetry();
+        }
+    }, [isError, timetableLoading]);
 
     return (
         <>
-            {isError ?
+            {isError || isRetryMaxValueReached ?
                 <ErrorMessage handleFetchTimetable={handleFetchTimetable} timetableLoading={timetableLoading} />
                 :
                 timetableLoading ?
@@ -173,7 +211,7 @@ const SundayMessage = ({ navigation }) => {
         <View style={{ alignItems: "center", justifyContent: "center", gap: 8 }}>
             <Image
                 source={require("../../../assets/illustrations/fun.png")}
-                style={{ height: HEIGHT(15), width: WIDTH(50),objectFit:"contain" }}
+                style={{ height: HEIGHT(15), width: WIDTH(50), objectFit: "contain" }}
                 transition={1000}
             />
             <Text style={styles.text1}>It's Sunday, No classes for Today 🎉</Text>
