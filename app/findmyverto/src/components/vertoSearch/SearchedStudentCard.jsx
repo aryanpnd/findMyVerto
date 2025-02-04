@@ -158,7 +158,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
                                     :
                                     <>
                                         <Text style={{ color: isInSentList ? "grey" : "white", textAlign: "center", fontWeight: "bold" }}>
-                                            {isFriend ? "Friends" : isInRequestList ? "Requested you" : isInSentList ? "Cancel" : "Send"}
+                                            {isFriend ? "Friends" : isInRequestList ? "Requested" : isInSentList ? "Cancel" : "Send"}
                                         </Text>
                                         {
                                             isInSentList ?

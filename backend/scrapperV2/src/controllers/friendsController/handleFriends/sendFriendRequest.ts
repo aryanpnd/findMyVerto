@@ -17,7 +17,7 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
 
         // Prevent sending request to oneself
         if (student.id === studentId) {
-            return res.status(400).json({
+            return res.status(200).json({
                 success: false,
                 message: "You can't send a request to yourself",
             });
@@ -28,14 +28,14 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
         const isStudentInSentList = student.sentFriendRequests.some(std => std.equals(studentId));
 
         if (isStudentInFriendList) {
-            return res.status(400).json({
+            return res.status(200).json({
                 success: false,
                 message: "Already friends",
             });
         }
 
         if (isStudentInSentList) {
-            return res.status(400).json({
+            return res.status(200).json({
                 success: false,
                 message: "Friend request already sent",
             });

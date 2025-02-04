@@ -56,10 +56,6 @@ friendScrapperRoutes.post('/getFriendInfo', getFriendData);
  *     responses:
  *       200:
  *         description: Successful response
- *       400:
- *         description: Invalid credentials
- *       404:
- *         description: Student not found
  *       500:
  *         description: Internal server error
  */
@@ -87,10 +83,6 @@ friendScrapperRoutes.post('/timetable', getFriendTimetable);
  *     responses:
  *       200:
  *         description: Successful response
- *       400:
- *         description: Invalid credentials
- *       404:
- *         description: Student not found
  *       500:
  *         description: Internal server error
  */

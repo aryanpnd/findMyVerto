@@ -40,7 +40,7 @@ export const getFriendAttendance = async (req: Request, res: Response) => {
         }
 
         if(friend.allowedFieldsToShow.includes("attendance") === false){
-            return res.status(403).json({
+            return res.status(200).json({
                 summary: {},
                 details: {},
                 message: "Not allowed",
@@ -54,7 +54,7 @@ export const getFriendAttendance = async (req: Request, res: Response) => {
             return getStudentAttendance(req, res, friendBody);
         }
 
-        res.status(400).json({
+        res.status(200).json({
             summary: {},
             details: {},
             message: "Invalid friend data",

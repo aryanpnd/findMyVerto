@@ -67,7 +67,7 @@ export default function Friends({ navigation, route }) {
         const filteredFriends = friends.filter((friend) => {
             return (
                 friend.name.toLowerCase().includes(lowerCaseQuery) ||
-                friend.registrationNumber.toLowerCase().includes(lowerCaseQuery) ||
+                friend.reg_no.toLowerCase().includes(lowerCaseQuery) ||
                 friend.section.toLowerCase().includes(lowerCaseQuery)
             );
         });
@@ -117,6 +117,7 @@ export default function Friends({ navigation, route }) {
                 </View>
 
                 <ScrollView
+                showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
                             tintColor={colors.secondary}

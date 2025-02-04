@@ -5,7 +5,7 @@ export const searchStudent = async (req: Request, res: Response) => {
     try {
         const searchQuery = req.query.q as string;
         if (!searchQuery) {
-            res.status(400).json({
+            res.status(200).json({
                 students: [],
                 lastSynced: new Date().toISOString(),
                 message: "Invalid search query",

@@ -6,19 +6,27 @@ const AppContext = createContext();
 // export const mmkvStorage = new MMKV()
 
 const AppProvider = ({ children }) => {
-    const [courses, setCourses] = useState({})
     const [timetableLoading, setTimetableLoading] = useState(false)
     const [attendanceLoading, setAttendanceLoading] = useState(false)  
     const [friendsRefreshing, setFriendsRefreshing] = useState(false)
     const [allowedFieldsToShow, setAllowedFieldsToShow] = useState([])
+    
+    const [courses, setCourses] = useState({})
+    const [friendsAttendance, setFriendsAttendance] = useState({})
+    const [friendsAttendanceDetails, setFriendsAttendanceDetails] = useState({})
+    const [friendsAttendanceLastSynced, setFriendsAttendanceLastSynced] = useState({})
 
     return (
         <AppContext.Provider value={{
-            courses,setCourses,
             timetableLoading, setTimetableLoading,
             attendanceLoading, setAttendanceLoading,
             friendsRefreshing, setFriendsRefreshing,
-            allowedFieldsToShow, setAllowedFieldsToShow
+            allowedFieldsToShow, setAllowedFieldsToShow,
+            
+            courses,setCourses,
+            friendsAttendance, setFriendsAttendance,
+            friendsAttendanceDetails, setFriendsAttendanceDetails,
+            friendsAttendanceLastSynced, setFriendsAttendanceLastSynced
             }}>
             {children}
         </AppContext.Provider>

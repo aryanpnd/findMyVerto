@@ -43,9 +43,10 @@ export default function Body({ navigation }) {
   }, []);
   return (
     <View style={styles.body}>
-      <ScrollView style={styles.body}
-        bounces={Platform.OS === 'ios' ? false : undefined}
-        alwaysBounceVertical={false}
+      <ScrollView
+        style={styles.body}
+        bounces={Platform.OS === 'ios' ? true : undefined}
+        alwaysBounceVertical={true}
         overScrollMode={Platform.OS === 'android' ? 'never' : undefined}
         showsVerticalScrollIndicator={false}
         refreshControl={
@@ -55,7 +56,8 @@ export default function Body({ navigation }) {
             tintColor={colors.secondary}
             colors={[colors.secondary]}
           />
-        }>
+        }
+      >
 
         <View style={styles.passwordExpiryContainer}>
           <Text style={styles.text2}>

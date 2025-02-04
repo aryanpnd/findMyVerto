@@ -36,7 +36,7 @@ export const getFriendTimetable = async (req: Request, res: Response) => {
     }
 
     if (friend.allowedFieldsToShow.includes("timetable") === false) {
-      return res.status(403).json({
+      return res.status(200).json({
         success: false,
         data: {},
         message: "Not allowed",
@@ -66,7 +66,7 @@ export const getFriendTimetable = async (req: Request, res: Response) => {
       return getStudentTimeTable(req, res, friendBody);
     }
 
-    res.status(400).json({
+    res.status(200).json({
       success: false,
       data: {},
       message: "Friend credentials are missing",

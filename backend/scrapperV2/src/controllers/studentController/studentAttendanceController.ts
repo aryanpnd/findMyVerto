@@ -12,7 +12,7 @@ export const getStudentAttendance = async (req: Request, res: Response, friendBo
   try {
     const requestBody = friendBody || req.body;
     if (!requestBody || typeof requestBody !== "object") {
-      res.status(400).json({
+      res.status(200).json({
         summary: {},
         details: {},
         message: "Invalid request data",

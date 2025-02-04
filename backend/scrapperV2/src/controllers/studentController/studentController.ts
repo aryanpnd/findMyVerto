@@ -14,12 +14,12 @@ export const getStudentBasicInfo = async (req: Request, res: Response): Promise<
 
     const studentInfo = await scrapeStudentBasicInfo({ reg_no, password });
     if (!studentInfo.success) {
-      res.status(400).json(studentInfo);
+      res.status(200).json(studentInfo);
       return;
     }
 
     if (!('reg_no' in studentInfo.data)) {
-      res.status(400).json({
+      res.status(200).json({
         success: false,
         message: "Invalid student data",
         lastSynced: new Date().toISOString(),
@@ -38,7 +38,7 @@ export const getStudentBasicInfo = async (req: Request, res: Response): Promise<
 
     const saveStudent = await saveStudentDetails(studentDetails);
     if (!saveStudent.success) {
-      res.status(400).json({
+      res.status(200).json({
         success: false,
         message: "Failed to save student data",
         lastSynced: new Date().toISOString()

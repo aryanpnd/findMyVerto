@@ -103,6 +103,16 @@ export default function FriendProfile({ route }) {
         ]);
     }
 
+    function handleNotAllowedPress(title) {
+        return () => {
+            Toast.show({
+                type: "info",
+                text1: "Private",
+                text2: `${student?.name?.split(" ")[0]} has not allowed to show ${title}`
+            })
+        }
+    }
+
 
     return (
         <SafeAreaView style={[styles.container]} >
@@ -141,14 +151,19 @@ export default function FriendProfile({ route }) {
 
             {/* Body */}
             <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center", gap: height * 0.05 }}>
-                <StudentProfile student={student} loading={loading}/>
+                <StudentProfile student={student} loading={loading} />
                 <View style={styles.NavigationsContainer}>
                     {
                         navigations.map((value) => (
-                            student.allowedFieldsToShow?.includes(value.name) &&
                             <Pressable
-                                onPress={() => navigation.navigate(value.route, { id: _id,name:firstName })}
-                                key={value.title} style={styles.NavigationsCard} >
+                                onPress={
+                                    student.allowedFieldsToShow?.includes(value.name) ?
+                                        () => navigation.navigate(value.route, { id: _id, name: firstName })
+                                        :
+                                        handleNotAllowedPress(value.title)
+                                }
+                                key={value.title} style={[styles.NavigationsCard,
+                                !student.allowedFieldsToShow?.includes(value.name) && { opacity: 0.5 }]} >
                                 <Image
                                     source={value.icon}
                                     style={{ height: width * 0.12, width: width * 0.12 }}

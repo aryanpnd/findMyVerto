@@ -64,37 +64,47 @@ export async function getFriendTimetable(auth, friend_id, sync, settimeTable, se
         })
 }
 
-export async function getFriendAttendance(auth, friend_id, setAttendance,setAttendanceDetails, setLastSynced, setLoading,setIsError) {
-    setLoading(true)
-    await axios.post(`${API_URL}/friends/attendance`, { reg_no: auth.reg_no, password: auth.password, studentId: friend_id })
-        .then(async (result) => {
-            if (result.data.success) {
-                setAttendance(result.data.summary)
-                setAttendanceDetails(result.data.details)
-                setLastSynced(formatTimeAgo(result.data.lastSynced))
-                Toast.show({
-                    type: 'success',
-                    text1: 'Attendance Synced',
-                    text2: 'Attendance synced successfully'
-                })
-                setIsError(false)
-            } else {
-                Toast.show({
-                    type: 'error',
-                    text1: result.data.message,
-                    text2: result.data.errorMessage,
-                })
-                setIsError(true)
-            }
-        }).catch((err) => {
+export async function getFriendAttendance(auth, id, setFriendsAttendance, setFriendsAttendanceDetails, setFriendsAttendanceLastSynced, setAttendance, setAttendanceDetails, setLastSynced, setLoading, setIsError) {
+    setLoading(true);
+    try {
+        const result = await axios.post(`${API_URL}/friends/attendance`, {
+            reg_no: auth.reg_no,
+            password: auth.password,
+            studentId: id
+        });
+
+        if (result.data.success) {
+            setFriendsAttendance(prev => ({ ...prev, [id]: result.data.summary }));
+            setFriendsAttendanceDetails(prev => ({ ...prev, [id]: result.data.details }));
+            setFriendsAttendanceLastSynced(prev => ({ ...prev, [id]: formatTimeAgo(result.data.lastSynced) }));
+
+            setAttendance(result.data.summary);
+            setAttendanceDetails(result.data.details);
+            setLastSynced(formatTimeAgo(result.data.lastSynced));
+            setIsError(false);
+
+            Toast.show({
+                type: 'success',
+                text1: 'Attendance Synced',
+                text2: 'Attendance synced successfully'
+            });
+        } else {
             Toast.show({
                 type: 'error',
-                text1: err.message,
+                text1: result.data.message,
+                text2: result.data.errorMessage,
             });
-            console.log(err);
-            setIsError(true)
-        })
-        .finally(() => {
-            setLoading(false);
-        })
+            setIsError(true);
+        }
+    } catch (err) {
+        Toast.show({
+            type: 'error',
+            text1: 'Network Error',
+            text2: err.message
+        });
+        console.log(err);
+        setIsError(true);
+    } finally {
+        setLoading(false);
+    }
 }

@@ -12,6 +12,7 @@ import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
 import { AppContext } from '../../../context/MainApp'
 import { fetchTimetable } from '../../utils/fetchUtils/timeTableFetch'
 import Test from '../../components/home/Test'
+import { ErrorMessage } from '../../components/timeTable/ErrorMessage'
 
 export default function TimeTable() {
   const { auth, logout2 } = useContext(AuthContext)
@@ -41,13 +42,17 @@ export default function TimeTable() {
         <Toast />
         <SyncData self={true} syncNow={() => handleFetchTimetable(true)} time={formatTimeAgo(lastSynced)} color={"white"} bg={colors.secondary} loader={true} loading={refreshing} />
       </View>
-      {self && <OverlayLoading loading={timetableLoading} loadingText={"Syncing..."} />}
+      {self && !isError && <OverlayLoading loading={timetableLoading} loadingText={"Syncing..."} />}
+
       {
-        timeTable ?
-          // <TimeTableScreen timeTable={Object.entries(timeTable)} />
-          <TimeTableScreen timeTable={timeTable} />
+        isError ?
+          <ErrorMessage handleFetchTimetable={handleFetchTimetable} timetableLoading={timetableLoading} buttonHeight={45} />
           :
-          <></>
+          timeTable ?
+            // <TimeTableScreen timeTable={Object.entries(timeTable)} />
+            <TimeTableScreen timeTable={timeTable} />
+            :
+            <></>
         // <></>
       }
     </>

@@ -20,10 +20,21 @@ export default function Attendance({ navigation }) {
   const handleAttendanceFetch = async (sync) => {
     fetchAttendance(setAttendanceLoading, setRefreshing, setattendance, setAttendanceDetails, auth, setIsError, sync, setLastSynced)
   }
+  useEffect(() => {
+    handleAttendanceFetch()
+  }, [])
 
   return (
     <>
-      <AttendanceScreen attendance={attendance} fetchAttendance={handleAttendanceFetch} lastSynced={lastSynced} loading={attendanceLoading} self={true} navigation={navigation} attendanceDetails={attendanceDetails} isError={isError}/>
+      <AttendanceScreen
+        attendance={attendance}
+        fetchAttendance={handleAttendanceFetch}
+        lastSynced={lastSynced}
+        loading={attendanceLoading}
+        self={true}
+        navigation={navigation}
+        attendanceDetails={attendanceDetails}
+        isError={isError} />
     </>
   )
 }

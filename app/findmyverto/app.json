@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "findmyverto",
-    "slug": "findmyverto",
+    "name": "Find My Verto",
+    "slug": "find-my-verto",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",

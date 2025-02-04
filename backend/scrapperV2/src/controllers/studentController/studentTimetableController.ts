@@ -9,7 +9,7 @@ export const getStudentTimeTable = async (req: Request, res: Response, friendBod
     const requestBody = friendBody || req.body;
 
     if (!requestBody || typeof requestBody !== "object") {
-      res.status(400).json({
+      res.status(200).json({
         success: false,
         message: "Invalid request data",
         lastSynced: new Date().toISOString(),
@@ -21,7 +21,7 @@ export const getStudentTimeTable = async (req: Request, res: Response, friendBod
 
     // Validate required fields
     if (!reg_no || !password) {
-      res.status(400).json({
+      res.status(200).json({
         success: false,
         message: "Registration number and password are required",
         lastSynced: new Date().toISOString(),
@@ -32,7 +32,7 @@ export const getStudentTimeTable = async (req: Request, res: Response, friendBod
     const studentTimetable = await scrapeStudentTimetable({ reg_no, password });
 
     if (!studentTimetable.success || !studentTimetable.data || !("time_table" in studentTimetable.data)) {
-      res.status(400).json({
+      res.status(200).json({
         success: false,
         data: {},
         message: studentTimetable.message || "Failed to fetch timetable",
@@ -50,7 +50,7 @@ export const getStudentTimeTable = async (req: Request, res: Response, friendBod
 
     const saveResult = await saveStudentTimeTable(studentTimetableTemp);
     if (!saveResult.success) {
-      res.status(400).json({
+      res.status(200).json({
         success: false,
         data: {},
         message: "Failed to save student data",

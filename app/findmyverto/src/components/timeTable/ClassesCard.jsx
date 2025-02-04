@@ -61,12 +61,12 @@ export default function ClassesCard({ time, classes, day }) {
                 </View>
 
                 <View style={styles.btnEffect}>
-                  <Image
+                  {/* <Image
                     source={require("../../../assets/icons/section.png")}
                     style={{ height: 20, width: 20 }}
                     transition={1000}
-                  />
-                  <Text style={styles.text2}>{classDetail.section}</Text>
+                  /> */}
+                  <Text style={styles.text2}>Section: {classDetail.section}</Text>
                 </View>
               </View>
               <View style={styles.classInfoContainer}>

@@ -16,15 +16,15 @@ import { LinearGradient } from 'expo-linear-gradient'
 import TimetableScreenShimmer from '../shimmers/TimetableScreenShimmer'
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create shimmer placeholder
 
-export default function FriendTimetable({ route }) {
+export default function FriendTimetable({ navigation,route }) {
     const { auth } = useContext(AuthContext)
-    const { id } = route.params;
+    const { id,name } = route.params;
     const [timeTable, settimeTable] = useState({})
     const [loading, setLoading] = useState(false)
     const [lastSynced, setLastSynced] = useState("")
 
     async function handleFetchTimetable(sync) {
-       await getFriendTimetable(auth, id, sync, settimeTable, setLastSynced, setLoading)
+        await getFriendTimetable(auth, id, sync, settimeTable, setLastSynced, setLoading)
     }
 
     async function fetchDataLocally() {
@@ -36,7 +36,7 @@ export default function FriendTimetable({ route }) {
                 const student = JSON.parse(studentRaw)
                 const parsedTimetable = formatTimetable(student.data.time_table, student.data.courses)
                 settimeTable(parsedTimetable)
-                setLastSynced(formatTimeAgo(student.lastSynced))                
+                setLastSynced(formatTimeAgo(student.lastSynced))
             } else {
                 await handleFetchTimetable(false)
             }
@@ -57,15 +57,21 @@ export default function FriendTimetable({ route }) {
         fetchDataLocally(false)
     }, [])
 
+    useEffect(() => {
+        navigation.setOptions({
+            headerTitle: `${name}'s Timetable`
+        });
+    }, [navigation]);
+
     return (
         <>
             <View style={{ zIndex: 2 }}>
                 <Toast />
-            <SyncData self={true} time={lastSynced} color={"white"} bg={colors.secondary} syncNow={() => handleFetchTimetable(true)} loader={true} loading={loading} />
+                <SyncData self={true} time={lastSynced} color={"white"} bg={colors.secondary} syncNow={() => handleFetchTimetable(true)} loader={true} loading={loading} />
             </View>
             {
                 loading ?
-                    <TimetableScreenShimmer count={10}/>
+                    <TimetableScreenShimmer count={10} />
                     :
                     <TimeTableScreen timeTable={timeTable} />
             }

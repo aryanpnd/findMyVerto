@@ -59,8 +59,6 @@ studentRoutes.post('/login', getStudentLogin);
  *     responses:
  *       200:
  *         description: Successful response
- *       400:
- *         description: Invalid search query
  *       404:
  *         description: No student found
  *       500:
