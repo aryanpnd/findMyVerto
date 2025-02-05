@@ -14,6 +14,7 @@ import { getFriends } from '../../../utils/fetchUtils/handleFriends'
 import TimetableScreenShimmer from '../../components/shimmers/TimetableScreenShimmer'
 import { HEIGHT } from '../../constants/styles'
 import { AppContext } from '../../../context/MainApp'
+import { friendsStorage } from '../../../utils/storage/storage'
 
 
 const { height, width } = Dimensions.get('window');
@@ -40,7 +41,8 @@ export default function Friends({ navigation, route }) {
     async function getFriendListLocal() {
         try {
             setLoading(true)
-            let friendsLocally = await AsyncStorage.getItem("FRIENDS");
+            // let friendsLocally = await AsyncStorage.getItem("FRIENDS");
+            let friendsLocally = friendsStorage.getString("FRIENDS");
             if (!friendsLocally) {
                 handleGetFriends(false,true)
             } else {

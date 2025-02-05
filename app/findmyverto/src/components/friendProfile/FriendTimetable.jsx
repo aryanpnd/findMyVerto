@@ -10,6 +10,7 @@ import Toast from 'react-native-toast-message'
 import { getFriendTimetable } from '../../../utils/fetchUtils/handleFriendsData'
 import formatTimetable from '../../../utils/helperFunctions/timetableFormatter'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
+import { friendsStorage } from '../../../utils/storage/storage'
 
 export default function FriendTimetable({ navigation, route }) {
     const { auth } = useContext(AuthContext)
@@ -25,7 +26,8 @@ export default function FriendTimetable({ navigation, route }) {
     async function fetchDataLocally() {
         try {
             setLoading(true)
-            const studentRaw = await AsyncStorage.getItem(`${id}-timetable`);
+            // const studentRaw = await AsyncStorage.getItem(`${id}-timetable`);
+            const studentRaw = friendsStorage.getString(`${id}-timetable`)
             if (studentRaw) {
                 const student = JSON.parse(studentRaw)
                 const parsedTimetable = formatTimetable(student.data.time_table, student.data.courses)

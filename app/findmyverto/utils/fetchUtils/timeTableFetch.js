@@ -40,25 +40,29 @@ export async function fetchTimetable(
                         text1: "Timetable Synced",
                         text2: "Your timetable has been synced successfully",
                     });
+                    setIsError(false)
                 } else {
                     Toast.show({
                         type: 'error',
                         text1: `${result.data.message}`,
                         text2: `${result.data.errorMessage}`,
                     });
+                    setIsError(true)
                 }
             }
 
         } else {
+            // wait for 1 second
+            // await new Promise((resolve) => setTimeout(resolve, 500));
             const tt = formatTimetable(userTimeTable.data.time_table, userTimeTable.data.courses, todayOnly)
             setClassesToday(tt.length)
             settimeTable(tt)
             setLastSynced(userTimeTable.lastSynced)
             setLastUpdated(userTimeTable.data.last_updated)
+            setIsError(false)
         }
         setTimetableLoading(false)
         setRefreshing(false)
-        setIsError(false)
     } catch (error) {
         console.error(error);
         setTimetableLoading(false)

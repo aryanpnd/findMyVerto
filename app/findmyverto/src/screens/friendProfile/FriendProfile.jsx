@@ -15,6 +15,7 @@ import { removeFriend } from '../../../utils/fetchUtils/handleFriends';
 import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert'
 import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../../context/MainApp';
+import { userStorage } from '../../../utils/storage/storage';
 
 
 const { height, width } = Dimensions.get('window');
@@ -53,7 +54,8 @@ export default function FriendProfile({ route }) {
 
     async function fetchDataLocally() {
         try {
-            const studentRaw = await AsyncStorage.getItem(`${_id}`);
+            // const studentRaw = await AsyncStorage.getItem(`${_id}`);
+            const studentRaw = userStorage.getString(`${_id}`);
 
             if (studentRaw) {
                 const student = JSON.parse(studentRaw)

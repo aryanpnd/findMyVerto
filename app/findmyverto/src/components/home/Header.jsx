@@ -14,6 +14,7 @@ import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'; // 
 import { fetchBasicDetails } from '../../../utils/fetchUtils/basicDetailsFetch'
 import { useFocusEffect } from '@react-navigation/native'
 import { WIDTH } from '../../constants/styles'
+import { userStorage } from '../../../utils/storage/storage'
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create shimmer placeholder
 
@@ -37,7 +38,8 @@ export default function Header({ navigation }) {
 
     const getAttendance = async () => {
         try {
-            const localAttendance = await AsyncStorage.getItem("ATTENDANCE");
+            // const localAttendance = await AsyncStorage.getItem("ATTENDANCE");
+            const localAttendance = userStorage.getString("ATTENDANCE");
             if (localAttendance) {
                 const parsedAttendance = JSON.parse(localAttendance)?.summary?.total_details?.agg_attendance;
                 setAttendance(parsedAttendance ? parseInt(parsedAttendance) : 0);

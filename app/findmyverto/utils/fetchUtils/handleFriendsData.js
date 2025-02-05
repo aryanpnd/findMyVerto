@@ -4,13 +4,15 @@ import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import formatTimetable from "../helperFunctions/timetableFormatter";
 import formatTimeAgo from "../helperFunctions/dateFormatter";
+import { friendsStorage } from "../storage/storage";
 
 export async function getFriendDetails(auth, friend_id, setStudent, setLoading, loader) {
     loader && setLoading(true)
     await axios.post(`${API_URL}/friends/getFriendInfo`, { reg_no: auth.reg_no, password: auth.password, studentId: friend_id })
         .then(async (result) => {
             if (result.data.success) {
-                await AsyncStorage.setItem(`${friend_id}`, JSON.stringify(result.data.data));
+                // await AsyncStorage.setItem(`${friend_id}`, JSON.stringify(result.data.data));
+                friendsStorage.set(`${friend_id}`, JSON.stringify(result.data.data));
                 setStudent(result.data.data)
             } else {
                 Toast.show({
@@ -36,7 +38,7 @@ export async function getFriendTimetable(auth, friend_id, sync, settimeTable, se
     await axios.post(`${API_URL}/friends/timetable`, { reg_no: auth.reg_no, password: auth.password, studentId: friend_id, sync: sync })
         .then(async (result) => {
             if (result.data.success) {
-                await AsyncStorage.setItem(`${friend_id}-timetable`, JSON.stringify(result.data));
+                friendsStorage.set(`${friend_id}-timetable`, JSON.stringify(result.data));
                 const parsedTimetable = formatTimetable(result.data.data.time_table, result.data.data.courses)
                 settimeTable(parsedTimetable)
                 setLastSynced(formatTimeAgo(result.data.lastSynced))

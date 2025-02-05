@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import formatTimetable from "../helperFunctions/timetableFormatter";
 import { API_URL } from "../../context/Auth";
+import { userStorage } from "../storage/storage";
 
 export async function fetchBasicDetails(
     setProfileLoading,
@@ -16,13 +17,15 @@ export async function fetchBasicDetails(
     try {
         setProfileLoading(true)
         setRefreshing(true)
-        let userDetailsRaw = await AsyncStorage.getItem("STUDENT_BASIC_DETAILS");
+        // let userDetailsRaw = await AsyncStorage.getItem("STUDENT_BASIC_DETAILS");
+        let userDetailsRaw = userStorage.getString("STUDENT_BASIC_DETAILS");
         let userDetails = userDetailsRaw ? JSON.parse(userDetailsRaw) : null;
         if (!userDetails || sync) {
             if (!userDetails || userDetails.success === false || sync) {
                 const result = await axios.post(`${API_URL}/student/basicInfo`, { password: auth.password, reg_no: auth.reg_no });
                 if (result.data.success) {
-                    await AsyncStorage.setItem("STUDENT_BASIC_DETAILS", JSON.stringify(result.data));
+                    // await AsyncStorage.setItem("STUDENT_BASIC_DETAILS", JSON.stringify(result.data));
+                    userStorage.set("STUDENT_BASIC_DETAILS", JSON.stringify(result.data));
                     setDetails(result.data)
                     setLastSynced(result.data.requestTime)
                     setIsError(false)

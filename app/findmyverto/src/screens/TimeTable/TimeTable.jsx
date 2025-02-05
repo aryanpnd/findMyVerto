@@ -48,11 +48,11 @@ export default function TimeTable() {
         isError ?
           <ErrorMessage handleFetchTimetable={handleFetchTimetable} timetableLoading={timetableLoading} buttonHeight={45} />
           :
-          timeTable ?
-            // <TimeTableScreen timeTable={Object.entries(timeTable)} />
-            <TimeTableScreen timeTable={timeTable} />
-            :
-            <></>
+          <TimeTableScreen timeTable={timeTable} />
+          // timeTable ?
+          //   // <TimeTableScreen timeTable={Object.entries(timeTable)} />
+          //   :
+          //   <></>
         // <></>
       }
     </>

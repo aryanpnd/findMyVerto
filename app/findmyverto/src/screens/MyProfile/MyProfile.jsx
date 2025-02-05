@@ -15,10 +15,12 @@ import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 import { fetchBasicDetails } from '../../../utils/fetchUtils/basicDetailsFetch'
 import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert'
 import AllowedFieldsToShow from '../../components/settings/allowedFieldsToShow'
+import { AppContext } from '../../../context/MainApp'
 const { height, width } = Dimensions.get('window');
 
 export default function MyProfile({ navigation }) {
     const { auth, logout } = useContext(AuthContext)
+    const {checkForUpdates} = useContext(AppContext)
     const customAlert = useCustomAlert();
 
     const [student, setStudent] = useState({})
@@ -91,6 +93,9 @@ export default function MyProfile({ navigation }) {
                 <View style={styles.footer}>
                     <TouchableOpacity onPress={handleLogout} style={styles.footerBtn}>
                         <Text style={{ color: "grey" }}>Logout</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={checkForUpdates} style={{marginTop: 10}}>
+                        <Text>Check for updates</Text>
                     </TouchableOpacity>
                 </View>
             </SafeAreaView>

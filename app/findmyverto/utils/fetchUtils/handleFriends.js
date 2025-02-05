@@ -2,6 +2,7 @@ import axios from "axios";
 import { API_URL } from "../../context/Auth";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { friendsStorage } from "../storage/storage";
 
 export async function getFriends(auth, setfriends, setLoading, setRefreshing, noRefreshing, setUpdatedFriends, noLoading) {
     !noLoading && setLoading(true)
@@ -9,7 +10,8 @@ export async function getFriends(auth, setfriends, setLoading, setRefreshing, no
     await axios.post(`${API_URL}/friends/getFriends`, { reg_no: auth.reg_no, password: auth.password })
         .then(async (result) => {
             if (result.data.success) {
-                await AsyncStorage.setItem("FRIENDS", JSON.stringify(result.data.friends));
+                // await AsyncStorage.setItem("FRIENDS", JSON.stringify(result.data.friends));
+                friendsStorage.set("FRIENDS", JSON.stringify(result.data.friends));
                 setfriends(result.data.friends);
                 setUpdatedFriends(result.data.friends)
             } else {
@@ -216,8 +218,10 @@ export async function removeFriend(auth, student_id, setLoading) {
                     type: 'success',
                     text1: result.data.message,
                 });
-                await AsyncStorage.removeItem(`${student_id}`);
-                await AsyncStorage.removeItem(`${student_id}-timetable`);
+                // await AsyncStorage.removeItem(`${student_id}`);
+                // await AsyncStorage.removeItem(`${student_id}-timetable`);
+                friendsStorage.delete(`${student_id}`)
+                friendsStorage.delete(`${student_id}-timetable`)
                 // status=true
             } else {
                 Toast.show({
