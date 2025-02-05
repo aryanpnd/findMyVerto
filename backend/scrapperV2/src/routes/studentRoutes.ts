@@ -4,6 +4,8 @@ import { getStudentLogin } from '../controllers/studentController/studentAuthCon
 import { getStudentTimeTable } from '../controllers/studentController/studentTimetableController';
 import { getStudentAttendance } from '../controllers/studentController/studentAttendanceController';
 import { searchStudent } from '../controllers/studentController/studentSearchController';
+import { getStudentMarks } from '../controllers/studentController/getStudentMarksController';
+import { getStudentCgpa } from '../controllers/studentController/getStudentCgpaController';
 export const studentRoutes = express.Router();
 
 /**
@@ -151,8 +153,80 @@ studentRoutes.post('/attendance', (req: Request, res: Response) => {
     console.error(err);
     res.status(500).json({
       success: false,
+      summary: {},
+      details: {},
       message: "Unexpected server error",
       errorMessage: err.message,
     });
   });
 });
+
+/**
+ * @swagger
+ * /api/v2/student/marks:
+ *   post:
+ *     tags: [Student]
+ *     summary: Get student marks
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/marks', (req: Request, res: Response) => {
+  getStudentMarks(req, res).catch((err) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      data: {},
+      message: "Unexpected server error",
+      errorMessage: err.message,
+    });
+  });
+});
+
+/**
+ * @swagger
+ * /api/v2/student/cgpa:
+ *   post:
+ *     tags: [Student]
+ *     summary: Get student cgpa
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/cgpa', (req: Request, res: Response) => {
+  getStudentCgpa(req, res).catch((err) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      data: {},
+      message: "Unexpected server error",
+      errorMessage: err.message,
+    });
+  })
+})

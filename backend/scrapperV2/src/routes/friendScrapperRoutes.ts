@@ -2,6 +2,8 @@ import express from 'express';
 import { getFriendTimetable } from '../controllers/friendsController/handleFriendData/getFriendTimetable';
 import { getFriendData } from '../controllers/friendsController/handleFriendData/getFriendData';
 import { getFriendAttendance } from '../controllers/friendsController/handleFriendData/getFriendAttendance';
+import { getFriendCgpa } from '../controllers/friendsController/handleFriendData/getFriendMarks';
+import { getFriendMarks } from '../controllers/friendsController/handleFriendData/getFriendCgpa';
 
 export const friendScrapperRoutes = express.Router();
 
@@ -87,3 +89,57 @@ friendScrapperRoutes.post('/timetable', getFriendTimetable);
  *         description: Internal server error
  */
 friendScrapperRoutes.post('/attendance', getFriendAttendance);
+
+/**
+ * @swagger
+ * /api/v2/friends/marks:
+ *   post:
+ *     tags: [Friend's Data]
+ *     summary: Get friend's marks
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               studentId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+friendScrapperRoutes.post('/marks', getFriendMarks);
+
+/**
+ * @swagger
+ * /api/v2/friends/cgpa:
+ *   post:
+ *     tags: [Friend's Data]
+ *     summary: Get friend's cgpa
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               studentId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+friendScrapperRoutes.post('/cgpa', getFriendCgpa);

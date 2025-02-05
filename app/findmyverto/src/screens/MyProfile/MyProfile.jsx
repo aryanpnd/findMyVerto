@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, RefreshControl, Alert } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, RefreshControl, Alert, ActivityIndicator, Linking } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -20,7 +20,7 @@ const { height, width } = Dimensions.get('window');
 
 export default function MyProfile({ navigation }) {
     const { auth, logout } = useContext(AuthContext)
-    const {checkForUpdates} = useContext(AppContext)
+    const { checkForUpdates } = useContext(AppContext)
     const customAlert = useCustomAlert();
 
     const [student, setStudent] = useState({})
@@ -28,6 +28,7 @@ export default function MyProfile({ navigation }) {
     const [refreshing, setRefreshing] = useState(false);
     const [isError, setIsError] = useState(false);
     const [lastSynced, setLastSynced] = useState("")
+    const [updateLoading, setUpdateLoading] = useState(false)
 
     const handleDataFetch = (sync) => {
         fetchBasicDetails(setLoading, setRefreshing, setStudent, auth, setIsError, sync, setLastSynced)
@@ -82,22 +83,32 @@ export default function MyProfile({ navigation }) {
 
                 {/* Last sync container */}
                 {/* {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} />} */}
-                <SyncData color={"white"} self={true} syncNow={() => handleDataFetch(true)} time={formatTimeAgo(student.lastSynced)} bg={colors.secondary} loader={true} loading={loading}/>
+                <SyncData color={"white"} self={true} syncNow={() => handleDataFetch(true)} time={formatTimeAgo(student.lastSynced)} bg={colors.secondary} loader={true} loading={loading} />
 
                 {/* Body */}
                 <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}>
-                    <StudentProfile student={student?.data} loading={loading}/>
+                    <StudentProfile student={student?.data} loading={loading} />
                     <AllowedFieldsToShow />
-                </ScrollView>
 
+                </ScrollView>
                 <View style={styles.footer}>
                     <TouchableOpacity onPress={handleLogout} style={styles.footerBtn}>
                         <Text style={{ color: "grey" }}>Logout</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={checkForUpdates} style={{marginTop: 10}}>
-                        <Text>Check for updates</Text>
+                    <TouchableOpacity onPress={() => checkForUpdates(setUpdateLoading, CustomAlert)} style={{ marginTop: 10 }}>
+                        {updateLoading ?
+                            <ActivityIndicator color={"grey"} size={20} /> :
+                            <Text style={{ color: "grey" }}>Check for updates</Text>}
                     </TouchableOpacity>
+
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ color: "grey", marginTop: 10,fontSize:10 }}>Made with ❤️ by</Text>
+                        <TouchableOpacity onPress={() => Linking.openURL('https://github.com/aryanpnd')}>
+                            <Text style={{ color: "#5D3FD3",fontSize:10 }}>Aryan</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
+
             </SafeAreaView>
         </>
     )
@@ -108,7 +119,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: '100%',
-        height: '100%',
+        // height: '100%',
     },
 
     // header
@@ -138,7 +149,7 @@ const styles = StyleSheet.create({
     },
 
     footer: {
-        height: height * 0.1,
+        height: height * 0.15,
         alignItems: "center"
     },
     footerBtn: {
