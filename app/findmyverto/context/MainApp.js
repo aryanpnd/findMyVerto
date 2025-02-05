@@ -1,9 +1,6 @@
 import React, { createContext, useEffect, useState } from 'react';
-// import { MMKV } from 'react-native-mmkv'
 
 const AppContext = createContext();
-
-// export const mmkvStorage = new MMKV()
 
 const AppProvider = ({ children }) => {
     const [timetableLoading, setTimetableLoading] = useState(false)

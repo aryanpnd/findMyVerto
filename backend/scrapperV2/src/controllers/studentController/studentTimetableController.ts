@@ -60,7 +60,7 @@ export const getStudentTimeTable = async (req: Request, res: Response, friendBod
       return;
     }
 
-    res.status(500).json(studentTimetable);
+    res.status(200).json(studentTimetable);
   } catch (error: any) {
     console.error(error);
     res.status(500).json({

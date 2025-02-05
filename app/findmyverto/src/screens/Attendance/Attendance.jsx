@@ -6,10 +6,10 @@ import axios from 'axios'
 import AttendanceScreen from '../../components/attendance/AttendanceScreen'
 import { Alert } from 'react-native'
 import { AppContext } from '../../../context/MainApp'
-import { fetchAttendance } from '../../utils/fetchUtils/attendanceFetch'
+import { fetchAttendance } from '../../../utils/fetchUtils/attendanceFetch'
 
 export default function Attendance({ navigation }) {
-  const { auth, logout2 } = useContext(AuthContext)
+  const { auth } = useContext(AuthContext)
   const { attendanceLoading, setAttendanceLoading } = useContext(AppContext)
   const [attendance, setattendance] = useState({})
   const [attendanceDetails, setAttendanceDetails] = useState({})

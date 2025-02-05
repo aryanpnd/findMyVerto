@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from "../../../context/Auth";
+import { API_URL } from "../../context/Auth";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import formatTimetable from "../helperFunctions/timetableFormatter";

@@ -8,7 +8,7 @@ import { API_URL, AuthContext } from '../../../context/Auth';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import StudentCard from '../../components/vertoSearch/SearchedStudentCard';
-import { searchStudents } from '../../utils/fetchUtils/searchStudents';
+import { searchStudents } from '../../../utils/fetchUtils/searchStudents';
 import { globalStyles } from '../../constants/styles';
 
 

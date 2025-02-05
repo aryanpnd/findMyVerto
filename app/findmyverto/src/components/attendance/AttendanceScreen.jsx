@@ -5,10 +5,10 @@ import AttendanceCard from '../../components/attendance/AttendanceCard'
 import { colors } from '../../constants/colors'
 import SyncData from '../../components/miscellaneous/SyncData'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
-import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
+import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 import { ErrorMessage } from '../miscellaneous/errorMessage'
-import AttendanceScreenShimmer from '../shimmers/AttendanceScreenShimmer'
 import Loading1 from '../miscellaneous/Loading1'
+import AttendanceScreenShimmer from '../shimmers/AttendanceScreenShimmer'
 
 export default function AttendanceScreen({ attendance, fetchAttendance, lastSynced, loading, self, navigation, attendanceDetails, isError }) {
   const [lastSyncedState, setLastSyncedState] = useState("")

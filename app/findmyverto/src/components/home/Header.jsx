@@ -11,7 +11,7 @@ import { AppContext } from '../../../context/MainApp'
 import { LinearGradient } from 'expo-linear-gradient'
 import { colors } from '../../constants/colors'
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'; // Import the shimmer placeholder
-import { fetchBasicDetails } from '../../utils/fetchUtils/basicDetailsFetch'
+import { fetchBasicDetails } from '../../../utils/fetchUtils/basicDetailsFetch'
 import { useFocusEffect } from '@react-navigation/native'
 import { WIDTH } from '../../constants/styles'
 

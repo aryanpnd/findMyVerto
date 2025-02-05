@@ -8,14 +8,14 @@ import { colors } from '../../constants/colors'
 import { API_URL, AuthContext } from '../../../context/Auth'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
 import Toast from 'react-native-toast-message'
-import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
+import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 import { AppContext } from '../../../context/MainApp'
-import { fetchTimetable } from '../../utils/fetchUtils/timeTableFetch'
+import { fetchTimetable } from '../../../utils/fetchUtils/timeTableFetch'
 import Test from '../../components/home/Test'
 import { ErrorMessage } from '../../components/timeTable/ErrorMessage'
 
 export default function TimeTable() {
-  const { auth, logout2 } = useContext(AuthContext)
+  const { auth } = useContext(AuthContext)
   const { timetableLoading, setTimetableLoading } = useContext(AppContext)
   const [classesToday, setClassesToday] = useState(0)
   const [timeTable, settimeTable] = useState([])

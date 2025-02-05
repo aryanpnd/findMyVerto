@@ -4,7 +4,7 @@ import { AppContext } from "../../../context/MainApp";
 import { useContext, useEffect, useState } from "react";
 import { colors } from "../../constants/colors";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { getAllowedFieldsToShow, handleSetAllowedFieldsToShow } from "../../utils/fetchUtils/fetchSettings";
+import { getAllowedFieldsToShow, handleSetAllowedFieldsToShow } from "../../../utils/fetchUtils/fetchSettings";
 import { AuthContext } from "../../../context/Auth";
 import { availableFieldsToShow } from "../../constants/globalConstants";
 import { LinearGradient } from "expo-linear-gradient";

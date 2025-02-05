@@ -1,6 +1,6 @@
 import axios from "axios";
 import Toast from "react-native-toast-message";
-import { API_URL } from "../../../context/Auth";
+import { API_URL } from "../../context/Auth";
 
 export async function handleSetAllowedFieldsToShow(auth, fields, setFields, setLoading) {
     setLoading(true)

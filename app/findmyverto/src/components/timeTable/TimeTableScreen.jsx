@@ -19,9 +19,10 @@ import Animated, {
 import { colors } from '../../constants/colors';
 import BreakCard from '../timeTable/BreakCard';
 import ClassesCard from '../timeTable/ClassesCard';
-import {getDay} from '../../utils/helperFunctions/dataAndTimeHelpers';
+import { getDay } from '../../../utils/helperFunctions/dataAndTimeHelpers';
 import LottieView from 'lottie-react-native';
-import isTimeEqual from '../../utils/helperFunctions/funtions';
+import isTimeEqual from '../../../utils/helperFunctions/funtions';
+import TimetableScreenShimmer from '../shimmers/TimetableScreenShimmer';
 
 const { width } = Dimensions.get('screen');
 
@@ -48,6 +49,7 @@ const getHeaderWidths = () => {
 };
 
 export default function TimeTableScreen({ timeTable }) {
+  const [loading, setLoading] = useState(true);
   const headerWidths = getHeaderWidths();
   const scrollY = useSharedValue(0);
   const topScrollY = useSharedValue(0);
@@ -109,7 +111,7 @@ export default function TimeTableScreen({ timeTable }) {
   const onPressHeader = index => {
     scroll1.value = index;
   };
-  
+
 
   return (
     <View style={styles.flex}>
@@ -141,6 +143,7 @@ export default function TimeTableScreen({ timeTable }) {
         />
       </Animated.View>
 
+
       <Animated.ScrollView
         ref={bottomScrollRef}
         pagingEnabled
@@ -148,10 +151,13 @@ export default function TimeTableScreen({ timeTable }) {
         horizontal
         showsHorizontalScrollIndicator={false}
         onScroll={scrollHandler}>
-        {headers.map((item, index) =>
-          <Item index={index} key={item} classes={timeTable[headers[index]] || []} />
-        )}
+        {
+          headers.map((item, index) => (
+            <Item index={index} key={item} classes={timeTable[headers[index]] || []} />
+          ))
+        }
       </Animated.ScrollView>
+
     </View>
   );
 }

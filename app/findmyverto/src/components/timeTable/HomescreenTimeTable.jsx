@@ -5,9 +5,9 @@ import Loading1 from '../miscellaneous/Loading1';
 import LottieView from 'lottie-react-native';
 import ClassesTodayCards from './ClassesTodayCards';
 import { colors } from '../../constants/colors';
-import isTimeEqual from '../../utils/helperFunctions/funtions';
+import isTimeEqual from '../../../utils/helperFunctions/funtions';
 import { AppContext } from '../../../context/MainApp';
-import { fetchTimetable } from '../../utils/fetchUtils/timeTableFetch';
+import { fetchTimetable } from '../../../utils/fetchUtils/timeTableFetch';
 import Button from '../miscellaneous/Button';
 import { useFocusEffect } from '@react-navigation/native';
 import { HEIGHT, WIDTH } from '../../constants/styles';
@@ -69,24 +69,30 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
         today()
         handleFetchTimetable()
     }, []);
+
     useEffect(() => {
-        setClassesOver(timeTable && timeTable.length > 0
-            && isTimeEqual(timeTable[timeTable.length - 1]?.time, true))
+        setClassesOver(timeTable && timeTable.length > 0 && isTimeEqual(timeTable[timeTable.length - 1]?.time, true))
     }, [timeTable])
+
     useImperativeHandle(ref, () => ({
         handleFetchTimetable,
-        today
+        today,
+        scrollToOngoing
     }));
+
+    function scrollToOngoing() {
+        if (timeTable.length > 0) {
+            const ongoingIndex = timeTable.findIndex(classItem => isTimeEqual(classItem.time));
+            if (ongoingIndex !== -1 && scrollViewRef.current) {
+                const scrollPosition = ongoingIndex * (itemWidth + gap) - gap;
+                scrollViewRef.current.scrollTo({ x: scrollPosition, animated: true });
+            }
+        }
+    }
 
     useFocusEffect(
         useCallback(() => {
-            if (timeTable.length > 0) {
-                const ongoingIndex = timeTable.findIndex(classItem => isTimeEqual(classItem.time));
-                if (ongoingIndex !== -1 && scrollViewRef.current) {
-                    const scrollPosition = ongoingIndex * (itemWidth + gap) - gap;
-                    scrollViewRef.current.scrollTo({ x: scrollPosition, animated: true });
-                }
-            }
+            scrollToOngoing()
         }, [timeTable])
     );
 

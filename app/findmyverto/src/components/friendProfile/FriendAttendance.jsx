@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import Toast from 'react-native-toast-message'
 import { API_URL, AuthContext } from '../../../context/Auth'
 import AttendanceScreen from '../../components/attendance/AttendanceScreen'
-import { getFriendAttendance, handleFetchAttendance } from '../../utils/fetchUtils/handleFriendsData'
+import { getFriendAttendance, handleFetchAttendance } from '../../../utils/fetchUtils/handleFriendsData'
 import { AppContext } from '../../../context/MainApp'
 export default function FriendAttendance({ navigation, route }) {
     const { id, name } = route.params;

@@ -10,7 +10,7 @@ import SearchedStudentCard from '../../components/vertoSearch/SearchedStudentCar
 import LottieView from 'lottie-react-native';
 import EmptyRequests from '../../components/miscellaneous/EmptyRequests'
 import { StatusBar } from 'expo-status-bar'
-import { getFriends } from '../../utils/fetchUtils/handleFriends'
+import { getFriends } from '../../../utils/fetchUtils/handleFriends'
 import TimetableScreenShimmer from '../../components/shimmers/TimetableScreenShimmer'
 import { HEIGHT } from '../../constants/styles'
 import { AppContext } from '../../../context/MainApp'

@@ -18,7 +18,7 @@ import { MaterialIcons } from '@expo/vector-icons'
 import SearchedStudentCard from '../../components/vertoSearch/SearchedStudentCard'
 import LottieView from 'lottie-react-native';
 import EmptyRequests from '../../components/miscellaneous/EmptyRequests'
-import { getFriendRequests, getSentFriendRequests } from '../../utils/fetchUtils/handleFriends'
+import { getFriendRequests, getSentFriendRequests } from '../../../utils/fetchUtils/handleFriends'
 
 
 const { height, width } = Dimensions.get('window');

@@ -1,11 +1,9 @@
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Image, Dimensions, TouchableHighlight, Pressable, Platform, RefreshControl } from 'react-native'
-import React, { use, useCallback, useContext, useEffect, useRef, useState } from 'react'
+import { View, Text, StyleSheet, ScrollView, Image, Dimensions, Pressable, Platform, RefreshControl } from 'react-native'
+import React, { use, useCallback, useContext, useRef, useState } from 'react'
 import HomescreenTimeTable from '../timeTable/HomescreenTimeTable'
 import { colors } from '../../constants/colors';
 import { AuthContext } from '../../../context/Auth';
-import { FontAwesome6 } from '@expo/vector-icons';
 import { HEIGHT } from '../../constants/styles';
-
 
 const { height, width } = Dimensions.get('window');
 
@@ -22,7 +20,6 @@ const navigations = [
   },
 ]
 
-
 export default function Body({ navigation }) {
   const { auth } = useContext(AuthContext)
   const [refreshing, setRefreshing] = useState(false);
@@ -35,12 +32,14 @@ export default function Body({ navigation }) {
 
     // Refresh timetable if ref exists
     if (timetableRef.current) {
-      await timetableRef.current.handleFetchTimetable();
-      timetableRef.current.today();
+      await timetableRef.current.handleFetchTimetable()
+      timetableRef.current.today()
+      timetableRef.current.scrollToOngoing()
     }
 
     setRefreshing(false);
   }, []);
+
   return (
     <View style={styles.body}>
       <ScrollView

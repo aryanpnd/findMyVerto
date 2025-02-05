@@ -30,8 +30,9 @@
     },
     "extra": {
       "eas": {
-        "projectId": "0a6d9a25-0f88-4076-82ae-9a860501e6b9"
+        "projectId": "3cfd0e34-fab5-4ba6-b312-fb3fa72bddea"
       }
-    }
+    },
+    "owner": "loudpear"
   }
 }

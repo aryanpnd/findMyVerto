@@ -1,5 +1,5 @@
 import axios from "axios"
-import { API_URL } from "../../../context/Auth"
+import { API_URL } from "../../context/Auth"
 
 export async function searchStudents(auth, query, setSearch, setLoading, setStudents, setfriends, setfriendsRequests, setSentFriendRequests) {
     setSearch(true)

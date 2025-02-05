@@ -2,11 +2,9 @@ import { View, Text, StyleSheet, Dimensions, Image, Pressable, ScrollView } from
 import React, { use, useContext, useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { AppContext } from '../../../context/MainApp';
-import isTimeEqual from '../../utils/helperFunctions/funtions';
+import isTimeEqual from '../../../utils/helperFunctions/funtions';
 import { colors } from '../../constants/colors';
 import { globalStyles, HEIGHT } from '../../constants/styles';
-import BreakCard from './BreakCard';
-import LottieView from 'lottie-react-native';
 
 
 const { width, height } = Dimensions.get('window');

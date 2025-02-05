@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { colors } from '../../constants/colors';
 import { API_URL_ROOT } from '../../../context/Auth';
 import SyncData from '../miscellaneous/SyncData';
-import formatTimeAgo from '../../utils/helperFunctions/dateFormatter';
+import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter';
 import ImageViewer from '../miscellaneous/ImageViewer';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import { LinearGradient } from 'expo-linear-gradient';

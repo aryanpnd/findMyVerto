@@ -8,13 +8,10 @@ import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { AuthContext } from '../../../context/Auth';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import StudentProfile from '../../components/Profile/StudentProfile';
-import OverlayLoading from '../../components/miscellaneous/OverlayLoading';
-// import { MMKV } from 'react-native-mmkv';
-import { getFriendDetails } from '../../utils/fetchUtils/handleFriendsData';
+import { getFriendDetails } from '../../../utils/fetchUtils/handleFriendsData';
 import SyncData from '../../components/miscellaneous/SyncData';
-import formatTimeAgo from '../../utils/helperFunctions/dateFormatter';
-import { removeFriend } from '../../utils/fetchUtils/handleFriends';
-// import { mmkvStorage } from '../../../context/MainApp';
+import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter';
+import { removeFriend } from '../../../utils/fetchUtils/handleFriends';
 import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert'
 import { useNavigation } from '@react-navigation/native';
 import { AppContext } from '../../../context/MainApp';
@@ -56,7 +53,6 @@ export default function FriendProfile({ route }) {
 
     async function fetchDataLocally() {
         try {
-            // let user = mmkvStorage.getString(`${_id}`);
             const studentRaw = await AsyncStorage.getItem(`${_id}`);
 
             if (studentRaw) {
