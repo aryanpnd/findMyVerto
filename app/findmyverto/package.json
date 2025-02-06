@@ -19,6 +19,7 @@
     "@types/mongoose": "^5.11.97",
     "axios": "^1.5.1",
     "expo": "^52.0.23",
+    "expo-constants": "~17.0.5",
     "expo-dev-client": "~5.0.8",
     "expo-device": "~7.0.2",
     "expo-linear-gradient": "~14.0.1",
@@ -45,7 +46,8 @@
     "react-native-svg": "15.8.0",
     "react-native-svg-transformer": "^1.1.0",
     "react-native-toast-message": "^2.1.6",
-    "react-native-web": "~0.19.13"
+    "react-native-web": "~0.19.13",
+    "vexo-analytics": "^1.4.5"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

@@ -15,6 +15,7 @@ import FriendAttendance from './src/components/friendProfile/FriendAttendance';
 import FriendTimetable from './src/components/friendProfile/FriendTimetable';
 import * as SplashScreen from 'expo-splash-screen';
 import AttendanceDetails from './src/screens/Attendance/AttendanceDetails';
+import { View, ActivityIndicator } from 'react-native';
 
 const Stack = createNativeStackNavigator();
 
@@ -39,6 +40,14 @@ export default function AuthPage() {
     prepare();
   }, []);
 
+  if (loading) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <ActivityIndicator size="large" color={colors.primary} />
+      </View>
+    );
+  }
+
   return (
     <Stack.Navigator screenOptions={{ headerShown: false, animationTypeForReplace: 'push', animation: 'slide_from_right' }}>
       {!loading && auth.authenticated ? (
@@ -48,8 +57,6 @@ export default function AuthPage() {
           <Stack.Screen name="AttendanceDetails" component={AttendanceDetails} />
           <Stack.Screen name="Timetable" component={TimeTable} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false }} />
           <Stack.Screen name="VertoSearch" component={VertoSearch} />
-
-          
           <Stack.Screen name="FriendRequests" component={FriendRequests} />
           <Stack.Screen name="Friends" component={Friends} />
           <Stack.Screen name="MyProfile" component={MyProfile} />
