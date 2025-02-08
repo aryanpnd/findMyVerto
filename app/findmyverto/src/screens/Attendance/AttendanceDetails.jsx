@@ -4,8 +4,7 @@ import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from
 import { SafeAreaView } from "react-native-safe-area-context";
 import { colors } from "../../constants/colors";
 import AttendanceDetailsCard from "../../components/attendance/AttendanceDetailsCard";
-
-const { height, width } = Dimensions.get('window');
+import { HEIGHT } from "../../constants/styles";
 
 export default function AttendanceDetails({ navigation }) {
     const route = useRoute();
@@ -47,7 +46,7 @@ const styles = StyleSheet.create({
 
     // header
     header: {
-        height: 0.08 * height,
+        height: HEIGHT(8),
         width: '100%',
         flexDirection: "row",
         padding: 10,
@@ -67,7 +66,7 @@ const styles = StyleSheet.create({
     body: {
         height: "92%",
         width: '100%',
-        gap: height * 0.05,
+        gap: HEIGHT(5),
     },
     cardContainer:{
         justifyContent: 'center',

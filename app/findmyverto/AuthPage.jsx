@@ -16,6 +16,9 @@ import FriendTimetable from './src/components/friendProfile/FriendTimetable';
 import * as SplashScreen from 'expo-splash-screen';
 import AttendanceDetails from './src/screens/Attendance/AttendanceDetails';
 import { View, ActivityIndicator } from 'react-native';
+import Marks from './src/screens/marksAndCgpa/Marks';
+import Cgpa from './src/screens/marksAndCgpa/Cgpa';
+import MarksDetails from './src/screens/marksAndCgpa/MarksDetails';
 
 const Stack = createNativeStackNavigator();
 
@@ -42,8 +45,8 @@ export default function AuthPage() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <ActivityIndicator size="large" color={colors.primary} />
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.primary }}>
+        <ActivityIndicator size="large" color={"white"} />
       </View>
     );
   }
@@ -53,16 +56,27 @@ export default function AuthPage() {
       {!loading && auth.authenticated ? (
         <React.Fragment>
           <Stack.Screen name="Home" component={Home} />
+
           <Stack.Screen name="Attendance" component={Attendance} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false }} />
           <Stack.Screen name="AttendanceDetails" component={AttendanceDetails} />
+
           <Stack.Screen name="Timetable" component={TimeTable} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false }} />
+
+          <Stack.Screen name="Marks" component={Marks} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }} />
+          <Stack.Screen name="MarksDetails" component={MarksDetails} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }} />
+
+          <Stack.Screen name="CGPA" component={Cgpa} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary } }} />
+
+          <Stack.Screen name="MyProfile" component={MyProfile} />
+
           <Stack.Screen name="VertoSearch" component={VertoSearch} />
           <Stack.Screen name="FriendRequests" component={FriendRequests} />
           <Stack.Screen name="Friends" component={Friends} />
-          <Stack.Screen name="MyProfile" component={MyProfile} />
+          
           <Stack.Screen name="FriendProfile" component={FriendProfile} />
           <Stack.Screen name="FriendAttendance" component={FriendAttendance} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "Friend's Attendance" }} />
           <Stack.Screen name="FriendTimetable" component={FriendTimetable} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "Friend's Timetable" }} />
+
         </React.Fragment>
       ) : (
         <React.Fragment>

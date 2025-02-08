@@ -4,21 +4,9 @@ import HomescreenTimeTable from '../timeTable/HomescreenTimeTable'
 import { colors } from '../../constants/colors';
 import { AuthContext } from '../../../context/Auth';
 import { HEIGHT } from '../../constants/styles';
+import { homeScreenNavigations } from '../../constants/globalConstants';
 
 const { height, width } = Dimensions.get('window');
-
-const navigations = [
-  {
-    title: "Friends",
-    icon: require('../../../assets/icons/friends.png'),
-    route: "Friends"
-  },
-  {
-    title: "Timetable",
-    icon: require('../../../assets/icons/schedule.png'),
-    route: "Timetable"
-  },
-]
 
 export default function Body({ navigation }) {
   const { auth } = useContext(AuthContext)
@@ -75,13 +63,13 @@ export default function Body({ navigation }) {
         {/* Other navigations */}
         <View style={styles.NavigationsContainer}>
           {
-            navigations.map((value) => (
+            homeScreenNavigations.map((value) => (
               <Pressable
                 onPress={() => navigation.navigate(value.route)}
                 key={value.title} style={styles.NavigationsCard} >
                 <Image
                   source={value.icon}
-                  style={{ height: width * 0.12, width: width * 0.12 }}
+                  style={{ height: width * 0.12, width: width * 0.12, objectFit:"fill" }}
                   transition={1000}
                 />
                 <Text style={styles.text2}>{value.title}</Text>
