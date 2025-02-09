@@ -1,7 +1,7 @@
 import Toast from "react-native-toast-message";
 import axios from "axios";
-import { API_URL } from "../../context/Auth";
-import { userStorage } from "../storage/storage";
+import { API_URL } from "../../../context/Auth";
+import { userStorage } from "../../storage/storage";
 
 export async function fetchMarks(
     auth,
@@ -78,7 +78,7 @@ export async function fetchCgpa(
                 const result = await axios.post(`${API_URL}/student/cgpa`, { password: auth.password, reg_no: auth.reg_no });
                 if (result.data.success) {
                     userStorage.set("CGPA", JSON.stringify(result.data));
-                    setCgpa(result.data.data)
+                    setCgpa(result.data.data.cgpa)
                     setLastSynced(result.data.lastSynced)
                     Toast.show({
                         type: 'success',
@@ -94,7 +94,7 @@ export async function fetchCgpa(
                 }
             }
         } else {
-            setCgpa(userCgpa.data)
+            setCgpa(userCgpa.data.cgpa)
             setLastSynced(userCgpa.lastSynced)
         }
         setCgpaLoading(false)

@@ -7,7 +7,7 @@ import { API_URL, API_URL_ROOT, AuthContext } from '../../../context/Auth';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import LottieView from 'lottie-react-native';
-import { acceptFriendRequest, cancelSentRequest, rejectFriendRequest, sendFriendRequest } from '../../../utils/fetchUtils/handleFriends';
+import { acceptFriendRequest, cancelSentRequest, rejectFriendRequest, sendFriendRequest } from '../../../utils/fetchUtils/handleFriends/handleFriends';
 import ImageViewer from '../miscellaneous/ImageViewer';
 
 

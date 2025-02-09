@@ -7,7 +7,7 @@ import { colors } from '../../constants/colors'
 import { AuthContext } from '../../../context/Auth'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
 import Toast from 'react-native-toast-message'
-import { getFriendTimetable } from '../../../utils/fetchUtils/handleFriendsData'
+import { getFriendTimetable } from '../../../utils/fetchUtils/friendData/handleFriendsData'
 import formatTimetable from '../../../utils/helperFunctions/timetableFormatter'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 import { friendsStorage } from '../../../utils/storage/storage'
@@ -47,7 +47,6 @@ export default function FriendTimetable({ navigation, route }) {
             });
         }
     }
-
 
     useEffect(() => {
         fetchDataLocally(false)

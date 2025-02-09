@@ -6,7 +6,8 @@ import axios from 'axios'
 import AttendanceScreen from '../../components/attendance/AttendanceScreen'
 import { Alert } from 'react-native'
 import { AppContext } from '../../../context/MainApp'
-import { fetchAttendance } from '../../../utils/fetchUtils/attendanceFetch'
+import { fetchAttendance } from '../../../utils/fetchUtils/userData/attendanceFetch'
+import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 
 export default function Attendance({ navigation }) {
   const { auth } = useContext(AuthContext)
@@ -15,14 +16,20 @@ export default function Attendance({ navigation }) {
   const [attendanceDetails, setAttendanceDetails] = useState({})
   const [refreshing, setRefreshing] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [lastSyncedRaw, setLastSyncedRaw] = useState("")
   const [lastSynced, setLastSynced] = useState("")
 
   const handleAttendanceFetch = async (sync) => {
-    fetchAttendance(setAttendanceLoading, setRefreshing, setattendance, setAttendanceDetails, auth, setIsError, sync, setLastSynced)
+    if(attendanceLoading) return
+    await fetchAttendance(setAttendanceLoading, setRefreshing, setattendance, setAttendanceDetails, auth, setIsError, sync, setLastSyncedRaw)
   }
   useEffect(() => {
     handleAttendanceFetch()
   }, [])
+
+  useEffect(() => {
+    setLastSynced(formatTimeAgo(lastSyncedRaw))
+  }, [lastSyncedRaw])
 
   return (
     <>

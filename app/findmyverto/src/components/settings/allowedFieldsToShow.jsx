@@ -4,7 +4,7 @@ import { AppContext } from "../../../context/MainApp";
 import { useContext, useEffect, useState } from "react";
 import { colors } from "../../constants/colors";
 import { FontAwesome5 } from "@expo/vector-icons";
-import { getAllowedFieldsToShow, handleSetAllowedFieldsToShow } from "../../../utils/fetchUtils/fetchSettings";
+import { getAllowedFieldsToShow, handleSetAllowedFieldsToShow } from "../../../utils/fetchUtils/handleUser/fetchSettings";
 import { AuthContext } from "../../../context/Auth";
 import { availableFieldsToShow } from "../../constants/globalConstants";
 import { LinearGradient } from "expo-linear-gradient";
@@ -67,7 +67,7 @@ export default function AllowedFieldsToShow() {
                                     Object.keys(availableFieldsToShow).map((field, index) => (
                                         <TouchableOpacity key={index} style={styles.fields} onPress={() => toggleFieldSelection(field)}>
                                             <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
-                                                <Image source={availableFieldsToShow[field].icon} style={{ width: 20, height: 20 }} />
+                                                <Image source={availableFieldsToShow[field].icon} style={{ width: 20, height: 20,objectFit:"fill" }} />
                                                 <Text>{availableFieldsToShow[field].title}</Text>
                                             </View>
                                             {updatedFields.includes(field) &&

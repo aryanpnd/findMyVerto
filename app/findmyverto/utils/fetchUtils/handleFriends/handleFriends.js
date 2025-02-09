@@ -1,8 +1,8 @@
 import axios from "axios";
-import { API_URL } from "../../context/Auth";
+import { API_URL } from "../../../context/Auth";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { friendsStorage } from "../storage/storage";
+import { friendsStorage } from "../../storage/storage";
 
 export async function getFriends(auth, setfriends, setLoading, setRefreshing, noRefreshing, setUpdatedFriends, noLoading) {
     !noLoading && setLoading(true)
@@ -222,6 +222,9 @@ export async function removeFriend(auth, student_id, setLoading) {
                 // await AsyncStorage.removeItem(`${student_id}-timetable`);
                 friendsStorage.delete(`${student_id}`)
                 friendsStorage.delete(`${student_id}-timetable`)
+                friendsStorage.delete(`${student_id}-attendance`)
+                friendsStorage.delete(`${student_id}-marks`)
+                friendsStorage.delete(`${student_id}-cgpa`)
                 // status=true
             } else {
                 Toast.show({

@@ -1,22 +1,32 @@
-import { View, Text, StyleSheet, ScrollView, Image, Dimensions, Pressable, Platform, RefreshControl } from 'react-native'
-import React, { use, useCallback, useContext, useRef, useState } from 'react'
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Image,
+  Dimensions,
+  Pressable,
+  Platform,
+  RefreshControl
+} from 'react-native'
+import React, { useCallback, useContext, useRef, useState } from 'react'
 import HomescreenTimeTable from '../timeTable/HomescreenTimeTable'
-import { colors } from '../../constants/colors';
-import { AuthContext } from '../../../context/Auth';
-import { HEIGHT } from '../../constants/styles';
-import { homeScreenNavigations } from '../../constants/globalConstants';
+import { colors } from '../../constants/colors'
+import { AuthContext } from '../../../context/Auth'
+import { HEIGHT, WIDTH } from '../../constants/styles'
+import { homeScreenNavigations } from '../../constants/globalConstants'
 
-const { height, width } = Dimensions.get('window');
+const { width } = Dimensions.get('window')
 
 export default function Body({ navigation }) {
   const { auth } = useContext(AuthContext)
-  const [refreshing, setRefreshing] = useState(false);
+  const [refreshing, setRefreshing] = useState(false)
 
   // Reference to HomescreenTimeTable component
-  const timetableRef = useRef();
+  const timetableRef = useRef()
 
   const onRefresh = useCallback(async () => {
-    setRefreshing(true);
+    setRefreshing(true)
 
     // Refresh timetable if ref exists
     if (timetableRef.current) {
@@ -25,8 +35,8 @@ export default function Body({ navigation }) {
       timetableRef.current.scrollToOngoing()
     }
 
-    setRefreshing(false);
-  }, []);
+    setRefreshing(false)
+  }, [])
 
   return (
     <View style={styles.body}>
@@ -45,37 +55,39 @@ export default function Body({ navigation }) {
           />
         }
       >
-
         <View style={styles.passwordExpiryContainer}>
           <Text style={styles.text2}>
-            Password Expires in {auth.passwordExpiry.days} {auth.passwordExpiry.days > 1 ? "days" : "day"}. {"("}{auth.passwordExpiry.updatedAt?.split("T")[0]}{")"}
+            Password Expires in {auth.passwordExpiry.days}{' '}
+            {auth.passwordExpiry.days > 1 ? 'days' : 'day'}. (
+            {auth.passwordExpiry.updatedAt?.split('T')[0]})
           </Text>
         </View>
 
         {/* Classes Today */}
         <View style={styles.classTodayContainer}>
-          <HomescreenTimeTable
-            ref={timetableRef}
-            navigation={navigation}
-          />
+          <HomescreenTimeTable ref={timetableRef} navigation={navigation} />
         </View>
 
-        {/* Other navigations */}
+        {/* Other navigations in a 3x3 grid */}
         <View style={styles.NavigationsContainer}>
-          {
-            homeScreenNavigations.map((value) => (
-              <Pressable
-                onPress={() => navigation.navigate(value.route)}
-                key={value.title} style={styles.NavigationsCard} >
-                <Image
-                  source={value.icon}
-                  style={{ height: width * 0.12, width: width * 0.12, objectFit:"fill" }}
-                  transition={1000}
-                />
-                <Text style={styles.text2}>{value.title}</Text>
-              </Pressable>
-            ))
-          }
+          {homeScreenNavigations.map((value) => (
+            <Pressable
+              onPress={() => navigation.navigate(value.route)}
+              key={value.title}
+              style={styles.NavigationsCard}
+            >
+              <Image
+                source={value.icon}
+                style={{
+                  height: width * 0.12,
+                  width: width * 0.12,
+                  resizeMode: 'contain'
+                }}
+                transition={1000}
+              />
+              <Text style={styles.text2}>{value.title}</Text>
+            </Pressable>
+          ))}
         </View>
       </ScrollView>
     </View>
@@ -87,53 +99,48 @@ const styles = StyleSheet.create({
     flex: 5,
     width: '100%',
     height: '100%',
-    // padding: 10,
     backgroundColor: '#ecf0f1',
-    // backgroundColor: 'white',
     borderTopRightRadius: 45,
-    borderTopLeftRadius: 45,
+    borderTopLeftRadius: 45
   },
   passwordExpiryContainer: {
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
     borderTopRightRadius: 45,
     borderTopLeftRadius: 45,
-    padding: 5,
+    padding: 5
   },
   classTodayContainer: {
-    // paddingHorizontal: 20,
-    // paddingTop: 20,
     maxHeight: HEIGHT(35),
     marginTop: 15,
-    // marginHorizontal: 5,
     borderRadius: 15
   },
   NavigationsContainer: {
-    width: "100%",
-    padding: 20,
-    // paddingTop: 5,
-    flexDirection: "row",
-    flexWrap: "wrap",
-    gap: 10,
-    justifyContent: "space-between"
+    width: '100%',
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between'
   },
+  // Each card takes roughly 30% of the width, ensuring 3 cards per row.
+  // The "aspectRatio: 1" makes each card square.
   NavigationsCard: {
-    backgroundColor: "white",
-    height: height * 0.14,
-    width: width * 0.28,
+    width: '30%',
+    aspectRatio: 1,
+    backgroundColor: 'white',
     borderRadius: 20,
-    justifyContent: "space-evenly",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginVertical: 10
   },
-
   text1: {
     color: colors.lightDark,
     fontSize: 14,
     fontWeight: '500'
   },
-
   text2: {
-    color: "grey",
+    color: 'grey',
     fontSize: 14,
     fontWeight: '500'
   }

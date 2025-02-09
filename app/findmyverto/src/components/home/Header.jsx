@@ -11,11 +11,10 @@ import { AppContext } from '../../../context/MainApp'
 import { LinearGradient } from 'expo-linear-gradient'
 import { colors } from '../../constants/colors'
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'; // Import the shimmer placeholder
-import { fetchBasicDetails } from '../../../utils/fetchUtils/basicDetailsFetch'
+import { fetchBasicDetails } from '../../../utils/fetchUtils/userData/basicDetailsFetch'
 import { useFocusEffect } from '@react-navigation/native'
 import { HEIGHT, WIDTH } from '../../constants/styles'
-import { userStorage } from '../../../utils/storage/storage'
-import { fetchAttendance } from '../../../utils/fetchUtils/attendanceFetch'
+import { fetchAttendance } from '../../../utils/fetchUtils/userData/attendanceFetch'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create shimmer placeholder
@@ -43,18 +42,22 @@ export default function Header({ navigation }) {
     const handleDataFetch = async (sync) => {
         await fetchBasicDetails(setLoading, setRefreshing, setUserDetails, auth, setIsError, sync, setLastSynced);
     };
-
     const getAttendance = async (sync) => {
-        if (attendanceLoading) return;
-        // if last sync is more than 1 hour ago, fetch again
-        if (attendanceLastSynced && new Date().getTime() - new Date(attendanceLastSynced).getTime() > 3600000) {
-            console.log("Syncing attendance again")
-            console.log("Last sync", attendanceLastSynced)
-            fetchAttendance(setAttendanceLoading, setAttendanceRefresh, setAttendance, setAttendanceDetails, auth, setIsAttendanceError, true, setAttendanceLastSynced)
-            return
+        if (attendanceLoading) {
+            return;
         }
-        fetchAttendance(setAttendanceLoading, setAttendanceRefresh, setAttendance, setAttendanceDetails, auth, setIsAttendanceError, sync, setAttendanceLastSynced)
+        if (!sync && attendanceLastSynced &&
+            new Date().getTime() - new Date(attendanceLastSynced).getTime() <= 3600000) {
+            // console.log("Attendance data is fresh. Skipping fetch.");
+            return;
+        }
+
+        // console.log("Fetching attendance data...");
+        await fetchAttendance(setAttendanceLoading, setAttendanceRefresh, setAttendance,
+            setAttendanceDetails, auth, setIsAttendanceError, 
+            sync, setAttendanceLastSynced);
     };
+
 
     useFocusEffect(
         useCallback(() => {
@@ -165,7 +168,12 @@ export default function Header({ navigation }) {
 
                     <TouchableOpacity style={styles.AttendanceContainer} onPress={loading ? () => { } : () => navigation.navigate('Attendance')}>
                         <Text style={{ fontWeight: '500', color: colors.whiteLight, marginTop: 5 }}>Attendance</Text>
-                        <Text style={{ fontSize: 10, color: colors.whiteLight, marginBottom: 5 }}>{formatTimeAgo(attendanceLastSynced)}</Text>
+                        {
+                            attendanceLoading ?
+                                <Text style={{ fontSize: 10, color: colors.whiteLight, marginBottom: 5 }}>Loading...</Text>
+                                :
+                                <Text style={{ fontSize: 10, color: colors.whiteLight, marginBottom: 5 }}>{formatTimeAgo(attendanceLastSynced)}</Text>
+                        }
                         {isAttendanceError ?
                             <>
                                 <Text style={{ color: colors.whiteLight, fontWeight: "bold" }}>Error</Text>
@@ -240,7 +248,8 @@ const styles = StyleSheet.create({
     greeting: {
         width: '65%',
         overflow: 'hidden',
-        paddingLeft: 5
+        paddingLeft: 5,
+        justifyContent: 'center',
     },
     AttendanceContainer: {
         width: '30%',

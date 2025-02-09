@@ -1,6 +1,8 @@
 export const availableFieldsToShow = {
     "attendance": { icon: require("../../assets/icons/attendance.png"), title: "Attendance" },
     "timetable": { icon: require("../../assets/icons/schedule.png"), title: "Timetable" },
+    "marks": { icon: require("../../assets/icons/marks.png"), title: "Marks" },
+    "cgpa": { icon: require("../../assets/icons/cgpa.png"), title: "CGPA" },
 }
 
 export const homeScreenNavigations = [

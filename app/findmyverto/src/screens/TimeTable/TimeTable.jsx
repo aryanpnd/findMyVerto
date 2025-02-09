@@ -10,7 +10,7 @@ import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
 import Toast from 'react-native-toast-message'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 import { AppContext } from '../../../context/MainApp'
-import { fetchTimetable } from '../../../utils/fetchUtils/timeTableFetch'
+import { fetchTimetable } from '../../../utils/fetchUtils/userData/timeTableFetch'
 import Test from '../../components/home/Test'
 import { ErrorMessage } from '../../components/timeTable/ErrorMessage'
 

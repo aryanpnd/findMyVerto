@@ -1,7 +1,7 @@
 import CgpaScreen from "../../components/marksAndCgpa/CgpaScreen";
 import { AuthContext } from "../../../context/Auth";
 import { useContext, useEffect, useState } from "react";
-import { fetchCgpa } from "../../../utils/fetchUtils/handleMarksAndCgpaFetch";
+import { fetchCgpa } from "../../../utils/fetchUtils/userData/handleMarksAndCgpaFetch";
 
 export default function Cgpa({navigation}) {
     const { auth } = useContext(AuthContext)

@@ -39,7 +39,7 @@ export default function StudentProfile({ student, loading }) {
         <Pressable onPress={() => setFullscreenImage(true)} style={{ justifyContent: "center", alignItems: "center", width: "100%" }}>
           <Image
             source={imageSource}
-            style={{height: HEIGHT(15), width: HEIGHT(15), borderRadius: HEIGHT(15) / 2 , objectFit: "fill" }}
+            style={{height: HEIGHT(15), width: HEIGHT(15), borderRadius: HEIGHT(15) / 2 , objectFit: "contain",backgroundColor:colors.whiteLight }}
             transition={1000}
             onError={onImageError}
           />

@@ -1,17 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Toast from 'react-native-toast-message'
-import { API_URL, AuthContext } from '../../../context/Auth'
+import { AuthContext } from '../../../context/Auth'
 import AttendanceScreen from '../../components/attendance/AttendanceScreen'
-import { getFriendAttendance, handleFetchAttendance } from '../../../utils/fetchUtils/handleFriendsData'
-import { AppContext } from '../../../context/MainApp'
+import { getFriendAttendance } from '../../../utils/fetchUtils/friendData/handleFriendsData'
+import { friendsStorage } from '../../../utils/storage/storage'
+import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
+
 export default function FriendAttendance({ navigation, route }) {
     const { id, name } = route.params;
     const { auth } = useContext(AuthContext);
-    const {
-        friendsAttendance, setFriendsAttendance,
-        friendsAttendanceDetails, setFriendsAttendanceDetails,
-        friendsAttendanceLastSynced, setFriendsAttendanceLastSynced
-    } = useContext(AppContext);
 
     const [attendance, setAttendance] = useState({});
     const [attendanceDetails, setAttendanceDetails] = useState({});
@@ -20,18 +17,42 @@ export default function FriendAttendance({ navigation, route }) {
     const [isError, setIsError] = useState(false);
 
     async function fetchAttendance() {
-        await getFriendAttendance(auth, id, setFriendsAttendance, setFriendsAttendanceDetails, setFriendsAttendanceLastSynced, setAttendance, setAttendanceDetails, setLastSynced, setLoading, setIsError);
+        await getFriendAttendance(auth, id, setAttendance, setAttendanceDetails, setLastSynced, setLoading, setIsError);
+    }
+
+    async function fetchDataLocally() {
+        if (loading) return;
+        try {
+            setLoading(true);
+            const studentRaw = friendsStorage.getString(`${id}-attendance`);
+            const student = studentRaw && JSON.parse(studentRaw);
+
+            if (studentRaw && new Date().getTime() - new Date(student.last_updated).getTime() > 3600000) {
+                await fetchAttendance();
+            }
+            if (studentRaw) {
+                setAttendance(student.summary);
+                setAttendanceDetails(student.details);
+                setLastSynced(formatTimeAgo(student.last_updated));
+            }
+            else {
+                await fetchAttendance();
+            }
+            setLoading(false);
+        } catch (error) {
+            setLoading(false);
+            console.error(error);
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: `${error.message}`
+            });
+        }
     }
 
     useEffect(() => {
-        if (Object.keys(friendsAttendance[id] || {}).length === 0) {
-            fetchAttendance();
-        } else {
-            setAttendance(friendsAttendance[id]);
-            setAttendanceDetails(friendsAttendanceDetails[id]);
-            setLastSynced(friendsAttendanceLastSynced[id]);
-        }
-    }, []);
+        fetchDataLocally(false)
+    }, [])
 
     useEffect(() => {
         navigation.setOptions({

@@ -1,9 +1,9 @@
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import formatTimetable from "../helperFunctions/timetableFormatter";
-import { API_URL } from "../../context/Auth";
-import { userStorage } from "../storage/storage";
+import formatTimetable from "../../helperFunctions/timetableFormatter";
+import { API_URL } from "../../../context/Auth";
+import { userStorage } from "../../storage/storage";
 
 export async function fetchTimetable(
     setTimetableLoading,

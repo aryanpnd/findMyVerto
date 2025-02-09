@@ -19,6 +19,9 @@ import { View, ActivityIndicator } from 'react-native';
 import Marks from './src/screens/marksAndCgpa/Marks';
 import Cgpa from './src/screens/marksAndCgpa/Cgpa';
 import MarksDetails from './src/screens/marksAndCgpa/MarksDetails';
+import CgpaDetails from './src/screens/marksAndCgpa/CgpaDetails';
+import FriendMarks from './src/components/friendProfile/FriendMarks';
+import FriendCGPA from './src/components/friendProfile/FriendCGPA';
 
 const Stack = createNativeStackNavigator();
 
@@ -66,6 +69,7 @@ export default function AuthPage() {
           <Stack.Screen name="MarksDetails" component={MarksDetails} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }} />
 
           <Stack.Screen name="CGPA" component={Cgpa} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary } }} />
+          <Stack.Screen name="CGPADetails" component={CgpaDetails} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }} />
 
           <Stack.Screen name="MyProfile" component={MyProfile} />
 
@@ -76,6 +80,8 @@ export default function AuthPage() {
           <Stack.Screen name="FriendProfile" component={FriendProfile} />
           <Stack.Screen name="FriendAttendance" component={FriendAttendance} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "Friend's Attendance" }} />
           <Stack.Screen name="FriendTimetable" component={FriendTimetable} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "Friend's Timetable" }} />
+          <Stack.Screen name="FriendMarks" component={FriendMarks} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }} />
+          <Stack.Screen name="FriendCGPA" component={FriendCGPA} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary } }} />
 
         </React.Fragment>
       ) : (

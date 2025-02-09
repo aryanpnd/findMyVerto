@@ -10,7 +10,7 @@ import SearchedStudentCard from '../../components/vertoSearch/SearchedStudentCar
 import LottieView from 'lottie-react-native';
 import EmptyRequests from '../../components/miscellaneous/EmptyRequests'
 import { StatusBar } from 'expo-status-bar'
-import { getFriends } from '../../../utils/fetchUtils/handleFriends'
+import { getFriends } from '../../../utils/fetchUtils/handleFriends/handleFriends'
 import TimetableScreenShimmer from '../../components/shimmers/TimetableScreenShimmer'
 import { HEIGHT } from '../../constants/styles'
 import { AppContext } from '../../../context/MainApp'
@@ -115,7 +115,7 @@ export default function Friends({ navigation, route }) {
 
                 {/* Total friends container */}
                 <View style={styles.totalFriendsContainer}>
-                    <Text style={styles.text2}>Total friends: {friends.length}</Text>
+                    <Text style={styles.text2}>Friends: {friends.length}</Text>
                 </View>
 
                 <ScrollView
@@ -128,7 +128,7 @@ export default function Friends({ navigation, route }) {
                             onRefresh={() => handleGetFriends(false,false)}
                         />
                     }
-                    contentContainerStyle={{ alignItems: "center", paddingVertical: 15, gap: height * 0.01 }}>
+                    contentContainerStyle={{ alignItems: "center", paddingBottom: 15, gap: height * 0.01 }}>
                     {
                         loading || refreshing ?
                             <TimetableScreenShimmer count={10} />

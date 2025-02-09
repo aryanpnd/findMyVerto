@@ -1,10 +1,10 @@
 import axios from "axios";
-import { API_URL } from "../../context/Auth";
+import { API_URL } from "../../../context/Auth";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import formatTimetable from "../helperFunctions/timetableFormatter";
-import formatTimeAgo from "../helperFunctions/dateFormatter";
-import { friendsStorage } from "../storage/storage";
+import formatTimetable from "../../helperFunctions/timetableFormatter";
+import formatTimeAgo from "../../helperFunctions/dateFormatter";
+import { friendsStorage } from "../../storage/storage";
 
 export async function getFriendDetails(auth, friend_id, setStudent, setLoading, loader) {
     loader && setLoading(true)
@@ -66,7 +66,7 @@ export async function getFriendTimetable(auth, friend_id, sync, settimeTable, se
         })
 }
 
-export async function getFriendAttendance(auth, id, setFriendsAttendance, setFriendsAttendanceDetails, setFriendsAttendanceLastSynced, setAttendance, setAttendanceDetails, setLastSynced, setLoading, setIsError) {
+export async function getFriendAttendance(auth, id, setAttendance, setAttendanceDetails, setLastSynced, setLoading, setIsError) {
     setLoading(true);
     try {
         const result = await axios.post(`${API_URL}/friends/attendance`, {
@@ -76,13 +76,10 @@ export async function getFriendAttendance(auth, id, setFriendsAttendance, setFri
         });
 
         if (result.data.success) {
-            setFriendsAttendance(prev => ({ ...prev, [id]: result.data.summary }));
-            setFriendsAttendanceDetails(prev => ({ ...prev, [id]: result.data.details }));
-            setFriendsAttendanceLastSynced(prev => ({ ...prev, [id]: formatTimeAgo(result.data.lastSynced) }));
-
+            friendsStorage.set(`${id}-attendance`, JSON.stringify(result.data));
             setAttendance(result.data.summary);
             setAttendanceDetails(result.data.details);
-            setLastSynced(formatTimeAgo(result.data.lastSynced));
+            setLastSynced(formatTimeAgo(result.data.last_updated));
             setIsError(false);
 
             Toast.show({

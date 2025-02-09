@@ -4,31 +4,22 @@ import Toast from 'react-native-toast-message'
 import AttendanceCard from '../../components/attendance/AttendanceCard'
 import { colors } from '../../constants/colors'
 import SyncData from '../../components/miscellaneous/SyncData'
-import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
-import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 import { ErrorMessage } from '../miscellaneous/errorMessage'
 import Loading1 from '../miscellaneous/Loading1'
 import AttendanceScreenShimmer from '../shimmers/AttendanceScreenShimmer'
 
 export default function AttendanceScreen({ attendance, fetchAttendance, lastSynced, loading, self, navigation, attendanceDetails, isError }) {
-  const [lastSyncedState, setLastSyncedState] = useState("")
-
-  useEffect(() => {
-    setLastSyncedState(formatTimeAgo(lastSynced))
-  }, [lastSynced]);
   return (
     <>
       <View style={{ zIndex: 2 }}>
         <Toast />
       </View>
 
-      {/* {self && loading && <View style={styles.container}></View>} */}
-
       {isError ?
         <ErrorMessage handleFetch={() => fetchAttendance(true)} loading={loading} messageText={"...while fetching the attendance"} buttonStyles={{ height: "8%", width: "50%" }} />
         :
         <View style={styles.container}>
-          <SyncData time={lastSyncedState} syncNow={() => fetchAttendance(true)} self={self} color={'white'} bg={colors.secondary} loader={true} loading={loading} />
+          <SyncData time={lastSynced} syncNow={() => fetchAttendance(true)} self={self} color={'white'} bg={colors.secondary} loader={true} loading={loading} />
 
           <View style={styles.TotalAttendanceContainer}>
             {loading ?
@@ -52,7 +43,7 @@ export default function AttendanceScreen({ attendance, fetchAttendance, lastSync
                   // <Text>dsds</Text>
                 ))
                 :
-                attendance?.attendance_summary?.map((value, index) => {
+                attendance?.attendance_summary && attendance?.attendance_summary?.map((value, index) => {
                   return (
                     <View style={styles.cardContainer} key={index}>
                       <AttendanceCard colors={['#0f2027', '#2c5364']} attendance={value} navigation={navigation}

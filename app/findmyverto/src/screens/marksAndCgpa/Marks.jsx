@@ -1,9 +1,9 @@
 import MarksScreen from "../../components/marksAndCgpa/MarksScreen";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../../../context/Auth";
-import { fetchMarks } from "../../../utils/fetchUtils/handleMarksAndCgpaFetch";
+import { fetchMarks } from "../../../utils/fetchUtils/userData/handleMarksAndCgpaFetch";
 
-export default function Marks({navigation}) {
+export default function Marks({ navigation }) {
     const { auth } = useContext(AuthContext)
     const [Marks, setMarks] = useState({})
     const [marksLoading, setMarksLoading] = useState(true)
@@ -20,7 +20,14 @@ export default function Marks({navigation}) {
 
     return (
         <>
-            <MarksScreen marks={Marks} marksLoading={marksLoading} markRefresh={markRefresh} isError={isError} lastSynced={lastSynced} handleMarksFetch={handleMarksFetch} navigation={navigation}/>
+            <MarksScreen
+                marks={Marks}
+                marksLoading={marksLoading}
+                markRefresh={markRefresh}
+                isError={isError}
+                lastSynced={lastSynced}
+                handleMarksFetch={handleMarksFetch}
+                navigation={navigation} />
         </>
     );
 }
