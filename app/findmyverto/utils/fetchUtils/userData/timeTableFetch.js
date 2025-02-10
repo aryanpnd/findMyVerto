@@ -55,6 +55,7 @@ export async function fetchTimetable(
             // wait for 1 second
             // await new Promise((resolve) => setTimeout(resolve, 500));
             const tt = formatTimetable(userTimeTable.data.time_table, userTimeTable.data.courses, todayOnly)
+            console.log(tt)
             setClassesToday(tt.length)
             settimeTable(tt)
             setLastSynced(userTimeTable.lastSynced)

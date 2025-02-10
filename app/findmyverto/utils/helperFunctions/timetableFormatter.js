@@ -12,16 +12,22 @@ export default function formatTimetable(ttToFormat, courses = {}, formatToClasse
                     .filter(([_, value]) => value.length > 1)
                     .map(([time, classes]) => {
                         const classList = classes.split(', ').map(classString => {
-                            const regex = /(\w+) \/ G:(\w+) C:(\w+) \/ R: (\S+) \/ S:(\S+)/;
+                            // Update the regex to allow spaces and parentheses in the room field.
+                            const regex = /(\w+)\s*\/\s*G:(\w+)\s*C:(\w+)\s*\/\s*R:\s*([^\/]+)\s*\/\s*S:(\S+)/;
                             const match = classString.match(regex);
+
                             if (match) {
+                                // Process the room field.
+                                const roomInfo = cleanRoom(match[4]);
+
                                 return {
                                     type: match[1],
                                     group: match[2],
                                     class: match[3],
                                     className: courses[match[3]] ? courses[match[3]].course_title : match[3],
-                                    room: match[4],
-                                    section: match[5]
+                                    room: roomInfo.cleaned,       // cleaned room string
+                                    section: match[5],
+                                    makeup: roomInfo.makeup       // new field indicating a makeup class
                                 };
                             }
                             return null;
@@ -32,7 +38,7 @@ export default function formatTimetable(ttToFormat, courses = {}, formatToClasse
                         };
                     });
                 formattedTimetable = classes.length ? addBreaksToSchedule(classes) : [{}];
-            }else {
+            } else {
                 formattedTimetable = [{}];
             }
         } else {
@@ -42,16 +48,22 @@ export default function formatTimetable(ttToFormat, courses = {}, formatToClasse
                         .filter(([_, value]) => value.length > 1)
                         .map(([time, classes]) => {
                             const classList = classes.split(', ').map(classString => {
-                                const regex = /(\w+) \/ G:(\w+) C:(\w+) \/ R: (\S+) \/ S:(\S+)/;
+                                // Update the regex to allow spaces and parentheses in the room field.
+                                const regex = /(\w+)\s*\/\s*G:(\w+)\s*C:(\w+)\s*\/\s*R:\s*([^\/]+)\s*\/\s*S:(\S+)/;
                                 const match = classString.match(regex);
+
                                 if (match) {
+                                    // Process the room field.
+                                    const roomInfo = cleanRoom(match[4]);
+
                                     return {
                                         type: match[1],
                                         group: match[2],
                                         class: match[3],
                                         className: courses[match[3]] ? courses[match[3]].course_title : match[3],
-                                        room: match[4],
-                                        section: match[5]
+                                        room: roomInfo.cleaned,       // cleaned room string
+                                        section: match[5],
+                                        makeup: roomInfo.makeup       // new field indicating a makeup class
                                     };
                                 }
                                 return null;
@@ -61,7 +73,7 @@ export default function formatTimetable(ttToFormat, courses = {}, formatToClasse
                                 class: classList
                             };
                         });
-                        return [day, dailyClasses.length ? addBreaksToSchedule(dailyClasses) : [{}]];
+                    return [day, dailyClasses.length ? addBreaksToSchedule(dailyClasses) : [{}]];
                 })
             );
         }
@@ -106,4 +118,18 @@ function addBreaksToSchedule(data) {
 
     result.push(data[data.length - 1]); // Add the last class
     return result;
+}
+function cleanRoom(roomStr) {
+    let makeup = false;
+    let cleaned = roomStr.trim();
+
+    // This regex looks for text inside parentheses that contains "Makeup Class"
+    const makeupRegex = /\(\s*(.*?)\s*Makeup Class\s*\)/i;
+    if (makeupRegex.test(cleaned)) {
+        makeup = true;
+        // Replace the whole "( ... Makeup Class )" with "(...)" where "..." is trimmed content.
+        cleaned = cleaned.replace(/\(\s*([^)]*?)\s*Class\s*\)/i, '($1)');
+    }
+
+    return { cleaned, makeup };
 }

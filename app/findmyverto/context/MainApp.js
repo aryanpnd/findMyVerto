@@ -16,11 +16,14 @@ const AppProvider = ({ children }) => {
 
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [updated, setUpdated] = useState(false)
+
   const checkForUpdates = async (setLoading, alert) => {
     try {
       setLoading(true)
       const update = await Updates.checkForUpdateAsync();
       if (update.isAvailable) {
+        console.log("update available");
+        
         setUpdateAvailable(true)
         await Updates.fetchUpdateAsync();
         alert.show(
@@ -40,11 +43,16 @@ const AppProvider = ({ children }) => {
           ]
         );
       } else {
-        alert.show('No Updates', 'Your app is up to date.', [{ text: 'OK' }]);
+        console.log("update not available");
+
+        alert.show('No Updates', 'Your app is up to date.', [{
+          text: 'OK',
+          onPress: () => console.log("cancelled")
+        }]);
       }
       setLoading(false)
     } catch (error) {
-      Alert.alert('Update Error', 'An error occurred while checking for updates.', [{ text: 'OK' }]);
+      alert.show('Update Error', 'An error occurred while checking for updates.', [{ text: 'OK', onPress: () => { } }]);
       console.error('Error checking for updates:', error);
       setLoading(false)
     }

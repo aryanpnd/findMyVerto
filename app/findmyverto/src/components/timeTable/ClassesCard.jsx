@@ -22,7 +22,7 @@ export default function ClassesCard({ time, classes, day }) {
       // colors={[colors.blue, colors.secondary]}
       colors={["white", "white"]}
       // colors={['#373b44', '#2c5364']}
-      style={[styles.container, globalStyles.elevationMin]}
+      style={[styles.container, globalStyles.elevationMin, ongoing && { borderWidth: 2, borderColor: colors.green }]}
       start={{ x: 0, y: 0 }}
       end={{ x: 1, y: 0 }}>
 
@@ -51,7 +51,7 @@ export default function ClassesCard({ time, classes, day }) {
               </View>
 
               <View style={styles.classInfoContainer}>
-                <View style={styles.btnEffect}>
+                <View style={[styles.btnEffect,{borderWidth:classDetail.makeup ? 1 : 0, borderColor:colors.orange}]}>
                   <Image
                     source={require("../../../assets/icons/building.png")}
                     style={{ height: 20, width: 20 }}

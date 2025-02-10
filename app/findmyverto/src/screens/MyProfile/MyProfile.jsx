@@ -92,7 +92,7 @@ export default function MyProfile({ navigation }) {
                     <TouchableOpacity onPress={handleLogout} style={styles.footerBtn}>
                         <Text style={{ color: "grey" }}>Logout</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity onPress={() => checkForUpdates(setUpdateLoading, CustomAlert)} style={{ marginTop: 10 }}>
+                    <TouchableOpacity onPress={() => checkForUpdates(setUpdateLoading, customAlert)} style={{ marginTop: 10 }}>
                         {updateLoading ?
                             <ActivityIndicator color={"grey"} size={20} /> :
                             <Text style={{ color: "grey" }}>Check for updates</Text>}
