@@ -22,6 +22,11 @@ import MarksDetails from './src/screens/marksAndCgpa/MarksDetails';
 import CgpaDetails from './src/screens/marksAndCgpa/CgpaDetails';
 import FriendMarks from './src/components/friendProfile/FriendMarks';
 import FriendCGPA from './src/components/friendProfile/FriendCGPA';
+import Exams from './src/screens/Exams/Exams';
+import Assignments from './src/screens/Assignments/Assignments';
+import MyMessages from './src/screens/MyMessages/MyMessages';
+import LeaveSlip from './src/screens/LeaveSlip/LeaveSlip';
+import MyDrives from './src/screens/MyDrives/MyDrives';
 
 const Stack = createNativeStackNavigator();
 
@@ -70,6 +75,12 @@ export default function AuthPage() {
 
           <Stack.Screen name="CGPA" component={Cgpa} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary } }} />
           <Stack.Screen name="CGPADetails" component={CgpaDetails} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }} />
+
+          <Stack.Screen name="Exams" component={Exams} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }}/>
+          <Stack.Screen name="Assignments" component={Assignments} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }}/>
+          <Stack.Screen name="MyMessages" component={MyMessages} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, title:"My Messages" }}/>
+          <Stack.Screen name="LeaveSlip" component={LeaveSlip} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, title:"Leave slip" }}/>
+          <Stack.Screen name="MyDrives" component={MyDrives} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, title:"My Drives" }}/>
 
           <Stack.Screen name="MyProfile" component={MyProfile} />
 

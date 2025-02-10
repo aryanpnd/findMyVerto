@@ -74,8 +74,12 @@ export default function Body({ navigation }) {
             <Pressable
               onPress={() => navigation.navigate(value.route)}
               key={value.title}
-              style={styles.NavigationsCard}
+              style={[styles.NavigationsCard, value.development && { opacity: 0.6 }]}
             >
+              {/* {value.development&&
+              <View style={styles.underDevelopmentMark}>
+                <Text>Development</Text>
+                </View>} */}
               <Image
                 source={value.icon}
                 style={{
@@ -121,7 +125,8 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
+    // backgroundColor:"red"
   },
   // Each card takes roughly 30% of the width, ensuring 3 cards per row.
   // The "aspectRatio: 1" makes each card square.
@@ -142,6 +147,15 @@ const styles = StyleSheet.create({
   text2: {
     color: 'grey',
     fontSize: 14,
-    fontWeight: '500'
+    fontWeight: '500',
+    textAlign: 'center'
+  },
+  underDevelopmentMark: {
+    position: 'absolute',
+    top: 0,
+    right: 0,
+    justifyContent: 'center',
+    alignItems: 'center',
+    width:"10%"
   }
 })
