@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: Find-My-Verto
+    runtime: node
+    plan: free
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production

@@ -1,57 +1,75 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Toast from 'react-native-toast-message'
-import { API_URL, AuthContext } from '../../../context/Auth'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import axios from 'axios'
+import { AuthContext } from '../../../context/Auth'
 import AttendanceScreen from '../../components/attendance/AttendanceScreen'
+import { getFriendAttendance } from '../../../utils/fetchUtils/friendData/handleFriendsData'
+import { friendsStorage } from '../../../utils/storage/storage'
+import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 
 export default function FriendAttendance({ navigation, route }) {
-    const { _id } = route.params;
+    const { id, name } = route.params;
+    const { auth } = useContext(AuthContext);
 
-    const [attendance, setattendance] = useState({})
-    const [loading, setLoading] = useState(false)
+    const [attendance, setAttendance] = useState({});
+    const [attendanceDetails, setAttendanceDetails] = useState({});
+    const [lastSynced, setLastSynced] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [isError, setIsError] = useState(false);
 
-    async function fetchData(sync) {
-        setLoading(true)
-        await axios.post(`${API_URL}/api/student/getFriendData`, { studentId: _id }).then(async (result) => {
-            await AsyncStorage.setItem(`${_id}`, JSON.stringify(result.data))
-            setattendance(result.data.attendance)
-            setLoading(false)
-        }).catch((err) => {
-            Toast.show({
-                type: 'error',
-                text1: `${err}`,
-            });
-            setLoading(false)
-        })
-        return
+    async function fetchAttendance() {
+        await getFriendAttendance(auth, id, setAttendance, setAttendanceDetails, setLastSynced, setLoading, setIsError);
     }
 
     async function fetchDataLocally() {
+        if (loading) return;
         try {
-            setLoading(true)
-            let user = await AsyncStorage.getItem(`${_id}`);
-            if (!user) {
-                fetchData(false)
-                setLoading(false)
-                return
+            setLoading(true);
+            const studentRaw = friendsStorage.getString(`${id}-attendance`);
+            const student = studentRaw && JSON.parse(studentRaw);
+
+            if (studentRaw && new Date().getTime() - new Date(student.last_updated).getTime() > 3600000) {
+                await fetchAttendance();
             }
-            const studentParsed = JSON.parse(user)
-            setattendance(studentParsed.attendance)
-            setLoading(false)
+            if (studentRaw) {
+                setAttendance(student.summary);
+                setAttendanceDetails(student.details);
+                setLastSynced(formatTimeAgo(student.last_updated));
+            }
+            else {
+                await fetchAttendance();
+            }
+            setLoading(false);
         } catch (error) {
-            setLoading(false)
+            setLoading(false);
             console.error(error);
+            Toast.show({
+                type: 'error',
+                text1: 'Error',
+                text2: `${error.message}`
+            });
         }
     }
 
     useEffect(() => {
-        fetchDataLocally()
+        fetchDataLocally(false)
     }, [])
 
+    useEffect(() => {
+        navigation.setOptions({
+            headerTitle: `${name}'s Attendance`
+        });
+    }, [navigation]);
+
     return (
-        <>
-            {Object.entries(attendance).length > 1 && <AttendanceScreen attendance={attendance} fetchDataLocally={fetchDataLocally} loading={loading} self={false} />}
-        </>
-    )
+        <AttendanceScreen
+            attendance={attendance}
+            attendanceDetails={attendanceDetails}
+            fetchAttendance={fetchAttendance}
+            isError={isError}
+            lastSynced={lastSynced}
+            loading={loading}
+            navigation={navigation}
+            self={true}
+        />
+    );
 }

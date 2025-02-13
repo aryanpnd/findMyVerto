@@ -3,9 +3,10 @@ import React, { createContext, useEffect, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Alert } from 'react-native';
-import { getCalculatedDate } from '../src/utils/helperFunctions/dataAndTimeHelpers';
+import { getCalculatedDate } from '../utils/helperFunctions/dataAndTimeHelpers';
 import { set } from 'mongoose';
 import Toast from 'react-native-toast-message';
+import { friendsStorage, userStorage } from '../utils/storage/storage';
 
 const AuthContext = createContext();
 
@@ -109,22 +110,14 @@ const AuthProvider = ({ children }) => {
     await SecureStore.deleteItemAsync("PASSWORD");
     await SecureStore.deleteItemAsync("PASSWORDEXPIRY");
     await AsyncStorage.clear();
+    userStorage.clearAll()
+    friendsStorage.clearAll()
     setAuthState({ authenticated: false, reg_no: "", password: "", passwordExpiry: { days: 0, updatedAt: "" } });
   };
-
-  const logout2 = async () => {
-    await SecureStore.setItemAsync("AUTHENTICATED", JSON.stringify(false));
-    await SecureStore.deleteItemAsync("REG_NO");
-    await SecureStore.deleteItemAsync("PASSWORD");
-    await SecureStore.deleteItemAsync("PASSWORDEXPIRY");
-    await AsyncStorage.clear();
-    setAuthState({ authenticated: false, reg_no: "", password: "", passwordExpiry: { days: 0, updatedAt: "" } });
-  };
-
 
   return (
     <AuthContext.Provider value={{
-      auth, setAuth, setAuthState, loadAuth, logout, logout2
+      auth, setAuth, setAuthState, loadAuth, logout
     }}>
       {children}
     </AuthContext.Provider>

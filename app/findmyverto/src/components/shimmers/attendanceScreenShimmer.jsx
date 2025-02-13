@@ -14,7 +14,7 @@ export default function AttendanceScreenShimmer() {
 const styles = StyleSheet.create({
     cardContainer: {
         width: '90%',
-        height: '90%',
+        height: '100%',
         borderRadius: 25,
     },
 })

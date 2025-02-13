@@ -10,10 +10,11 @@ import SearchedStudentCard from '../../components/vertoSearch/SearchedStudentCar
 import LottieView from 'lottie-react-native';
 import EmptyRequests from '../../components/miscellaneous/EmptyRequests'
 import { StatusBar } from 'expo-status-bar'
-import { getFriends } from '../../utils/fetchUtils/handleFriends'
+import { getFriends } from '../../../utils/fetchUtils/handleFriends/handleFriends'
 import TimetableScreenShimmer from '../../components/shimmers/TimetableScreenShimmer'
 import { HEIGHT } from '../../constants/styles'
 import { AppContext } from '../../../context/MainApp'
+import { friendsStorage } from '../../../utils/storage/storage'
 
 
 const { height, width } = Dimensions.get('window');
@@ -31,6 +32,7 @@ export default function Friends({ navigation, route }) {
     const [sentFriendRequests, setSentFriendRequests] = useState([])
     const [disableBtn, setDisableBtn] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
 
     function handleGetFriends(noRefreshing,noLoading) {
         getFriends(auth, setfriends, setLoading, setRefreshing, noRefreshing, setupdatedFriends,noLoading)
@@ -39,7 +41,8 @@ export default function Friends({ navigation, route }) {
     async function getFriendListLocal() {
         try {
             setLoading(true)
-            let friendsLocally = await AsyncStorage.getItem("FRIENDS");
+            // let friendsLocally = await AsyncStorage.getItem("FRIENDS");
+            let friendsLocally = friendsStorage.getString("FRIENDS");
             if (!friendsLocally) {
                 handleGetFriends(false,true)
             } else {
@@ -58,9 +61,6 @@ export default function Friends({ navigation, route }) {
         getFriendListLocal()
     }, [])
 
-
-    const [searchQuery, setSearchQuery] = useState('');
-
     const updateSearchQuery = (text) => {
         const lowerCaseQuery = text.toLowerCase();
 
@@ -69,7 +69,7 @@ export default function Friends({ navigation, route }) {
         const filteredFriends = friends.filter((friend) => {
             return (
                 friend.name.toLowerCase().includes(lowerCaseQuery) ||
-                friend.registrationNumber.toLowerCase().includes(lowerCaseQuery) ||
+                friend.reg_no.toLowerCase().includes(lowerCaseQuery) ||
                 friend.section.toLowerCase().includes(lowerCaseQuery)
             );
         });
@@ -115,10 +115,11 @@ export default function Friends({ navigation, route }) {
 
                 {/* Total friends container */}
                 <View style={styles.totalFriendsContainer}>
-                    <Text style={styles.text2}>Total friends: {friends.length}</Text>
+                    <Text style={styles.text2}>Friends: {friends.length}</Text>
                 </View>
 
                 <ScrollView
+                showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
                             tintColor={colors.secondary}
@@ -127,7 +128,7 @@ export default function Friends({ navigation, route }) {
                             onRefresh={() => handleGetFriends(false,false)}
                         />
                     }
-                    contentContainerStyle={{ alignItems: "center", paddingVertical: 15, gap: height * 0.01 }}>
+                    contentContainerStyle={{ alignItems: "center", paddingBottom: 15, gap: height * 0.01 }}>
                     {
                         loading || refreshing ?
                             <TimetableScreenShimmer count={10} />

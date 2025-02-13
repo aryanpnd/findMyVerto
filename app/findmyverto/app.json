@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "findmyverto",
-    "slug": "findmyverto",
+    "name": "Find My Verto",
+    "slug": "find-my-verto",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -15,7 +15,10 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "runtimeVersion": {
+        "policy": "appVersion"
+      }
     },
     "android": {
       "adaptiveIcon": {
@@ -23,15 +26,20 @@
         "backgroundColor": "#ffffff",
         "softwareKeyboardLayoutMode": "pan"
       },
-      "package": "com.loudpear.findmyverto"
+      "package": "com.loudpear.findmyverto",
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "extra": {
       "eas": {
-        "projectId": "0a6d9a25-0f88-4076-82ae-9a860501e6b9"
+        "projectId": "3cfd0e34-fab5-4ba6-b312-fb3fa72bddea"
       }
+    },
+    "owner": "loudpear",
+    "updates": {
+      "url": "https://u.expo.dev/3cfd0e34-fab5-4ba6-b312-fb3fa72bddea"
     }
   }
 }

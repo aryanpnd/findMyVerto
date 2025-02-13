@@ -11,22 +11,29 @@ import { AppContext } from '../../../context/MainApp'
 import { LinearGradient } from 'expo-linear-gradient'
 import { colors } from '../../constants/colors'
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'; // Import the shimmer placeholder
-import { fetchBasicDetails } from '../../utils/fetchUtils/basicDetailsFetch'
+import { fetchBasicDetails } from '../../../utils/fetchUtils/userData/basicDetailsFetch'
 import { useFocusEffect } from '@react-navigation/native'
-import { is } from 'react-native-cheerio/lib/api/attributes'
-import { WIDTH } from '../../constants/styles'
+import { HEIGHT, WIDTH } from '../../constants/styles'
+import { fetchAttendance } from '../../../utils/fetchUtils/userData/attendanceFetch'
+import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create shimmer placeholder
 
 export default function Header({ navigation }) {
     const { auth } = useContext(AuthContext);
 
+    const { attendanceLoading, setAttendanceLoading } = useContext(AppContext);
+    const [attendance, setAttendance] = useState(0);
+    const [attendanceDetails, setAttendanceDetails] = useState({});
+    const [isAttendanceError, setIsAttendanceError] = useState(false);
+    const [attendanceLastSynced, setAttendanceLastSynced] = useState("");
+    const [attendanceRefresh, setAttendanceRefresh] = useState(false);
+
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [isError, setIsError] = useState(false);
     const [lastSynced, setLastSynced] = useState("");
     const [userDetails, setUserDetails] = useState({});
-    const [attendance, setAttendance] = useState(0);
     const [retryAttempts, setRetryAttempts] = useState(0);
     const [isRetryMaxValueReached, setIsRetryMaxValueReached] = useState(false);
 
@@ -35,31 +42,30 @@ export default function Header({ navigation }) {
     const handleDataFetch = async (sync) => {
         await fetchBasicDetails(setLoading, setRefreshing, setUserDetails, auth, setIsError, sync, setLastSynced);
     };
-
-    const getAttendance = async () => {
-        try {
-            const localAttendance = await AsyncStorage.getItem("ATTENDANCE");
-            if (localAttendance) {
-                const parsedAttendance = JSON.parse(localAttendance)?.summary?.total_details?.agg_attendance;
-                setAttendance(parsedAttendance ? parseInt(parsedAttendance) : 0);
-            } else {
-                setAttendance(userDetails?.data?.attendance ? parseInt(userDetails.data.attendance) : 0);
-            }
-        } catch (error) {
-            console.error("Error fetching attendance:", error);
-            setAttendance(0);
+    const getAttendance = async (sync) => {
+        if (attendanceLoading) {
+            return;
         }
+        if (!sync && attendanceLastSynced &&
+            new Date().getTime() - new Date(attendanceLastSynced).getTime() <= 3600000) {
+            // console.log("Attendance data is fresh. Skipping fetch.");
+            return;
+        }
+
+        // console.log("Fetching attendance data...");
+        await fetchAttendance(setAttendanceLoading, setAttendanceRefresh, setAttendance,
+            setAttendanceDetails, auth, setIsAttendanceError, 
+            sync, setAttendanceLastSynced);
     };
 
-    useEffect(() => {
-        handleDataFetch(false);
-    }, []);
 
-    useEffect(() => {
-        if (Object.keys(userDetails).length > 0) {
-            getAttendance();
-        }
-    }, [userDetails]);
+    useFocusEffect(
+        useCallback(() => {
+            handleDataFetch(false);
+            getAttendance(false);
+        }, [])
+    );
+
 
     const handleRetry = async () => {
         if (isError && retryAttempts < retryAttemptsValue) {
@@ -161,21 +167,33 @@ export default function Header({ navigation }) {
 
 
                     <TouchableOpacity style={styles.AttendanceContainer} onPress={loading ? () => { } : () => navigation.navigate('Attendance')}>
-                        <Text style={{ fontWeight: '500', color: colors.whiteLight }}>Attendance</Text>
-                        {loading ?
+                        <Text style={{ fontWeight: '500', color: colors.whiteLight, marginTop: 5 }}>Attendance</Text>
+                        {
+                            attendanceLoading ?
+                                <Text style={{ fontSize: 10, color: colors.whiteLight, marginBottom: 5 }}>Loading...</Text>
+                                :
+                                <Text style={{ fontSize: 10, color: colors.whiteLight, marginBottom: 5 }}>{formatTimeAgo(attendanceLastSynced)}</Text>
+                        }
+                        {isAttendanceError ?
                             <>
-                                <LottieView
-                                    autoPlay
-                                    style={{
-                                        width: 50,
-                                        height: 50,
-                                    }}
-                                    source={require('../../../assets/lotties/loading1.json')}
-                                />
-                            </> :
-                            <>
-                                <AttendanceProgressBar size={50} attendance={attendance} />
+                                <Text style={{ color: colors.whiteLight, fontWeight: "bold" }}>Error</Text>
+                                <Text style={{ color: colors.whiteLight, fontSize: 10 }}>Click to open</Text>
                             </>
+                            :
+                            attendanceLoading ?
+                                <>
+                                    <LottieView
+                                        autoPlay
+                                        style={{
+                                            width: 50,
+                                            height: 50,
+                                        }}
+                                        source={require('../../../assets/lotties/loading1.json')}
+                                    />
+                                </> :
+                                <>
+                                    <AttendanceProgressBar size={50} attendance={parseInt(attendance?.total_details?.agg_attendance) || 0} />
+                                </>
                         }
                     </TouchableOpacity>
 
@@ -230,16 +248,17 @@ const styles = StyleSheet.create({
     greeting: {
         width: '65%',
         overflow: 'hidden',
-        paddingLeft: 5
+        paddingLeft: 5,
+        justifyContent: 'center',
     },
     AttendanceContainer: {
         width: '30%',
-        height: 95,
+        height: HEIGHT(13),
         backgroundColor: colors.btn1,
         borderRadius: 25,
         alignItems: 'center',
-        padding: 3,
-        gap: 8
+        // padding: 3,
+        // gap: 8
     },
     button1: {
         backgroundColor: colors.btn1,

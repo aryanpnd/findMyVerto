@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, ActivityIndicator, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, ActivityIndicator, Pressable, Modal } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { globalStyles, HEIGHT, WIDTH } from '../../constants/styles'
 import { colors } from '../../constants/colors';
@@ -7,18 +7,23 @@ import { API_URL, API_URL_ROOT, AuthContext } from '../../../context/Auth';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import LottieView from 'lottie-react-native';
-import { acceptFriendRequest, cancelSentRequest, rejectFriendRequest, sendFriendRequest } from '../../utils/fetchUtils/handleFriends';
+import { acceptFriendRequest, cancelSentRequest, rejectFriendRequest, sendFriendRequest } from '../../../utils/fetchUtils/handleFriends/handleFriends';
+import ImageViewer from '../miscellaneous/ImageViewer';
 
 
-const { height} = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 
 export default function SearchedStudentCard({ forRequest, student, friends, setfriends, sentFriendRequests, setSentFriendRequests, friendsRequests, setfriendsRequests, navigation, disableBtn, setDisableBtn }) {
-    const {auth} = useContext(AuthContext)
+    const { auth } = useContext(AuthContext)
     const [isFriend, setIsFriend] = useState(false)
     const [isInRequestList, setIsInRequestList] = useState(false)
     const [isInSentList, setIsInSentList] = useState(false)
     const [loading, setLoading] = useState(false)
+    const [modalVisible, setModalVisible] = useState(false);
 
+    const imageSource = student?.studentPicture
+    ? { uri: `${API_URL_ROOT}${student?.studentPicture}` }
+    : require("../../../assets/icons/profileAvatar.png");
 
     function configureButton() {
         const isStudentInSentList = sentFriendRequests?.some(std => std.reg_no === student.reg_no);
@@ -46,7 +51,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
     useEffect(() => {
         configureButton();
     }, [sentFriendRequests, friendsRequests, friends, student]);
-    
+
 
     function handleSendRequest() {
         sendFriendRequest(auth, student, setSentFriendRequests, sentFriendRequests, setLoading, setDisableBtn)
@@ -57,7 +62,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
     }
 
     function handleAddFriend() {
-        acceptFriendRequest(auth, student, setfriends, friends, setfriendsRequests, friendsRequests,setLoading, setDisableBtn)
+        acceptFriendRequest(auth, student, setfriends, friends, setfriendsRequests, friendsRequests, setLoading, setDisableBtn)
     }
 
     function handleRejectFriendRequest() {
@@ -66,64 +71,61 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
 
 
     function navigateToFriend() {
-        if(!isFriend){
+        if (!isFriend) {
             Toast.show({
-                type:"error",
-                text1:"Not your friend!",
-                text2:"You have to be friends to see the details"
+                type: "error",
+                text1: "Not your friend!",
+                text2: "You have to be friends to see the details"
             })
             return
         }
-        navigation.navigate('FriendProfile',student)
+        navigation.navigate('FriendProfile', student)
     }
-
-    const imageSource = student?.studentPicture ? { uri: `${API_URL_ROOT}${student?.studentPicture}` } : require("../../../assets/icons/profileAvatar.png");
-
 
     return (
         <View style={[style.container, globalStyles.elevationMin]}>
-            <TouchableOpacity onPress={navigateToFriend} style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
+            <ImageViewer visible={modalVisible} setVisible={setModalVisible} image={imageSource} />
+            <TouchableOpacity onPress={() => setModalVisible(true)} style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
                 <Image
                     source={imageSource}
-                    style={{ height: 60, width: 60, borderRadius: 60 / 2,objectFit:"fill" }}
-                    transition={1000}
+                    style={{ height: 60, width: 60, borderRadius: 60 / 2, objectFit: "contain" }}
                 />
             </TouchableOpacity>
 
             <TouchableOpacity onPress={navigateToFriend} style={{ width: forRequest ? "35%" : "55%", paddingHorizontal: 10, justifyContent: "center" }}>
                 <Text ellipsizeMode='clip' numberOfLines={1} style={{ fontWeight: "bold" }}>{student.name}</Text>
-                <Text style={{fontSize:12,color:"grey"}}>{student.reg_no}</Text>
-                <Text style={{fontSize:12,color:"grey"}}>{student.section}</Text>
+                <Text style={{ fontSize: 12, color: "grey" }}>{student.reg_no}</Text>
+                <Text style={{ fontSize: 12, color: "grey" }}>{student.section}</Text>
             </TouchableOpacity>
 
             {/* Button  */}
             <View style={{ justifyContent: "center", width: forRequest ? "45%" : "30%" }}>
                 {
-                     forRequest ?
-                     <View style={{ flexDirection: "row", width: WIDTH(43), justifyContent: 'space-between'}}>
-                         <TouchableOpacity
-                             disabled={disableBtn ? true : isFriend ? true : false}
-                             onPress={handleAddFriend}
-                             style={[style.acceptAndRejectBtn,{backgroundColor:colors.green}]}
-                         >
-                             {loading ? <ActivityIndicator size="small" color={"white"} />
-                                 :
-                                 <Text style={{ color: "white", fontWeight: '500' }}>Accept</Text>
-                             }
-                         </TouchableOpacity>
+                    forRequest ?
+                        <View style={{ flexDirection: "row", width: WIDTH(43), justifyContent: 'space-between' }}>
+                            <TouchableOpacity
+                                disabled={disableBtn ? true : isFriend ? true : false}
+                                onPress={handleAddFriend}
+                                style={[style.acceptAndRejectBtn, { backgroundColor: colors.green }]}
+                            >
+                                {loading ? <ActivityIndicator size="small" color={"white"} />
+                                    :
+                                    <Text style={{ color: "white", fontWeight: '500' }}>Accept</Text>
+                                }
+                            </TouchableOpacity>
 
-                         <TouchableOpacity
-                             disabled={disableBtn ? true : isFriend ? true : false}
-                             onPress={handleRejectFriendRequest}
-                             style={[style.acceptAndRejectBtn,{backgroundColor:colors.btn1}]}
-                         >
-                             {loading ? <ActivityIndicator size="small" color={isInSentList ? "black" : "white"} />
-                                 :
-                                 <Text style={{ color: "grey", fontWeight: '500' }}>Cancel</Text>
-                             }
-                         </TouchableOpacity>
-                     </View>
-                     :
+                            <TouchableOpacity
+                                disabled={disableBtn ? true : isFriend ? true : false}
+                                onPress={handleRejectFriendRequest}
+                                style={[style.acceptAndRejectBtn, { backgroundColor: colors.btn1 }]}
+                            >
+                                {loading ? <ActivityIndicator size="small" color={isInSentList ? "black" : "white"} />
+                                    :
+                                    <Text style={{ color: "grey", fontWeight: '500' }}>Cancel</Text>
+                                }
+                            </TouchableOpacity>
+                        </View>
+                        :
                         <TouchableOpacity
                             disabled={isFriend || disableBtn}
                             onPress={() => {
@@ -156,7 +158,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
                                     :
                                     <>
                                         <Text style={{ color: isInSentList ? "grey" : "white", textAlign: "center", fontWeight: "bold" }}>
-                                            {isFriend ? "Friends" : isInRequestList ? "Requested you" : isInSentList ? "Cancel" : "Send"}
+                                            {isFriend ? "Friends" : isInRequestList ? "Requested" : isInSentList ? "Cancel" : "Send"}
                                         </Text>
                                         {
                                             isInSentList ?
@@ -196,5 +198,5 @@ const style = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         gap: 5
-    }
+    },
 })

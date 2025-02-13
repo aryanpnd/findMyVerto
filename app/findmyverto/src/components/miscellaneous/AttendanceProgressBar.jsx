@@ -11,11 +11,11 @@ export default function AttendanceProgressBar({ attendance, size }) {
                 fill={attendance}
                 rotation={360}
                 tintColor={attendance > 75 ? "#2ecc71" : attendance > 50 ? '#4834d4' : '#ea2027'}
-                backgroundColor="#ffffff87" />
-            <Text style={{
-                position: 'absolute', top: attendance === 100 ? 17 : 15, right: 11, color: 'white',
-                fontSize: attendance === 100 ? 11 : 14
-            }}>{attendance}%</Text>
+                backgroundColor="#ffffff87">
+                {() => (
+                    <Text style={{ color: 'white', fontSize: 13, fontWeight: '500' }}>{attendance}%</Text>
+                )}
+                </AnimatedCircularProgress>
         </View>
     )
 }

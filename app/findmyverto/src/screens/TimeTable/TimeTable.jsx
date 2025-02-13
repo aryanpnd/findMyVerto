@@ -8,13 +8,14 @@ import { colors } from '../../constants/colors'
 import { API_URL, AuthContext } from '../../../context/Auth'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
 import Toast from 'react-native-toast-message'
-import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
+import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 import { AppContext } from '../../../context/MainApp'
-import { fetchTimetable } from '../../utils/fetchUtils/timeTableFetch'
+import { fetchTimetable } from '../../../utils/fetchUtils/userData/timeTableFetch'
 import Test from '../../components/home/Test'
+import { ErrorMessage } from '../../components/timeTable/ErrorMessage'
 
 export default function TimeTable() {
-  const { auth, logout2 } = useContext(AuthContext)
+  const { auth } = useContext(AuthContext)
   const { timetableLoading, setTimetableLoading } = useContext(AppContext)
   const [classesToday, setClassesToday] = useState(0)
   const [timeTable, settimeTable] = useState([])
@@ -41,13 +42,17 @@ export default function TimeTable() {
         <Toast />
         <SyncData self={true} syncNow={() => handleFetchTimetable(true)} time={formatTimeAgo(lastSynced)} color={"white"} bg={colors.secondary} loader={true} loading={refreshing} />
       </View>
-      {self && <OverlayLoading loading={timetableLoading} loadingText={"Syncing..."} />}
+      {self && !isError && <OverlayLoading loading={timetableLoading} loadingText={"Syncing..."} />}
+
       {
-        timeTable ?
-          // <TimeTableScreen timeTable={Object.entries(timeTable)} />
-          <TimeTableScreen timeTable={timeTable} />
+        isError ?
+          <ErrorMessage handleFetchTimetable={handleFetchTimetable} timetableLoading={timetableLoading} buttonHeight={45} ErrorMessage={"timetable"}/>
           :
-          <></>
+          <TimeTableScreen timeTable={timeTable} />
+          // timeTable ?
+          //   // <TimeTableScreen timeTable={Object.entries(timeTable)} />
+          //   :
+          //   <></>
         // <></>
       }
     </>

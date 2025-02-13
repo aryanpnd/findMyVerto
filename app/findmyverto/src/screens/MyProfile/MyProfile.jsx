@@ -1,33 +1,34 @@
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, RefreshControl, Alert } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, ScrollView, RefreshControl, Alert, ActivityIndicator, Linking } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MaterialIcons } from '@expo/vector-icons'
 import { colors } from '../../constants/colors'
 import { StatusBar } from 'expo-status-bar'
-import { API_URL, AuthContext } from '../../../context/Auth'
+import { AuthContext } from '../../../context/Auth'
 import StudentProfile from '../../components/Profile/StudentProfile'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import axios from 'axios'
 import Toast from 'react-native-toast-message'
 import SyncData from '../../components/miscellaneous/SyncData'
-import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
-import formatTimeAgo from '../../utils/helperFunctions/dateFormatter'
-import { fetchBasicDetails } from '../../utils/fetchUtils/basicDetailsFetch'
+import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
+import { fetchBasicDetails } from '../../../utils/fetchUtils/userData/basicDetailsFetch'
 import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert'
+import AllowedFieldsToShow from '../../components/settings/allowedFieldsToShow'
+import { AppContext } from '../../../context/MainApp'
 const { height, width } = Dimensions.get('window');
 
 export default function MyProfile({ navigation }) {
     const { auth, logout } = useContext(AuthContext)
+    const { checkForUpdates } = useContext(AppContext)
     const customAlert = useCustomAlert();
-    
+
     const [student, setStudent] = useState({})
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false);
     const [isError, setIsError] = useState(false);
     const [lastSynced, setLastSynced] = useState("")
+    const [updateLoading, setUpdateLoading] = useState(false)
 
     const handleDataFetch = (sync) => {
-        fetchBasicDetails(setLoading, setRefreshing, setStudent, auth,setIsError, sync, setLastSynced)
+        fetchBasicDetails(setLoading, setRefreshing, setStudent, auth, setIsError, sync, setLastSynced)
     }
 
     useEffect(() => {
@@ -78,19 +79,33 @@ export default function MyProfile({ navigation }) {
 
 
                 {/* Last sync container */}
-                {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} />}
-                <SyncData color={"white"} self={true} syncNow={() => handleDataFetch(true)} time={formatTimeAgo(student.lastSynced)} bg={colors.secondary} />
+                {/* {self && <OverlayLoading loading={loading} loadingText={"Syncing..."} />} */}
+                <SyncData color={"white"} self={true} syncNow={() => handleDataFetch(true)} time={formatTimeAgo(student.lastSynced)} bg={colors.secondary} loader={true} loading={loading} />
 
                 {/* Body */}
                 <ScrollView style={styles.body} contentContainerStyle={{ alignItems: "center" }}>
-                    <StudentProfile student={student?.data} />
-                </ScrollView>
+                    <StudentProfile student={student?.data} loading={loading} />
+                    <AllowedFieldsToShow />
 
+                </ScrollView>
                 <View style={styles.footer}>
                     <TouchableOpacity onPress={handleLogout} style={styles.footerBtn}>
                         <Text style={{ color: "grey" }}>Logout</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={() => checkForUpdates(setUpdateLoading, customAlert)} style={{ marginTop: 10 }}>
+                        {updateLoading ?
+                            <ActivityIndicator color={"grey"} size={20} /> :
+                            <Text style={{ color: "grey" }}>Check for updates</Text>}
+                    </TouchableOpacity>
+
+                    <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                        <Text style={{ color: "grey", marginTop: 10,fontSize:10 }}>Made with ❤️ by</Text>
+                        <TouchableOpacity onPress={() => Linking.openURL('https://github.com/aryanpnd')}>
+                            <Text style={{ color: "#5D3FD3",fontSize:10 }}>Aryan</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
+
             </SafeAreaView>
         </>
     )
@@ -101,7 +116,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: '100%',
-        height: '100%',
+        // height: '100%',
     },
 
     // header
@@ -131,7 +146,7 @@ const styles = StyleSheet.create({
     },
 
     footer: {
-        height: height * 0.1,
+        height: height * 0.15,
         alignItems: "center"
     },
     footerBtn: {
@@ -140,8 +155,8 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         justifyContent: "center",
         alignItems: "center",
-        borderColor: colors.blueTransparency,
-        borderWidth: 2
+        borderColor: "grey",
+        borderWidth: 1
     }
 
 })

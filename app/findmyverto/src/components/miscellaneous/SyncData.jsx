@@ -1,10 +1,7 @@
-import { View, Text, TouchableOpacity, Alert, StyleSheet, ActivityIndicator } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import React from 'react'
-import { colors } from '../../constants/colors'
 import { Octicons } from '@expo/vector-icons'
 import CustomAlert, { useCustomAlert } from './CustomAlert'
-import { load } from 'react-native-cheerio/lib/static'
-import LottieView from 'lottie-react-native'
 
 export default function SyncData({ time, syncNow, self, color, bg, loader, loading }) {
   const customAlert = useCustomAlert();
@@ -31,19 +28,19 @@ export default function SyncData({ time, syncNow, self, color, bg, loader, loadi
           {loader ?
             loading ?
               <TouchableOpacity style={[styles.TouchableOpacity, styles.loader]} onPress={SyncData}>
-                <Text style={{ color: 'white' }}>Syncing</Text>
-                <ActivityIndicator size="small" color="white"/>
+                <Text style={{ color: color }}>Syncing</Text>
+                <ActivityIndicator size={15} color={color}/>
                 {/* <LottieView
                   source={require('../../../assets/lotties/loading1.json')} autoPlay loop
                   style={{ width: 25, height: 25 }} /> */}
               </TouchableOpacity>
               :
               <TouchableOpacity style={styles.TouchableOpacity} onPress={SyncData}>
-                <Text style={{ color: 'white' }}>Sync now <Octicons name='sync' /></Text>
+                <Text style={{ color: color }}>Sync now <Octicons name='sync' /></Text>
               </TouchableOpacity>
             :
             <TouchableOpacity style={styles.TouchableOpacity} onPress={SyncData}>
-              <Text style={{ color: 'white' }}>Sync now <Octicons name='sync' /></Text>
+              <Text style={{ color: color }}>Sync now <Octicons name='sync' /></Text>
             </TouchableOpacity>
           }
         </View>}

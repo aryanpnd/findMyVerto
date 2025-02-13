@@ -1,146 +1,212 @@
-# Find My Verto
+<p align="center">
+  <img src="logo.png" style="border-radius:2rem" alt="Find My Verto Logo" width="200">  
+</p>
 
-Find My Verto is a platform designed for LPU students to manage and view their details, timetable, attendance, and friends' information. It combines a backend service for scraping data from the LPU UMS (University Management System) portal and a React Native app for an enhanced student experience.
+<h1 align='center' style="font-size:3rem">Find My Verto</h1>
+<h3 align='center'>Your Open-Source LPU Companion 🚀</h3>
 
-## Repository Structure
+
+<p align="center">
+<a href="https://github.com/aryanpnd"><img title="Author" src="https://img.shields.io/badge/Author-aryan-green.svg?style=for-the-badge&logo=github"></a>
+</p>
+
+
+<p align="center">
+<a href="https://github.com/aryanpnd/findMyVerto/stargazers/"><img title="Stars" src="https://img.shields.io/github/stars/aryanpnd/findMyVerto?color=yellow&style=flat-square"></a>
+<a href="https://github.com/aryanpnd/findMyVerto/network/members"><img title="Forks" src="https://img.shields.io/github/forks/aryanpnd/findMyVerto?color=lightgrey&style=flat-square"></a>
+<a href="https://github.com/aryanpnd/findMyVerto/issues"><img title="issues" src="https://img.shields.io/github/issues/aryanpnd/findMyVerto">
+</a>
+</p>
+
+Find My Verto is an open-source platform built for LPU students to seamlessly manage and view their academic information.  Access your timetable 📅, attendance 📊, CGPA, marks, exam schedules, assignments, friend information 👥, and much more, all in one convenient place!
+
+---
+
+## 📖 Table of Contents
+
+- [✨ Features](#-features)
+- [📂 Project Structure](#-project-structure)
+- [⚙️ Installation](#-installation)
+  - [🔧 Prerequisites](#-prerequisites)
+  - [📱 App Setup](#-app-setup)
+  - [🖥 Backend Setup](#-backend-setup)
+- [🚀 Usage](#-usage)
+  - [📲 Running the App](#-running-the-app)
+  - [🛠 Interacting with the Backend](#-interacting-with-the-backend)
+- [📡 API Documentation](#-api-documentation)
+- [🤝 Contributing](#-contributing)
+- [📜 License](#-license)
+- [📧 Contact](#-contact)
+
+---
+
+## ✨ Features
+
+- 🔑 **Secure Authentication:**  Login securely using your LPU UMS credentials. 🔒
+- 👤 **Student Profile:** View and manage your complete academic profile.  🎓
+- 🕒 **Timetable Management:**  Access and organize your class schedule with ease. 🗓️
+- 📊 **Attendance Tracking:** Monitor your attendance records in real-time.  📈
+- 💯 **Marks & CGPA Retrieval:** Check your grades and calculate your CGPA.  📊
+- 🧑‍🤝‍🧑 **Friend Connection:** Search, add, and manage your friends within the LPU community.  🤝
+- 🔄 **Automatic Data Sync:** Stay up-to-date with seamless synchronization with the LPU UMS. 🔄
+- 📨 **Friend Requests:** Send and manage friend requests.  💌
+- 📝 **Profile Customization:** Personalize your profile information.  ✍️
+- 🔔 **Real-time Notifications:** Receive important updates and alerts.  📢
+- 🚀 **Over-the-Air Updates:** Enjoy the latest features and improvements without manual updates. 📲
+- ⚙️ **Open Source:**  Contribute to the project and help make it even better!  💻
+- 🎨 **User-Friendly Interface:**  Intuitive and easy-to-navigate design.  🤩
+
+
+---
+
+## 📂 Project Structure
+
+### 📱 App (`findmyverto`)
 
 ```
-findMyVerto/
-│
-├── app/findmyverto        # React Native app for mobile users
-├── backend/               
-    └── api                # Backend service for API
-    └── scrapper           # Backend service for data scraping
-└── .gitignore
+app/
+    findmyverto/
+        .env
+        .expo/
+        .gitignore
+        android/
+        App.js
+        app.json
+        assets/
+        AuthPage.jsx
+        babel.config.js
+        context/
+        dev-readme.md
+        eas.json
+        forDeveloper.md
+        hooks/
+        package.json
+        readme.md
+        src/
+        ttTest.json
+        utils/
+icons/
+    android/
+    ios/
+    web/
+icons-old-rn/
+    adaptive-icon.png
+    favicon.png
+    icon.png
+    logo.png
+    splash.png
+```
+
+### 🖥 Backend (`api-v1`)
+
+```
+backend/
+    api-v1/
+        .env
+        .gitignore
+        apis.md
+        controller/
+        models/
+        package.json
+        ...
 ```
 
 ---
 
-## Features
+## ⚙️ Installation
 
-### Backend
-- Secure login to LPU UMS.
-- Retrieve:
-  - Student information.
-  - Timetable and attendance.
-- Search for other students.
-- Manage friends and view their details.
+### 🔧 Prerequisites
 
-### App
-- Login and sync data with UMS via backend API.
-- Retrieve and display:
-  - Student information, timetable, and attendance.
-- Manage:
-  - Friend requests, profiles, and notifications.
-- Access friend's timetable and attendance.
+Ensure you have the following installed:
+- 🖥 Node.js
+- 📦 npm or yarn
+- 📲 Expo CLI
 
----
+### 📱 App Setup
 
-## Getting Started
-
-### Prerequisites
-- **Backend**: Node.js, npm.
-- **App**: Node.js, npm/yarn, Expo CLI.
-
-### Installation
-
-#### Backend
-1. Clone the backend repository:
+1. Clone the repository:
     ```sh
-    git clone https://github.com/aryanpnd/findMyVerto/tree/main/backend/
+    git clone https://github.com/aryanpnd/findMyVerto.git
     ```
+2. Navigate to the app directory:
     ```sh
-    cd api
+    cd findMyVerto/app/findmyverto
     ```
-    or
+3. Install dependencies:
     ```sh
-    cd scrapper
+    npm install --legacy-peer-deps
     ```
-2. Install dependencies:
-    ```sh
-    npm install
-    ```
-3. Create a `.env` file in the root directory:
-    
-    for `api`
-    ```env
-    DBURL=_MONGO_DB_URL_
-    PORT=_PORT_
-    SECRETKEY=_JWT_SECRET_
-    SCRAPPER_BASE_URL=_BASE_URL_OF_THE_SCRAPPER_
-    ```
-    for `scrapper`
-    ```env
-    PORT=_PORT_
-    CLOUDINARY_CLOUD_NAME=_CLOUDINARY_CLOUD_NAME_
-    CLOUDINARY_API_KEY=_CLOUDINARY_API_KEY_
-    CLOUDINARY_API_SECRET=_CLOUDINARY_API_SECRET_
-    ```
-4. Start the backend:
-    ```sh
-    node server.js
-    ```
-
-#### App
-1. Clone the app repository:
-    ```sh
-    git clone https://github.com/aryanpnd/findMyVerto/tree/main/app/findmyverto
-    cd findmyverto
-    ```
-2. Install dependencies:
-    ```sh
-    npm install
-    ```
-3. Start the development server:
+4. Start the development server:
     ```sh
     npm start
     # or
     yarn start
     ```
 
-4. Open the Expo Go app on your mobile device and scan the QR code displayed in the terminal or browser to load the app.
+### 🖥 Backend Setup
+
+1. Clone the repository:
+    ```sh
+    git clone https://github.com/aryanpnd/findMyVerto.git
+    ```
+2. Navigate to the backend directory:
+    ```sh
+    cd findMyVerto/backend/api-v1
+    ```
+3. Install dependencies:
+    ```sh
+    npm install
+    ```
+4. Start the server:
+    ```sh
+    npm start
+    ```
 
 ---
 
-### App
-1. Start the backend service.
-2. Use the app to log in and sync data with the backend.
+## 🚀 Usage
+
+### 📲 Running the App
+
+1. Open **Expo Go** on your mobile device 📱.
+2. Scan the QR code displayed in the terminal or browser 🖥️.
+3. The app will launch on your device 🚀.
+
+### 🛠 Interacting with the Backend
+
+The backend server runs at `http://localhost:3000`. You can test API endpoints using tools like **Postman** 📬 or **cURL** 🔄.
 
 ---
 
-## Project Structure
+## 📡 API Documentation
 
-
-### App
-```
-app/findmyverto/
-├── src/                  # Source files
-│   ├── components/       # UI components
-│   ├── screens/          # App screens
-│   └── constants/        # Constants and configurations
-├── App.js                # Entry point
-├── assets/               # Static assets
-├── context/              # Context providers
-├── package.json          # Dependencies and scripts
-└── app.json              # Expo configuration
-```
+The API documentation is available in the `apis.md` file within the backend directory. This includes details on:
+- 🔐 Authentication
+- 📊 Student data retrieval
+- 🕒 Timetable & attendance APIs
+- 🤝 Friend management endpoints
 
 ---
 
-## Contributing
+## 🤝 Contributing
 
-Contributions are welcome! Please open an issue or submit a pull request for any changes.
+🎉 Contributions are welcome! Follow these steps:
+
+1. 🍴 Fork the repository.
+2. 🌿 Create a new branch (`feature-xyz`).
+3. 💾 Commit your changes (`git commit -m 'Add new feature'`).
+4. 📤 Push to your branch (`git push origin feature-xyz`).
+5. 🔄 Open a **Pull Request**.
 
 ---
 
-## License
+## 📜 License
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the **MIT License** 📄. See the `LICENSE` file for details.
 
 ---
 
-## Contact
+## 📧 Contact
 
-For any inquiries, please contact [aryanpnd3@gmail.com](mailto:aryanpnd3@gmail.com).
+For any inquiries, reach out to ✉️ [aryanpnd3@gmail.com](mailto:aryanpnd3@gmail.com).
 
---- 

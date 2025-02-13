@@ -3,14 +3,14 @@ import { Dimensions } from "react-native";
 export const globalStyles = {
 
     elevation: {
-        shadowColor: "#000000",
-        shadowOffset: {
-          width: 0,
-          height: 18,
-        },
-        shadowOpacity:  0.25,
-        shadowRadius: 20.00,
-        elevation: 24
+      shadowColor: "#000000",
+      shadowOffset: {
+        width: 0,
+        height: 10 * 1.8, 
+      },
+      shadowOpacity: 10 * 0.025, 
+      shadowRadius: 10 * 2,      
+      elevation: 10,
     },
     elevationMin: {
       shadowColor: "#000000",

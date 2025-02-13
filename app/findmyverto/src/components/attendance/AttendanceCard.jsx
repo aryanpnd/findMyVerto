@@ -6,10 +6,22 @@ import { globalStyles } from '../../constants/styles'
 
 export default function AttendanceCard({ attendance, colors, navigation, isAggregateCard, attendanceDetails }) {
     return (
-        <Pressable style={[styles.cardWrapper]} onPress={isAggregateCard ? () => navigation.navigate('AttendanceDetails', { Details: attendanceDetails, subject_code: attendance.subject_code }) : () => { }}>
+        <Pressable style={[
+            styles.cardWrapper,
+            !attendance?.subject_name && { borderBottomRightRadius: 50,borderTopLeftRadius:50 }
+            ]}
+            onPress={
+                attendance?.subject_name ?
+                    () => navigation.navigate('AttendanceDetails', { Details: attendanceDetails, subject_code: attendance.subject_code })
+                    : () => { }
+            }>
             <LinearGradient
                 colors={colors}
-                style={[styles.cardContainer, globalStyles.elevationMin]}
+                style={[
+                    styles.cardContainer,
+                    globalStyles.elevationMin,
+                    !attendance?.subject_name && { borderBottomRightRadius: 50,borderBottomLeftRadius:50 }
+                ]}
                 start={{ x: 0, y: 0 }} // Start from the left
                 end={{ x: 1, y: 0 }}
             >
@@ -55,8 +67,8 @@ export default function AttendanceCard({ attendance, colors, navigation, isAggre
 
 const styles = StyleSheet.create({
     cardWrapper: {
-        width: '90%',
-        height: '80%',
+        width: '95%',
+        height: '100%',
         borderRadius: 25,
         // flexDirection: 'row',
     },
