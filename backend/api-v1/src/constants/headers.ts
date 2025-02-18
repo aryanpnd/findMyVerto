@@ -6,5 +6,10 @@ export const umsHeaders = {
     },
     USER_AGENT_JSON_PLAIN: {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36',
-    }
+    },
+    // User-Agent headers for form-urlencoded requests
+    USER_AGENT_FORM_URL_ENCODED: {
+        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.106 Safari/537.36',
+        'Content-Type': 'application/x-www-form-urlencoded',
+    },
 }

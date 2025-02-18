@@ -6,6 +6,11 @@ import { getStudentAttendance } from '../controllers/studentController/studentAt
 import { searchStudent } from '../controllers/studentController/studentSearchController';
 import { getStudentMarks } from '../controllers/studentController/getStudentMarksController';
 import { getStudentCgpa } from '../controllers/studentController/getStudentCgpaController';
+import { getStudentExams } from '../controllers/studentController/getStudentExamsController';
+import { getStudentPendingAssignments } from '../controllers/studentController/studentPendingAssignmentsController';
+import { getStudentAssignments } from '../controllers/studentController/studentAssignmentsController';
+import { getStudentMakeup } from '../controllers/studentController/studentMakeupController';
+import { getStudentMessages } from '../controllers/studentController/studentMessagesController';
 export const studentRoutes = express.Router();
 
 /**
@@ -125,6 +130,42 @@ studentRoutes.post('/timetable', (req: Request, res: Response) => {
   });
 });
 
+
+/**
+ * @swagger
+ * /api/v2/student/makeup:
+ *   post:
+ *     tags: [Student]
+ *     summary: Get student makeup classes
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/makeup', (req: Request, res: Response) => {
+  getStudentMakeup(req, res).catch((err) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      data: {},
+      message: "Unexpected server error",
+      errorMessage: err.message,
+    });
+  })
+})
+
 /**
  * @swagger
  * /api/v2/student/attendance:
@@ -221,6 +262,152 @@ studentRoutes.post('/marks', (req: Request, res: Response) => {
  */
 studentRoutes.post('/cgpa', (req: Request, res: Response) => {
   getStudentCgpa(req, res).catch((err) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      data: {},
+      message: "Unexpected server error",
+      errorMessage: err.message,
+    });
+  })
+})
+
+/**
+ * @swagger
+ * /api/v2/student/exams:
+ *   post:
+ *     tags: [Student]
+ *     summary: Get student exams
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/exams', (req: Request, res: Response) => {
+  getStudentExams(req, res).catch((err) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      data: {},
+      message: "Unexpected server error",
+      errorMessage: err.message,
+    });
+  })
+})
+
+/**
+ * @swagger
+ * /api/v2/student/pendingAssignments:
+ *   post:
+ *     tags: [Student]
+ *     summary: Get student pending assignments
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/pendingAssignments', (req: Request, res: Response) => {
+  getStudentPendingAssignments(req, res).catch((err) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      data: {},
+      message: "Unexpected server error",
+      errorMessage: err.message,
+    });
+  })
+})
+
+/**
+ * @swagger
+ * /api/v2/student/assignments:
+ *   post:
+ *     tags: [Student]
+ *     summary: Get student assignments
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/assignments', (req: Request, res: Response) => {
+  getStudentAssignments(req, res).catch((err) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      data: {},
+      message: "Unexpected server error",
+      errorMessage: err.message,
+    });
+  })
+})
+
+/**
+ * @swagger
+ * /api/v2/student/messages:
+ *   post:
+ *     tags: [Student]
+ *     summary: Get student messages
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               pageIndex:
+ *                 type: number
+ *               subject:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/messages', (req: Request, res: Response) => {
+  getStudentMessages(req, res).catch((err) => {
     console.error(err);
     res.status(500).json({
       success: false,
