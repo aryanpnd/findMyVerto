@@ -23,6 +23,7 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
     const { timetableLoading, setTimetableLoading } = useContext(AppContext)
     const [classesToday, setClassesToday] = useState(0)
     const [timeTable, settimeTable] = useState([])
+    const [courses, setCourses] = useState([])
     const [lastSynced, setLastSynced] = useState("")
     const [lastUpdated, setLastUpdated] = useState("")
     const [day, setDay] = useState(0)
@@ -55,6 +56,7 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
             setRefreshing,
             settimeTable,
             setClassesToday,
+            setCourses,
             auth,
             setIsError,
             false,

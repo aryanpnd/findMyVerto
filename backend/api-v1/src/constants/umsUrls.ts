@@ -13,4 +13,7 @@ export const umsUrls = {
     STUDENT_ASSIGNMENTS: "https://ums.lpu.in/lpuums/frmstudentdownloadassignment.aspx",
     STUDENT_MAKEUPS:"https://ums.lpu.in/lpuums/frmViewStudentMakeupAdjusment.aspx",
     STUDENT_MESSAGES: "https://ums.lpu.in/lpuums/frmStudentsMyMessages.aspx/GetDataforMyMessages",
+
+    PLACEMENT_PORTAL_LOGIN_URL:"https://ums.lpu.in/Placements/",
+    STUDENT_DRIVES: "https://ums.lpu.in/Placements/frmPlacementDriveRegistration.aspx" 
 };

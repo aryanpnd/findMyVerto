@@ -3,7 +3,7 @@ import { AuthContext } from "../../../context/Auth";
 import { useContext, useEffect, useState } from "react";
 import { fetchCgpa } from "../../../utils/fetchUtils/userData/handleMarksAndCgpaFetch";
 
-export default function Cgpa({navigation}) {
+export default function Cgpa({ navigation }) {
     const { auth } = useContext(AuthContext)
     const [cgpa, setCgpa] = useState({})
     const [cgpaLoading, setCgpaLoading] = useState(true)
@@ -19,8 +19,6 @@ export default function Cgpa({navigation}) {
         handleCgpaFetch()
     }, [])
     return (
-        <>
-            <CgpaScreen cgpa={cgpa} cgpaLoading={cgpaLoading} cgpaRefresh={cgpaRefresh} isError={isError} lastSynced={lastSynced} handleCgpaFetch={handleCgpaFetch} navigation={navigation}/>
-        </>
+        <CgpaScreen cgpa={cgpa} cgpaLoading={cgpaLoading} cgpaRefresh={cgpaRefresh} isError={isError} lastSynced={lastSynced} handleCgpaFetch={handleCgpaFetch} navigation={navigation} />
     );
 }

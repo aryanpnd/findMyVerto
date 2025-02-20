@@ -148,7 +148,7 @@ friendScrapperRoutes.post('/cgpa', getFriendCgpa);
 
 /**
  * @swagger
- * /api/v2/friends/exam:
+ * /api/v2/friends/exams:
  *   post:
  *     tags: [Friend's Data]
  *     summary: Get friend's exams
@@ -171,7 +171,7 @@ friendScrapperRoutes.post('/cgpa', getFriendCgpa);
  *       500:
  *         description: Internal server error
  */
-friendScrapperRoutes.post('/exam', getFriendExams);
+friendScrapperRoutes.post('/exams', getFriendExams);
 
 /**
  * @swagger

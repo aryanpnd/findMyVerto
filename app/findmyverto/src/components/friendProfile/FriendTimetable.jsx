@@ -11,16 +11,21 @@ import { getFriendTimetable } from '../../../utils/fetchUtils/friendData/handleF
 import formatTimetable from '../../../utils/helperFunctions/timetableFormatter'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 import { friendsStorage } from '../../../utils/storage/storage'
+import { ErrorMessage } from '../timeTable/ErrorMessage'
 
 export default function FriendTimetable({ navigation, route }) {
     const { auth } = useContext(AuthContext)
     const { id, name } = route.params;
     const [timeTable, settimeTable] = useState({})
     const [loading, setLoading] = useState(false)
+    const [refreshing, setRefreshing] = useState(false)
     const [lastSynced, setLastSynced] = useState("")
+    const [courses, setCourses] = useState([])
+    const [isError, setIsError] = useState(false)
 
     async function handleFetchTimetable(sync) {
-        await getFriendTimetable(auth, id, sync, settimeTable, setLastSynced, setLoading)
+        if (loading) return
+        await getFriendTimetable(auth, id, sync, settimeTable, setCourses, setLastSynced, setLoading, setRefreshing, setIsError)
     }
 
     async function fetchDataLocally() {
@@ -31,8 +36,10 @@ export default function FriendTimetable({ navigation, route }) {
             if (studentRaw) {
                 const student = JSON.parse(studentRaw)
                 const parsedTimetable = formatTimetable(student.data.time_table, student.data.courses)
+                // sleep for half second
+                await new Promise((resolve) => setTimeout(resolve, 500));
                 settimeTable(parsedTimetable)
-                setLastSynced(formatTimeAgo(student.lastSynced))
+                setLastSynced(student.lastSynced)
             } else {
                 await handleFetchTimetable(false)
             }
@@ -62,11 +69,16 @@ export default function FriendTimetable({ navigation, route }) {
         <>
             <View style={{ zIndex: 2 }}>
                 <Toast />
-                <SyncData self={true} time={lastSynced} color={"white"} bg={colors.secondary} syncNow={() => handleFetchTimetable(true)} loader={true} loading={loading} />
+                <SyncData self={true} time={formatTimeAgo(lastSynced)} color={"white"} bg={colors.secondary} syncNow={() => handleFetchTimetable(true)} loader={true} loading={refreshing} />
             </View>
-                <OverlayLoading loading={loading} loadingText={"Syncing..."} />
+            {!isError && <OverlayLoading loading={loading} loadingText={"Syncing..."} />}
 
-            <TimeTableScreen timeTable={timeTable} loading={loading} />
+            {
+                isError ?
+                    <ErrorMessage handleFetchTimetable={handleFetchTimetable} timetableLoading={loading} buttonHeight={45} ErrorMessage={"timetable"} />
+                    :
+                    <TimeTableScreen timeTable={timeTable} loading={loading} />
+            }
         </>
     )
 }

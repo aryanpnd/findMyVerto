@@ -11,6 +11,7 @@ import { getStudentPendingAssignments } from '../controllers/studentController/s
 import { getStudentAssignments } from '../controllers/studentController/studentAssignmentsController';
 import { getStudentMakeup } from '../controllers/studentController/studentMakeupController';
 import { getStudentMessages } from '../controllers/studentController/studentMessagesController';
+import { getStudentMyDrives } from '../controllers/studentController/studentMyDrivesController';
 export const studentRoutes = express.Router();
 
 /**
@@ -408,6 +409,41 @@ studentRoutes.post('/assignments', (req: Request, res: Response) => {
  */
 studentRoutes.post('/messages', (req: Request, res: Response) => {
   getStudentMessages(req, res).catch((err) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      data: {},
+      message: "Unexpected server error",
+      errorMessage: err.message,
+    });
+  })
+})
+
+/**
+ * @swagger
+ * /api/v2/student/myDrives:
+ *   post:
+ *     tags: [Student]
+ *     summary: Get student placement drives
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/myDrives', (req: Request, res: Response) => {
+  getStudentMyDrives(req, res).catch((err) => {
     console.error(err);
     res.status(500).json({
       success: false,

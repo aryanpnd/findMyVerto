@@ -18,6 +18,7 @@
     "@shopify/flash-list": "1.7.1",
     "@types/mongoose": "^5.11.97",
     "axios": "^1.5.1",
+    "date-fns": "^4.1.0",
     "expo": "^52.0.23",
     "expo-constants": "~17.0.5",
     "expo-dev-client": "~5.0.8",
@@ -52,7 +53,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",
-    "@react-native-community/cli": "latest"
+    "@react-native-community/cli": "latest",
+    "@types/react": "^18.3.18"
   },
   "private": true
 }

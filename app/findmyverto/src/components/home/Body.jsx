@@ -149,13 +149,5 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '500',
     textAlign: 'center'
-  },
-  underDevelopmentMark: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
-    justifyContent: 'center',
-    alignItems: 'center',
-    width:"10%"
   }
 })

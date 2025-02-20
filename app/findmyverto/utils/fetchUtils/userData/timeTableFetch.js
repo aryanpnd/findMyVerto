@@ -10,6 +10,7 @@ export async function fetchTimetable(
     setRefreshing,
     settimeTable,
     setClassesToday,
+    setCourses,
     auth,
     setIsError,
     sync,
@@ -32,6 +33,7 @@ export async function fetchTimetable(
                     // userStorage.set("TIMETABLE", JSON.stringify(result.data));
                     const tt = formatTimetable(result.data.data.time_table, result.data.data.courses, todayOnly)
                     settimeTable(tt)
+                    setCourses(result.data.data.courses)
                     setClassesToday(tt.length)
                     setLastSynced(result.data.lastSynced)
                     setLastUpdated(result.data.data.last_updated)
@@ -52,12 +54,10 @@ export async function fetchTimetable(
             }
 
         } else {
-            // wait for 1 second
-            // await new Promise((resolve) => setTimeout(resolve, 500));
             const tt = formatTimetable(userTimeTable.data.time_table, userTimeTable.data.courses, todayOnly)
-            console.log(tt)
             setClassesToday(tt.length)
             settimeTable(tt)
+            setCourses(userTimeTable.data.courses)
             setLastSynced(userTimeTable.lastSynced)
             setLastUpdated(userTimeTable.data.last_updated)
             setIsError(false)

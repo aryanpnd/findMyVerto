@@ -25,7 +25,7 @@ import {
   import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert'
   import { useNavigation } from '@react-navigation/native'
   import { AppContext } from '../../../context/MainApp'
-  import { userStorage } from '../../../utils/storage/storage'
+  import { friendsStorage, userStorage } from '../../../utils/storage/storage'
   
   const { height, width } = Dimensions.get('window')
   
@@ -41,6 +41,18 @@ import {
       title: "Timetable",
       icon: require('../../../assets/icons/schedule.png'),
       route: "FriendTimetable"
+    },
+    {
+      name: "timetable",
+      title: "Courses",
+      icon: require('../../../assets/icons/courses.png'),
+      route: "FriendCourses" 
+    },
+    {
+      name: "exams",
+      title: "Exams",
+      icon: require('../../../assets/icons/exam.png'),
+      route: "FriendExams"
     },
     {
       name: "marks",
@@ -75,7 +87,7 @@ import {
   
     async function fetchDataLocally() {
       try {
-        const studentRaw = userStorage.getString(`${_id}`)
+        const studentRaw = friendsStorage.getString(`${_id}`)
         if (studentRaw) {
           const student = JSON.parse(studentRaw)
           setStudent(student)
