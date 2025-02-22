@@ -5,6 +5,7 @@ export const availableFieldsToShow = {
   : "Exams" },
   "marks": { icon: require("../../assets/icons/marks.png"), title: "Marks" },
   "cgpa": { icon: require("../../assets/icons/cgpa.png"), title: "CGPA" },
+  "assignments": { icon: require("../../assets/icons/assignment.png"), title: "Assignments" },
 }
 
 export const homeScreenNavigations = [
@@ -48,7 +49,7 @@ export const homeScreenNavigations = [
     title: "Assignments",
     icon: require('../../assets/icons/assignment.png'),
     route: "Assignments",
-    development: true
+    development: false
   },
   {
     title: "My Messages",

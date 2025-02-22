@@ -65,6 +65,12 @@ import {
       title: "CGPA",
       icon: require('../../../assets/icons/cgpa.png'),
       route: "FriendCGPA"
+    },
+    {
+      name: "assignments",
+      title: "Assignments",
+      icon: require('../../../assets/icons/assignment.png'),
+      route: "FriendAssignments"
     }
   ]
   

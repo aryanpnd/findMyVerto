@@ -19,15 +19,13 @@ export default function Exams({navigation}) {
 
     useEffect(() => {
         handleExamsFetch()
-
     }, [])
 
     useEffect(() => {
         navigation.setOptions({
             headerRight: () => (
-                <Text style={{ color: 'white', marginRight: 10 }}>Total: {totalExams}</Text>
-            ),
-            headerTitle: `Exams`
+                <Text style={{ color: 'white', marginRight: 10 }}>{totalExams}</Text>
+            )
         });
     }, [totalExams]);
 

@@ -30,6 +30,7 @@ import MyDrives from './src/screens/MyDrives/MyDrives';
 import Courses from './src/screens/TimeTable/Courses';
 import FriendCourses from './src/components/friendProfile/FriendCourses';
 import FriendExams from './src/components/friendProfile/FriendExams';
+import FriendAssignments from './src/components/friendProfile/FriendAssignments';
 
 const Stack = createNativeStackNavigator();
 
@@ -99,6 +100,7 @@ export default function AuthPage() {
           <Stack.Screen name="FriendExams" component={FriendExams} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "Friend's Exams" }} />
           <Stack.Screen name="FriendMarks" component={FriendMarks} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }} />
           <Stack.Screen name="FriendCGPA" component={FriendCGPA} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary } }} />
+          <Stack.Screen name="FriendAssignments" component={FriendAssignments} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }}/>
 
         </React.Fragment>
       ) : (

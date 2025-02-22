@@ -12,6 +12,7 @@ import { getStudentAssignments } from '../controllers/studentController/studentA
 import { getStudentMakeup } from '../controllers/studentController/studentMakeupController';
 import { getStudentMessages } from '../controllers/studentController/studentMessagesController';
 import { getStudentMyDrives } from '../controllers/studentController/studentMyDrivesController';
+import { getStudentLeaveSlip } from '../controllers/studentController/studentResidentialController';
 export const studentRoutes = express.Router();
 
 /**
@@ -452,4 +453,40 @@ studentRoutes.post('/myDrives', (req: Request, res: Response) => {
       errorMessage: err.message,
     });
   })
+})
+
+/**
+ * @swagger
+ * /api/v2/student/leaveSlip:
+ *   post:
+ *     tags: [Student]
+ *     summary: Get student leave slip
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+studentRoutes.post('/leaveSlip', (req: Request, res: Response) => {
+  getStudentLeaveSlip(req, res).catch((err) => {
+    console.error(err);
+    res.status(500).json({
+      success: false,
+      data: {},
+      message: "Unexpected server error",
+      errorMessage: err.message,
+    });
+  }
+  )
 })

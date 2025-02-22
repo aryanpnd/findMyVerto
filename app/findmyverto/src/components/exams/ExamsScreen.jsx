@@ -8,6 +8,7 @@ import { colors } from "../../constants/colors";
 import Toast from "react-native-toast-message";
 import { ErrorMessage } from "../timeTable/ErrorMessage";
 import { useEffect } from "react";
+import LottieView from "lottie-react-native";
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
@@ -33,13 +34,13 @@ export default function ExamsScreen({
                     loader={true} loading={examsRefresh} />
             </View>
 
-            {!isError && <View style={styles.header}>
+            {!isError && exams?.length > 0 && <View style={styles.header}>
                 {
                     examsLoading ?
-                        <ShimmerPlaceHolder style={{ 
-                            height: HEIGHT(3), 
-                            width: WIDTH(90), 
-                            borderRadius: 10 
+                        <ShimmerPlaceHolder style={{
+                            height: HEIGHT(3),
+                            width: WIDTH(90),
+                            borderRadius: 10
                         }} visible={false} />
                         :
                         <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%" }}>
@@ -56,84 +57,96 @@ export default function ExamsScreen({
                     examsLoading ?
                         <ScrollView style={styles.body} contentContainerStyle={styles.scrollView}>
                             {Array.from({ length: 5 }).map((_, index) => (
-                                <ShimmerPlaceHolder key={index} style={[{ 
+                                <ShimmerPlaceHolder key={index} style={[{
                                     height: HEIGHT(20),
                                     width: WIDTH(95),
                                     borderRadius: 20,
                                     marginVertical: HEIGHT(1),
-                                 }]} visible={false} />
+                                }]} visible={false} />
                             ))}
                         </ScrollView>
                         :
-                        <ScrollView showsVerticalScrollIndicator={false} style={styles.body} contentContainerStyle={styles.scrollView}>
-                            {
-                                exams.map((exam, index) => (
-                                    exam.gap ?
-                                        <LinearGradient
-                                            key={index}
-                                            colors={['#a8e063', '#56ab2f']}
-                                            start={{ x: 0, y: 0 }}
-                                            end={{ x: 1, y: 0 }} style={[styles.gapCard, globalStyles.elevationMin]}>
-                                            <View style={{ width: "40%", justifyContent: "center" }}>
-                                                <Text style={[styles.text2, { textAlign: "center", fontSize: 25, fontWeight: "bold", color: "white" }]}>Gap: {exam.gap} {exam.gap > 1 ? "days" : "day"}</Text>
-                                            </View>
-                                            <View style={{ justifyContent: "space-between", height: "100%", paddingLeft: WIDTH(5) }}>
-                                                <Text style={[styles.text2, { color: colors.whitePrimary, fontWeight: "bold" }]}>From: {exam.from}</Text>
-                                                <Text style={[styles.text2, { color: colors.whitePrimary, fontWeight: "bold" }]}>To: {exam.to}</Text>
-                                            </View>
-                                        </LinearGradient>
-                                        :
-                                        <LinearGradient
-                                            colors={['#0f2027', '#2c5364']}
-                                            start={{ x: 0, y: 0 }}
-                                            end={{ x: 1, y: 0 }} key={index} style={styles.card}>
-
-                                            <View style={{ padding: 5, borderBottomWidth: 1, borderColor: "grey", marginBottom: HEIGHT(1) }}>
-                                                <Text style={[styles.text2, { fontWeight: "400", textAlign: "center", color: "white" }]}>{exam.exam_type}</Text>
-                                            </View>
-
-                                            <View>
-                                                <Text style={[{ color: "white", fontWeight: "bold",fontSize:20 }]}>[{exam.course_code}] - {exam.course_name}</Text>
-                                            </View>
-
-                                            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                                <View style={styles.infoContainer}>
-                                                    <Image
-                                                        source={require("../../../assets/icons/schedule.png")}
-                                                        style={{ height: 20, width: 20 }}
-                                                        transition={1000}
-                                                    />
-                                                    <Text style={styles.text2}>{exam.date}</Text>
+                        exams?.length > 0 ?
+                            <ScrollView showsVerticalScrollIndicator={false} style={styles.body} contentContainerStyle={styles.scrollView}>
+                                {
+                                    exams.map((exam, index) => (
+                                        exam.gap ?
+                                            <LinearGradient
+                                                key={index}
+                                                colors={['#a8e063', '#56ab2f']}
+                                                start={{ x: 0, y: 0 }}
+                                                end={{ x: 1, y: 0 }} style={[styles.gapCard, globalStyles.elevationMin]}>
+                                                <View style={{ width: "40%", justifyContent: "center" }}>
+                                                    <Text style={[styles.text2, { textAlign: "center", fontSize: 25, fontWeight: "bold", color: "white" }]}>Gap: {exam.gap} {exam.gap > 1 ? "days" : "day"}</Text>
                                                 </View>
-                                                <View style={styles.infoContainer}>
-                                                    <Image
-                                                        source={require("../../../assets/icons/clock.png")}
-                                                        style={{ height: 20, width: 20 }}
-                                                        transition={1000}
-                                                    />
-                                                    <Text style={styles.text2}>{exam.time}</Text>
+                                                <View style={{ justifyContent: "space-between", height: "100%", paddingLeft: WIDTH(5) }}>
+                                                    <Text style={[styles.text2, { color: colors.whitePrimary, fontWeight: "bold" }]}>From: {exam.from}</Text>
+                                                    <Text style={[styles.text2, { color: colors.whitePrimary, fontWeight: "bold" }]}>To: {exam.to}</Text>
                                                 </View>
-                                            </View>
+                                            </LinearGradient>
+                                            :
+                                            <LinearGradient
+                                                colors={['#0f2027', '#2c5364']}
+                                                start={{ x: 0, y: 0 }}
+                                                end={{ x: 1, y: 0 }} key={index} style={styles.card}>
 
-                                            <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-                                                <View style={styles.infoContainer}>
-                                                    <Image
-                                                        source={require("../../../assets/icons/building.png")}
-                                                        style={{ height: 20, width: 20 }}
-                                                        transition={1000}
-                                                    />
-                                                    <Text style={styles.text2}>{exam.room_no}</Text>
+                                                <View style={{ padding: 5, borderBottomWidth: 1, borderColor: "grey", marginBottom: HEIGHT(1) }}>
+                                                    <Text style={[styles.text2, { fontWeight: "400", textAlign: "center", color: "white" }]}>{exam.exam_type}</Text>
                                                 </View>
-                                            </View>
 
-                                            <View style={[styles.infoContainer,{justifyContent:"center"}]}>
-                                                <Text style={[styles.text2,{maxWidth:"100%"}]}>Reporting Time: {exam.reporting_time}</Text>
-                                            </View>
+                                                <View>
+                                                    <Text style={[{ color: "white", fontWeight: "bold", fontSize: 20 }]}>[{exam.course_code}] - {exam.course_name}</Text>
+                                                </View>
 
-                                        </LinearGradient>
-                                ))
-                            }
-                        </ScrollView>
+                                                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                                    <View style={styles.infoContainer}>
+                                                        <Image
+                                                            source={require("../../../assets/icons/schedule.png")}
+                                                            style={{ height: 20, width: 20 }}
+                                                            transition={1000}
+                                                        />
+                                                        <Text style={styles.text2}>{exam.date}</Text>
+                                                    </View>
+                                                    <View style={styles.infoContainer}>
+                                                        <Image
+                                                            source={require("../../../assets/icons/clock.png")}
+                                                            style={{ height: 20, width: 20 }}
+                                                            transition={1000}
+                                                        />
+                                                        <Text style={styles.text2}>{exam.time}</Text>
+                                                    </View>
+                                                </View>
+
+                                                <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
+                                                    <View style={styles.infoContainer}>
+                                                        <Image
+                                                            source={require("../../../assets/icons/building.png")}
+                                                            style={{ height: 20, width: 20 }}
+                                                            transition={1000}
+                                                        />
+                                                        <Text style={styles.text2}>{exam.room_no}</Text>
+                                                    </View>
+                                                </View>
+
+                                                <View style={[styles.infoContainer, { justifyContent: "center" }]}>
+                                                    <Text style={[styles.text2, { maxWidth: "100%" }]}>Reporting Time: {exam.reporting_time}</Text>
+                                                </View>
+
+                                            </LinearGradient>
+                                    ))
+                                }
+                            </ScrollView>
+                            :
+                            <ScrollView showsVerticalScrollIndicator={false} style={[styles.body]} contentContainerStyle={styles.scrollView}>
+                                <LottieView
+                                    source={require("../../../assets/lotties/empty.json")}
+                                    autoPlay
+                                    loop
+                                    style={{ height: HEIGHT(50), width: WIDTH(80), alignSelf: "center" }}
+                                />
+                                <Text style={[styles.text1, { color: "grey" }]}>No exams found</Text>
+
+                            </ScrollView>
             }
         </View>
     )

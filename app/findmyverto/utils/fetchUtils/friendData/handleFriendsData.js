@@ -159,3 +159,47 @@ export async function getFriendExams(auth, id, sync, setExams, setTotalExams, se
         setRefreshing(false)
     }
 }
+
+export async function getFriendAssignments(auth, id, sync, setAssignments, setTotalAssignments, setLastSynced, setLoading, setRefreshing, setIsError) {
+    !sync && setLoading(true)
+    sync && setRefreshing(true)
+    try {
+        const result = await axios.post(`${API_URL}/friends/assignments`, {
+            reg_no: auth.reg_no,
+            password: auth.password,
+            studentId: id
+        });
+
+        if (result.data.success) {
+            friendsStorage.set(`${id}-assignments`, JSON.stringify(result.data));
+            setAssignments(result.data.data);
+            setTotalAssignments(result.data.data.theory.length+result.data.data.practical.length+result.data.data.reading.length);
+            setLastSynced(result.data.last_updated)
+            setIsError(false);
+
+            Toast.show({
+                type: 'success',
+                text1: 'Assignments Synced',
+                text2: 'Assignments synced successfully'
+            });
+        } else {
+            Toast.show({
+                type: 'error',
+                text1: result.data.message,
+                text2: result.data.errorMessage,
+            });
+            setIsError(true);
+        }
+    } catch (err) {
+        Toast.show({
+            type: 'error',
+            text1: 'Network Error',
+            text2: err.message
+        });
+        console.log(err);
+        setIsError(true);
+    } finally {
+        setLoading(false);
+        setRefreshing(false)
+    }
+}

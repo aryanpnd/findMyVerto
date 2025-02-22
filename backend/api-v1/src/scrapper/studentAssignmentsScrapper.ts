@@ -5,7 +5,7 @@ import { umsHeaders } from '../constants/headers';
 
 export const scrapeStudentAssignments = async (cookie: string) => {
   try {
-    const url = umsUrls.STUDENT_ASSIGNMENTS; 
+    const url = umsUrls.STUDENT_ASSIGNMENTS;
 
     const getHeaders = {
       ...umsHeaders.USER_AGENT_FORM_URL_ENCODED,
@@ -21,7 +21,7 @@ export const scrapeStudentAssignments = async (cookie: string) => {
 
     const payloadParams = new URLSearchParams();
     payloadParams.append('__VSTATE', __VSTATE);
-    payloadParams.append('__VIEWSTATE', ''); 
+    payloadParams.append('__VIEWSTATE', '');
     payloadParams.append('__EVENTVALIDATION', __EVENTVALIDATION);
     payloadParams.append('ctl00$cphHeading$Button1', 'View All');
 
@@ -36,14 +36,16 @@ export const scrapeStudentAssignments = async (cookie: string) => {
     const postHtml = postResponse.data;
     const $ = cheerio.load(postHtml);
 
-    const assignments: { theory: any[]; practical: any[] } = { theory: [], practical: [] };
+    const assignments: { theory: any[]; practical: any[]; reading: any[] } = {
+      theory: [],
+      practical: [],
+      reading: [],
+    };
 
     const theoryTable = $('table#ctl00_cphHeading_rgAssignment_ctl00').find('tbody');
     if (theoryTable.length) {
       theoryTable.find('tr[id^="ctl00_cphHeading_rgAssignment_ctl00__"]').each((_, tr) => {
         const tds = $(tr).find('td');
-
-        
         if (tds.length >= 12) {
           const course_code = $(tds[1]).text().trim();
           const faculty_name = $(tds[2]).text().trim();
@@ -94,7 +96,12 @@ export const scrapeStudentAssignments = async (cookie: string) => {
             assignment_uploaded_by_student,
           };
 
-          assignments.theory.push(theoryRecord);
+          // If the type contains "reading", add to the reading array
+          if (type.toLowerCase().includes('reading')) {
+            assignments.reading.push(theoryRecord);
+          }else{
+            assignments.theory.push(theoryRecord);
+          }
         }
       });
     }
