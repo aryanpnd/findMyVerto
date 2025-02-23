@@ -55,7 +55,7 @@ export const homeScreenNavigations = [
     title: "My Messages",
     icon: require('../../assets/icons/myMessages.png'),
     route: "MyMessages",
-    development: true
+    development: false
   },
   {
     title: "My Drives",
