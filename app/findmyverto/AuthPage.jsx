@@ -82,8 +82,11 @@ export default function AuthPage() {
           <Stack.Screen name="CGPADetails" component={CgpaDetails} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }} />
 
           <Stack.Screen name="Exams" component={Exams} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerShadowVisible: false , headerStyle: { backgroundColor: colors.secondary } }}/>
+
           <Stack.Screen name="Assignments" component={Assignments} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }}/>
+
           <Stack.Screen name="MyMessages" component={MyMessages} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, title:"My Messages" }}/>
+          
           <Stack.Screen name="LeaveSlip" component={LeaveSlip} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, title:"Leave slip" }}/>
           <Stack.Screen name="MyDrives" component={MyDrives} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, title:"My Drives" }}/>
 

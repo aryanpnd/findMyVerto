@@ -35,7 +35,6 @@ export default function AssignmentsScreen({
     const scrollViewRef = useRef(null);
     const scrollX = useRef(new Animated.Value(0)).current;
 
-    // Compute tab labels using the filtered lengths
     const buttons = [
         'Theory' + (theory?.length ? " " + theory?.length : " 0"),
         'Practical' + (practical?.length ? " " + practical?.length : " 0"),
@@ -43,7 +42,6 @@ export default function AssignmentsScreen({
     ];
     const onCLick = i => scrollViewRef.current?.scrollTo({ x: i * WIDTH(100) });
 
-    // When assignments or courses or searchQuery changes, update the filtered lists.
     useEffect(() => {
         if (assignments) {
             if (searchQuery.trim() === "") {
@@ -106,7 +104,6 @@ export default function AssignmentsScreen({
             {
                 isError ?
                     <View style={{ flex: 1, justifyContent: 'center' }}>
-
                         <ErrorMessage handleFetchTimetable={handleAssignmentsFetch} timetableLoading={AssignmentsLoading} buttonHeight={45} ErrorMessage={"Assignments"} />
                     </View>
                     :
