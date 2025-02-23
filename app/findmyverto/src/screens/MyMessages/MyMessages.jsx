@@ -10,12 +10,13 @@ export default function MyMessages({ navigation }) {
     const [pageCount, setPageCount] = useState(0);
     const [pages, setPages] = useState([]);
     const [currentPage, setCurrentPage] = useState(0);
+    const [lastSynced, setLastSynced] = useState("");
     const [loading, setLoading] = useState(false);
     const [refresh, setRefresh] = useState(false);
     const [isError, setIsError] = useState(false);
 
     const handleMessagesFetch = async (sync, pageCount, pageNumber, subject, description) => {
-        await fetchMyMessages(auth, sync, pageCount, pageNumber, subject, description, setMessages, setPageCount, setPages, setCurrentPage, setLoading, setRefresh, setIsError);
+        await fetchMyMessages(auth, sync, pageCount, pageNumber, subject, description, setMessages, setPageCount, setPages, setCurrentPage,setLastSynced, setLoading, setRefresh, setIsError);
     }
 
     useEffect(() => {
@@ -30,6 +31,7 @@ export default function MyMessages({ navigation }) {
     return (
         <MyMessagesScreen
             messages={messages}
+            setMessages={setMessages}
             pageCount={pageCount}
             pages={pages}
             currentPage={currentPage}

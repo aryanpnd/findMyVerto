@@ -14,6 +14,7 @@ export const fetchMyMessages = async (
     setPageCount,
     setPages,
     setCurrentPage,
+    setLastSynced,
     setLoading,
     setRefresh,
     setIsError,
@@ -22,6 +23,9 @@ export const fetchMyMessages = async (
         !sync && setLoading(true);
         sync && setRefresh(true);
         let userMessagesRaw, userMessages, pageIndex;
+        const currentPageRaw = userStorage.getString('MESSAGES-PAGE-NUMBER');
+        const currentPage = currentPageRaw ? JSON.parse(currentPageRaw) : null;
+
         pageIndex = (pageCount && pageNumber) ? (pageCount - pageNumber) + 1 : 1;
 
         if (pageCount || pageCount > 0 || pageNumber || pageNumber > 0) {
@@ -50,10 +54,13 @@ export const fetchMyMessages = async (
                     }
                     userStorage.set("MESSAGES-PAGES", JSON.stringify(pages));
                     userStorage.set("MESSAGES-PAGE-NUMBER", JSON.stringify(pageNumberTemp));
-                    setPages(pages);
+                    setPages(pages.reverse());
                     setCurrentPage(pageNumberTemp);
                     setPageCount(pageCountTemp);
                     setMessages(result.data.data);
+                    if(sync || !userMessages) {
+                        setLastSynced(result.data.lastSynced);
+                    }
                     Toast.show({
                         type: 'success',
                         text1: "Messages Synced",
@@ -66,17 +73,20 @@ export const fetchMyMessages = async (
                         text1: `${result.data.message}`,
                         text2: `${result.data.errorMessage}`,
                     });
+                    userStorage.set("MESSAGES-PAGE-NUMBER", JSON.stringify(currentPage));
                 }
             }
         } else {
             setMessages(userMessages.data);
+            setLastSynced(userMessages.lastSynced);
             setPageCount(userMessages.data[0].PageCount);
             setCurrentPage(pageNumber);
             const pages = [];
             for (let i = 1; i <= userMessages.data[0].PageCount; i++) {
                 pages.push(i);
             }
-            setPages(pages);
+            setPages(pages.reverse());
+            userStorage.set("MESSAGES-PAGE-NUMBER", JSON.stringify(userMessages.data[0].PageCount));
         }
         setLoading(false);
         setRefresh(false);
@@ -88,13 +98,15 @@ export const fetchMyMessages = async (
         if (userMessagesRaw) {
             let userMessages = JSON.parse(userMessagesRaw);
             setMessages(userMessages.data);
+            setLastSynced(userMessages.lastSynced);
             setPageCount(userMessages.data[0].PageCount);
             setCurrentPage(pageNumber);
             const pages = [];
             for (let i = 1; i <= userMessages.data[0].PageCount; i++) {
                 pages.push(i);
             }
-            setPages(pages);
+            userStorage.set("MESSAGES-PAGE-NUMBER", JSON.stringify(userMessages.data[0].PageCount));
+            setPages(pages.reverse());
         }
         setLoading(false);
         setRefresh(false);

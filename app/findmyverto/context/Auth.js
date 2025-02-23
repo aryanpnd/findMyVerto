@@ -1,10 +1,7 @@
-import axios from 'axios';
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Alert } from 'react-native';
 import { getCalculatedDate } from '../utils/helperFunctions/dataAndTimeHelpers';
-import { set } from 'mongoose';
 import Toast from 'react-native-toast-message';
 import { friendsStorage, userStorage } from '../utils/storage/storage';
 
