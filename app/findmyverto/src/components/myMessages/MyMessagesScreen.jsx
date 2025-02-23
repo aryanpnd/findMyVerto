@@ -92,7 +92,7 @@ export default function MyMessagesScreen({
                     <ErrorMessage handleFetchTimetable={() => handleMessagesFetch(false, pageCount, pageNumber, "", "")} timetableLoading={loading} buttonHeight={45} ErrorMessage={"Messages"} />
                     :
                     loading ?
-                        <View style={styles.body} >
+                    <View style={{ flex: 1, alignItems: "center", marginTop: HEIGHT(1), gap: HEIGHT(1) }}>
                             {Array.from({ length: 5 }).map((_, index) => (
                                 <ShimmerPlaceHolder key={index} style={[{
                                     height: HEIGHT(20),
