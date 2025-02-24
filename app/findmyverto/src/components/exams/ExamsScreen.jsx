@@ -22,7 +22,7 @@ export default function ExamsScreen({
     navigation
 }) {
     return (
-        <View style={{ backgroundColor: "white", flex: 1 }}>
+        <View style={{ backgroundColor: colors.whitePrimary, flex: 1 }}>
             <View style={{ zIndex: 2 }}>
                 <Toast />
                 <SyncData
@@ -86,16 +86,16 @@ export default function ExamsScreen({
                                             </LinearGradient>
                                             :
                                             <LinearGradient
-                                                colors={['#0f2027', '#2c5364']}
+                                                colors={["white", "white"]}
                                                 start={{ x: 0, y: 0 }}
                                                 end={{ x: 1, y: 0 }} key={index} style={styles.card}>
 
                                                 <View style={{ padding: 5, borderBottomWidth: 1, borderColor: "grey", marginBottom: HEIGHT(1) }}>
-                                                    <Text style={[styles.text2, { fontWeight: "400", textAlign: "center", color: "white" }]}>{exam.exam_type}</Text>
+                                                    <Text style={[styles.text2, { fontWeight: "400", textAlign: "center" }]}>{exam.exam_type}</Text>
                                                 </View>
 
                                                 <View>
-                                                    <Text style={[{ color: "white", fontWeight: "bold", fontSize: 20 }]}>[{exam.course_code}] - {exam.course_name}</Text>
+                                                    <Text style={[{fontWeight: "bold", fontSize: 15 }]}>[{exam.course_code}] - {exam.course_name}</Text>
                                                 </View>
 
                                                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -207,6 +207,6 @@ const styles = StyleSheet.create({
     text2: {
         // fontSize: 14,
         fontWeight: "500",
-        color: colors.whitePrimary,
+        color: "gray",
     }
 });

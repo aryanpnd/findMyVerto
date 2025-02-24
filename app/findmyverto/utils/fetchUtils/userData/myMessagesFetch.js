@@ -58,7 +58,7 @@ export const fetchMyMessages = async (
                     setCurrentPage(pageNumberTemp);
                     setPageCount(pageCountTemp);
                     setMessages(result.data.data);
-                    if(sync || !userMessages) {
+                    if (sync || !userMessages) {
                         setLastSynced(result.data.lastSynced);
                     }
                     Toast.show({
@@ -112,3 +112,97 @@ export const fetchMyMessages = async (
         setRefresh(false);
     }
 }
+
+export const searchMyMessages = async (
+    auth,
+    pageCount,
+    pageNumber,
+    subject,
+    description,
+    cachedMessages,
+    setMessages,
+    setPageCount,
+    setPages,
+    setCurrentPage,
+    setLastSynced,
+    setLoading,
+    setIsError,
+) => {
+    try {
+        setLoading(true);
+
+        const pageIndex = (pageCount && pageNumber) ? (pageCount - pageNumber) + 1 : 1;
+        const cachedData = cachedMessages ? cachedMessages[pageNumber] : null;
+
+        if (!cachedData) {
+            const result = await axios.post(`${API_URL}/student/messages`, {
+                reg_no: auth.reg_no,
+                password: auth.password,
+                pageIndex: pageIndex,
+                subject: subject || "",
+                description: description || ""
+            });
+
+            if (result.data.success) {                
+                const pageCountTemp = result.data.data[0].PageCount;
+                const pageNumberTemp = (pageCountTemp - pageIndex) + 1;
+
+                const pages = [];
+                for (let i = 1; i <= pageCountTemp; i++) {
+                    pages.push(i);
+                }
+                setPages(pages.reverse());
+                setCurrentPage(pageNumberTemp);
+                setPageCount(pageCountTemp);
+
+                setMessages(prevState => ({
+                    ...prevState,
+                    [pageNumberTemp]: result.data
+                }));
+
+                setLastSynced(result.data.lastSynced);
+
+                Toast.show({
+                    type: 'success',
+                    text1: "Messages Synced",
+                    text2: "Your messages have been synced successfully",
+                });
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: `${result.data.message}`,
+                    text2: `${result.data.errorMessage}`,
+                });
+            }
+        } else {
+            setCurrentPage(pageNumber);
+            setPageCount(cachedData.data[0].PageCount);
+            const pages = [];
+            for (let i = 1; i <= cachedData.data[0].PageCount; i++) {
+                pages.push(i);
+            }
+            setPages(pages.reverse());
+            setLastSynced(cachedData.lastSynced);
+        }
+
+        setLoading(false);
+        setIsError(false);
+    } catch (error) {
+        console.error(error);
+
+        if (cachedMessages && cachedMessages[pageNumber]) {
+            const cachedData = cachedMessages[pageNumber];
+            setCurrentPage(pageNumber);
+            setPageCount(cachedData.data[0].PageCount);
+            const pages = [];
+            for (let i = 1; i <= cachedData.data[0].PageCount; i++) {
+                pages.push(i);
+            }
+            setPages(pages.reverse());
+            setLastSynced(cachedData.lastSynced);
+        }
+        setLoading(false);
+        setIsError(true);
+    }
+};
+

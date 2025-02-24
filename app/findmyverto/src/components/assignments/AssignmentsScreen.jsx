@@ -11,6 +11,7 @@ import { colors } from "../../constants/colors";
 import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
 import { ErrorMessage } from "../timeTable/ErrorMessage";
+import LottieView from "lottie-react-native";
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
@@ -184,6 +185,23 @@ function SearchBar({ searchQuery, updateSearchQuery, isFocused, setFocused }) {
             value={searchQuery}
             onChangeText={updateSearchQuery}
         />
+    );
+}
+
+const NoAssignments = () => {
+    return (
+        <View style={{ alignItems: "center", justifyContent: "center", gap: 8, width: WIDTH(100), height: HEIGHT(80) }}>
+            <LottieView
+                autoPlay
+                style={{
+                    width: 100,
+                    height: 100,
+                }}
+                source={require('../../../assets/lotties/sleep.json')}
+            />
+            <Text style={styles.text1}>No Assignments for now</Text>
+            <Text style={styles.text1}>Have fun...</Text>
+        </View>
     );
 }
 

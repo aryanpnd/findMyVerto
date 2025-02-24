@@ -24,7 +24,6 @@ export default function MyMessages({ navigation }) {
         const pageNumber = pageNumberRaw ? JSON.parse(pageNumberRaw) : null;
         const pageCountRaw = userStorage.getString('MESSAGES-PAGES');
         const pageCount = pageCountRaw ? JSON.parse(pageCountRaw).length : null;
-        console.log(pageNumber, pageCount);
         handleMessagesFetch(false, pageCount, pageNumber, "", "");
     }, []);
 

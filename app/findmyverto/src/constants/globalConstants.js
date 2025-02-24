@@ -6,6 +6,7 @@ export const availableFieldsToShow = {
   "marks": { icon: require("../../assets/icons/marks.png"), title: "Marks" },
   "cgpa": { icon: require("../../assets/icons/cgpa.png"), title: "CGPA" },
   "assignments": { icon: require("../../assets/icons/assignment.png"), title: "Assignments" },
+  "drives": { icon: require("../../assets/icons/interview.png"), title: "Drives" }
 }
 
 export const homeScreenNavigations = [
@@ -61,7 +62,7 @@ export const homeScreenNavigations = [
     title: "My Drives",
     icon: require('../../assets/icons/interview.png'),
     route: "MyDrives",
-    development: true
+    development: false
   },
   {
     title: "Leave Slip",
