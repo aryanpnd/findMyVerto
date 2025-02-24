@@ -35,12 +35,14 @@ export async function fetchExams(
                         text1: "Exams Synced",
                         text2: "Your exams have been synced successfully",
                     });
+                    setIsError(false);
                 } else {
                     Toast.show({
                         type: 'error',
                         text1: `${result.data.message}`,
                         text2: `${result.data.errorMessage}`,
                     });
+                    setIsError(true);
                 }
             }
         } else {
@@ -48,10 +50,10 @@ export async function fetchExams(
             setExams(parsedExams);
             setTotalExams(userExams.data.exams.length);
             setLastSynced(userExams.lastSynced);
+            setIsError(false);
         }
         setExamsLoading(false);
         setExamsRefresh(false);
-        setIsError(false);
     } catch (error) {
         console.error(error);
         let userExamsRaw = userStorage.getString("EXAMS");
@@ -64,7 +66,6 @@ export async function fetchExams(
         }
         setExamsLoading(false);
         setExamsRefresh(false);
-        setIsError(true);
         Toast.show({
             type: 'error',
             text1: "Error fetching Exams",

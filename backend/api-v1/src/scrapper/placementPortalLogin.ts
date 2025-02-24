@@ -15,8 +15,8 @@ export async function placementLogin(user: User): Promise<umsLoginReturn> {
 
   try {
     const getResponse = await client.get(url, { headers });
-    const $ = load(getResponse.data);
 
+    const $ = load(getResponse.data);
     const viewState = $('#__VIEWSTATE').val() as string;
     const viewStateGenerator = $('#__VIEWSTATEGENERATOR').val() as string;
     const eventValidation = $('#__EVENTVALIDATION').val() as string;
@@ -30,7 +30,7 @@ export async function placementLogin(user: User): Promise<umsLoginReturn> {
       "Button1": "Login",
     });
 
-    await client.post(url, payload.toString(), { headers });
+    const response = await client.post(url, payload.toString(), { headers });
 
     const cookies = jar.getCookiesSync(url);
     const sessionCookie = cookies.find(cookie => cookie.key === "ASP.NET_SessionId");
@@ -39,6 +39,15 @@ export async function placementLogin(user: User): Promise<umsLoginReturn> {
       return {
         login: false,
         message: "Failed to login",
+        cookie: "",
+      };
+    }
+
+    // If the response contains the reg_no, it means login is successful
+    if (!response.data.includes(user.reg_no)) {
+      return {
+        login: false,
+        message: "Invalid Credentials",
         cookie: "",
       };
     }

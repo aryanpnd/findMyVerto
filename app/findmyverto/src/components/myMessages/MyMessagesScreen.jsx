@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet, ScrollView, Modal, TextInput } from 'react-native';
+import { View, Text, FlatList, ActivityIndicator, TouchableOpacity, StyleSheet, ScrollView, Modal, TextInput, Pressable } from 'react-native';
 import MyMessagesCard from './MyMessagesCard';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -92,7 +92,7 @@ export default function MyMessagesScreen({
                     <ErrorMessage handleFetchTimetable={() => handleMessagesFetch(false, pageCount, pageNumber, "", "")} timetableLoading={loading} buttonHeight={45} ErrorMessage={"Messages"} />
                     :
                     loading ?
-                    <View style={{ flex: 1, alignItems: "center", marginTop: HEIGHT(1), gap: HEIGHT(1) }}>
+                        <View style={{ flex: 1, alignItems: "center", marginTop: HEIGHT(1), gap: HEIGHT(1) }}>
                             {Array.from({ length: 5 }).map((_, index) => (
                                 <ShimmerPlaceHolder key={index} style={[{
                                     height: HEIGHT(20),
@@ -104,8 +104,14 @@ export default function MyMessagesScreen({
                         </View>
                         :
                         messages?.length > 0 ?
-                            <View style={{ flex: 1, alignItems: "center", marginTop: HEIGHT(1), gap: HEIGHT(1) }}>
-                                <SearchBar searchQuery={searchQuery} updateSearchQuery={searchQueryHandler} isFocused={isFocused} setFocused={setFocused} />
+                            <View style={{ flex: 1, alignItems: "center", gap: HEIGHT(1) }}>
+                                <View style={styles.searchContainer}>
+                                    <SearchBar searchQuery={searchQuery} updateSearchQuery={searchQueryHandler} isFocused={isFocused} setFocused={setFocused} />
+                                    <Text style={styles.text2}>-or-</Text>
+                                    <Pressable style={{ backgroundColor: "black", padding: 10, borderRadius: 10 }} onPress={() => navigation.navigate("MyMessagesSearch")}>
+                                        <Text style={{ color: "white",fontSize:13 }}>Advanced Search</Text>
+                                    </Pressable>
+                                </View>
                                 <FlatList
                                     // style={styles.body}
                                     data={messagesTemp}
@@ -153,7 +159,7 @@ export default function MyMessagesScreen({
                                         style={[styles.pageNavButton, { backgroundColor: currentPage === page ? "black" : "white" }]}
                                         onPress={() => {
                                             handleMessagesFetch(false, pageCount, page, "", "")
-                                            }}>
+                                        }}>
                                         <Text style={{ color: currentPage === page ? "white" : "black" }}>{page}</Text>
                                     </TouchableOpacity>
                                 ))
@@ -176,11 +182,11 @@ function SearchBar({ searchQuery, updateSearchQuery, isFocused, setFocused }) {
     return (
         <TextInput
             style={[styles.searchBar, {
-                borderColor: isFocused ? colors.lightDark : colors.disabledBackground,
+                borderColor: isFocused ? colors.lightDark : colors.whiteLight,
                 backgroundColor: isFocused ? "white" : "transparent",
             }]}
-            placeholder={isFocused ? "" : 'Search for a message'}
-            placeholderTextColor={"grey"}
+            placeholder={isFocused ? "" : 'Search in messages...'}
+            placeholderTextColor={isFocused ? "black" : colors.whiteLight}
             onFocus={() => setFocused(true)}
             onBlur={() => setFocused(false)}
             value={searchQuery}
@@ -197,8 +203,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: WIDTH(5),
         paddingVertical: HEIGHT(2),
         backgroundColor: colors.secondary,
-        borderBottomLeftRadius: 20,
-        borderBottomRightRadius: 20,
+
     },
     headerSection: {
         flexDirection: "row",
@@ -262,8 +267,20 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
 
+    searchContainer: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
+        paddingHorizontal: WIDTH(5),
+        alignItems: "center",
+        gap: 10,
+        paddingBottom: HEIGHT(1),
+        backgroundColor: colors.secondary,
+        borderBottomLeftRadius: 20,
+        borderBottomRightRadius: 20,
+    },
     searchBar: {
-        width: WIDTH(95),
+        width: WIDTH(45),
         height: HEIGHT(6),
         borderWidth: 1,
         borderRadius: 30,

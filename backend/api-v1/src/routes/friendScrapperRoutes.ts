@@ -6,6 +6,7 @@ import { getFriendCgpa } from '../controllers/friendsController/handleFriendData
 import { getFriendMarks } from '../controllers/friendsController/handleFriendData/getFriendCgpa';
 import { getFriendExams } from '../controllers/friendsController/handleFriendData/getFriendExams';
 import { getFriendAssignments } from '../controllers/friendsController/handleFriendData/getFriendAssignments';
+import { getFriendDrives } from '../controllers/friendsController/handleFriendData/getFriendDrives';
 
 export const friendScrapperRoutes = express.Router();
 
@@ -199,3 +200,30 @@ friendScrapperRoutes.post('/exams', getFriendExams);
  *         description: Internal server error
  */
 friendScrapperRoutes.post('/assignments', getFriendAssignments)
+
+/**
+ * @swagger
+ * /api/v2/friends/drives:
+ *   post:
+ *     tags: [Friend's Data]
+ *     summary: Get friend's drives
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               reg_no:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               studentId:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Successful response
+ *       500:
+ *         description: Internal server error
+ */
+friendScrapperRoutes.post('/drives', getFriendDrives)
