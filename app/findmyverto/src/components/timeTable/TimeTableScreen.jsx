@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import {
   Dimensions,
   ScrollView,
@@ -22,10 +22,8 @@ import ClassesCard from '../timeTable/ClassesCard';
 import { getDay } from '../../../utils/helperFunctions/dataAndTimeHelpers';
 import LottieView from 'lottie-react-native';
 import isTimeEqual from '../../../utils/helperFunctions/funtions';
-import TimetableScreenShimmer from '../shimmers/TimetableScreenShimmer';
 
 const { width } = Dimensions.get('screen');
-
 
 const getCurrentDayIndex = () => {
   const day = new Date().getDay();
@@ -34,35 +32,77 @@ const getCurrentDayIndex = () => {
 
 const getHeaderWidths = (headers) => {
   const obj = {};
-  headers.forEach((x, i) => {
+  headers.forEach((_, i) => {
     obj[i] = useSharedValue(0);
   });
   return obj;
 };
 
-export default function TimeTableScreen({ timeTable,classesToday }) {
+export default function TimeTableScreen({ timeTable, classesToday }) {
+  // Use day names as keys for lookup and build header display with count
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-  const headers = days.map((day, i) => `${day}-${classesToday[i]}`);
+  const headers = days.map((day, i) => `${day} (${classesToday[i] ?? 0})`);
 
   const headerWidths = getHeaderWidths(headers);
   const scrollY = useSharedValue(0);
   const topScrollY = useSharedValue(0);
-
   const bottomScrollRef = useAnimatedRef();
   const scroll1 = useSharedValue(getCurrentDayIndex());
+  const topScrollRef = useAnimatedRef();
+  const scroll2 = useSharedValue(0);
+
+  // Scroll the bottom view to the selected header index
   useDerivedValue(() => {
     scrollTo(bottomScrollRef, scroll1.value * width, 0, true);
   });
 
-  const topScrollRef = useAnimatedRef();
-  const scroll2 = useSharedValue(0);
+  // Scroll the top view based on our calculated value
   useDerivedValue(() => {
     scrollTo(topScrollRef, scroll2.value, 0, true);
   });
 
-  useEffect(() => {
-    scroll1.value = getCurrentDayIndex();
-  }, []);
+  // Update scroll2.value based on the current scrollY and measured header widths.
+  useDerivedValue(() => {
+    let sumWidth = 0;
+    const input = [];
+    const outputWidths = [];
+    const outputOffsets = [];
+    for (let i = 0; i < headers.length; i++) {
+      input.push(width * i);
+      const cellWidth = headerWidths[i].value;
+      outputWidths.push(cellWidth);
+      outputOffsets.push(sumWidth);
+      sumWidth += cellWidth;
+    }
+    const moveValue = interpolate(scrollY.value, input, outputOffsets);
+    const barWidth = interpolate(scrollY.value, input, outputWidths);
+    scroll2.value = moveValue + barWidth / 2 - width / 2;
+  });
+
+  // Calculate the bar style using a fixed loop over the headers
+  const barWidthStyle = useAnimatedStyle(() => {
+    let sumWidth = 0;
+    const input = [];
+    const outputWidths = [];
+    const outputOffsets = [];
+    for (let i = 0; i < headers.length; i++) {
+      input.push(width * i);
+      const cellWidth = headerWidths[i].value;
+      outputWidths.push(cellWidth);
+      outputOffsets.push(sumWidth);
+      sumWidth += cellWidth;
+    }
+    const moveValue = interpolate(scrollY.value, input, outputOffsets);
+    const barWidth = interpolate(scrollY.value, input, outputWidths);
+    return {
+      width: barWidth,
+      transform: [{ translateX: moveValue }],
+    };
+  });
+
+  const barMovingStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: -topScrollY.value }],
+  }));
 
   const scrollHandler = useAnimatedScrollHandler(event => {
     scrollY.value = event.contentOffset.x;
@@ -72,40 +112,13 @@ export default function TimeTableScreen({ timeTable,classesToday }) {
     topScrollY.value = event.contentOffset.x;
   });
 
-  const barWidthStyle = useAnimatedStyle(() => {
-    const input = [];
-    const output1 = [];
-    const output2 = [];
-    let sumWidth = 0;
-    const keys = Object.keys(headerWidths);
-    keys.map((key, index) => {
-      input.push(width * index);
-      const cellWidth = headerWidths[key].value;
-      output1.push(cellWidth);
-      output2.push(sumWidth);
-      sumWidth += cellWidth;
-    });
-    const moveValue = interpolate(scrollY.value, input, output2);
-    const barWidth = interpolate(scrollY.value, input, output1);
-    scroll2.value = moveValue + barWidth / 2 - width / 2;
-    return {
-      width: barWidth,
-      transform: [
-        {
-          translateX: moveValue,
-        },
-      ],
-    };
-  });
-
-  const barMovingStyle = useAnimatedStyle(() => ({
-    transform: [{ translateX: -topScrollY.value }],
-  }));
+  useEffect(() => {
+    scroll1.value = getCurrentDayIndex();
+  }, []);
 
   const onPressHeader = index => {
     scroll1.value = index;
   };
-
 
   return (
     <View style={styles.flex}>
@@ -117,18 +130,16 @@ export default function TimeTableScreen({ timeTable,classesToday }) {
         onScroll={topScrollHandler}>
         {headers.map((item, index) => (
           <View
-            onLayout={e =>
-              (headerWidths[index].value = e.nativeEvent.layout.width)
-            }
-            key={item}
+            key={index}
+            onLayout={e => {
+              headerWidths[index].value = e.nativeEvent.layout.width;
+            }}
             style={{ flex: 1 }}>
-            <TouchableOpacity
-              style={[styles.headerItem]}
-              onPress={() => onPressHeader(index)}>
-              <Text style={{ 
-                color: scroll1.value === index ? "yellow" : "#ffffffb5", 
-                fontWeight: scroll1.value === index ? "bold" : "400", 
-                fontSize: scroll1.value === index ? 16 : 15 
+            <TouchableOpacity style={styles.headerItem} onPress={() => onPressHeader(index)}>
+              <Text style={{
+                color: scroll1.value === index ? "yellow" : "#ffffffb5",
+                fontWeight: scroll1.value === index ? "bold" : "400",
+                fontSize: scroll1.value === index ? 16 : 15
               }}>
                 {item}
               </Text>
@@ -138,9 +149,7 @@ export default function TimeTableScreen({ timeTable,classesToday }) {
       </Animated.ScrollView>
 
       <Animated.View style={[styles.bar, barWidthStyle]}>
-        <Animated.View
-          style={[StyleSheet.absoluteFill, styles.barInner, barMovingStyle]}
-        />
+        <Animated.View style={[StyleSheet.absoluteFill, styles.barInner, barMovingStyle]} />
       </Animated.View>
 
       <Animated.ScrollView
@@ -150,12 +159,9 @@ export default function TimeTableScreen({ timeTable,classesToday }) {
         horizontal
         showsHorizontalScrollIndicator={false}
         onScroll={scrollHandler}>
-        {
-          // Use `days` (the pure day keys) for accessing timeTable
-          days.map((day, index) => (
-            <Item index={index} key={day} classes={timeTable[day] || []} />
-          ))
-        }
+        {days.map((day, index) => (
+          <Item key={day} index={index} classes={timeTable[day] || []} />
+        ))}
       </Animated.ScrollView>
     </View>
   );
@@ -165,15 +171,12 @@ function Item({ classes, index }) {
   const scrollViewRef = React.useRef(null);
 
   useEffect(() => {
-    // Find index of the ongoing class
     const ongoingIndex = classes.findIndex(classDetails =>
       isTimeEqual(classDetails?.time) && getDay() === index
     );
-
     if (ongoingIndex !== -1 && scrollViewRef.current) {
-      // Scroll to the ongoing class
       scrollViewRef.current.scrollTo({
-        y: ongoingIndex * 100, // Assuming each card has a height of ~100px, adjust accordingly
+        y: ongoingIndex * 100,
         animated: true,
       });
     }
@@ -181,15 +184,12 @@ function Item({ classes, index }) {
 
   return (
     <Animated.View style={styles.itemContainer}>
-      <View style={[styles.items]}>
+      <View style={styles.items}>
         {!classes[0]?.time ? (
           <View style={{ alignItems: "center", justifyContent: "center", gap: 8, width: width, height: "100%" }}>
             <LottieView
               autoPlay
-              style={{
-                width: 200,
-                height: 200,
-              }}
+              style={{ width: 200, height: 200 }}
               source={require('../../../assets/lotties/sleep.json')}
             />
             <Text style={styles.text1}>No classes for today</Text>
@@ -199,8 +199,7 @@ function Item({ classes, index }) {
           <ScrollView
             ref={scrollViewRef}
             showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ gap: 10, paddingVertical: 10, paddingHorizontal: 8 }}
-          >
+            contentContainerStyle={{ gap: 10, paddingVertical: 10, paddingHorizontal: 8 }}>
             {classes.map((classDetails, idx) =>
               classDetails?.break ? (
                 <BreakCard key={idx} time={classDetails?.time} day={index} />
@@ -214,7 +213,6 @@ function Item({ classes, index }) {
     </Animated.View>
   );
 }
-
 
 const styles = StyleSheet.create({
   flex: {
@@ -232,24 +230,18 @@ const styles = StyleSheet.create({
     width: width,
     justifyContent: 'center',
     alignItems: 'center',
-    // backgroundColor:'red'
   },
   items: {
     height: "100%",
     width: "100%",
-    // alignItems: 'center',
   },
   headerItem: {
     paddingHorizontal: 20,
     paddingVertical: 10,
   },
-  activeHeader: {
-    backgroundColor: '#ddd',
-    borderRadius: 10,
-  },
   bar: {
     height: 35,
-    width: 25,
+    width: 30,
     top: 4,
     position: 'absolute',
     alignSelf: 'flex-start'
@@ -262,12 +254,12 @@ const styles = StyleSheet.create({
     borderColor: "white",
     borderRadius: 20
   },
-  txt: {
-    fontSize: 30,
-    color: '#fff',
-  },
   text1: {
     color: "grey",
     fontWeight: "500"
+  },
+  // Added missing style for the bottom scroll view container
+  list: {
+    flexGrow: 1,
   }
 });
