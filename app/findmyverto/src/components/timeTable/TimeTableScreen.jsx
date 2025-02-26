@@ -26,21 +26,13 @@ import TimetableScreenShimmer from '../shimmers/TimetableScreenShimmer';
 
 const { width } = Dimensions.get('screen');
 
-const headers = [
-  'Monday',
-  'Tuesday',
-  'Wednesday',
-  'Thursday',
-  'Friday',
-  'Saturday',
-];
 
 const getCurrentDayIndex = () => {
   const day = new Date().getDay();
   return day === 0 || day === 7 ? 0 : day - 1;
 };
 
-const getHeaderWidths = () => {
+const getHeaderWidths = (headers) => {
   const obj = {};
   headers.forEach((x, i) => {
     obj[i] = useSharedValue(0);
@@ -48,9 +40,11 @@ const getHeaderWidths = () => {
   return obj;
 };
 
-export default function TimeTableScreen({ timeTable }) {
-  const [loading, setLoading] = useState(true);
-  const headerWidths = getHeaderWidths();
+export default function TimeTableScreen({ timeTable,classesToday }) {
+  const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+  const headers = days.map((day, i) => `${day}-${classesToday[i]}`);
+
+  const headerWidths = getHeaderWidths(headers);
   const scrollY = useSharedValue(0);
   const topScrollY = useSharedValue(0);
 
@@ -131,7 +125,13 @@ export default function TimeTableScreen({ timeTable }) {
             <TouchableOpacity
               style={[styles.headerItem]}
               onPress={() => onPressHeader(index)}>
-              <Text style={{ color: scroll1.value == index ? "yellow" : "#ffffffb5", fontWeight: scroll1.value == index ? "bold" : "400", fontSize: scroll1.value == index ? 16 : 15 }}>{item}</Text>
+              <Text style={{ 
+                color: scroll1.value === index ? "yellow" : "#ffffffb5", 
+                fontWeight: scroll1.value === index ? "bold" : "400", 
+                fontSize: scroll1.value === index ? 16 : 15 
+              }}>
+                {item}
+              </Text>
             </TouchableOpacity>
           </View>
         ))}
@@ -143,7 +143,6 @@ export default function TimeTableScreen({ timeTable }) {
         />
       </Animated.View>
 
-
       <Animated.ScrollView
         ref={bottomScrollRef}
         pagingEnabled
@@ -152,12 +151,12 @@ export default function TimeTableScreen({ timeTable }) {
         showsHorizontalScrollIndicator={false}
         onScroll={scrollHandler}>
         {
-          headers.map((item, index) => (
-            <Item index={index} key={item} classes={timeTable[headers[index]] || []} />
+          // Use `days` (the pure day keys) for accessing timeTable
+          days.map((day, index) => (
+            <Item index={index} key={day} classes={timeTable[day] || []} />
           ))
         }
       </Animated.ScrollView>
-
     </View>
   );
 }

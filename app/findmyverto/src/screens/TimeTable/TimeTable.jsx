@@ -48,7 +48,7 @@ export default function TimeTable() {
         isError ?
           <ErrorMessage handleFetchTimetable={handleFetchTimetable} timetableLoading={timetableLoading} buttonHeight={45} ErrorMessage={"timetable"}/>
           :
-          <TimeTableScreen timeTable={timeTable} />
+          <TimeTableScreen timeTable={timeTable} classesToday={classesToday}/>
       }
     </>
   )

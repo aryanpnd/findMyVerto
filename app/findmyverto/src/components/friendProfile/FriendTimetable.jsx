@@ -8,7 +8,7 @@ import { AuthContext } from '../../../context/Auth'
 import OverlayLoading from '../../components/miscellaneous/OverlayLoading'
 import Toast from 'react-native-toast-message'
 import { getFriendTimetable } from '../../../utils/fetchUtils/friendData/handleFriendsData'
-import formatTimetable from '../../../utils/helperFunctions/timetableFormatter'
+import formatTimetable, { formatClassesToday } from '../../../utils/helperFunctions/timetableFormatter'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 import { friendsStorage } from '../../../utils/storage/storage'
 import { ErrorMessage } from '../timeTable/ErrorMessage'
@@ -17,6 +17,7 @@ export default function FriendTimetable({ navigation, route }) {
     const { auth } = useContext(AuthContext)
     const { id, name } = route.params;
     const [timeTable, settimeTable] = useState({})
+    const [classesToday, setClassesToday] = useState([])
     const [loading, setLoading] = useState(false)
     const [refreshing, setRefreshing] = useState(false)
     const [lastSynced, setLastSynced] = useState("")
@@ -25,7 +26,7 @@ export default function FriendTimetable({ navigation, route }) {
 
     async function handleFetchTimetable(sync) {
         if (loading) return
-        await getFriendTimetable(auth, id, sync, settimeTable, setCourses, setLastSynced, setLoading, setRefreshing, setIsError)
+        await getFriendTimetable(auth, id, sync, settimeTable, setClassesToday, setCourses, setLastSynced, setLoading, setRefreshing, setIsError)
     }
 
     async function fetchDataLocally() {
@@ -39,6 +40,8 @@ export default function FriendTimetable({ navigation, route }) {
                 // sleep for half second
                 await new Promise((resolve) => setTimeout(resolve, 500));
                 settimeTable(parsedTimetable)
+                const classesToday = formatClassesToday(parsedTimetable, false);
+                setClassesToday(classesToday);
                 setLastSynced(student.lastSynced)
             } else {
                 await handleFetchTimetable(false)
@@ -77,7 +80,7 @@ export default function FriendTimetable({ navigation, route }) {
                 isError ?
                     <ErrorMessage handleFetchTimetable={handleFetchTimetable} timetableLoading={loading} buttonHeight={45} ErrorMessage={"timetable"} />
                     :
-                    <TimeTableScreen timeTable={timeTable} loading={loading} />
+                    <TimeTableScreen timeTable={timeTable} loading={loading} classesToday={classesToday} />
             }
         </>
     )

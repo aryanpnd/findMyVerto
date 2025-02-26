@@ -81,6 +81,7 @@ export default function formatTimetable(ttToFormat, courses = {}, formatToClasse
     return formattedTimetable;
 }
 
+
 function addBreaksToSchedule(data) {
     // Helper function to convert time string to minutes
     function timeToMinutes(timeStr) {
@@ -119,6 +120,8 @@ function addBreaksToSchedule(data) {
     result.push(data[data.length - 1]); // Add the last class
     return result;
 }
+
+
 function cleanRoom(roomStr) {
     let makeup = false;
     let cleaned = roomStr.trim();
@@ -133,3 +136,22 @@ function cleanRoom(roomStr) {
 
     return { cleaned, makeup };
 }
+
+
+// The following function is used to count the number of classes for today.
+export function formatClassesToday(timetable, todayOnly) {
+    if (todayOnly) {
+      // Return the count of classes for today (excluding breaks)
+      return timetable.filter(item => !item.break && item.class).length;
+    } else {
+      const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+      
+      // Return an array of counts for each day
+      return daysOrder.map(day => {
+        const daySchedule = timetable[day] || [];
+        const classesForDay = daySchedule.filter(item => !item.break && item.class);
+        return classesForDay.length;
+      });
+    }
+  }
+  

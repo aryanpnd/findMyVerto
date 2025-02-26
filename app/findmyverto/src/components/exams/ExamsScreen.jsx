@@ -77,9 +77,9 @@ export default function ExamsScreen({
                                                 start={{ x: 0, y: 0 }}
                                                 end={{ x: 1, y: 0 }} style={[styles.gapCard, globalStyles.elevationMin]}>
                                                 <View style={{ width: "40%", justifyContent: "center" }}>
-                                                    <Text style={[styles.text2, { textAlign: "center", fontSize: 25, fontWeight: "bold", color: "white" }]}>Gap: {exam.gap} {exam.gap > 1 ? "days" : "day"}</Text>
+                                                    <Text style={[styles.text2, { textAlign: "center", fontSize: 20, fontWeight: "bold", color: "white" }]}>Gap: {exam.gap} {exam.gap > 1 ? "days" : "day"}</Text>
                                                 </View>
-                                                <View style={{ justifyContent: "space-between", height: "100%", paddingLeft: WIDTH(5) }}>
+                                                <View style={{ justifyContent: "space-between", height: "80%", paddingLeft: WIDTH(5),paddingRight:WIDTH(2),alignItems:"center"}}>
                                                     <Text style={[styles.text2, { color: colors.whitePrimary, fontWeight: "bold" }]}>From: {exam.from}</Text>
                                                     <Text style={[styles.text2, { color: colors.whitePrimary, fontWeight: "bold" }]}>To: {exam.to}</Text>
                                                 </View>
@@ -189,9 +189,11 @@ const styles = StyleSheet.create({
         height: HEIGHT(10),
         width: WIDTH(95),
         borderRadius: 20,
-        padding: WIDTH(5),
+        paddingHorizontal: WIDTH(3),
+        paddingVertical: HEIGHT(1),
         flexDirection: "row",
         justifyContent: "space-between",
+        alignItems: "center"
     },
     infoContainer: {
         flexDirection: "row",

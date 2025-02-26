@@ -2,7 +2,7 @@ import axios from "axios";
 import { API_URL } from "../../../context/Auth";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import formatTimetable from "../../helperFunctions/timetableFormatter";
+import formatTimetable, { formatClassesToday } from "../../helperFunctions/timetableFormatter";
 import formatTimeAgo from "../../helperFunctions/dateFormatter";
 import { friendsStorage } from "../../storage/storage";
 import formatExams from "../../helperFunctions/examsFormatter";
@@ -34,7 +34,7 @@ export async function getFriendDetails(auth, friend_id, setStudent, setLoading, 
         })
 }
 
-export async function getFriendTimetable(auth, friend_id, sync, settimeTable, setCourses, setLastSynced, setLoading, setRefreshing, setIsError) {
+export async function getFriendTimetable(auth, friend_id, sync, settimeTable, setClassesToday, setCourses, setLastSynced, setLoading, setRefreshing, setIsError) {
     !sync && setLoading(true)
     sync && setRefreshing(true)
     await axios.post(`${API_URL}/friends/timetable`, { reg_no: auth.reg_no, password: auth.password, studentId: friend_id, sync: sync })
@@ -43,6 +43,8 @@ export async function getFriendTimetable(auth, friend_id, sync, settimeTable, se
                 friendsStorage.set(`${friend_id}-timetable`, JSON.stringify(result.data));
                 const parsedTimetable = formatTimetable(result.data.data.time_table, result.data.data.courses)
                 settimeTable(parsedTimetable)
+                const classesToday = formatClassesToday(parsedTimetable, false);
+                setClassesToday(classesToday);
                 setCourses(result.data.data.courses)
                 setLastSynced(result.data.lastSynced)
                 Toast.show({
@@ -173,7 +175,7 @@ export async function getFriendAssignments(auth, id, sync, setAssignments, setTo
         if (result.data.success) {
             friendsStorage.set(`${id}-assignments`, JSON.stringify(result.data));
             setAssignments(result.data.data);
-            setTotalAssignments(result.data.data.theory.length+result.data.data.practical.length+result.data.data.reading.length);
+            setTotalAssignments(result.data.data.theory.length + result.data.data.practical.length + result.data.data.reading.length);
             setLastSynced(result.data.last_updated)
             setIsError(false);
 

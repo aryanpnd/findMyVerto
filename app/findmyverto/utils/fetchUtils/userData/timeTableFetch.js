@@ -1,7 +1,7 @@
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import formatTimetable from "../../helperFunctions/timetableFormatter";
+import formatTimetable, { formatClassesToday } from "../../helperFunctions/timetableFormatter";
 import { API_URL } from "../../../context/Auth";
 import { userStorage } from "../../storage/storage";
 
@@ -14,7 +14,7 @@ export async function fetchTimetable(
     auth,
     setIsError,
     sync,
-    todayOnly=false,
+    todayOnly = false,
     setLastSynced,
     setLastUpdated
 ) {
@@ -34,7 +34,8 @@ export async function fetchTimetable(
                     const tt = formatTimetable(result.data.data.time_table, result.data.data.courses, todayOnly)
                     settimeTable(tt)
                     setCourses(result.data.data.courses)
-                    setClassesToday(tt.length)
+                    const classesToday = formatClassesToday(tt, todayOnly);
+                    setClassesToday(classesToday);
                     setLastSynced(result.data.lastSynced)
                     setLastUpdated(result.data.data.last_updated)
                     Toast.show({
@@ -55,7 +56,8 @@ export async function fetchTimetable(
 
         } else {
             const tt = formatTimetable(userTimeTable.data.time_table, userTimeTable.data.courses, todayOnly)
-            setClassesToday(tt.length)
+            const classesToday = formatClassesToday(tt, todayOnly);
+            setClassesToday(classesToday);
             settimeTable(tt)
             setCourses(userTimeTable.data.courses)
             setLastSynced(userTimeTable.lastSynced)
