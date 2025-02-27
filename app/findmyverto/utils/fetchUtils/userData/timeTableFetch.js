@@ -1,7 +1,7 @@
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
-import formatTimetable, { formatClassesToday } from "../../helperFunctions/timetableFormatter";
+import formatTimetable, { filterOutdatedMakeup, formatClassesToday } from "../../helperFunctions/timetableFormatter";
 import { API_URL } from "../../../context/Auth";
 import { userStorage } from "../../storage/storage";
 
@@ -75,6 +75,70 @@ export async function fetchTimetable(
             type: 'error',
             text1: "Error fetching timetable",
             text2: `${error.message}`
+        });
+    }
+}
+
+export async function fetchMakeup(
+    setMakeupLoading,
+    setRefreshing,
+    setMakeup,
+    auth,
+    setIsError,
+    sync,
+    setLastSynced
+) {
+    try {
+        if (!sync) setMakeupLoading(true);
+        if (sync) setRefreshing(true);
+
+        let makeupRaw = await AsyncStorage.getItem("MAKEUP");
+        let storedMakeup = makeupRaw ? JSON.parse(makeupRaw) : null;
+
+        if (!storedMakeup || sync) {
+            const result = await axios.post(`${API_URL}/student/makeup`, {
+                password: auth.password,
+                reg_no: auth.reg_no
+            });
+
+            if (result.data.success) {
+                await AsyncStorage.setItem("MAKEUP", JSON.stringify(result.data));
+                let makeupClasses = filterOutdatedMakeup(result.data.data);
+                
+                setMakeup(makeupClasses);
+                setLastSynced(result.data.lastSynced);
+                Toast.show({
+                    type: 'success',
+                    text1: "Makeup Classes Fetched",
+                    text2: result.data.message,
+                });
+                setIsError(false);
+            } else {
+                Toast.show({
+                    type: 'error',
+                    text1: result.data.message,
+                    text2: result.data.errorMessage,
+                });
+                setIsError(true);
+            }
+        } else {
+            let makeupClasses = filterOutdatedMakeup(storedMakeup.data);
+            
+            setMakeup(makeupClasses);
+            setLastSynced(storedMakeup.lastSynced);
+            setIsError(false);
+        }
+        setMakeupLoading(false);
+        setRefreshing(false);
+    } catch (error) {
+        console.error(error);
+        setMakeupLoading(false);
+        setRefreshing(false);
+        setIsError(true);
+        Toast.show({
+            type: 'error',
+            text1: "Error fetching makeup classes",
+            text2: error.message,
         });
     }
 }

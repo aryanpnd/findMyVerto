@@ -90,11 +90,12 @@ export default function CgpaScreen({
                         <ShimmerPlaceHolder style={{ height: HEIGHT(14), width: WIDTH(90), borderRadius: 20 }} visible={false} />
                         :
                         <LinearGradient
-                            colors={['#0f2027', '#2c5364']}
+                            colors={[colors.secondary, colors.secondary]}
                             start={{ x: 0, y: 0 }}
                             end={{ x: 1, y: 1 }}
                             style={styles.aggregateCard}>
                             <Text style={[styles.aggregateHeaderTitle, { color: "white" }]}>Aggregate (CGPA)</Text>
+                            {/* <View style={styles.progressBarCard}> */}
                             <AnimatedCircularProgress
                                 size={90}
                                 width={8}
@@ -106,9 +107,13 @@ export default function CgpaScreen({
                                     <Text style={{ color: "white", fontSize: 25, fontWeight: '500' }}>{aggregateCGPA}</Text>
                                 )}
                             </AnimatedCircularProgress>
+                            {/* </View> */}
                         </LinearGradient>
                 }
-            </View>}
+
+                <Text style={{textAlign:"center",fontSize:12,color:"white",marginTop:10}}>Click on the cards to view the details</Text>
+            </View>
+            }
 
             {
                 isError ?
@@ -124,12 +129,14 @@ export default function CgpaScreen({
                         <ScrollView showsVerticalScrollIndicator={false} style={styles.body} contentContainerStyle={styles.scrollView}>
                             {
                                 Object.keys(cgpa).map((key, index) => (
-                                    <Pressable onPress={() => navigation.navigate("CGPADetails", { grades: cgpa[key].course_grades, sem: cgpa[key].term, tgpa: cgpa[key].tgpa })} key={index}>
-                                        <LinearGradient
-                                            colors={['white', 'white']}
-                                            start={{ x: 0, y: 0 }}
-                                            end={{ x: 1, y: 1 }}
-                                            key={index} style={styles.card}>
+                                    <Pressable
+                                        onPress={() => navigation.navigate("CGPADetails", {
+                                            grades: cgpa[key].course_grades,
+                                            sem: cgpa[key].term,
+                                            tgpa: cgpa[key].tgpa
+                                        })}
+                                        key={index}>
+                                        <View style={styles.card}>
                                             <View>
                                                 <Text style={{ fontSize: 20, fontWeight: "500", color: "black" }} >{key}</Text>
                                                 <Text style={{ fontSize: 15, fontWeight: "500", color: "grey" }}>{getYearAndSemester(cgpa[key].term)}</Text>
@@ -147,8 +154,8 @@ export default function CgpaScreen({
                                                     <Text style={{ color: "grey", fontSize: 25, fontWeight: '500' }}>{parseFloat(cgpa[key].tgpa).toFixed(2)}</Text>
                                                 )}
                                             </AnimatedCircularProgress>
-                                            {/* </View> */}
-                                        </LinearGradient>
+                                        </View>
+                                        {/* <Text>Click to view the details</Text> */}
                                     </Pressable>
                                 ))
                             }
@@ -202,12 +209,13 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
-        borderWidth: 1,
+        // borderWidth: 1,
         ...globalStyles.elevationMin
     },
     progressBarCard: {
-        height: "85%",
-        width: "35%",
+        height: "80%",
+        width: "30%",
+        padding: 5,
         borderRadius: 20,
         justifyContent: "center",
         alignItems: "center",

@@ -141,17 +141,37 @@ function cleanRoom(roomStr) {
 // The following function is used to count the number of classes for today.
 export function formatClassesToday(timetable, todayOnly) {
     if (todayOnly) {
-      // Return the count of classes for today (excluding breaks)
-      return timetable.filter(item => !item.break && item.class).length;
+        // Return the count of classes for today (excluding breaks)
+        return timetable.filter(item => !item.break && item.class).length;
     } else {
-      const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
-      
-      // Return an array of counts for each day
-      return daysOrder.map(day => {
-        const daySchedule = timetable[day] || [];
-        const classesForDay = daySchedule.filter(item => !item.break && item.class);
-        return classesForDay.length;
-      });
+        const daysOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+        // Return an array of counts for each day
+        return daysOrder.map(day => {
+            const daySchedule = timetable[day] || [];
+            const classesForDay = daySchedule.filter(item => !item.break && item.class);
+            return classesForDay.length;
+        });
     }
-  }
-  
+}
+
+
+export function filterOutdatedMakeup(makeupClasses) {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0); // Normalize today's date
+    
+    return makeupClasses?.filter(item => {
+        const parts = item.scheduledDate.split('/');
+        if (parts.length !== 3) return false; // Skip if the format is invalid
+
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1; // Month is zero-indexed
+        let year = parseInt(parts[2], 10);
+        // Convert two-digit year to four digits (e.g., "25" becomes 2025)
+        year = year < 100 ? 2000 + year : year;
+        const classDate = new Date(year, month, day);
+        classDate.setHours(0, 0, 0, 0);
+        // Keep only classes scheduled for today or in the future.
+        return classDate >= today;
+    });
+}

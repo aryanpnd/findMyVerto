@@ -39,6 +39,7 @@ export default function MyMessages({ navigation }) {
             isError={isError}
             handleMessagesFetch={handleMessagesFetch}
             navigation={navigation}
+            lastSynced={lastSynced}
         />
   );
 }

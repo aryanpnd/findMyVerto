@@ -5,10 +5,10 @@ import SyncData from "../miscellaneous/SyncData";
 import formatTimeAgo from "../../../utils/helperFunctions/dateFormatter";
 import DriveCard from "./DriveCard";
 import { HEIGHT, WIDTH } from "../../constants/styles";
-import { ErrorMessage } from "../timeTable/ErrorMessage";
 import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import LinearGradient from "react-native-linear-gradient";
 import LottieView from "lottie-react-native";
+import { ErrorMessage } from "../timeTable/ErrorMessage";
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
@@ -61,7 +61,7 @@ export default function MyDrivesScreen({
 
             {isError ? (
                 <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <ErrorMessage handleFetchTimetable={handleDrivesFetch} timetableLoading={drivesLoading} buttonHeight={45} ErrorMessage={"Drives"} />
+                    <ErrorMessage handleFetchTimetable={handleDrivesFetch} timetableLoading={drivesLoading} buttonHeight={45} ErrorMessage={"Makeup"} />
                 </View>
             ) : (
                 <View style={styles.body}>

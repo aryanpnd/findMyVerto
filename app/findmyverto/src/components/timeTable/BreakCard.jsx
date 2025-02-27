@@ -3,8 +3,7 @@ import React, { useEffect, useState } from 'react'
 import LottieView from 'lottie-react-native';
 import { globalStyles } from '../../constants/styles';
 import { LinearGradient } from 'expo-linear-gradient';
-import isTimeEqual from '../../../utils/helperFunctions/funtions';
-import { getDay } from '../../../utils/helperFunctions/dataAndTimeHelpers';
+import { getDay, isTimeEqual } from '../../../utils/helperFunctions/dataAndTimeHelpers';
 
 
 export default function BreakCard({ time, day }) {

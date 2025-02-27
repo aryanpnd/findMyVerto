@@ -2,7 +2,7 @@ import { View, Text, StyleSheet, TouchableOpacity, Pressable } from 'react-nativ
 import React, { useEffect } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
-import { globalStyles } from '../../constants/styles'
+import { globalStyles, HEIGHT } from '../../constants/styles'
 
 export default function AttendanceCard({ attendance, colors, navigation, isAggregateCard, attendanceDetails }) {
     return (
@@ -29,11 +29,11 @@ export default function AttendanceCard({ attendance, colors, navigation, isAggre
                     attendance?.subject_name ? `${attendance.subject_code}: ${attendance.subject_name}` : "Aggregate Attendance"
                 }</Text>
 
-                <View style={{ flex: 4, flexDirection: 'row' }}>
+                <View style={{ maxHeight:HEIGHT(13), flexDirection: 'row' }}>
 
                     <View style={styles.detailsContainer}>
 
-                        <View style={{ flex: 4.5, justifyContent: "space-evenly", paddingLeft: 5 }}>
+                        <View style={{ height:"100%",justifyContent: "space-evenly", paddingLeft: 5 }}>
                             <Text style={[
                                 styles.textAttendanceDetails,
                                 { display: (attendance?.last_attended ?? '') === "" ? "none" : "flex" }
@@ -68,14 +68,15 @@ export default function AttendanceCard({ attendance, colors, navigation, isAggre
 const styles = StyleSheet.create({
     cardWrapper: {
         width: '95%',
-        height: '100%',
+        // height: '100%',
         borderRadius: 25,
         // flexDirection: 'row',
     },
     cardContainer: {
         width: '100%',
-        height: '100%',
+        // height: '100%',
         borderRadius: 25,
+        gap: 5,
         // flexDirection: 'row',
         padding: 10
     },
@@ -96,12 +97,12 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     textCourse: {
-        fontSize: 18,
+        fontSize: 17,
         color: '#f5f6fa',
         fontWeight: '500',
     },
     textAttendanceDetails: {
-        fontSize: 14,
+        fontSize: 13,
         color: '#f1ebeb',
         fontWeight: '400'
     },

@@ -33,6 +33,7 @@ import FriendExams from './src/components/friendProfile/FriendExams';
 import FriendAssignments from './src/components/friendProfile/FriendAssignments';
 import FriendDrives from './src/components/friendProfile/FriendDrives';
 import MyMessagesSearch from './src/screens/MyMessages/MyMessagesSearch';
+import Makeup from './src/screens/TimeTable/Makeup';
 
 const Stack = createNativeStackNavigator();
 
@@ -75,6 +76,7 @@ export default function AuthPage() {
           <Stack.Screen name="AttendanceDetails" component={AttendanceDetails} />
 
           <Stack.Screen name="Timetable" component={TimeTable} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false }} />
+          <Stack.Screen name="Makeup" component={Makeup} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false }} />
           <Stack.Screen name="Courses" component={Courses} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false }} />
 
           <Stack.Screen name="Marks" component={Marks} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }} />

@@ -21,7 +21,7 @@ import BreakCard from '../timeTable/BreakCard';
 import ClassesCard from '../timeTable/ClassesCard';
 import { getDay } from '../../../utils/helperFunctions/dataAndTimeHelpers';
 import LottieView from 'lottie-react-native';
-import isTimeEqual from '../../../utils/helperFunctions/funtions';
+import {isTimeEqual} from '../../../utils/helperFunctions/dataAndTimeHelpers';
 
 const { width } = Dimensions.get('screen');
 

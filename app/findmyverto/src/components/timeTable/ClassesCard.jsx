@@ -3,8 +3,7 @@ import React, { use, useContext, useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { globalStyles } from '../../constants/styles'
 import { colors } from '../../constants/colors'
-import isTimeEqual from '../../../utils/helperFunctions/funtions'
-import { getDay } from '../../../utils/helperFunctions/dataAndTimeHelpers'
+import { getDay,isTimeEqual } from '../../../utils/helperFunctions/dataAndTimeHelpers'
 
 export default function ClassesCard({ time, classes, day }) {
   const [ongoing, setOngoing] = useState(false)

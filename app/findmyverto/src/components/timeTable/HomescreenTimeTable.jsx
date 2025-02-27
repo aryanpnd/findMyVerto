@@ -5,12 +5,12 @@ import Loading1 from '../miscellaneous/Loading1';
 import LottieView from 'lottie-react-native';
 import ClassesTodayCards from './ClassesTodayCards';
 import { colors } from '../../constants/colors';
-import isTimeEqual from '../../../utils/helperFunctions/funtions';
 import { AppContext } from '../../../context/MainApp';
 import { fetchTimetable } from '../../../utils/fetchUtils/userData/timeTableFetch';
 import Button from '../miscellaneous/Button';
 import { useFocusEffect } from '@react-navigation/native';
 import { HEIGHT, WIDTH } from '../../constants/styles';
+import {isTimeEqual} from '../../../utils/helperFunctions/dataAndTimeHelpers';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;

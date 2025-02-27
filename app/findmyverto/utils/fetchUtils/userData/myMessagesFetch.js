@@ -22,6 +22,20 @@ export const fetchMyMessages = async (
     try {
         !sync && setLoading(true);
         sync && setRefresh(true);
+
+        // If syncing, remove all stored messages using the stored pages list.
+        if (sync) {
+            const pagesRaw = userStorage.getString("MESSAGES-PAGES");
+            if (pagesRaw) {
+                const pages = JSON.parse(pagesRaw);
+                pages.forEach((page) => {
+                    userStorage.delete(`MESSAGES-${page}`);
+                });
+            }
+            userStorage.delete("MESSAGES-PAGE-NUMBER");
+            userStorage.delete("MESSAGES-PAGES");
+        }
+
         let userMessagesRaw, userMessages, pageIndex;
         const currentPageRaw = userStorage.getString('MESSAGES-PAGE-NUMBER');
         const currentPage = currentPageRaw ? JSON.parse(currentPageRaw) : null;
@@ -143,7 +157,7 @@ export const searchMyMessages = async (
                 description: description || ""
             });
 
-            if (result.data.success) {                
+            if (result.data.success) {
                 const pageCountTemp = result.data.data[0].PageCount;
                 const pageNumberTemp = (pageCountTemp - pageIndex) + 1;
 

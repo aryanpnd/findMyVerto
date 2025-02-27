@@ -23,6 +23,12 @@ export const homeScreenNavigations = [
     development: false
   },
   {
+    title: "Makeup",
+    icon: require('../../assets/icons/makeup.png'),
+    route: "Makeup",
+    development: false
+  },
+  {
     title: "Courses",
     icon: require('../../assets/icons/courses.png'),
     route: "Courses",
