@@ -157,7 +157,7 @@ export default function MarksScreen({
 
             {
                 isError ?
-                    <ErrorMessage handleFetchTimetable={handleMarksFetch} timetableLoading={marksLoading} buttonHeight={45} ErrorMessage={"Marks"} />
+                    <ErrorMessage handleFetchTimetable={()=>handleMarksFetch(true)} timetableLoading={marksLoading||markRefresh} buttonHeight={45} ErrorMessage={"Marks"} />
                     :
                     <ScrollView showsVerticalScrollIndicator={false} style={styles.body} contentContainerStyle={styles.scrollView}>
                         <Text style={styles.sectionHeader}>Normal Semesters</Text>

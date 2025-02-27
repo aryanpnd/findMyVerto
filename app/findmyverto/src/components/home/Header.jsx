@@ -43,11 +43,11 @@ export default function Header({ navigation }) {
 
     const retryAttemptsValue = 5;
 
-    const handleDataFetch = async (sync) => {
-        await fetchBasicDetails(setLoading, setRefreshing, setUserDetails, auth, setIsError, sync, setLastSynced);
+    const handleDataFetch = async (sync,isRetry) => {
+        await fetchBasicDetails(setLoading, setRefreshing, setUserDetails, auth, setIsError, sync, setLastSynced, isRetry);
     };
 
-    const getAttendance = async (sync) => {
+    const getAttendance = async (sync,isRetry) => {
         if (attendanceLoading) {
             return;
         }
@@ -65,7 +65,8 @@ export default function Header({ navigation }) {
             auth, 
             setIsAttendanceError, 
             sync, 
-            setAttendanceLastSynced
+            setAttendanceLastSynced,
+            isRetry
         );
     };
 
@@ -74,13 +75,13 @@ export default function Header({ navigation }) {
         if (isError && retryAttempts < retryAttemptsValue) {
             console.log("Retrying basic details fetch:", retryAttempts, isError);
             setRetryAttempts(prev => prev + 1);
-            await handleDataFetch(false);
-            Toast.show({
-                type: 'error',
-                position: 'top',
-                text1: 'Fetching details again',
-                text2: `Attempt ${retryAttempts + 1}`,
-            });
+            await handleDataFetch(false, true);
+            // Toast.show({
+            //     type: 'error',
+            //     position: 'top',
+            //     text1: 'Fetching details again',
+            //     text2: `Attempt ${retryAttempts + 1}`,
+            // });
         } else if (retryAttempts >= retryAttemptsValue) {
             Toast.show({
                 type: 'error',
@@ -97,13 +98,13 @@ export default function Header({ navigation }) {
         if (isAttendanceError && attendanceRetryAttempts < retryAttemptsValue) {
             console.log("Retrying attendance fetch:", attendanceRetryAttempts, isAttendanceError);
             setAttendanceRetryAttempts(prev => prev + 1);
-            await getAttendance(false);
-            Toast.show({
-                type: 'error',
-                position: 'top',
-                text1: 'Fetching attendance again',
-                text2: `Attempt ${attendanceRetryAttempts + 1}`,
-            });
+            await getAttendance(false, true);
+            // Toast.show({
+            //     type: 'error',
+            //     position: 'top',
+            //     text1: 'Fetching attendance again',
+            //     text2: `Attempt ${attendanceRetryAttempts + 1}`,
+            // });
         } else if (attendanceRetryAttempts >= retryAttemptsValue) {
             Toast.show({
                 type: 'error',
@@ -118,7 +119,7 @@ export default function Header({ navigation }) {
     useFocusEffect(
         useCallback(() => {
             handleDataFetch(false);
-            getAttendance(false);
+            getAttendance(false, false);
         }, [])
     );
 

@@ -12,6 +12,7 @@ export async function fetchAttendance(
     setIsError,
     sync,
     setLastSynced,
+    isRetry
 ) {
     try {
         setAttendanceLoading(true)
@@ -36,7 +37,7 @@ export async function fetchAttendance(
                     });
                     setIsError(false)
                 } else {
-                    Toast.show({
+                    !isRetry && Toast.show({
                         type: 'error',
                         text1: `${result.data.message}`,
                         text2: `${result.data.errorMessage}`,
@@ -63,7 +64,7 @@ export async function fetchAttendance(
             setAttendanceDetails(userAttendance.details)
             setLastSynced(userAttendance.last_updated)
             setIsError(false)
-            Toast.show({
+            !isRetry && Toast.show({
                 type: 'error',
                 text1: "Error fetching Attendance",
                 text2: `${error.message}`

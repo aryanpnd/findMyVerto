@@ -117,7 +117,7 @@ export default function CgpaScreen({
 
             {
                 isError ?
-                    <ErrorMessage handleFetchTimetable={handleCgpaFetch} timetableLoading={cgpaLoading} buttonHeight={45} ErrorMessage={"CGPA"} />
+                    <ErrorMessage handleFetchTimetable={()=>handleCgpaFetch(true)} timetableLoading={cgpaLoading || cgpaRefresh} buttonHeight={45} ErrorMessage={"CGPA"} />
                     :
                     cgpaLoading ?
                         <ScrollView style={styles.body} contentContainerStyle={styles.scrollView}>

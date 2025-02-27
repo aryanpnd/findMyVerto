@@ -89,7 +89,7 @@ export default function MyMessagesScreen({
 
             {
                 isError ?
-                    <ErrorMessage handleFetchTimetable={() => handleMessagesFetch(false, pageCount, pageNumber, "", "")} timetableLoading={loading} buttonHeight={45} ErrorMessage={"Messages"} />
+                    <ErrorMessage handleFetchTimetable={() => handleMessagesFetch(true, 0, 0, "", "")} timetableLoading={loading || refresh} buttonHeight={45} ErrorMessage={"Messages"} />
                     :
                     loading ?
                         <View style={{ flex: 1, alignItems: "center", marginTop: HEIGHT(1), gap: HEIGHT(1) }}>
@@ -109,7 +109,7 @@ export default function MyMessagesScreen({
                                     <SearchBar searchQuery={searchQuery} updateSearchQuery={searchQueryHandler} isFocused={isFocused} setFocused={setFocused} />
                                     <Text style={styles.text2}>-or-</Text>
                                     <Pressable style={{ backgroundColor: "black", padding: 10, borderRadius: 10 }} onPress={() => navigation.navigate("MyMessagesSearch")}>
-                                        <Text style={{ color: "white",fontSize:13 }}>Advanced Search</Text>
+                                        <Text style={{ color: "white", fontSize: 13 }}>Advanced Search</Text>
                                     </Pressable>
                                 </View>
                                 <FlatList

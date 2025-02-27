@@ -32,6 +32,7 @@ export const fetchDrives = async (
                         text1: "Drives Synced",
                         text2: "Your drives have been synced successfully",
                     });
+                    setIsError(false);
                 }
                 else {
                     Toast.show({
@@ -39,6 +40,7 @@ export const fetchDrives = async (
                         text1: `${result.data.message}`,
                         text2: `${result.data.errorMessage}`,
                     });
+                    setIsError(true);
                 }
             }
         } else {
@@ -48,7 +50,6 @@ export const fetchDrives = async (
         }
         setDrivesLoading(false);
         setDrivesRefresh(false);
-        setIsError(false);
     }
     catch (error) {
         console.error(error);
@@ -58,6 +59,12 @@ export const fetchDrives = async (
             setDrives(userDrives.data);
             setTotalDrives(userDrives.data.length);
             setLastSynced(userDrives.lastSynced);
+        }else{
+            setIsError(true);
+            Toast.show({
+                type: 'error',
+                text1: "Something went wrong"
+            });
         }
         setDrivesLoading(false);
         setDrivesRefresh(false);

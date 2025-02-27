@@ -30,12 +30,14 @@ export async function fetchMarks(
                         text1: "Marks Synced",
                         text2: "Your marks have been synced successfully",
                     });
+                    setIsError(false)
                 } else {
                     Toast.show({
                         type: 'error',
                         text1: `${result.data.message}`,
                         text2: `${result.data.errorMessage}`,
                     });
+                    setIsError(true)
                 }
             }
         } else {
@@ -44,7 +46,6 @@ export async function fetchMarks(
         }
         setMarksLoading(false)
         setMarkRefresh(false)
-        setIsError(false)
     } catch (error) {
         console.error(error);
         let userMarksRaw = userStorage.getString("MARKS");
@@ -52,10 +53,11 @@ export async function fetchMarks(
             let userMarks = JSON.parse(userMarksRaw);
             setMarks(userMarks.data)
             setLastSynced(userMarks.lastSynced)
+        }else{
+            setIsError(true)
         }
         setMarksLoading(false)
         setMarkRefresh(false)
-        setIsError(true)
     }
 }
 
@@ -85,12 +87,14 @@ export async function fetchCgpa(
                         text1: "CGPA Synced",
                         text2: "Your cgpa has been synced successfully",
                     });
+                    setIsError(false)
                 } else {
                     Toast.show({
                         type: 'error',
                         text1: `${result.data.message}`,
                         text2: `${result.data.errorMessage}`,
                     });
+                    setIsError(true)
                 }
             }
         } else {
@@ -99,7 +103,6 @@ export async function fetchCgpa(
         }
         setCgpaLoading(false)
         setCgpaRefresh(false)
-        setIsError(false)
     } catch (error) {
         console.error(error);
         let userCgpaRaw = userStorage.getString("CGPA");
@@ -107,9 +110,10 @@ export async function fetchCgpa(
             let userCgpa = JSON.parse(userCgpaRaw);
             setCgpa(userCgpa.data)
             setLastSynced(userCgpa.lastSynced)
+        }else{
+            setIsError(true)
         }
         setCgpaLoading(false)
         setCgpaRefresh(false)
-        setIsError(true)
     }
 }

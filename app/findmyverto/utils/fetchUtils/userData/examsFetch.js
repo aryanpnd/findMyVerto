@@ -63,6 +63,13 @@ export async function fetchExams(
             setExams(parsedExams);
             setTotalExams(userExams.data.exams.length);
             setLastSynced(userExams.lastSynced);
+        } else {
+            setIsError(true);
+            Toast.show({
+                type: 'error',
+                text1: "Error fetching Exams",
+                text2: `${error.message}`,
+            });
         }
         setExamsLoading(false);
         setExamsRefresh(false);

@@ -80,6 +80,7 @@ export const fetchMyMessages = async (
                         text1: "Messages Synced",
                         text2: "Your messages have been synced successfully",
                     });
+                    setIsError(false);
                 }
                 else {
                     Toast.show({
@@ -88,6 +89,7 @@ export const fetchMyMessages = async (
                         text2: `${result.data.errorMessage}`,
                     });
                     userStorage.set("MESSAGES-PAGE-NUMBER", JSON.stringify(currentPage));
+                    setIsError(true);
                 }
             }
         } else {
@@ -101,10 +103,10 @@ export const fetchMyMessages = async (
             }
             setPages(pages.reverse());
             userStorage.set("MESSAGES-PAGE-NUMBER", JSON.stringify(userMessages.data[0].PageCount));
+            setIsError(false);
         }
         setLoading(false);
         setRefresh(false);
-        setIsError(false);
     }
     catch (error) {
         console.error(error);
@@ -121,6 +123,13 @@ export const fetchMyMessages = async (
             }
             userStorage.set("MESSAGES-PAGE-NUMBER", JSON.stringify(userMessages.data[0].PageCount));
             setPages(pages.reverse());
+        }else{
+            setIsError(true);
+            Toast.show({
+                type: 'error',
+                text1: "Error fetching Messages",
+                text2: `${error.message}`
+            });
         }
         setLoading(false);
         setRefresh(false);

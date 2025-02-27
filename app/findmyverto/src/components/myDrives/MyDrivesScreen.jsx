@@ -9,6 +9,7 @@ import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import LinearGradient from "react-native-linear-gradient";
 import LottieView from "lottie-react-native";
 import { ErrorMessage } from "../timeTable/ErrorMessage";
+import Button from "../miscellaneous/Button";
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
@@ -61,7 +62,7 @@ export default function MyDrivesScreen({
 
             {isError ? (
                 <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <ErrorMessage handleFetchTimetable={handleDrivesFetch} timetableLoading={drivesLoading} buttonHeight={45} ErrorMessage={"Makeup"} />
+                    <ErrorMessage handleFetchTimetable={()=>handleDrivesFetch(true)} timetableLoading={drivesLoading||drivesRefresh} buttonHeight={45} ErrorMessage={"Makeup"} />
                 </View>
             ) : (
                 <View style={styles.body}>
@@ -87,6 +88,16 @@ export default function MyDrivesScreen({
                                 style={styles.lottie}
                             />
                             <Text style={[styles.text1, { color: "grey" }]}>No Drives found</Text>
+                            <View style={{height:40, width:150, marginTop:10}}>
+                            <Button
+                                bg={"black"}
+                                loading={drivesLoading || drivesRefresh}
+                                onPress={async () => await handleDrivesFetch(true)}
+                                title={"Retry"}
+                                textStyles={{ fontSize: 15 }}
+                                styles={{ hieght: 10 }}
+                                />
+                                </View>
                         </View>
                     ) : (
                         <FlatList
@@ -96,7 +107,7 @@ export default function MyDrivesScreen({
                             renderItem={({ item }) => (
                                 <DriveCard drive={item} navigation={navigation} />
                             )}
-                            contentContainerStyle={{ paddingBottom: HEIGHT(5),paddingHorizontal:5 }}
+                            contentContainerStyle={{ paddingBottom: HEIGHT(5), paddingHorizontal: 5 }}
                         />
                     )}
                 </View>
@@ -130,7 +141,6 @@ const styles = StyleSheet.create({
     noDrivesContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        flex: 1,
     },
     lottie: {
         height: HEIGHT(50),

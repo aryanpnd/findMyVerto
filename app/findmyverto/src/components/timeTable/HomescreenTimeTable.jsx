@@ -47,7 +47,7 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
         setDay(td.getDay())
     }
 
-    const handleFetchTimetable = async () => {
+    const handleFetchTimetable = async (isRetry) => {
         // Before fetching, clear previous error state
         setIsError(false);
         // if (timetableLoading) return
@@ -62,7 +62,8 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
             false,
             true,
             setLastSynced,
-            setLastUpdated
+            setLastUpdated,
+            isRetry
         );
     };
 
@@ -102,7 +103,7 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
         if (isError && retryAttempts < retryAttemptsValue) {
             console.log("Error reattempt block", retryAttempts, isError);
             setRetryAttempts((prev) => prev + 1);
-            await handleFetchTimetable();
+            await handleFetchTimetable(true);
         } else if (retryAttempts >= retryAttemptsValue) {
             Toast.show({
                 type: 'error',

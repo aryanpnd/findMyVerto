@@ -32,6 +32,7 @@ export const fetchAssignments = async (
                         text1: "Assignments Synced",
                         text2: "Your assignments have been synced successfully",
                     });
+                    setIsError(false);
                 }
                 else {
                     Toast.show({
@@ -39,6 +40,7 @@ export const fetchAssignments = async (
                         text1: `${result.data.message}`,
                         text2: `${result.data.errorMessage}`,
                     });
+                    setIsError(true);
                 }
             }
         } else {
@@ -48,7 +50,6 @@ export const fetchAssignments = async (
         }
         setAssignmentsLoading(false);
         setAssignmentsRefresh(false);
-        setIsError(false);
     }
     catch (error) {
         console.error(error);
@@ -58,6 +59,8 @@ export const fetchAssignments = async (
             setAssignments(userAssignments.data);
             setTotalAssignments(userAssignments.data.theory.length+userAssignments.data.practical.length+userAssignments.data.reading.length);
             setLastSynced(userAssignments.lastSynced);
+        }else{
+            setIsError(true);
         }
         setAssignmentsLoading(false);
         setAssignmentsRefresh(false);

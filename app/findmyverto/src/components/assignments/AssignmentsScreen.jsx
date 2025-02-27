@@ -105,7 +105,7 @@ export default function AssignmentsScreen({
             {
                 isError ?
                     <View style={{ flex: 1, justifyContent: 'center' }}>
-                        <ErrorMessage handleFetchTimetable={handleAssignmentsFetch} timetableLoading={AssignmentsLoading} buttonHeight={45} ErrorMessage={"Assignments"} />
+                        <ErrorMessage handleFetchTimetable={()=>handleAssignmentsFetch(true)} timetableLoading={AssignmentsLoading||AssignmentsRefresh} buttonHeight={45} ErrorMessage={"Assignments"} />
                     </View>
                     :
                     <View style={styles.body}>

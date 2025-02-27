@@ -16,7 +16,8 @@ export async function fetchTimetable(
     sync,
     todayOnly = false,
     setLastSynced,
-    setLastUpdated
+    setLastUpdated,
+    isRetry
 ) {
     try {
         !sync && setTimetableLoading(true)
@@ -45,7 +46,7 @@ export async function fetchTimetable(
                     });
                     setIsError(false)
                 } else {
-                    Toast.show({
+                    !isRetry && Toast.show({
                         type: 'error',
                         text1: `${result.data.message}`,
                         text2: `${result.data.errorMessage}`,
@@ -71,7 +72,7 @@ export async function fetchTimetable(
         setTimetableLoading(false)
         setRefreshing(false)
         setIsError(true)
-        Toast.show({
+        !isRetry && Toast.show({
             type: 'error',
             text1: "Error fetching timetable",
             text2: `${error.message}`
