@@ -19,7 +19,7 @@ export default function TimeTable() {
   const { timetableLoading, setTimetableLoading } = useContext(AppContext)
   const [classesToday, setClassesToday] = useState(0)
   const [timeTable, settimeTable] = useState([])
-  const [day, setDay] = useState(0)
+  const [courses, setCourses] = useState([])
 
   const [refreshing, setRefreshing] = useState(false);
   const [isError, setIsError] = useState(false);
@@ -28,7 +28,7 @@ export default function TimeTable() {
 
   const handleFetchTimetable = async (sync) => {
     if (timetableLoading || refreshing) return
-    await fetchTimetable(setTimetableLoading, setRefreshing, settimeTable, setClassesToday, auth, setIsError, sync, false, setLastSynced, setLastUpdated)
+    await fetchTimetable(setTimetableLoading, setRefreshing, settimeTable, setClassesToday, setCourses, auth, setIsError, sync, false, setLastSynced, setLastUpdated)
   }
 
   useEffect(() => {
@@ -48,12 +48,7 @@ export default function TimeTable() {
         isError ?
           <ErrorMessage handleFetchTimetable={handleFetchTimetable} timetableLoading={timetableLoading} buttonHeight={45} ErrorMessage={"timetable"}/>
           :
-          <TimeTableScreen timeTable={timeTable} />
-          // timeTable ?
-          //   // <TimeTableScreen timeTable={Object.entries(timeTable)} />
-          //   :
-          //   <></>
-        // <></>
+          <TimeTableScreen timeTable={timeTable} classesToday={classesToday}/>
       }
     </>
   )

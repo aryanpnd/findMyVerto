@@ -13,6 +13,7 @@ export async function fetchBasicDetails(
     setIsError,
     sync,
     setLastSynced,
+    isRetry
 ) {
     try {
         setProfileLoading(true)
@@ -35,7 +36,7 @@ export async function fetchBasicDetails(
                         text2: `Details synced successfully`,
                     });
                 } else {
-                    Toast.show({
+                    !isRetry && Toast.show({
                         type: 'error',
                         text1: `${result.data.message}`,
                         text2: `${result.data.errorMessage}`,
@@ -56,7 +57,7 @@ export async function fetchBasicDetails(
         setProfileLoading(false)
         setRefreshing(false)
         setIsError(true)
-        Toast.show({
+        !isRetry && Toast.show({
             type: 'error',
             text1: "Error fetching Details",
             text2: `${error.message}`

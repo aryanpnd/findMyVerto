@@ -8,7 +8,12 @@ const options = {
         info: {
             title: 'Find My Verto API',
             version: '1.0.0',
-            description: 'API documentation for Find My Verto API endpoints and UMS Unofficial API endpoints',
+            description: 'API documentation for Find My Verto API endpoints',
+            contact: {
+                name: 'Aryan Pandey',
+                email: 'aryanpnd3@gmail.com',
+                github: 'https://github.com/aryanpnd/findMyVerto'
+            }
         },
         tags: [
             {

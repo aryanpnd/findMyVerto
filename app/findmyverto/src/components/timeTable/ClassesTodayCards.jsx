@@ -1,10 +1,10 @@
-import { View, Text, StyleSheet, Dimensions, Image, Pressable, ScrollView } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Image, Pressable } from 'react-native'
 import React, { use, useContext, useEffect, useState } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { AppContext } from '../../../context/MainApp';
-import isTimeEqual from '../../../utils/helperFunctions/funtions';
 import { colors } from '../../constants/colors';
 import { globalStyles, HEIGHT } from '../../constants/styles';
+import {isTimeEqual} from '../../../utils/helperFunctions/dataAndTimeHelpers';
 
 
 const { width, height } = Dimensions.get('window');

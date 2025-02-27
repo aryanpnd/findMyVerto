@@ -5,12 +5,12 @@ import Loading1 from '../miscellaneous/Loading1';
 import LottieView from 'lottie-react-native';
 import ClassesTodayCards from './ClassesTodayCards';
 import { colors } from '../../constants/colors';
-import isTimeEqual from '../../../utils/helperFunctions/funtions';
 import { AppContext } from '../../../context/MainApp';
 import { fetchTimetable } from '../../../utils/fetchUtils/userData/timeTableFetch';
 import Button from '../miscellaneous/Button';
 import { useFocusEffect } from '@react-navigation/native';
 import { HEIGHT, WIDTH } from '../../constants/styles';
+import {isTimeEqual} from '../../../utils/helperFunctions/dataAndTimeHelpers';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
@@ -23,6 +23,7 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
     const { timetableLoading, setTimetableLoading } = useContext(AppContext)
     const [classesToday, setClassesToday] = useState(0)
     const [timeTable, settimeTable] = useState([])
+    const [courses, setCourses] = useState([])
     const [lastSynced, setLastSynced] = useState("")
     const [lastUpdated, setLastUpdated] = useState("")
     const [day, setDay] = useState(0)
@@ -46,7 +47,7 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
         setDay(td.getDay())
     }
 
-    const handleFetchTimetable = async () => {
+    const handleFetchTimetable = async (isRetry) => {
         // Before fetching, clear previous error state
         setIsError(false);
         // if (timetableLoading) return
@@ -55,12 +56,14 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
             setRefreshing,
             settimeTable,
             setClassesToday,
+            setCourses,
             auth,
             setIsError,
             false,
             true,
             setLastSynced,
-            setLastUpdated
+            setLastUpdated,
+            isRetry
         );
     };
 
@@ -100,7 +103,7 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
         if (isError && retryAttempts < retryAttemptsValue) {
             console.log("Error reattempt block", retryAttempts, isError);
             setRetryAttempts((prev) => prev + 1);
-            await handleFetchTimetable();
+            await handleFetchTimetable(true);
         } else if (retryAttempts >= retryAttemptsValue) {
             Toast.show({
                 type: 'error',

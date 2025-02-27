@@ -19,7 +19,8 @@ import SearchedStudentCard from '../../components/vertoSearch/SearchedStudentCar
 import LottieView from 'lottie-react-native';
 import EmptyRequests from '../../components/miscellaneous/EmptyRequests'
 import { getFriendRequests, getSentFriendRequests } from '../../../utils/fetchUtils/handleFriends/handleFriends'
-
+import PagerButtons from '../../components/miscellaneous/PagerButtons'
+import { HEIGHT, WIDTH } from '../../constants/styles'
 
 const { height, width } = Dimensions.get('window');
 
@@ -72,7 +73,7 @@ export default function FriendRequests({ navigation }) {
       </View>
 
       <View style={styles.body}>
-        <ButtonContainer buttons={buttons} onClick={onCLick} scrollX={scrollX} />
+        <PagerButtons buttons={buttons} onClick={onCLick} scrollX={scrollX} containerWidth={WIDTH(90)} containerHeight={HEIGHT(6)}/>
 
         <ScrollView
           ref={scrollViewRef}
@@ -168,48 +169,6 @@ function RequestsContainer({
   )
 }
 
-function ButtonContainer({ buttons, onClick, scrollX }) {
-  const [btnContainerWidth, setWidth] = useState(0);
-  const btnWidth = btnContainerWidth / buttons?.length;
-  const translateX = scrollX.interpolate({
-    inputRange: [0, width],
-    outputRange: [0, btnWidth],
-  });
-  const translateXOpposit = scrollX.interpolate({
-    inputRange: [0, width],
-    outputRange: [0, -btnWidth],
-  });
-  return (
-    <View
-      style={styles.btnContainer}
-      onLayout={e => setWidth(e.nativeEvent.layout.width)}>
-      {buttons?.map((btn, i) => (
-        <TouchableOpacity
-          key={btn}
-          style={styles.btn}
-          onPress={() => onClick(i)}>
-          <Text style={{ fontWeight: "500" }}>{btn}</Text>
-        </TouchableOpacity>
-      ))}
-      <Animated.View
-        style={[
-          styles.animatedBtnContainer,
-          { width: btnWidth, transform: [{ translateX }] },
-        ]}>
-        {buttons?.map(btn => (
-          <Animated.View
-            key={btn}
-            style={[
-              styles.animatedBtn,
-              { width: btnWidth, transform: [{ translateX: translateXOpposit }] },
-            ]}>
-            <Text style={[styles.btnTextActive]}>{btn}</Text>
-          </Animated.View>
-        ))}
-      </Animated.View>
-    </View>
-  );
-}
 
 const styles = StyleSheet.create({
   container: {
@@ -246,39 +205,7 @@ const styles = StyleSheet.create({
   },
 
 
-  btnContainer: {
-    height: "6%",
-    borderRadius: 25,
-    overflow: 'hidden',
-    flexDirection: 'row',
-    backgroundColor: '#00000011',
-    width: '90%',
-  },
-  btn: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  animatedBtnContainer: {
-    borderRadius: 25,
-    height: "100%",
-    flexDirection: 'row',
-    position: 'absolute',
-    alignItems: "center",
-    overflow: 'hidden',
-    backgroundColor: colors.primary,
-  },
-  animatedBtn: {
-    height: 40,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  btnTextActive: {
-    color: '#fff',
-    fontWeight: 'bold',
-  },
-
-
+  
   RequestsContainer: {
     width: width - 10,
     height: '100%',

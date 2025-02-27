@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { scrapeStudentBasicInfo } from '../../scrapper/studentDetailsScrapper';
+import { scrapeStudentBasicInfo } from "../../scrapper/studentDetailsScrapper";
 import { saveStudentDetails } from "../../services/saveToDB/studentDetails";
 import { StudentDetails } from "../../types/DB_ServicesTypes";
 
@@ -18,7 +18,7 @@ export const getStudentBasicInfo = async (req: Request, res: Response): Promise<
       return;
     }
 
-    if (!('reg_no' in studentInfo.data)) {
+    if (!("reg_no" in studentInfo.data)) {
       res.status(200).json({
         success: false,
         message: "Invalid student data",
@@ -31,17 +31,18 @@ export const getStudentBasicInfo = async (req: Request, res: Response): Promise<
     const studentDetails: StudentDetails = {
       ...studentInfo.data,
       name: studentInfo.data.studentName,
-      reg_no: reg_no,
-      password: password,
+      reg_no,
+      password,
       lastSync: new Date().toISOString()
     };
 
+    // Save student details
     const saveStudent = await saveStudentDetails(studentDetails);
     if (!saveStudent.success) {
       res.status(200).json({
         success: false,
         message: "Failed to save student data",
-        lastSynced: new Date().toISOString()
+        lastSynced: new Date().toISOString(),
       });
       return;
     }
@@ -53,8 +54,7 @@ export const getStudentBasicInfo = async (req: Request, res: Response): Promise<
       lastSynced: new Date().toISOString(),
       message: "Unable to fetch the data",
       errorMessage: error.message,
-      success: true
+      success: false,
     });
   }
 };
-

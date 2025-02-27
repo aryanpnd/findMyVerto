@@ -10,25 +10,20 @@ import LottieView from 'lottie-react-native';
 import { AppContext } from '../../../context/MainApp'
 import { LinearGradient } from 'expo-linear-gradient'
 import { colors } from '../../constants/colors'
-import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder'; // Import the shimmer placeholder
+import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import { fetchBasicDetails } from '../../../utils/fetchUtils/userData/basicDetailsFetch'
 import { useFocusEffect } from '@react-navigation/native'
 import { HEIGHT, WIDTH } from '../../constants/styles'
 import { fetchAttendance } from '../../../utils/fetchUtils/userData/attendanceFetch'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 
-const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create shimmer placeholder
+const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 export default function Header({ navigation }) {
     const { auth } = useContext(AuthContext);
-
     const { attendanceLoading, setAttendanceLoading } = useContext(AppContext);
-    const [attendance, setAttendance] = useState(0);
-    const [attendanceDetails, setAttendanceDetails] = useState({});
-    const [isAttendanceError, setIsAttendanceError] = useState(false);
-    const [attendanceLastSynced, setAttendanceLastSynced] = useState("");
-    const [attendanceRefresh, setAttendanceRefresh] = useState(false);
 
+    // Basic Details states
     const [loading, setLoading] = useState(false);
     const [refreshing, setRefreshing] = useState(false);
     const [isError, setIsError] = useState(false);
@@ -37,50 +32,56 @@ export default function Header({ navigation }) {
     const [retryAttempts, setRetryAttempts] = useState(0);
     const [isRetryMaxValueReached, setIsRetryMaxValueReached] = useState(false);
 
+    // Attendance states
+    const [attendance, setAttendance] = useState(0);
+    const [attendanceDetails, setAttendanceDetails] = useState({});
+    const [isAttendanceError, setIsAttendanceError] = useState(false);
+    const [attendanceLastSynced, setAttendanceLastSynced] = useState("");
+    const [attendanceRefresh, setAttendanceRefresh] = useState(false);
+    const [attendanceRetryAttempts, setAttendanceRetryAttempts] = useState(0);
+    const [isAttendanceRetryMaxValueReached, setIsAttendanceRetryMaxValueReached] = useState(false);
+
     const retryAttemptsValue = 5;
 
-    const handleDataFetch = async (sync) => {
-        await fetchBasicDetails(setLoading, setRefreshing, setUserDetails, auth, setIsError, sync, setLastSynced);
+    const handleDataFetch = async (sync,isRetry) => {
+        await fetchBasicDetails(setLoading, setRefreshing, setUserDetails, auth, setIsError, sync, setLastSynced, isRetry);
     };
-    const getAttendance = async (sync) => {
+
+    const getAttendance = async (sync,isRetry) => {
         if (attendanceLoading) {
             return;
         }
+        // If attendance data was synced within the last hour, skip fetching
         if (!sync && attendanceLastSynced &&
             new Date().getTime() - new Date(attendanceLastSynced).getTime() <= 3600000) {
-            // console.log("Attendance data is fresh. Skipping fetch.");
             return;
         }
 
-        // console.log("Fetching attendance data...");
-        await fetchAttendance(setAttendanceLoading, setAttendanceRefresh, setAttendance,
-            setAttendanceDetails, auth, setIsAttendanceError, 
-            sync, setAttendanceLastSynced);
+        await fetchAttendance(
+            setAttendanceLoading, 
+            setAttendanceRefresh, 
+            setAttendance,
+            setAttendanceDetails, 
+            auth, 
+            setIsAttendanceError, 
+            sync, 
+            setAttendanceLastSynced,
+            isRetry
+        );
     };
 
-
-    useFocusEffect(
-        useCallback(() => {
-            handleDataFetch(false);
-            getAttendance(false);
-        }, [])
-    );
-
-
+    // Retry handler for basic details fetch
     const handleRetry = async () => {
         if (isError && retryAttempts < retryAttemptsValue) {
-            console.log("Error reattempt block", retryAttempts, isError);
-
-            setRetryAttempts((prev) => prev + 1);
-
-            await handleDataFetch(false);
-
-            Toast.show({
-                type: 'error',
-                position: 'top',
-                text1: 'Fetching details again',
-                text2: `Attempt ${retryAttempts + 1}`,
-            });
+            console.log("Retrying basic details fetch:", retryAttempts, isError);
+            setRetryAttempts(prev => prev + 1);
+            await handleDataFetch(false, true);
+            // Toast.show({
+            //     type: 'error',
+            //     position: 'top',
+            //     text1: 'Fetching details again',
+            //     text2: `Attempt ${retryAttempts + 1}`,
+            // });
         } else if (retryAttempts >= retryAttemptsValue) {
             Toast.show({
                 type: 'error',
@@ -92,12 +93,47 @@ export default function Header({ navigation }) {
         }
     };
 
+    // Retry handler for attendance fetch
+    const handleAttendanceRetry = async () => {
+        if (isAttendanceError && attendanceRetryAttempts < retryAttemptsValue) {
+            console.log("Retrying attendance fetch:", attendanceRetryAttempts, isAttendanceError);
+            setAttendanceRetryAttempts(prev => prev + 1);
+            await getAttendance(false, true);
+            // Toast.show({
+            //     type: 'error',
+            //     position: 'top',
+            //     text1: 'Fetching attendance again',
+            //     text2: `Attempt ${attendanceRetryAttempts + 1}`,
+            // });
+        } else if (attendanceRetryAttempts >= retryAttemptsValue) {
+            Toast.show({
+                type: 'error',
+                position: 'top',
+                text1: 'Failed to fetch attendance',
+                text2: 'Please check your internet connection',
+            });
+            setIsAttendanceRetryMaxValueReached(true);
+        }
+    };
+
+    useFocusEffect(
+        useCallback(() => {
+            handleDataFetch(false);
+            getAttendance(false, false);
+        }, [])
+    );
+
     useEffect(() => {
         if (isError && !loading) {
             handleRetry();
         }
     }, [isError, loading]);
 
+    useEffect(() => {
+        if (isAttendanceError && !attendanceLoading) {
+            handleAttendanceRetry();
+        }
+    }, [isAttendanceError, attendanceLoading]);
 
     return (
         <LinearGradient style={styles.container} colors={[colors.secondary, colors.primary]}>
@@ -116,8 +152,9 @@ export default function Header({ navigation }) {
                         <View style={{ alignItems: "center" }}>
                             <TouchableOpacity
                                 onPress={() => navigation.navigate('FriendRequests')}
-                                style={styles.button2}><Octicons name='person-add' size={15}
-                                    color={colors.whiteLight} /></TouchableOpacity>
+                                style={styles.button2}>
+                                <Octicons name='person-add' size={15} color={colors.whiteLight} />
+                            </TouchableOpacity>
                             <Text style={{ color: 'white', fontSize: 10 }}>Requests</Text>
                         </View>
                         <View style={{ alignItems: "center" }}>
@@ -130,22 +167,17 @@ export default function Header({ navigation }) {
                         </View>
                     </View>
                 </View>
-
             </View>
 
             <View style={styles.body}>
-
                 <View style={styles.bodyContainer}>
-
                     <TouchableOpacity style={styles.greeting} onPress={loading ? () => { } : () => navigation.navigate('MyProfile')}>
                         {!isRetryMaxValueReached && <Text style={{ fontSize: 20, color: colors.whiteLight, fontWeight: 'bold' }}>Hello,</Text>}
-
                         {loading ?
                             <ShimmerPlaceHolder visible={false} style={[styles.textMedium, styles.nameShimmerStyles]} /> :
                             <Text numberOfLines={1} ellipsizeMode="tail" style={styles.textMedium}>
                                 {loading ? "" : userDetails?.data?.studentName}
                             </Text>}
-
                         <View style={{ flexDirection: "row" }}>
                             {loading ?
                                 <ShimmerPlaceHolder visible={false} style={[styles.textSmall, styles.shimmerStyles]} /> :
@@ -165,40 +197,35 @@ export default function Header({ navigation }) {
                         </View>
                     </TouchableOpacity>
 
-
                     <TouchableOpacity style={styles.AttendanceContainer} onPress={loading ? () => { } : () => navigation.navigate('Attendance')}>
                         <Text style={{ fontWeight: '500', color: colors.whiteLight, marginTop: 5 }}>Attendance</Text>
                         {
                             attendanceLoading ?
                                 <Text style={{ fontSize: 10, color: colors.whiteLight, marginBottom: 5 }}>Loading...</Text>
                                 :
-                                <Text style={{ fontSize: 10, color: colors.whiteLight, marginBottom: 5 }}>{formatTimeAgo(attendanceLastSynced)}</Text>
+                                <Text style={{ fontSize: 10, color: colors.whiteLight, marginBottom: 5 }}>
+                                    {formatTimeAgo(attendanceLastSynced)}
+                                </Text>
                         }
-                        {isAttendanceError ?
+                        {isAttendanceError ? (
                             <>
                                 <Text style={{ color: colors.whiteLight, fontWeight: "bold" }}>Error</Text>
                                 <Text style={{ color: colors.whiteLight, fontSize: 10 }}>Click to open</Text>
                             </>
-                            :
-                            attendanceLoading ?
-                                <>
-                                    <LottieView
-                                        autoPlay
-                                        style={{
-                                            width: 50,
-                                            height: 50,
-                                        }}
-                                        source={require('../../../assets/lotties/loading1.json')}
-                                    />
-                                </> :
-                                <>
-                                    <AttendanceProgressBar size={50} attendance={parseInt(attendance?.total_details?.agg_attendance) || 0} />
-                                </>
-                        }
+                        ) : attendanceLoading ? (
+                            <LottieView
+                                autoPlay
+                                style={{
+                                    width: 50,
+                                    height: 50,
+                                }}
+                                source={require('../../../assets/lotties/loading1.json')}
+                            />
+                        ) : (
+                            <AttendanceProgressBar size={50} attendance={parseInt(attendance?.total_details?.agg_attendance) || 0} />
+                        )}
                     </TouchableOpacity>
-
                 </View>
-
             </View>
         </LinearGradient>
     )
@@ -220,25 +247,21 @@ const styles = StyleSheet.create({
     headerContainer: {
         width: '100%',
         justifyContent: 'space-between',
-        // backgroundColor:"yellow",
         flexDirection: "row"
     },
     body: {
         flexDirection: 'row',
-        justifyContent: 'space-center',
+        justifyContent: 'center',
         height: '55%',
-        // backgroundColor:'#00000026',
         backgroundColor: colors.blueTransparency,
         alignItems: 'center',
         marginBottom: 13,
         padding: 10,
         borderRadius: 15,
-        // width: '95%'
     },
     bodyContainer: {
         flexDirection: 'row',
         justifyContent: 'space-around',
-        // backgroundColor:'red',
         width: '90%'
     },
     searchbarContainer: {
@@ -257,8 +280,6 @@ const styles = StyleSheet.create({
         backgroundColor: colors.btn1,
         borderRadius: 25,
         alignItems: 'center',
-        // padding: 3,
-        // gap: 8
     },
     button1: {
         backgroundColor: colors.btn1,
@@ -286,8 +307,17 @@ const styles = StyleSheet.create({
     text1: {
         color: colors.whiteLight
     },
-    textSmall: { marginRight: 15, fontSize: 15, fontWeight: '400', color: 'white' },
-    textMedium: { fontSize: 25, fontWeight: 'bold', color: 'white' },
+    textSmall: {
+        marginRight: 15,
+        fontSize: 15,
+        fontWeight: '400',
+        color: 'white'
+    },
+    textMedium: {
+        fontSize: 25,
+        fontWeight: 'bold',
+        color: 'white'
+    },
     nameShimmerStyles: {
         borderRadius: 5,
         height: "30%",

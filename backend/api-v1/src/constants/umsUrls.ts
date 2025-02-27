@@ -8,4 +8,13 @@ export const umsUrls = {
     STUDENT_PHONE_NUMBER: "https://ums.lpu.in/lpuums/StudentDashboard.aspx/GetStudentContactNo",
     STUDENT_MARKS: "https://ums.lpu.in/lpuums/StudentDashboard.aspx/TermWiseMarks",
     STUDENT_CGPA: "https://ums.lpu.in/lpuums/StudentDashboard.aspx/TermWiseCGPA",
+    STUDENT_EXAMS: "https://ums.lpu.in/lpuums/frmSeatingPlan.aspx",
+    STUDENT_PENDING_ASSIGNMENTS: "https://ums.lpu.in/lpuums/StudentDashboard.aspx/GetStudenPendingAssignments",
+    STUDENT_ASSIGNMENTS: "https://ums.lpu.in/lpuums/frmstudentdownloadassignment.aspx",
+    STUDENT_MAKEUPS:"https://ums.lpu.in/lpuums/frmViewStudentMakeupAdjusment.aspx",
+    STUDENT_MESSAGES: "https://ums.lpu.in/lpuums/frmStudentsMyMessages.aspx/GetDataforMyMessages",
+    STUDENT_LEAVE_SLIP: "https://ums.lpu.in/lpuums/frmHostelLeaveSlipTest.aspx",
+
+    PLACEMENT_PORTAL_LOGIN_URL:"https://ums.lpu.in/Placements/",
+    STUDENT_DRIVES: "https://ums.lpu.in/Placements/frmPlacementDriveRegistration.aspx" 
 };
