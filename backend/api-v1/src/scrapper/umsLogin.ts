@@ -90,7 +90,7 @@ export async function umsLogin(user: User): Promise<umsLoginReturn> {
     if (fgPassword.length < 1) {
       return {
         login: false,
-        message: "Failed to login or Invalid Credentials",
+        message: "Login Failed or Invalid Credentials",
         cookie: ""
       }
     }

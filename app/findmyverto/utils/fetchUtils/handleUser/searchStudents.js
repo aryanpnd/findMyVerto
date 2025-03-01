@@ -1,30 +1,24 @@
-import axios from "axios"
-import { API_URL } from "../../../context/Auth"
+import axios from "axios";
+import { API_URL } from "../../../context/Auth";
 
-export async function searchStudents(auth, query, setSearch, setLoading, setStudents, setfriends, setfriendsRequests, setSentFriendRequests) {
-    setSearch(true)
-    setLoading(true)
-    await axios.get(`${API_URL}/student/search?q=${query}&r=${auth.reg_no}&p=${auth.password}`, { query: query })
-        .then(async (result) => {
-            if (result.data.success) {
-                setStudents(result.data.students)
-                setfriends(result.data.friends)
-                setfriendsRequests(result.data.friendRequests)
-                setSentFriendRequests(result.data.sentFriendRequests)
-            }else{
-                setStudents(result.data.students)
-                setfriends([])
-                setfriendsRequests([])
-                setSentFriendRequests([])
-            }
-        }).catch((err) => {
-            Toast.show({
-                type: 'error',
-                text1: 'Error while searching',
-                text2: `${err.message}`,
-            });
-            console.log(err);
-        })
-    setLoading(false)
-    // setSearch(false)
+/**
+ * Fetches students based on the given query and pagination parameters.
+ *
+ * @param {object} auth - The authentication object (must include reg_no and password).
+ * @param {string} query - The search term.
+ * @param {number} page - The page number.
+ * @param {number} limit - Number of items per page.
+ * @returns {Promise<object>} - The API response data.
+ */
+export async function loadStudents(auth, query, page, limit) {
+  if (query.length < 2) {
+    return { success: false, message: "Search query must be greater than 2" };
+  }
+  try {
+    const url = `${API_URL}/student/search?q=${query}&r=${auth.reg_no}&p=${auth.password}&page=${page}&limit=${limit}`;
+    const { data } = await axios.get(url);
+    return data;
+  } catch (err) {
+    throw err;
+  }
 }

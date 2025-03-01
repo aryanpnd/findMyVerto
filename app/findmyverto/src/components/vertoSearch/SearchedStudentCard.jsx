@@ -21,8 +21,10 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
     const [loading, setLoading] = useState(false)
     const [modalVisible, setModalVisible] = useState(false);
 
+    // const imageSource = { uri: student?.studentPicture }
+
     const imageSource = student?.studentPicture
-    ? { uri: `${API_URL_ROOT}${student?.studentPicture}` }
+    ? { uri: student?.studentPicture }
     : require("../../../assets/icons/profileAvatar.png");
 
     function configureButton() {
@@ -186,7 +188,7 @@ const style = StyleSheet.create({
         backgroundColor: "white",
         padding: 10,
         height: height * 0.1,
-        width: "96%",
+        width: "97%",
         borderRadius: 15,
         flexDirection: "row"
     },
