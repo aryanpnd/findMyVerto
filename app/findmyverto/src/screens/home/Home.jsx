@@ -1,13 +1,22 @@
 import { View, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../../components/home/Header';
 import Body from '../../components/home/Body';
 import { colors } from '../../constants/colors';
 import { StatusBar } from 'expo-status-bar';
+import { useNotification } from '../../../context/notification';
 
 export default function Home({ navigation }) {
+  const {expoPushToken, notification, error} = useNotification();
+
+  console.log(expoPushToken, notification, error);
+
+  useEffect(() => {
+    console.log('expoPushToken', expoPushToken);
+  }, [expoPushToken]);
+
  
   return (
     <>

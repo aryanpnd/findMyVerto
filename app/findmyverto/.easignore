@@ -33,7 +33,3 @@ yarn-error.*
 
 # typescript
 *.tsbuildinfo
-
-# google
-google-service-account-key.json
-google-services.json

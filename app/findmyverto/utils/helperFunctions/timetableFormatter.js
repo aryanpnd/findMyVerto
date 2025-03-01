@@ -174,4 +174,5 @@ export function filterOutdatedMakeup(makeupClasses) {
         // Keep only classes scheduled for today or in the future.
         return classDate >= today;
     });
+    // return makeupClasses;
 }
