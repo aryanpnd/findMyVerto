@@ -119,7 +119,7 @@ export default function Header({ navigation }) {
     useFocusEffect(
         useCallback(() => {
             handleDataFetch(false);
-            getAttendance(false, false);
+            getAttendance(false, true);
         }, [])
     );
 

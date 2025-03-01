@@ -65,6 +65,20 @@ studentRoutes.post('/login', getStudentLogin);
  *           type: string
  *         required: false
  *         description: Password for authentication (optional)
+ *       - in: query
+ *         name: page
+ *         schema:
+ *           type: integer
+ *           default: 1
+ *         required: false
+ *         description: Page number for pagination (optional)
+ *       - in: query
+ *         name: limit
+ *         schema:
+ *           type: integer
+ *           default: 20
+ *         required: false
+ *         description: Number of students to return per page (optional)
  *     responses:
  *       200:
  *         description: Successful response
