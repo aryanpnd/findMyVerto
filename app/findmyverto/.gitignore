@@ -37,7 +37,3 @@ yarn-error.*
 # google
 google-services.json
 google-service-account-key.json
-
-# google
-google-services.json
-google-service-account-key.json
