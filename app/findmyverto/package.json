@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
+    "@notifee/react-native": "^9.1.8",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/viewpager": "5.0.11",
     "@react-native-masked-view/masked-view": "^0.3.2",
@@ -19,6 +20,7 @@
     "axios": "^1.5.1",
     "date-fns": "^4.1.0",
     "expo": "^52.0.23",
+    "expo-build-properties": "~0.13.2",
     "expo-constants": "~17.0.5",
     "expo-dev-client": "~5.0.8",
     "expo-device": "~7.0.2",

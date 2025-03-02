@@ -40,6 +40,18 @@
     "owner": "loudpear",
     "updates": {
       "url": "https://u.expo.dev/3cfd0e34-fab5-4ba6-b312-fb3fa72bddea"
-    }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraMavenRepos": [
+              "../../node_modules/@notifee/react-native/android/libs"
+            ]
+          }
+        }
+      ]
+    ]
   }
 }
