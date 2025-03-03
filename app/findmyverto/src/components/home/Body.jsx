@@ -17,6 +17,7 @@ import { AuthContext } from '../../../context/Auth'
 import { HEIGHT, WIDTH } from '../../constants/styles'
 import { homeScreenNavigations } from '../../constants/globalConstants'
 import notifee, { AndroidStyle } from '@notifee/react-native';
+import messaging from '@react-native-firebase/messaging';
 
 const { width } = Dimensions.get('window')
 
@@ -70,9 +71,30 @@ export default function Body({ navigation }) {
     });
   }
 
+  async function cancelAllNotifications() {
+    await notifee.cancelAllNotifications();
+  }
+
+  const [fcmToken, setFcmToken] = useState('');
+  async function getFcmToken() {
+    const fcmToken = await messaging().getToken();
+    if (fcmToken) {
+      console.log('FCM Token:', fcmToken);
+      setFcmToken(fcmToken);
+      // Send the token to your server for later use
+    } else {
+      console.log('Failed to get FCM token');
+    }
+  }
+
   return (
     <View style={styles.body}>
+      <Pressable>
+      </Pressable>
       <Button title="Display Notification" onPress={onDisplayNotification} />
+      <Button title="Cancel All Notifications" onPress={cancelAllNotifications} />
+      <Button title="Get FCM Token" onPress={getFcmToken} />
+        <Text style={styles.text1} selectable={true}>{fcmToken}</Text>
       <ScrollView
         style={styles.body}
         bounces={Platform.OS === 'ios' ? true : undefined}

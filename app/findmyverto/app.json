@@ -18,7 +18,8 @@
       "supportsTablet": true,
       "runtimeVersion": {
         "policy": "appVersion"
-      }
+      },
+      "bundleIdentifier": "com.loudpear.findmyverto"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,6 +28,7 @@
         "softwareKeyboardLayoutMode": "pan"
       },
       "package": "com.loudpear.findmyverto",
+      "googleServicesFile": "./google-services.json",
       "runtimeVersion": "1.0.0"
     },
     "web": {

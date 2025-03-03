@@ -36,5 +36,6 @@ const studentschema = new Schema({
     }],
     lastSync: { type: Date },
     allowedFieldsToShow: { type: Array },
+    devicePushToken: { type: String },
 });
 export const Student = mongoose.model("Student", studentschema);

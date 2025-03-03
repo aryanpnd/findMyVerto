@@ -105,6 +105,9 @@ studentRoutes.get('/search', searchStudent);
  *                 type: string
  *               password:
  *                 type: string
+ *               devicePushToken:
+ *                 type: string
+ *                 required: false
  *     responses:
  *       200:
  *         description: Successful response
