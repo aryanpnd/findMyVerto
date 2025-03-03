@@ -1,67 +1,116 @@
 import messaging from '@react-native-firebase/messaging';
 import notifee, { AndroidImportance, EventType } from '@notifee/react-native';
+import { colors } from '../../src/constants/colors';
+import { userStorage } from '../storage/storage';
+import { API_URL } from '../../context/Auth';
+import axios from 'axios';
 
-// Request notification permissions
-const requestPermission = async () => {
+/**
+ * Requests notification permissions.
+ */
+async function requestNotificationPermission() {
   const authStatus = await messaging().requestPermission();
   const enabled =
     authStatus === messaging.AuthorizationStatus.AUTHORIZED ||
     authStatus === messaging.AuthorizationStatus.PROVISIONAL;
   if (enabled) {
-    console.log('Authorization status:', authStatus);
+    console.log('Notification permission enabled:', authStatus);
   }
-};
-requestPermission();
+  return enabled;
+}
 
-
-// Create a default channel for Android
-const createDefaultChannel = async () => {
+/**
+ * Creates a default notification channel (Android).
+ */
+async function createDefaultChannel() {
   const channelId = await notifee.createChannel({
     id: 'default',
     name: 'Default Channel',
     importance: AndroidImportance.HIGH,
   });
   return channelId;
-};
+}
 
-createDefaultChannel();
+/**
+ * Registers a handler for foreground notifications.
+ * @returns {Function} unsubscribe function for the onMessage listener.
+ */
+function registerForegroundNotificationHandler() {
+  return messaging().onMessage(async remoteMessage => {
+    await notifee.displayNotification({
+      title: remoteMessage.notification.title,
+      body: remoteMessage.notification.body,
+      android: {
+        channelId: 'default',
+        largeIcon: remoteMessage.data.studentImage,
+        circularLargeIcon: true,
+        color: colors.secondary,
+      },
+    });
+  });
+}
 
-// GET FCM TOKEN
-export async function getFcmToken() {
+export function handleBackgroundMessage() {
+  messaging().setBackgroundMessageHandler(async remoteMessage => {
+    // await notifee.displayNotification({
+    //   title: remoteMessage.notification.title,
+    //   body: remoteMessage.notification.body,
+    //   android: {
+    //     channelId: 'default',
+    //     largeIcon: remoteMessage.data.studentImage,
+    //     circularLargeIcon: true,
+    //     color: colors.secondary,
+    //   },
+    // });
+  });
+
+  notifee.onBackgroundEvent(async ({ type, detail }) => {
+    console.log('Notifee background event:', type, detail);
+  
+    // Handle notification actions or dismissal events here if needed.
+    if (type === EventType.ACTION_PRESS) {
+      // Process the action press event
+      console.log('User pressed a notification action:', detail.pressAction);
+    }
+  });
+}
+
+export const getFcmToken = async () => {
   const fcmToken = await messaging().getToken();
   if (fcmToken) {
-    console.log('FCM Token:', fcmToken);
-    userStorage.set('fcmToken', fcmToken);
+    console.log('Your Firebase Token is:', fcmToken);
+    userStorage.set('FCM_TOKEN', fcmToken);
     return fcmToken;
   } else {
-    console.log('Failed to get FCM token');
+    console.log('Failed', 'No token received');
     return null;
   }
 }
 
-// Foreground notification handler
-export const pushNotificationsHandler = messaging().onMessage(async remoteMessage => {
-  console.log('A new FCM message arrived!', remoteMessage);
+export const sendFcmToken = async (auth,fcmToken) => {
+  try {
+    const result = await axios.post(`${API_URL}/student/settings/setDevicePushToken`, { 
+      reg_no: auth.reg_no ,
+      password: auth.password,
+      devicePushToken: fcmToken 
+    });
+    if (result.data.success) {
+      console.log('FCM Token sent successfully');
+    } else {
+      console.log('FCM Token not sent');
+    }
+  } catch (error) {
+    console.error(error);
+  }
+}
 
-  // Display the notification using Notifee
-  await notifee.displayNotification({
-    title: remoteMessage.data.title,
-    body: remoteMessage.data.body,
-    android: {
-      channelId: 'default',
-      largeIcon: remoteMessage.data.studentImage,
-      circularLargeIcon: true,
-      color: colors.secondary,
-    },
-  });
-});
-
-
-export const initializePushNotification = async () => {
-  // Request permission
-  await requestPermission();
-
-  // Create a default channel
+/**
+ * Initializes push notification services.
+ * Requests permissions, creates a notification channel, and registers the foreground handler.
+ * @returns {Promise<Function>} unsubscribe function for the onMessage listener.
+ */
+export async function initPushNotificationService() {
+  await requestNotificationPermission();
   await createDefaultChannel();
-
-};
+  return registerForegroundNotificationHandler();
+}

@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { Student } from "../../../models/studentModel";
+import { avatarUrl } from "../../../constants/notifications";
+import { sendPushNotification } from "../../../utils/notifications";
 
 export const addFriend = async (req: Request, res: Response) => {
     try {
@@ -33,6 +35,14 @@ export const addFriend = async (req: Request, res: Response) => {
                                 student.sentFriendRequests = student.sentFriendRequests.filter(id => !id.equals(toAcceptfrndReqStudent.id))
                                 student.save()
                                     .then(() => {
+                                        if(toAcceptfrndReqStudent.devicePushToken){
+                                            sendPushNotification(
+                                                "Friend request accepted",
+                                                `${student.name} accepted your friend request`,
+                                                toAcceptfrndReqStudent.devicePushToken,
+                                                student.studentPicture || avatarUrl(student.name?.split(" ")[0] || "A")
+                                            );
+                                        }
                                         res.status(200).send({
                                             success: true,
                                             message: "Friend added"

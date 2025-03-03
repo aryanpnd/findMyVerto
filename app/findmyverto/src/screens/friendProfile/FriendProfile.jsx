@@ -26,7 +26,7 @@ import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/Cust
 import { useNavigation } from '@react-navigation/native'
 import { AppContext } from '../../../context/MainApp'
 import { friendsStorage, userStorage } from '../../../utils/storage/storage'
-import { WIDTH } from '../../constants/styles'
+import { globalStyles, WIDTH } from '../../constants/styles'
 
 const { height, width } = Dimensions.get('window')
 
@@ -181,13 +181,6 @@ export default function FriendProfile({ route }) {
         </View>
         {/* Remove Friend */}
         <View style={styles.backBtn}>
-          {removeLoading ? (
-            <ActivityIndicator size={25} color={"black"} />
-          ) : (
-            <TouchableOpacity onPress={handleRemoveFriend}>
-              <Ionicons name="person-remove-sharp" size={25} color={colors.lightDark} />
-            </TouchableOpacity>
-          )}
         </View>
       </View>
 
@@ -237,7 +230,19 @@ export default function FriendProfile({ route }) {
           }
         </View>
 
+      <TouchableOpacity style={styles.removeButton} onPress={handleRemoveFriend}>
+        {removeLoading ? (
+          <ActivityIndicator size={25} color={colors.red} />
+        ) : <>
+          <Ionicons name="person-remove-sharp" size={25} color={colors.red} />
+          <Text style={[styles.text2,{color:colors.red,marginLeft:10}]}>Remove</Text>
+        </>
+        }
+      </TouchableOpacity>
       </ScrollView>
+
+
+
     </SafeAreaView>
   )
 }
@@ -288,6 +293,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10
+  },
+  removeButton: {
+    width: WIDTH(90),
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: colors.whitePrimary,
+    borderWidth: 1,
+    borderColor: colors.red,
+    borderRadius: 15,
+    ...globalStyles.elevationMin    
   },
   text1: {
     color: colors.lightDark,

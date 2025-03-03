@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import { Student } from "../../../models/studentModel";
+import { sendPushNotification } from "../../../utils/notifications";
+import { avatarUrl } from "../../../constants/notifications";
 
 export const sendFriendRequest = async (req: Request, res: Response) => {
     try {
@@ -57,6 +59,15 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
 
         student.sentFriendRequests.push(toSendfrndReqStudent.id);
         await student.save();
+
+        if(toSendfrndReqStudent.devicePushToken) {
+            sendPushNotification(
+                "Friend request",
+                `${student.name} sent you a friend request`,
+                toSendfrndReqStudent.devicePushToken,
+                student.studentPicture || avatarUrl(student.name?.split(" ")[0] || "A"),
+            );
+        }
 
         return res.status(200).json({
             success: true,

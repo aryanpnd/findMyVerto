@@ -3,6 +3,7 @@ import { scrapeStudentBasicInfo } from "../../scrapper/studentDetailsScrapper";
 import { saveStudentDetails } from "../../services/saveToDB/studentDetails";
 import { StudentDetails } from "../../types/DB_ServicesTypes";
 import { Student } from "../../models/studentModel";
+import { verifyFCMToken } from "../../utils/notifications";
 
 /**
  * Get student basic information
@@ -37,8 +38,11 @@ export const getStudentBasicInfo = async (req: Request, res: Response): Promise<
       lastSync: new Date().toISOString()
     };
 
-    if(req.body.devicePushToken) {
-      studentDetails.devicePushToken = req.body.devicePush
+    if (req.body.devicePushToken) {
+      const isTokenValid = await verifyFCMToken(req.body.devicePushToken);
+      if (isTokenValid) {
+        studentDetails.devicePushToken = req.body.devicePushToken;
+      }
     }
 
     // Save student details
@@ -66,9 +70,28 @@ export const getStudentBasicInfo = async (req: Request, res: Response): Promise<
 
 export const saveDevicePushToken = async (req: Request, res: Response): Promise<void> => {
   try {
-    const { reg_no,password, devicePushToken } = req.body;
+    const { reg_no, password, devicePushToken } = req.body;
 
-    const studentDetails = await Student.findOneAndUpdate( { reg_no, password }, { devicePushToken }, { new: true });
+    if (!reg_no || !password || !devicePushToken) {
+      res.status(200).json({
+        success: false,
+        message: "Invalid request",
+        lastSynced: new Date().toISOString(),
+      });
+      return
+    }
+
+    const isTokenValid = await verifyFCMToken(devicePushToken);
+    if (!isTokenValid) {
+      res.status(200).json({
+        success: false,
+        message: "Invalid device push token",
+        lastSynced: new Date().toISOString(),
+      });
+      return;
+    }
+
+    const studentDetails = await Student.findOneAndUpdate({ reg_no, password }, { devicePushToken }, { new: true });
 
     if (!studentDetails) {
       res.status(200).json({

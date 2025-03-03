@@ -4,14 +4,15 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getCalculatedDate } from '../utils/helperFunctions/dataAndTimeHelpers';
 import Toast from 'react-native-toast-message';
 import { friendsStorage, userStorage } from '../utils/storage/storage';
+import { getFcmToken, sendFcmToken } from '../utils/notifications/pushNotificationService';
 
 const AuthContext = createContext();
 
 let API_URL;
 if (process.env.NODE_ENV === 'development') {
-  // API_URL = "http://192.168.132.229:3000/api/v2";
+  API_URL = "http://192.168.132.229:3000/api/v2";
   // API_URL = "https://findmyvertov2-8wup.onrender.com/api/v2";
-  API_URL = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net/api/v2";
+  // API_URL = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net/api/v2";
 } else {
   API_URL = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net/api/v2";
   // API_URL = `${process.env.EXPO_PUBLIC_FMV_API_URL}`;
@@ -85,6 +86,12 @@ const AuthProvider = ({ children }) => {
               text2: 'Please login again'
             });
           } else {
+            const isFcmTokenAvailable = userStorage.getString("FCM_TOKEN");
+            if (!isFcmTokenAvailable) {
+              const fcmToken = await getFcmToken();
+              sendFcmToken({ reg_no: regNo, password: pass }, fcmToken);
+            }
+            
             setAuthState({
               authenticated: JSON.parse(authenticated),
               reg_no: regNo || "",

@@ -41,60 +41,9 @@ export default function Body({ navigation }) {
     setRefreshing(false)
   }, [])
 
-  async function onDisplayNotification() {
-    // Request permissions (required for iOS)
-    await notifee.requestPermission()
-
-    // Create a channel (required for Android)
-    const channelId = await notifee.createChannel({
-      id: 'default',
-      name: 'Default Channel',
-    });
-
-    // Display a notification
-    await notifee.displayNotification({
-      title: 'Notification Title',
-      body: 'Main body content of the notification',
-      android: {
-        channelId,
-        style: {
-          type: AndroidStyle.BIGPICTURE,
-          picture: 'https://imageio.forbes.com/specials-images/imageserve/5d35eacaf1176b0008974b54/2020-Chevrolet-Corvette-Stingray/0x0.jpg?format=jpg&crop=4560,2565,x790,y784,safe&width=960'
-        },
-        largeIcon: 'https://res.cloudinary.com/dnm7sr6om/image/upload/v1740857118/students/12203987.jpg',
-        // smallIcon: 'name-of-a-small-icon', // optional, defaults to 'ic_launcher'.
-        // pressAction is needed if you want the notification to open the app when pressed
-        pressAction: {
-          id: 'default',
-        },
-      },
-    });
-  }
-
-  async function cancelAllNotifications() {
-    await notifee.cancelAllNotifications();
-  }
-
-  const [fcmToken, setFcmToken] = useState('');
-  async function getFcmToken() {
-    const fcmToken = await messaging().getToken();
-    if (fcmToken) {
-      console.log('FCM Token:', fcmToken);
-      setFcmToken(fcmToken);
-      // Send the token to your server for later use
-    } else {
-      console.log('Failed to get FCM token');
-    }
-  }
 
   return (
     <View style={styles.body}>
-      <Pressable>
-      </Pressable>
-      <Button title="Display Notification" onPress={onDisplayNotification} />
-      <Button title="Cancel All Notifications" onPress={cancelAllNotifications} />
-      <Button title="Get FCM Token" onPress={getFcmToken} />
-        <Text style={styles.text1} selectable={true}>{fcmToken}</Text>
       <ScrollView
         style={styles.body}
         bounces={Platform.OS === 'ios' ? true : undefined}

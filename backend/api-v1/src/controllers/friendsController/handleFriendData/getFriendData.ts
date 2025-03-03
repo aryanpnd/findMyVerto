@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import { Student } from "../../../models/studentModel";
-
-const excludingFields = { password: 0, friendRequests: 0, sentFriendRequests: 0, friends: 0 };
+import { excludingFields } from "../../../constants/friends";
 
 export const getFriendData = async (req: Request, res: Response) => {
     try {

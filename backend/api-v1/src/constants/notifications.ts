@@ -1,0 +1,1 @@
+export const avatarUrl = (name:string)=> `https://ui-avatars.com/api/?name=${name}&bold=true&background=5665DA&color=fff&font-size=0.5`

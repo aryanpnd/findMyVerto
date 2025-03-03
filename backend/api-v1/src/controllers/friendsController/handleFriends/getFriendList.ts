@@ -1,14 +1,12 @@
 import { Request, Response } from "express";
 import { Student } from "../../../models/studentModel";
-import { error } from "console";
-
-const excludingFields = { password: 0, friendRequests: 0, sentFriendRequests: 0, friends: 0 };
+import { includingFields } from "../../../constants/friends";
 
 export const getFriendList = async (req: Request, res: Response) => {
     try {
         const { reg_no, password } = req.body;
         const user = await Student.findOne({ reg_no: reg_no, password: password })
-            .populate("friends", { ...excludingFields })
+            .populate("friends", { ...includingFields })
         if (user) {
             res.status(200).json({
                 friends: user.friends,
