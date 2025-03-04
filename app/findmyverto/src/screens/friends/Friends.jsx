@@ -15,6 +15,7 @@ import TimetableScreenShimmer from '../../components/shimmers/TimetableScreenShi
 import { HEIGHT } from '../../constants/styles'
 import { AppContext } from '../../../context/MainApp'
 import { friendsStorage } from '../../../utils/storage/storage'
+import { handleBackNavigation } from '../../../utils/navigation/navigationService'
 
 
 const { height, width } = Dimensions.get('window');
@@ -34,8 +35,8 @@ export default function Friends({ navigation, route }) {
     const [refreshing, setRefreshing] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
 
-    function handleGetFriends(noRefreshing,noLoading) {
-        getFriends(auth, setfriends, setLoading, setRefreshing, noRefreshing, setupdatedFriends,noLoading)
+    function handleGetFriends(noRefreshing, noLoading) {
+        getFriends(auth, setfriends, setLoading, setRefreshing, noRefreshing, setupdatedFriends, noLoading)
     }
 
     async function getFriendListLocal() {
@@ -44,7 +45,7 @@ export default function Friends({ navigation, route }) {
             // let friendsLocally = await AsyncStorage.getItem("FRIENDS");
             let friendsLocally = friendsStorage.getString("FRIENDS");
             if (!friendsLocally) {
-                handleGetFriends(false,true)
+                handleGetFriends(false, true)
             } else {
                 const parsedFriends = JSON.parse(friendsLocally)
                 setfriends(parsedFriends)
@@ -78,16 +79,17 @@ export default function Friends({ navigation, route }) {
     };
 
     useEffect(() => {
-        handleGetFriends(true,true)
+        handleGetFriends(true, true)
     }, [friendsRefreshing])
 
+    
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]}>
             <StatusBar style='auto' />
             <View style={[styles.header]}>
                 {/* Back naviagtion button */}
                 <View style={[styles.backBtn]}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
+                    <TouchableOpacity onPress={()=>handleBackNavigation(navigation)}>
                         <MaterialIcons name='arrow-back-ios' size={25} color={colors.lightDark} />
                     </TouchableOpacity>
                 </View>
@@ -119,13 +121,13 @@ export default function Friends({ navigation, route }) {
                 </View>
 
                 <ScrollView
-                showsVerticalScrollIndicator={false}
+                    showsVerticalScrollIndicator={false}
                     refreshControl={
                         <RefreshControl
                             tintColor={colors.secondary}
                             colors={[colors.secondary]}
                             refreshing={refreshing}
-                            onRefresh={() => handleGetFriends(false,false)}
+                            onRefresh={() => handleGetFriends(false, false)}
                         />
                     }
                     contentContainerStyle={{ alignItems: "center", paddingBottom: 15, gap: height * 0.01 }}>

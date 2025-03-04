@@ -1,28 +1,30 @@
 // App.js
 import React, { useEffect } from 'react';
+import { Linking } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthPage from './AuthPage';
 import { AuthProvider } from './context/Auth';
 import { AppProvider } from './context/MainApp';
 import { initializeAnalytics } from './utils/analytics/config';
-import { handleBackgroundMessage, initPushNotificationService } from './utils/notifications/pushNotificationService';
-
+import { handleBackgroundMessage, handleKiledStatelNotification, initPushNotificationService } from './utils/notifications/pushNotificationService';
+import messaging from '@react-native-firebase/messaging';
+import { linking } from './utils/navigation/pushNotificationNavigation';
+import { requestNotificationPermission } from './utils/notifications/notificationPermission';
 
 // Initialize analytics
 initializeAnalytics();
-
 handleBackgroundMessage();
+// handleKiledStatelNotification(); // idk why this is not working for expo with notifee
 
 export default function App() {
   useEffect(() => {
+    requestNotificationPermission();
     let unsubscribe;
     const initializeNotifications = async () => {
       unsubscribe = await initPushNotificationService();
     };
-
     initializeNotifications();
 
-    // Clean up the foreground notification listener on unmount
     return () => {
       if (unsubscribe) {
         unsubscribe();
@@ -33,7 +35,7 @@ export default function App() {
   return (
     <AuthProvider>
       <AppProvider>
-        <NavigationContainer>
+        <NavigationContainer linking={linking}>
           <AuthPage />
         </NavigationContainer>
       </AppProvider>

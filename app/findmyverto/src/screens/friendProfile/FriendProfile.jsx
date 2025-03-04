@@ -84,6 +84,7 @@ const navigations = [
 export default function FriendProfile({ route }) {
   const { _id } = route.params
   const navigation = useNavigation()
+  const customAlert = useCustomAlert()
 
   const { auth } = useContext(AuthContext)
   const { friendsRefreshing, setFriendsRefreshing } = useContext(AppContext)
@@ -131,7 +132,6 @@ export default function FriendProfile({ route }) {
   }, [student])
 
   async function handleRemoveFriend() {
-    const customAlert = useCustomAlert()
 
     customAlert.show(
       `Remove ${firstName}?`,
@@ -139,13 +139,20 @@ export default function FriendProfile({ route }) {
       [
         {
           text: 'Remove',
+          color: colors.red,
+          textColor: "white",
           onPress: async () => {
             await removeFriend(auth, _id, setRemoveLoading)
             navigation.goBack()
             setFriendsRefreshing(!friendsRefreshing)
           }
         },
-        { text: 'Cancel', onPress: () => { } }
+        {
+          text: 'Cancel',
+          color: "white",
+          textColor: "black",
+          onPress: () => { }
+        }
       ]
     )
   }
@@ -230,15 +237,15 @@ export default function FriendProfile({ route }) {
           }
         </View>
 
-      <TouchableOpacity style={styles.removeButton} onPress={handleRemoveFriend}>
-        {removeLoading ? (
-          <ActivityIndicator size={25} color={colors.red} />
-        ) : <>
-          <Ionicons name="person-remove-sharp" size={25} color={colors.red} />
-          <Text style={[styles.text2,{color:colors.red,marginLeft:10}]}>Remove</Text>
-        </>
-        }
-      </TouchableOpacity>
+        <TouchableOpacity style={styles.removeButton} onPress={handleRemoveFriend}>
+          {removeLoading ? (
+            <ActivityIndicator size={25} color={colors.red} />
+          ) : <>
+            <Ionicons name="person-remove-sharp" size={25} color={colors.red} />
+            <Text style={[styles.text2, { color: colors.red, marginLeft: 10 }]}>Remove</Text>
+          </>
+          }
+        </TouchableOpacity>
       </ScrollView>
 
 
@@ -304,7 +311,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: colors.red,
     borderRadius: 15,
-    ...globalStyles.elevationMin    
+    ...globalStyles.elevationMin
   },
   text1: {
     color: colors.lightDark,

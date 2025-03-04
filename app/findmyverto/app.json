@@ -13,7 +13,7 @@
     },
     "notification": {
       "icon": "./assets/notification.png",
-      "color": "#5665DA"
+      "color": "#FFFFFF"
     },
     "assetBundlePatterns": [
       "**/*"
