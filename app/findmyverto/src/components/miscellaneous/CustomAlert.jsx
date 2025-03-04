@@ -37,13 +37,13 @@ const CustomAlert = (() => {
               {buttons.map((button, index) => (
                 <Pressable
                   key={index}
-                  style={styles.button}
+                  style={[styles.button,button.color&&{backgroundColor:button.color}]}
                   onPress={() => {
                     button.onPress?.();
                     setVisible(false);
                   }}
                 >
-                  <Text style={styles.buttonText}>{button.text}</Text>
+                  <Text style={[styles.buttonText,button.textColor&&{color:button.textColor}]}>{button.text}</Text>
                 </Pressable>
               ))}
             </View>

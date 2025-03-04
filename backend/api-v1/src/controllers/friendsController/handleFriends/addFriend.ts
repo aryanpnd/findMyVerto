@@ -40,7 +40,8 @@ export const addFriend = async (req: Request, res: Response) => {
                                                 "Friend request accepted",
                                                 `${student.name} accepted your friend request`,
                                                 toAcceptfrndReqStudent.devicePushToken,
-                                                student.studentPicture || avatarUrl(student.name?.split(" ")[0] || "A")
+                                                student.studentPicture || avatarUrl(student.name?.split(" ")[0] || "A"),
+                                                "Friends"
                                             );
                                         }
                                         res.status(200).send({

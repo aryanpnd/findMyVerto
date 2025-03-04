@@ -41,10 +41,17 @@ export default function MyProfile({ navigation }) {
             "Are you sure you want to logout?",
             [
                 {
-                    text: "Cancel",
-                    onPress: () => console.log("Cancel Pressed"),
+                    text: "Logout",
+                    color: colors.red,
+                    textColor: "white",
+                    onPress: logout
                 },
-                { text: "OK", onPress: logout }
+                {
+                    text: "Cancel",
+                    color: "white",
+                    textColor: "black",
+                    onPress: () => console.log("Cancel Pressed"),
+                }
             ]
         );
     }
@@ -99,9 +106,9 @@ export default function MyProfile({ navigation }) {
                     </TouchableOpacity>
 
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-                        <Text style={{ color: "grey", marginTop: 10,fontSize:10 }}>Made with ❤️ by</Text>
+                        <Text style={{ color: "grey", marginTop: 10, fontSize: 10 }}>Made with ❤️ by</Text>
                         <TouchableOpacity onPress={() => Linking.openURL('https://github.com/aryanpnd')}>
-                            <Text style={{ color: "#5D3FD3",fontSize:10 }}>Aryan</Text>
+                            <Text style={{ color: "#5D3FD3", fontSize: 10 }}>Aryan</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

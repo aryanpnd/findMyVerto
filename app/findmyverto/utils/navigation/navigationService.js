@@ -7,3 +7,11 @@ export function navigate(name, params) {
     navigationRef.navigate(name, params);
   }
 }
+
+export function handleBackNavigation(navigation) {
+  if (navigation.canGoBack()) {
+    navigation.goBack();
+  } else {
+    navigation.navigate('Home'); // Replace 'Home' with your desired default route
+  }
+}

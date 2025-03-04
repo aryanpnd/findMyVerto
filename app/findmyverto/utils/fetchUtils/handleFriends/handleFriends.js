@@ -207,42 +207,46 @@ export async function getSentFriendRequests(auth, setSentFriendRequests, setLoad
 }
 
 export async function removeFriend(auth, student_id, setLoading) {
-    setLoading(true)
-    // let status=false;
+    let success = false;
+    setLoading(true);
     console.log({ reg_no: auth.reg_no, password: auth.password, studentId: student_id });
+    try {
+        const result = await axios.post(`${API_URL}/friends/removeFriend`, {
+            reg_no: auth.reg_no,
+            password: auth.password,
+            studentId: student_id,
+        });
 
-    await axios.post(`${API_URL}/friends/removeFriend`, { reg_no: auth.reg_no, password: auth.password, studentId: student_id })
-        .then(async (result) => {
-            if (result.data.success) {
-                Toast.show({
-                    type: 'success',
-                    text1: result.data.message,
-                });
-                // await AsyncStorage.removeItem(`${student_id}`);
-                // await AsyncStorage.removeItem(`${student_id}-timetable`);
-                friendsStorage.delete(`${student_id}`)
-                friendsStorage.delete(`${student_id}-timetable`)
-                friendsStorage.delete(`${student_id}-attendance`)
-                friendsStorage.delete(`${student_id}-marks`)
-                friendsStorage.delete(`${student_id}-cgpa`)
-                // status=true
-            } else {
-                Toast.show({
-                    type: 'error',
-                    text1: result.data.message,
-                    text2: result.data.errorMessage,
-                })
-                // status=false
-            }
-        }).catch((err) => {
+        if (result.data.success) {
+            Toast.show({
+                type: 'success',
+                text1: result.data.message,
+            });
+            friendsStorage.delete(`${student_id}`);
+            friendsStorage.delete(`${student_id}-timetable`);
+            friendsStorage.delete(`${student_id}-attendance`);
+            friendsStorage.delete(`${student_id}-marks`);
+            friendsStorage.delete(`${student_id}-cgpa`);
+            friendsStorage.delete(`${student_id}-assignments`);
+            friendsStorage.delete(`${student_id}-drives`);
+            success = true;
+        } else {
             Toast.show({
                 type: 'error',
-                text1: err.message,
+                text1: result.data.message,
+                text2: result.data.errorMessage,
             });
-            console.log(err);
-            // status=false
-        })
-        .finally(() => {
-            setLoading(false);
-        })
+            success = false;
+        }
+    } catch (err) {
+        Toast.show({
+            type: 'error',
+            text1: err.message,
+        });
+        console.log(err);
+        success = false;
+    } finally {
+        setLoading(false);
+    }
+    return success;
 }

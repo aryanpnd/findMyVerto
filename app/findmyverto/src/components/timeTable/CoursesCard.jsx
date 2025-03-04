@@ -37,7 +37,7 @@ export default function CoursesCard({ course, subjectCode }) {
                         style={{ height: 15, width: 15 }}
                         transition={1000}
                     />
-                    <Text style={styles.text2}>{course.cabin}</Text>
+                    <Text style={styles.text2}>Cabin: {course.cabin}</Text>
                 </View>
             </View>
 

@@ -66,6 +66,7 @@ export const sendFriendRequest = async (req: Request, res: Response) => {
                 `${student.name} sent you a friend request`,
                 toSendfrndReqStudent.devicePushToken,
                 student.studentPicture || avatarUrl(student.name?.split(" ")[0] || "A"),
+                "FriendRequests"
             );
         }
 

@@ -21,6 +21,8 @@ import EmptyRequests from '../../components/miscellaneous/EmptyRequests'
 import { getFriendRequests, getSentFriendRequests } from '../../../utils/fetchUtils/handleFriends/handleFriends'
 import PagerButtons from '../../components/miscellaneous/PagerButtons'
 import { HEIGHT, WIDTH } from '../../constants/styles'
+import { useFocusEffect } from '@react-navigation/native'
+import { handleBackNavigation } from '../../../utils/navigation/navigationService'
 
 const { height, width } = Dimensions.get('window');
 
@@ -48,10 +50,17 @@ export default function FriendRequests({ navigation }) {
     getSentFriendRequests(auth, setSentFriendRequests, setLoading)
   }
 
-  useEffect(() => {
-    handleGetFriendRequests()
-    handleGetSentRequests()
-  }, [])
+  // useEffect(() => {
+  //   handleGetFriendRequests()
+  //   handleGetSentRequests()
+  // }, [])
+
+  useFocusEffect(
+    React.useCallback(() => {
+      handleGetFriendRequests()
+      handleGetSentRequests()
+    }, [])
+  )
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]}>
@@ -62,7 +71,7 @@ export default function FriendRequests({ navigation }) {
       <View style={[styles.header]}>
         {/* Back naviagtion button */}
         <View style={[styles.backBtn]}>
-          <TouchableOpacity onPress={() => navigation.goBack()}>
+          <TouchableOpacity onPress={()=>handleBackNavigation(navigation)}>
             <MaterialIcons name='arrow-back-ios' size={25} color={colors.lightDark} />
           </TouchableOpacity>
         </View>
