@@ -6,11 +6,12 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import LottieView from 'lottie-react-native';
 import { FontAwesome5 } from '@expo/vector-icons';
 import axios from 'axios';
-import OverlayLoading from '../../components/miscellaneous/OverlayLoading';
 import { colors } from '../../constants/colors';
 import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert';
 import Button from '../../components/miscellaneous/Button';
 import { StatusBar } from 'expo-status-bar';
+import { HEIGHT, WIDTH } from '../../constants/styles';
+import AwesomeButton from 'react-native-really-awesome-button';
 
 export default function Login() {
   const { setAuth } = useContext(AuthContext);
@@ -70,7 +71,7 @@ export default function Login() {
         <CustomAlert />
       </View>
       <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor={isFocused?colors.whitePrimary:colors.primary}/>
+        <StatusBar backgroundColor={isFocused ? colors.whitePrimary : colors.primary} />
         <View style={styles.container}>
           {/* Hide logo and animation when text input is focused */}
           {!isFocused && (
@@ -91,7 +92,7 @@ export default function Login() {
           {/* login container */}
           <View style={[styles.loginContainer, isFocused && styles.focusedLoginContainer]}>
             <ScrollView keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-              <View style={{ justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 5, marginBottom: 30 }}>
+              <View style={{ justifyContent: 'center', alignItems: 'flex-start', paddingLeft: 5, marginBottom: 20 }}>
                 <Text style={styles.textLarge}>LOGIN</Text>
                 <Text style={styles.textSmall}>with your UMS Credentials</Text>
               </View>
@@ -131,7 +132,7 @@ export default function Login() {
               </View>
 
               <View style={{ flex: 4 }}>
-                <Button title="Login" onPress={login} loading={loading} setLoading={setLoading} bg={colors.primary} loadingTitle="Logging..." loadAnim={"amongus"} disabledBg={colors.disabledBackground} />
+                <LoginButton onPress={login} loading={loading} />
               </View>
             </ScrollView>
           </View>
@@ -140,6 +141,40 @@ export default function Login() {
     </>
   );
 }
+
+const LoginButton = ({ onPress, loading }) => {
+  return (
+    <AwesomeButton
+      width={WIDTH(90)}
+      height={HEIGHT(7)}
+      borderRadius={15}
+      raiseLevel={loading ? 0 : 5}
+      // Change backgroundColor based on loading state
+      backgroundColor={loading ? colors.disabledBackground : colors.secondary}
+      backgroundDarker={loading ? colors.disabledBackground : colors.primary}
+      debouncedPressTime={200}
+      onPress={onPress}
+      disabled={loading}
+    >
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <Text style={styles.loadingText}>Logging in...</Text>
+          <LottieView
+            autoPlay
+            loop
+            style={styles.loadingAnim}
+            source={
+              // Use your preferred loading animation file
+              require('../../../assets/lotties/loading4.json')
+            }
+          />
+        </View>
+      ) : (
+        <Text style={styles.buttonText}>Login</Text>
+      )}
+    </AwesomeButton>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -186,4 +221,25 @@ const styles = StyleSheet.create({
   },
   textSmall: { fontSize: 12, fontWeight: '400', color: 'grey' },
   textLarge: { fontSize: 30, fontWeight: 'bold', color: '#333' },
+
+  //login button
+  loadingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  loadingText: {
+    fontSize: 16,
+    color: 'white',
+    marginRight: 10,
+  },
+  loadingAnim: {
+    width: 50,
+    height: 50,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+  },
 });

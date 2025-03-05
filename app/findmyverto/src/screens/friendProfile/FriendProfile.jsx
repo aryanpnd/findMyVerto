@@ -26,7 +26,8 @@ import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/Cust
 import { useNavigation } from '@react-navigation/native'
 import { AppContext } from '../../../context/MainApp'
 import { friendsStorage, userStorage } from '../../../utils/storage/storage'
-import { globalStyles, WIDTH } from '../../constants/styles'
+import { globalStyles, HEIGHT, WIDTH } from '../../constants/styles'
+import AwesomeButton from 'react-native-really-awesome-button'
 
 const { height, width } = Dimensions.get('window')
 
@@ -237,15 +238,23 @@ export default function FriendProfile({ route }) {
           }
         </View>
 
-        <TouchableOpacity style={styles.removeButton} onPress={handleRemoveFriend}>
+        <AwesomeButton
+          width={WIDTH(90)}
+          height={HEIGHT(7)}
+          borderRadius={15}
+          raiseLevel={6}
+          backgroundColor={colors.red}
+          backgroundDarker={colors.red2}
+          debouncedPressTime={200}
+          onPress={handleRemoveFriend}>
           {removeLoading ? (
-            <ActivityIndicator size={25} color={colors.red} />
+            <ActivityIndicator size={25} color={"white"} />
           ) : <>
-            <Ionicons name="person-remove-sharp" size={25} color={colors.red} />
-            <Text style={[styles.text2, { color: colors.red, marginLeft: 10 }]}>Remove</Text>
+            <Ionicons name="person-remove-sharp" size={25} color={"white"} />
+            <Text style={[styles.text2, { color: "white", marginLeft: 10 }]}>Remove</Text>
           </>
           }
-        </TouchableOpacity>
+        </AwesomeButton>
       </ScrollView>
 
 

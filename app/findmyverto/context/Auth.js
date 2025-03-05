@@ -42,6 +42,7 @@ const AuthProvider = ({ children }) => {
       updatedAt: ""
     }
   })
+  const [onboarding, setOnboarding] = useState(false);
 
   const setAuth = async (data) => {
     setAuthState({ ...auth, ...data })
@@ -91,7 +92,7 @@ const AuthProvider = ({ children }) => {
               const fcmToken = await getFcmToken();
               sendFcmToken({ reg_no: regNo, password: pass }, fcmToken);
             }
-            
+
             setAuthState({
               authenticated: JSON.parse(authenticated),
               reg_no: regNo || "",
@@ -122,7 +123,7 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider value={{
-      auth, setAuth, setAuthState, loadAuth, logout
+      auth, setAuth, setAuthState,onboarding, setOnboarding, loadAuth, logout
     }}>
       {children}
     </AuthContext.Provider>

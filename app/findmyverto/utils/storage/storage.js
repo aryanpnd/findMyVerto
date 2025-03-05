@@ -1,5 +1,6 @@
 import { MMKV } from 'react-native-mmkv';
 
+export const appStorage = new MMKV({id: 'app-storage'});
 export const userStorage = new MMKV({id: 'user-storage'});
 export const friendsStorage = new MMKV({id: 'friends-storage'});
 

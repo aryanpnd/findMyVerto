@@ -6,6 +6,7 @@ import { umsLogin } from './umsLogin';
 import { umsLoginReturn, User } from '../types/scrapperTypes';
 import { uploadImageToCloudinary } from '../utils/uploadImageToCloudinary';
 import { saveImageLocally } from '../utils/saveImageLocally';
+import { uploadImageToImageKit } from '../utils/uploadImageToImagekit';
 
 export const scrapeStudentBasicInfo = async (user: User) => {
     try {
@@ -38,7 +39,9 @@ export const scrapeStudentBasicInfo = async (user: User) => {
         let studentPictureUrl = '';
         if (studentInfoRaw.StudentPicture) {
             saveImageLocally(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
-            studentPictureUrl = await uploadImageToCloudinary(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
+            // studentPictureUrl = await uploadImageToCloudinary(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
+            studentPictureUrl = await uploadImageToImageKit(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
+
         }
 
         const studentInfo = {

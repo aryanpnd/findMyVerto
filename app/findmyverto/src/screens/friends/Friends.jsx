@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, ScrollView, RefreshControl } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, Dimensions, TextInput, ScrollView, RefreshControl, Pressable } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { MaterialIcons } from '@expo/vector-icons'
@@ -12,7 +12,7 @@ import EmptyRequests from '../../components/miscellaneous/EmptyRequests'
 import { StatusBar } from 'expo-status-bar'
 import { getFriends } from '../../../utils/fetchUtils/handleFriends/handleFriends'
 import TimetableScreenShimmer from '../../components/shimmers/TimetableScreenShimmer'
-import { HEIGHT } from '../../constants/styles'
+import { HEIGHT, WIDTH } from '../../constants/styles'
 import { AppContext } from '../../../context/MainApp'
 import { friendsStorage } from '../../../utils/storage/storage'
 import { handleBackNavigation } from '../../../utils/navigation/navigationService'
@@ -82,21 +82,19 @@ export default function Friends({ navigation, route }) {
         handleGetFriends(true, true)
     }, [friendsRefreshing])
 
-    
+
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]}>
             <StatusBar style='auto' />
             <View style={[styles.header]}>
-                {/* Back naviagtion button */}
-                <View style={[styles.backBtn]}>
-                    <TouchableOpacity onPress={()=>handleBackNavigation(navigation)}>
+                    <TouchableOpacity style={[styles.backBtn]} onPress={() => handleBackNavigation(navigation)}>
                         <MaterialIcons name='arrow-back-ios' size={25} color={colors.lightDark} />
+                        <Text style={{ fontSize: 18, fontWeight: "500" }}>Friends</Text>
                     </TouchableOpacity>
-                </View>
-                {/* title */}
-                <View style={[styles.title]}>
-                    <Text style={{ fontSize: 18, fontWeight: "500" }}>Friends</Text>
-                </View>
+
+                <TouchableOpacity onPress={() => navigation.navigate("VertoSearch")}>
+                    <Text style={{ color: 'gray', marginRight: 10 }}>Search Friends</Text>
+                </TouchableOpacity>
             </View>
 
             {/* Body */}
@@ -162,16 +160,20 @@ const styles = StyleSheet.create({
         width: '100%',
         flexDirection: "row",
         padding: 10,
-        gap: width * 0.02,
+        justifyContent: "space-between",
+        alignItems: "center",
+        paddingHorizontal: 10,
     },
     title: {
         alignItems: "center",
         justifyContent: "center"
     },
     backBtn: {
-        width: "10%",
         justifyContent: "center",
         alignItems: 'center',
+        flexDirection: "row",
+        gap: WIDTH(2),
+        marginLeft: 5
     },
 
 
