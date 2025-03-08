@@ -1,7 +1,8 @@
 import { View, Text, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native'
 import React from 'react'
-import { Octicons } from '@expo/vector-icons'
+import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons'
 import CustomAlert, { useCustomAlert } from './CustomAlert'
+import { globalStyles } from '../../constants/styles';
 
 export default function SyncData({ time, syncNow, self, color, bg, loader, loading }) {
   const customAlert = useCustomAlert();
@@ -50,6 +51,10 @@ export default function SyncData({ time, syncNow, self, color, bg, loader, loadi
           }
         </View>}
       </View>
+      <View style={[styles.infoContainer, { backgroundColor: bg }]} >
+        <MaterialCommunityIcons name="information-outline" size={13} color={color} />
+        <Text style={[styles.infoText, { color: color }]}>This data is synced from the UMS and may be inaccurate. If you suspect it's outdated, please sync it.</Text>
+      </View>
     </>
   )
 }
@@ -65,6 +70,18 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     gap: 5
+  },
+  infoContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 2,
+    paddingHorizontal: 5,
+    gap: 10,
+    // marginTop: 2
+  },
+  infoText: {
+    fontSize: 10
   }
 
 })

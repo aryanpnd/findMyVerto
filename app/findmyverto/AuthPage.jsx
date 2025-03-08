@@ -72,7 +72,7 @@ export default function AuthPage() {
   if (loading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.primary }}>
-        <ActivityIndicator size="large" color={"white"} />
+        {/* <ActivityIndicator size="large" color={"white"} /> */}
       </View>
     );
   }

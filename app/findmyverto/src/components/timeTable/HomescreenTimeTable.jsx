@@ -10,7 +10,8 @@ import { fetchTimetable } from '../../../utils/fetchUtils/userData/timeTableFetc
 import Button from '../miscellaneous/Button';
 import { useFocusEffect } from '@react-navigation/native';
 import { HEIGHT, WIDTH } from '../../constants/styles';
-import {isTimeEqual} from '../../../utils/helperFunctions/dataAndTimeHelpers';
+import { isTimeEqual } from '../../../utils/helperFunctions/dataAndTimeHelpers';
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
@@ -59,8 +60,8 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
             setCourses,
             auth,
             setIsError,
-            false,
-            true,
+            false, // sync
+            true, // todayOnly
             setLastSynced,
             setLastUpdated,
             isRetry
@@ -176,6 +177,10 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
 
                                     </ScrollView>
                                 }
+                                <View style={[styles.infoContainer, { backgroundColor: colors.whitePrimary }]} >
+                                    <MaterialCommunityIcons name="information-outline" size={13} color={"grey"}/>
+                                    <Text style={[styles.infoText, { color: "grey" }]}>This data is synced from the UMS and may be inaccurate. If you suspect it's outdated, please sync it. <Text style={{fontWeight:"bold"}}>(Open the Timetable screen to refresh.)</Text></Text>
+                                </View>
                             </View>
             }
         </>
@@ -270,6 +275,18 @@ const styles = StyleSheet.create({
     text1: {
         color: "grey",
         fontWeight: "500"
+    },
+    infoContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 2,
+        paddingHorizontal: 5,
+        gap: 10,
+        // marginTop: 2
+    },
+    infoText: {
+        fontSize: 10
     }
 
 });

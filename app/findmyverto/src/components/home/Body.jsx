@@ -8,7 +8,6 @@ import {
   Pressable,
   Platform,
   RefreshControl,
-  Button
 } from 'react-native'
 import React, { useCallback, useContext, useRef, useState } from 'react'
 import HomescreenTimeTable from '../timeTable/HomescreenTimeTable'
@@ -16,7 +15,6 @@ import { colors } from '../../constants/colors'
 import { AuthContext } from '../../../context/Auth'
 import { HEIGHT, WIDTH } from '../../constants/styles'
 import { homeScreenNavigations } from '../../constants/globalConstants'
-import notifee, { AndroidStyle,AndroidImportance, TriggerType } from '@notifee/react-native';
 
 const { width } = Dimensions.get('window')
 
@@ -40,47 +38,8 @@ export default function Body({ navigation }) {
     setRefreshing(false)
   }, [])
 
-  async function createNotificationChannel() {
-    await notifee.requestPermission();
-  
-    const channelId = await notifee.createChannel({
-      id: 'default',
-      name: 'Default Channel',
-      importance: AndroidImportance.HIGH,
-    });
-  
-    return channelId;
-  }
-  async function scheduleNotification() {
-    const channelId = await createNotificationChannel();
-  
-    const trigger = {
-      type: TriggerType.TIMESTAMP,
-      timestamp: Date.now() + 7000, // 15 seconds from now
-      alarmManager: { allowWhileIdle: true }, // Ensures the notification fires even in idle modes
-    };
-  
-    await notifee.createTriggerNotification(
-      {
-        title: 'Scheduled Notification',
-        body: 'This notification was scheduled to appear 15 seconds after scheduling.',
-        android: {
-          channelId,
-          smallIcon: 'ic_launcher', // Ensure this icon exists in your project
-        },
-      },
-      trigger
-    );
-  }
-
-  function openSettings() {
-    notifee.openAlarmPermissionSettings();
-  }
-
   return (
     <View style={styles.body}>
-      <Button title="Open Setting" onPress={openSettings} />
-      <Button title="Schedule notification" onPress={scheduleNotification}/>
       <ScrollView
         style={styles.body}
         bounces={Platform.OS === 'ios' ? true : undefined}

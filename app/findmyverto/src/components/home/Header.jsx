@@ -16,6 +16,7 @@ import { useFocusEffect } from '@react-navigation/native'
 import { HEIGHT, WIDTH } from '../../constants/styles'
 import { fetchAttendance } from '../../../utils/fetchUtils/userData/attendanceFetch'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
+import { AttendanceSyncTime } from '../../../utils/settings/SyncAndRetryLimits'
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
@@ -53,7 +54,7 @@ export default function Header({ navigation }) {
         }
         // If attendance data was synced within the last hour, skip fetching
         if (!sync && attendanceLastSynced &&
-            new Date().getTime() - new Date(attendanceLastSynced).getTime() <= 3600000) {
+            new Date().getTime() - new Date(attendanceLastSynced).getTime() <= AttendanceSyncTime()) {
             return;
         }
 

@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import { API_URL } from "../../../context/Auth";
 import { userStorage } from "../../storage/storage";
+import { AttendanceSyncTime } from "../../settings/SyncAndRetryLimits";
 export async function fetchAttendance(
     setAttendanceLoading,
     setRefreshing,
@@ -20,9 +21,9 @@ export async function fetchAttendance(
         // let userAttendanceRaw = await AsyncStorage.getItem("ATTENDANCE");
         let userAttendanceRaw = userStorage.getString("ATTENDANCE");
         let userAttendance = userAttendanceRaw ? JSON.parse(userAttendanceRaw) : null;
-        const isHourOld = userAttendance && new Date().getTime() - new Date(userAttendance.last_updated).getTime() > 3600000;        
-        if (!userAttendance || sync || isHourOld) {
-            if (!userAttendance || userAttendance.success === false || sync || isHourOld) {
+        const isOutdated = userAttendance && new Date().getTime() - new Date(userAttendance.last_updated).getTime() > AttendanceSyncTime();
+        if (!userAttendance || sync || isOutdated) {
+            if (!userAttendance || userAttendance.success === false || sync || isOutdated) {
                 const result = await axios.post(`${API_URL}/student/attendance`, { password: auth.password, reg_no: auth.reg_no });
                 if (result.data.success) {
                     // await AsyncStorage.setItem("ATTENDANCE", JSON.stringify(result.data));
