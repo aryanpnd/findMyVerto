@@ -135,6 +135,7 @@ export async function fetchMakeup(
 
             if (result.data.success) {
                 await AsyncStorage.setItem("MAKEUP", JSON.stringify(result.data));
+                
                 let makeupClasses = filterOutdatedMakeup(result.data.data);
 
                 setMakeup(makeupClasses);
@@ -155,7 +156,6 @@ export async function fetchMakeup(
             }
         } else {
             let makeupClasses = filterOutdatedMakeup(storedMakeup.data);
-
             setMakeup(makeupClasses);
             setLastSynced(storedMakeup.lastSynced);
             setIsError(false);

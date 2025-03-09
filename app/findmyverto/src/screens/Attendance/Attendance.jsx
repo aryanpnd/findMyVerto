@@ -25,6 +25,7 @@ export default function Attendance({ navigation }) {
   }
   useEffect(() => {
     handleAttendanceFetch()
+    console.log(auth.server)
   }, [])
 
   useEffect(() => {

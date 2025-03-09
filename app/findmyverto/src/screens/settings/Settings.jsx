@@ -4,11 +4,15 @@ import CustomAlert from '../../components/miscellaneous/CustomAlert';
 import SyncingSettings from '../../components/settings/syncingSettings/SyncingSettings';
 import AccountSettings from '../../components/settings/AccountSettings/AccountSettings';
 import GeneralSettings from '../../components/settings/GeneralSettings/GeneralSettings';
+import Toast from 'react-native-toast-message';
 
 export default function Settings() {
   return (
     <ScrollView style={styles.container}>
+      <View style={{zIndex: 2}}>
       <CustomAlert />
+      <Toast/>
+      </View>
 
       <Text style={styles.category}>Account</Text>
       <AccountSettings />

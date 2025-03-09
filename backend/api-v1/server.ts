@@ -11,6 +11,10 @@ const port = config.port;
 
 app.use('/public', express.static(path.join(__dirname, './public')));
 
+app.get('/status', (req, res) => {
+  res.status(200).json({ status: 'Server is up and running' });
+});
+
 // Connect to MongoDB
 mongoose.connect(config.mongodb.uri)
   .then(() => {

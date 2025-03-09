@@ -10,6 +10,8 @@ import { handleBackgroundMessage, handleKiledStatelNotification, initPushNotific
 import messaging from '@react-native-firebase/messaging';
 import { linking } from './utils/navigation/pushNotificationNavigation';
 import { requestNotificationPermission } from './utils/notifications/notificationPermission';
+import { BottomSheetModalProvider } from '@gorhom/bottom-sheet';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 // Initialize analytics
 initializeAnalytics();
@@ -36,7 +38,11 @@ export default function App() {
     <AuthProvider>
       <AppProvider>
         <NavigationContainer linking={linking}>
-          <AuthPage />
+          <GestureHandlerRootView>
+          <BottomSheetModalProvider>
+            <AuthPage />
+          </BottomSheetModalProvider>
+          </GestureHandlerRootView>
         </NavigationContainer>
       </AppProvider>
     </AuthProvider>

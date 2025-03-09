@@ -3,13 +3,15 @@ import * as SecureStore from 'expo-secure-store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getCalculatedDate } from '../utils/helperFunctions/dataAndTimeHelpers';
 import Toast from 'react-native-toast-message';
-import { friendsStorage, userStorage } from '../utils/storage/storage';
+import { appStorage, friendsStorage, userStorage } from '../utils/storage/storage';
 import { getFcmToken, sendFcmToken } from '../utils/notifications/pushNotificationService';
+import { loadCustomServers, loadServers } from '../utils/settings/changeServer';
 
 const AuthContext = createContext();
 
+let API_URL;
 if (process.env.NODE_ENV === 'development') {
-  // API_URL = "http://192.168.132.229:3000/api/v2";
+  // API_URL = "http://192.168.109.229:3000/api/v2";
   // API_URL = "https://findmyvertov2-8wup.onrender.com/api/v2";
   API_URL = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net/api/v2";
 } else {
@@ -17,10 +19,12 @@ if (process.env.NODE_ENV === 'development') {
   // API_URL = `${process.env.EXPO_PUBLIC_FMV_API_URL}`;
   // API_URL = "https://findmyvertov2-8wup.onrender.com/api/v2";
 }
+export { API_URL };
 
 const AuthProvider = ({ children }) => {
 
   const [auth, setAuthState] = useState({
+    server: {},
     authenticated: false,
     reg_no: "",
     password: "",
@@ -54,6 +58,17 @@ const AuthProvider = ({ children }) => {
         let pass = await SecureStore.getItemAsync("PASSWORD");
         let authenticated = await SecureStore.getItemAsync("AUTHENTICATED");
         let passwordExpiry = await SecureStore.getItemAsync("PASSWORDEXPIRY");
+        let randomServer = {}
+
+        const customeServerSelected = appStorage.getBoolean("CUSTOM_SERVER_SELECTED");
+        if (customeServerSelected) {
+          const customServers = loadCustomServers()
+          randomServer = customServers[Math.floor(Math.random() * customServers.length)]
+        }else{
+          let servers = loadServers()
+          randomServer = servers[Math.floor(Math.random() * servers.length)]
+        }
+        
         if (authenticated) {
           const calculatedDate = getCalculatedDate(JSON.parse(passwordExpiry).days, JSON.parse(passwordExpiry).updatedAt);
           const pwdExp = {
@@ -65,7 +80,8 @@ const AuthProvider = ({ children }) => {
               authenticated: false,
               reg_no: "",
               password: "",
-              passwordExpiry: pwdExp
+              passwordExpiry: pwdExp,
+              server: randomServer
             });
             Toast.show({
               type: 'error',
@@ -84,12 +100,20 @@ const AuthProvider = ({ children }) => {
               authenticated: JSON.parse(authenticated),
               reg_no: regNo || "",
               password: pass || "",
-              passwordExpiry: pwdExp
+              passwordExpiry: pwdExp,
+              server: randomServer
             });
           }
-
-          // axios.defaults.headers.common['Authorization'] = `Bearer ${token}`
+        }else{
+          setAuthState({
+            authenticated: false,
+            reg_no: "",
+            password: "",
+            passwordExpiry: { days: 0, updatedAt: "" },
+            server: randomServer
+          });
         }
+
         resolve()
       } catch (error) {
         reject(error)

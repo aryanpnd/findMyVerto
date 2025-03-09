@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   SafeAreaView,
+  Pressable,
 } from 'react-native';
 import { HEIGHT, WIDTH, globalStyles } from '../../../constants/styles';
 import { colors } from '../../../constants/colors';
@@ -71,7 +72,7 @@ const DynamicPickerModal = ({
       visible={visible}
       onRequestClose={onClose}
     >
-      <SafeAreaView style={{ flex: 1 }}>
+      {/* <SafeAreaView style={{ flex: 1 }}> */}
         <View style={[styles.overlay, overlayStyle]}>
           <View style={[styles.alertBox, globalStyles.elevation, modalStyle]}>
             <Text style={styles.headerText}>{header}</Text>
@@ -88,12 +89,12 @@ const DynamicPickerModal = ({
               style={{ maxHeight: HEIGHT(30) }}
               contentContainerStyle={{ paddingVertical: 10 }}
             />
-            <TouchableOpacity style={styles.button} onPress={onClose}>
+            <Pressable style={styles.button} onPress={onClose}>
               <Text style={styles.buttonText}>Cancel</Text>
-            </TouchableOpacity>
+            </Pressable>
           </View>
         </View>
-      </SafeAreaView>
+      {/* </SafeAreaView> */}
     </Modal>
   );
 };
@@ -101,7 +102,7 @@ const DynamicPickerModal = ({
 const styles = StyleSheet.create({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
+    backgroundColor: "rgba(0,0,0,0.5)",
     justifyContent: 'center',
     alignItems: 'center',
     paddingHorizontal: WIDTH(5),

@@ -12,7 +12,7 @@ import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 import { fetchBasicDetails } from '../../../utils/fetchUtils/userData/basicDetailsFetch'
 import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert'
 import { HEIGHT, WIDTH } from '../../constants/styles'
-import AllowedFieldsToShow from '../../components/settings/AccountSettings/allowedFieldsToShow'
+import AllowedFieldsToShow from '../../components/settings/AccountSettings/AllowedFieldsToShow'
 const { height, width } = Dimensions.get('window');
 
 export default function MyProfile({ navigation }) {

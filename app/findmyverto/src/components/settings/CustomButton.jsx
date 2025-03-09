@@ -1,12 +1,12 @@
 import { Text, StyleSheet, Pressable, Platform, TouchableOpacity, View } from 'react-native';
 
-export const CustomButton = ({ title, title2, icon, onPress }) => {
+export const CustomButton = ({ title, title2, icon, onPress, rippleColor }) => {
     const content = <Text style={styles.itemText}>{title}</Text>;
     const content2 = <Text style={styles.itemText2}>{title2}</Text>;
 
     if (Platform.OS === 'android') {
         return (
-            <Pressable style={styles.item} android_ripple={{ color: '#ccc' }} onPress={() => onPress()}>
+            <Pressable style={styles.item} android_ripple={{ color: rippleColor?rippleColor:'#ccc' }} onPress={() => onPress()}>
                 <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
                     {icon && icon}
                     {content}
