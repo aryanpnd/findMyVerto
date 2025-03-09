@@ -2,6 +2,7 @@ import axios from "axios";
 import { API_URL } from "../../../context/Auth";
 import { userStorage } from "../../storage/storage";
 import Toast from "react-native-toast-message";
+import { MyMessagesSyncTime } from "../../settings/SyncAndRetryLimits";
 
 export const fetchMyMessages = async (
     auth,
@@ -20,10 +21,10 @@ export const fetchMyMessages = async (
     setIsError,
 ) => {
     try {
-        !sync && setLoading(true);
-        sync && setRefresh(true);
+        if (!sync) setLoading(true);
+        if (sync) setRefresh(true);
 
-        // If syncing, remove all stored messages using the stored pages list.
+        // If syncing, clear stored messages.
         if (sync) {
             const pagesRaw = userStorage.getString("MESSAGES-PAGES");
             if (pagesRaw) {
@@ -40,6 +41,7 @@ export const fetchMyMessages = async (
         const currentPageRaw = userStorage.getString('MESSAGES-PAGE-NUMBER');
         const currentPage = currentPageRaw ? JSON.parse(currentPageRaw) : null;
 
+        // Calculate page index (if paging is used)
         pageIndex = (pageCount && pageNumber) ? (pageCount - pageNumber) + 1 : 1;
 
         if (pageCount || pageCount > 0 || pageNumber || pageNumber > 0) {
@@ -47,17 +49,30 @@ export const fetchMyMessages = async (
             userMessages = userMessagesRaw ? JSON.parse(userMessagesRaw) : null;
         }
 
-        if (!userMessages || sync) {
-            if (!userMessages || userMessages.success === false || sync) {
-                const result = await axios.post(`${API_URL}/student/messages`,
-                    {
-                        reg_no: auth.reg_no,
-                        password: auth.password,
-                        pageIndex: pageIndex,
-                        subject: subject ? subject : "",
-                        description: description ? description : ""
-                    }
-                );
+        // Retrieve sync interval for messages.
+        const syncInterval = MyMessagesSyncTime();
+        const autoSyncEnabled = syncInterval > 0;
+        let isOutdated = false;
+        if (userMessages && userMessages.lastSynced) {
+            isOutdated = (new Date().getTime() - new Date(userMessages.lastSynced).getTime() > syncInterval);
+        }
+
+        // Decide whether to fetch new data:
+        // - Fetch if no stored data exists.
+        // - Or if a forced sync is requested.
+        // - Or if auto-sync is enabled and stored data is outdated.
+        // If auto-sync is off (syncInterval === 0) and data exists, use stored data unless sync is forced.
+        if (!userMessages || sync || (autoSyncEnabled && isOutdated)) {
+            if (syncInterval === 0 && !sync && userMessages) {
+                // Auto-sync off: use stored data.
+            } else {
+                const result = await axios.post(`${API_URL}/student/messages`, {
+                    reg_no: auth.reg_no,
+                    password: auth.password,
+                    pageIndex: pageIndex,
+                    subject: subject ? subject : "",
+                    description: description ? description : ""
+                });
                 if (result.data.success) {
                     const pageCountTemp = result.data.data[0].PageCount;
                     const pageNumberTemp = (pageCountTemp - pageIndex) + 1;
@@ -81,13 +96,15 @@ export const fetchMyMessages = async (
                         text2: "Your messages have been synced successfully",
                     });
                     setIsError(false);
-                }
-                else {
+                    // Update local reference.
+                    userMessages = result.data;
+                } else {
                     Toast.show({
                         type: 'error',
                         text1: `${result.data.message}`,
                         text2: `${result.data.errorMessage}`,
                     });
+                    // Restore previous page if available.
                     userStorage.set("MESSAGES-PAGE-NUMBER", JSON.stringify(currentPage));
                     setIsError(true);
                 }
@@ -107,8 +124,7 @@ export const fetchMyMessages = async (
         }
         setLoading(false);
         setRefresh(false);
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
         let userMessagesRaw = userStorage.getString(`MESSAGES-${pageNumber}`);
         if (userMessagesRaw) {
@@ -123,7 +139,7 @@ export const fetchMyMessages = async (
             }
             userStorage.set("MESSAGES-PAGE-NUMBER", JSON.stringify(userMessages.data[0].PageCount));
             setPages(pages.reverse());
-        }else{
+        } else {
             setIsError(true);
             Toast.show({
                 type: 'error',
@@ -134,7 +150,7 @@ export const fetchMyMessages = async (
         setLoading(false);
         setRefresh(false);
     }
-}
+};
 
 export const searchMyMessages = async (
     auth,

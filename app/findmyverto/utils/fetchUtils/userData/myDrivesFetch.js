@@ -2,6 +2,7 @@ import { userStorage } from "../../storage/storage";
 import axios from "axios";
 import Toast from "react-native-toast-message";
 import { API_URL } from "../../../context/Auth";
+import { DrivesSyncTime } from "../../settings/SyncAndRetryLimits";
 
 export const fetchDrives = async (
     auth,
@@ -14,14 +15,33 @@ export const fetchDrives = async (
     setIsError,
 ) => {
     try {
-        !sync && setDrivesLoading(true);
-        sync && setDrivesRefresh(true);
+        if (!sync) setDrivesLoading(true);
+        if (sync) setDrivesRefresh(true);
+
         let userDrivesRaw = userStorage.getString("DRIVES");
         let userDrives = userDrivesRaw ? JSON.parse(userDrivesRaw) : null;
 
-        if (!userDrives || sync) {
-            if (!userDrives || userDrives.success === false || sync) {
-                const result = await axios.post(`${API_URL}/student/myDrives`, { password: auth.password, reg_no: auth.reg_no });
+        // Retrieve the sync interval for drives (in ms)
+        const syncInterval = DrivesSyncTime();
+        const autoSyncEnabled = syncInterval > 0;
+        let isOutdated = false;
+        if (userDrives && userDrives.lastSynced) {
+            isOutdated = (new Date().getTime() - new Date(userDrives.lastSynced).getTime() > syncInterval);
+        }
+
+        // Decide whether to fetch new data:
+        // - If no stored drives exist.
+        // - If forced sync is requested.
+        // - If auto-sync is enabled and stored data is outdated.
+        // If auto-sync is off (syncInterval === 0) and data exists, use stored data unless forced.
+        if (!userDrives || sync || (autoSyncEnabled && isOutdated)) {
+            if (syncInterval === 0 && !sync && userDrives) {
+                // Auto-sync is off and data exists – do nothing.
+            } else {
+                const result = await axios.post(`${API_URL}/student/myDrives`, { 
+                    password: auth.password, 
+                    reg_no: auth.reg_no 
+                });
                 if (result.data.success) {
                     userStorage.set("DRIVES", JSON.stringify(result.data));
                     setDrives(result.data.data);
@@ -33,8 +53,8 @@ export const fetchDrives = async (
                         text2: "Your drives have been synced successfully",
                     });
                     setIsError(false);
-                }
-                else {
+                    userDrives = result.data;
+                } else {
                     Toast.show({
                         type: 'error',
                         text1: `${result.data.message}`,
@@ -50,8 +70,7 @@ export const fetchDrives = async (
         }
         setDrivesLoading(false);
         setDrivesRefresh(false);
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
         let userDrivesRaw = userStorage.getString("DRIVES");
         if (userDrivesRaw) {
@@ -59,7 +78,7 @@ export const fetchDrives = async (
             setDrives(userDrives.data);
             setTotalDrives(userDrives.data.length);
             setLastSynced(userDrives.lastSynced);
-        }else{
+        } else {
             setIsError(true);
             Toast.show({
                 type: 'error',
@@ -69,4 +88,4 @@ export const fetchDrives = async (
         setDrivesLoading(false);
         setDrivesRefresh(false);
     }
-}
+};

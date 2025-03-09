@@ -7,7 +7,7 @@ export const CustomBackButton = ({color}) => {
 
     return (
         <TouchableOpacity onPress={() => navigation.goBack()} style={{ marginLeft: 10 }}>
-            <Entypo name="chevron-up" size={24} color={color} />
+            <Entypo name="chevron-down" size={24} color={color} />
         </TouchableOpacity>
     );
 };

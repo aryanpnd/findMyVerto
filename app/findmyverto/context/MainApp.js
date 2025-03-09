@@ -45,7 +45,7 @@ const AppProvider = ({ children }) => {
       } else {
         console.log("update not available");
 
-        alert.show('No Updates', 'Your app is up to date.', [{
+        alert.show('No Updates', 'Your app is up to date. 🎉', [{
           text: 'OK',
           onPress: () => console.log("cancelled")
         }]);

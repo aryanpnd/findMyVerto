@@ -51,10 +51,10 @@ export default function SyncData({ time, syncNow, self, color, bg, loader, loadi
           }
         </View>}
       </View>
-      <View style={[styles.infoContainer, { backgroundColor: bg }]} >
+      {!loading && <View style={[styles.infoContainer, { backgroundColor: bg }]} >
         <MaterialCommunityIcons name="information-outline" size={13} color={color} />
         <Text style={[styles.infoText, { color: color }]}>This data is synced from the UMS and may be inaccurate. If you suspect it's outdated, please sync it.</Text>
-      </View>
+      </View>}
     </>
   )
 }

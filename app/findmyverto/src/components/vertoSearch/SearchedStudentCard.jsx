@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { globalStyles, HEIGHT, WIDTH } from '../../constants/styles'
 import { colors } from '../../constants/colors';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
-import { API_URL, API_URL_ROOT, AuthContext } from '../../../context/Auth';
+import { AuthContext } from '../../../context/Auth';
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
 import LottieView from 'lottie-react-native';

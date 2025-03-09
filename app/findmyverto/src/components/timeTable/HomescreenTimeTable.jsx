@@ -17,18 +17,26 @@ const { width } = Dimensions.get('window');
 const itemWidth = (width / 3) * 2;
 const gap = (width - itemWidth) / 4;
 
-const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const days = [
+    'Sunday',
+    'Monday',
+    'Tuesday',
+    'Wednesday',
+    'Thursday',
+    'Friday',
+    'Saturday',
+];
 
 const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
-    const { auth } = useContext(AuthContext)
-    const { timetableLoading, setTimetableLoading } = useContext(AppContext)
-    const [classesToday, setClassesToday] = useState(0)
-    const [timeTable, settimeTable] = useState([])
-    const [courses, setCourses] = useState([])
-    const [lastSynced, setLastSynced] = useState("")
-    const [lastUpdated, setLastUpdated] = useState("")
-    const [day, setDay] = useState(0)
-    const [classesOver, setClassesOver] = useState(false)
+    const { auth } = useContext(AuthContext);
+    const { timetableLoading, setTimetableLoading } = useContext(AppContext);
+    const [classesToday, setClassesToday] = useState(0);
+    const [timeTable, settimeTable] = useState([]);
+    const [courses, setCourses] = useState([]);
+    const [lastSynced, setLastSynced] = useState('');
+    const [lastUpdated, setLastUpdated] = useState('');
+    const [day, setDay] = useState(0);
+    const [classesOver, setClassesOver] = useState(false);
 
     const [refreshing, setRefreshing] = useState(false);
     const [isError, setIsError] = useState(false);
@@ -44,14 +52,12 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
     }, []);
 
     function today() {
-        const td = new Date()
-        setDay(td.getDay())
+        const td = new Date();
+        setDay(td.getDay());
     }
 
     const handleFetchTimetable = async (isRetry) => {
-        // Before fetching, clear previous error state
         setIsError(false);
-        // if (timetableLoading) return
         await fetchTimetable(
             setTimetableLoading,
             setRefreshing,
@@ -60,34 +66,39 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
             setCourses,
             auth,
             setIsError,
-            false, // sync
-            true, // todayOnly
+            false,  // sync: false for auto-sync check
+            true,   // todayOnly: true to show today's classes
             setLastSynced,
             setLastUpdated,
             isRetry
         );
     };
 
-
     useEffect(() => {
-        today()
-        handleFetchTimetable()
+        today();
+        handleFetchTimetable();
     }, []);
 
     useEffect(() => {
-        setClassesOver(timeTable && timeTable.length > 0 && isTimeEqual(timeTable[timeTable.length - 1]?.time, true))
-    }, [timeTable])
+        setClassesOver(
+            timeTable &&
+            timeTable.length > 0 &&
+            isTimeEqual(timeTable[timeTable.length - 1]?.time, true)
+        );
+    }, [timeTable]);
 
     useImperativeHandle(ref, () => ({
         handleFetchTimetable,
         today,
-        scrollToOngoing
+        scrollToOngoing,
     }));
 
     function scrollToOngoing() {
-        if (timeTable.length > 0) {
-            const ongoingIndex = timeTable.findIndex(classItem => isTimeEqual(classItem.time));
-            if (ongoingIndex !== -1 && scrollViewRef.current) {
+        if (timeTable.length > 0 && scrollViewRef.current) {
+            const ongoingIndex = timeTable.findIndex((classItem) =>
+                isTimeEqual(classItem.time)
+            );
+            if (ongoingIndex !== -1) {
                 const scrollPosition = ongoingIndex * (itemWidth + gap) - gap;
                 scrollViewRef.current.scrollTo({ x: scrollPosition, animated: true });
             }
@@ -96,13 +107,13 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
 
     useFocusEffect(
         useCallback(() => {
-            scrollToOngoing()
+            scrollToOngoing();
         }, [timeTable])
     );
 
     const handleRetry = async () => {
         if (isError && retryAttempts < retryAttemptsValue) {
-            console.log("Error reattempt block", retryAttempts, isError);
+            console.log('Error reattempt block', retryAttempts, isError);
             setRetryAttempts((prev) => prev + 1);
             await handleFetchTimetable(true);
         } else if (retryAttempts >= retryAttemptsValue) {
@@ -124,68 +135,78 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
 
     return (
         <>
-            {isError || isRetryMaxValueReached ?
-                <ErrorMessage handleFetchTimetable={handleFetchTimetable} timetableLoading={timetableLoading} />
-                :
-                timetableLoading ?
-                    <Loading1 loading={timetableLoading} loadAnim={"amongus"} loadingText={"Getting your Timetable"} loadingMsg={"it may take some seconds for the first time"} textColor={"black"} />
-                    :
-                    day === 0 ?
-                        <SundayMessage navigation={navigation} />
-                        :
-                        !timeTable[0]?.time ?
-                            <NoClassesComponent day={day} />
-                            :
-                            <View style={{ width: "100%", justifyContent: 'flex-start' }}>
-                                <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10, paddingHorizontal: 20 }}>
-                                    <Text style={styles.text1}>
-                                        <Text style={{ color: "grey" }}>Classes today:</Text> {
-                                            timeTable && timeTable.length > 0 && isTimeEqual(timeTable[timeTable.length - 1]?.time, true) ? "Over" : classesToday
-                                        }
-                                    </Text>
-                                    {timeTable.length == 0 ?
-                                        <></> :
-                                        <Text style={styles.text1}>
-                                            {days[day]}
-                                        </Text>
-                                    }
-
-                                </View>
-
-                                {
-
-                                    <ScrollView
-                                        ref={scrollViewRef}
-                                        horizontal
-                                        nestedScrollEnabled={true}
-                                        decelerationRate="normal"
-                                        contentContainerStyle={[styles.scrollView, classesOver && { width: "100%" }]}
-                                        showsHorizontalScrollIndicator={false}
-                                        bounces={Platform.OS === 'ios' ? false : undefined}
-                                        alwaysBounceVertical={false}
-                                        overScrollMode={Platform.OS === 'android' ? 'never' : undefined}>
-
-                                        {
-                                            classesOver
-                                                ?
-                                                <NoClassesMessage />
-                                                :
-                                                timeTable?.map((value, index) => (
-                                                    <ClassesTodayCards key={index} value={value} index={index} navigation={navigation} />
-                                                ))
-                                        }
-
-                                    </ScrollView>
-                                }
-                                <View style={[styles.infoContainer, { backgroundColor: colors.whitePrimary }]} >
-                                    <MaterialCommunityIcons name="information-outline" size={13} color={"grey"}/>
-                                    <Text style={[styles.infoText, { color: "grey" }]}>This data is synced from the UMS and may be inaccurate. If you suspect it's outdated, please sync it. <Text style={{fontWeight:"bold"}}>(Open the Timetable screen to refresh.)</Text></Text>
-                                </View>
-                            </View>
-            }
+            {isError || isRetryMaxValueReached ? (
+                <ErrorMessage
+                    handleFetchTimetable={handleFetchTimetable}
+                    timetableLoading={timetableLoading}
+                />
+            ) : timetableLoading ? (
+                <Loading1
+                    loading={timetableLoading}
+                    loadAnim={'amongus'}
+                    loadingText={'Getting your Timetable'}
+                    loadingMsg={'It may take a few seconds for the first time'}
+                    textColor={'black'}
+                />
+            ) : day === 0 ? (
+                <SundayMessage navigation={navigation} />
+            ) : !timeTable[0]?.time ? (
+                <NoClassesComponent day={day} />
+            ) : (
+                <View style={{ width: '100%', justifyContent: 'flex-start' }}>
+                    <View
+                        style={{
+                            flexDirection: 'row',
+                            justifyContent: 'space-between',
+                            marginBottom: 10,
+                            paddingHorizontal: 20,
+                        }}
+                    >
+                        <Text style={styles.text1}>
+                            <Text style={{ color: 'grey' }}>Classes today:</Text>{' '}
+                            {timeTable &&
+                                timeTable.length > 0 &&
+                                isTimeEqual(timeTable[timeTable.length - 1]?.time, true)
+                                ? 'Over'
+                                : classesToday}
+                        </Text>
+                        {timeTable.length === 0 ? null : (
+                            <Text style={styles.text1}>{days[day]}</Text>
+                        )}
+                    </View>
+                    <ScrollView
+                        ref={scrollViewRef}
+                        horizontal
+                        nestedScrollEnabled={true}
+                        decelerationRate="normal"
+                        contentContainerStyle={[styles.scrollView, classesOver && { width: '100%' }]}
+                        showsHorizontalScrollIndicator={false}
+                        bounces={Platform.OS === 'ios' ? false : undefined}
+                        alwaysBounceVertical={false}
+                        overScrollMode={Platform.OS === 'android' ? 'never' : undefined}
+                    >
+                        {classesOver ? (
+                            <NoClassesMessage />
+                        ) : (
+                            timeTable.map((value, index) => (
+                                <ClassesTodayCards key={index} value={value} index={index} navigation={navigation} />
+                            ))
+                        )}
+                    </ScrollView>
+                    <View style={[styles.infoContainer, { backgroundColor: colors.whitePrimary }]}>
+                        <MaterialCommunityIcons name="information-outline" size={13} color={'grey'} />
+                        <Text style={[styles.infoText, { color: 'grey' }]}>
+                            This data is synced from the UMS and may be inaccurate. If you suspect it's outdated, please sync it.
+                            <Text style={{ fontWeight: 'bold' }}> (Open the Timetable screen to refresh.)</Text>
+                        </Text>
+                    </View>
+                </View>
+            )}
         </>
     );
-})
+});
+
+
 export default HomescreenTimeTable;
 
 const NoClassesComponent = ({ day }) => {

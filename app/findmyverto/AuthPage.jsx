@@ -37,6 +37,7 @@ import Makeup from './src/screens/TimeTable/Makeup';
 import OnboardingScreen from './src/screens/Onboarding/Onboarding';
 import { appStorage } from './utils/storage/storage';
 import { CustomBackButton } from './src/components/miscellaneous/CustomBackButton';
+import Settings from './src/screens/settings/Settings';
 
 const Stack = createNativeStackNavigator();
 
@@ -82,32 +83,33 @@ export default function AuthPage() {
       {!loading && auth.authenticated ? (
         <React.Fragment>
           <Stack.Screen name="Home" component={Home} options={{ animation: "slide_from_bottom" }} />
+          <Stack.Screen name="Settings" component={Settings} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerStyle: { backgroundColor: colors.whitePrimary }, headerShadowVisible: false, headerLeft: () => <CustomBackButton color={"black"} />, animation: "slide_from_bottom" }} />
 
           <Stack.Screen name="Attendance" component={Attendance} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false }} />
           <Stack.Screen name="AttendanceDetails" component={AttendanceDetails} />
 
-          <Stack.Screen name="Timetable" component={TimeTable} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, headerLeft:() => <CustomBackButton color={"white"}/>, animation: "slide_from_bottom" }} />
-          <Stack.Screen name="Makeup" component={Makeup} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, headerLeft:() => <CustomBackButton color={"white"}/>, animation: "slide_from_bottom" }} />
-          <Stack.Screen name="Courses" component={Courses} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, headerLeft:() => <CustomBackButton color={"white"}/>, animation: "slide_from_bottom" }} />
+          <Stack.Screen name="Timetable" component={TimeTable} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, headerLeft: () => <CustomBackButton color={"white"} />, animation: "slide_from_bottom" }} />
+          <Stack.Screen name="Makeup" component={Makeup} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, headerLeft: () => <CustomBackButton color={"white"} />, animation: "slide_from_bottom" }} />
+          <Stack.Screen name="Courses" component={Courses} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, headerLeft: () => <CustomBackButton color={"white"} />, animation: "slide_from_bottom" }} />
 
-          <Stack.Screen name="Marks" component={Marks} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, headerLeft:() => <CustomBackButton/>, animation: "slide_from_bottom" }} />
+          <Stack.Screen name="Marks" component={Marks} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, headerLeft: () => <CustomBackButton />, animation: "slide_from_bottom" }} />
           <Stack.Screen name="MarksDetails" component={MarksDetails} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false }} />
 
-          <Stack.Screen name="CGPA" component={Cgpa} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary}, headerShadowVisible: false,headerLeft:() => <CustomBackButton color={"white"}/>, animation: "slide_from_bottom" }} />
+          <Stack.Screen name="CGPA" component={Cgpa} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, headerLeft: () => <CustomBackButton color={"white"} />, animation: "slide_from_bottom" }} />
           <Stack.Screen name="CGPADetails" component={CgpaDetails} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black' }} />
 
-          <Stack.Screen name="Exams" component={Exams} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerShadowVisible: false, headerStyle: { backgroundColor: colors.secondary }, headerLeft:() => <CustomBackButton color={"white"}/>,  animation: "slide_from_bottom"}} />
+          <Stack.Screen name="Exams" component={Exams} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerShadowVisible: false, headerStyle: { backgroundColor: colors.secondary }, headerLeft: () => <CustomBackButton color={"white"} />, animation: "slide_from_bottom" }} />
 
-          <Stack.Screen name="Assignments" component={Assignments} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, headerLeft:() => <CustomBackButton/>, animation: "slide_from_bottom" }} />
+          <Stack.Screen name="Assignments" component={Assignments} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, headerLeft: () => <CustomBackButton />, animation: "slide_from_bottom" }} />
 
-          <Stack.Screen name="MyMessages" component={MyMessages} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "My Messages", headerLeft:() => <CustomBackButton color={"white"}/>, animation: "slide_from_bottom" }} />
+          <Stack.Screen name="MyMessages" component={MyMessages} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "My Messages", headerLeft: () => <CustomBackButton color={"white"} />, animation: "slide_from_bottom" }} />
           <Stack.Screen name="MyMessagesSearch" component={MyMessagesSearch} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'white', headerStyle: { backgroundColor: colors.secondary }, headerShadowVisible: false, title: "Search Messages" }} />
 
-          <Stack.Screen name="MyDrives" component={MyDrives} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, title: "My Drives", headerLeft:() => <CustomBackButton/>, animation: "slide_from_bottom" }} />
+          <Stack.Screen name="MyDrives" component={MyDrives} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, title: "My Drives", headerLeft: () => <CustomBackButton />, animation: "slide_from_bottom" }} />
 
-          <Stack.Screen name="LeaveSlip" component={LeaveSlip} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, title: "Leave slip", headerLeft:() => <CustomBackButton/>, animation: "slide_from_bottom" }} />
+          <Stack.Screen name="LeaveSlip" component={LeaveSlip} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, title: "Leave slip", headerLeft: () => <CustomBackButton />, animation: "slide_from_bottom" }} />
 
-          <Stack.Screen name="MyProfile" component={MyProfile} />
+          <Stack.Screen name="MyProfile" component={MyProfile} options={{ headerShown: true, headerTitleAlign: 'center', headerTintColor: 'black', headerShadowVisible: false, headerStyle: { backgroundColor: colors.whitePrimary }, headerLeft: () => <CustomBackButton />, animation: "slide_from_bottom" }} />
 
           <Stack.Screen name="VertoSearch" component={VertoSearch} />
           <Stack.Screen name="FriendRequests" component={FriendRequests} />
