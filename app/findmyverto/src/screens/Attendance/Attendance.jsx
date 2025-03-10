@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Toast from 'react-native-toast-message'
-import { API_URL, AuthContext } from '../../../context/Auth'
+import {  AuthContext } from '../../../context/Auth'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
 import AttendanceScreen from '../../components/attendance/AttendanceScreen'

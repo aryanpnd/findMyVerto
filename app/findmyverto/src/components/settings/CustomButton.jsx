@@ -2,7 +2,7 @@ import { Text, StyleSheet, Pressable, Platform, TouchableOpacity, View } from 'r
 
 export const CustomButton = ({ title, title2, icon, onPress, rippleColor }) => {
     const content = <Text style={styles.itemText}>{title}</Text>;
-    const content2 = <Text style={styles.itemText2}>{title2}</Text>;
+    const content2 = <Text numberOfLines={1} ellipsizeMode='middle' style={styles.itemText2}>{title2}</Text>;
 
     if (Platform.OS === 'android') {
         return (
@@ -39,5 +39,6 @@ const styles = StyleSheet.create({
     itemText2: {
         fontSize: 13,
         color: 'grey',
+        maxWidth: '40%',
     },
 });

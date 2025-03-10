@@ -1,10 +1,10 @@
 import axios from "axios";
 import Toast from "react-native-toast-message";
-import { API_URL } from "../../../context/Auth";
+import { auth } from "../../../context/Auth";
 
 export async function handleSetAllowedFieldsToShow(auth, fields, setFields, setLoading) {
     setLoading(true)
-    await axios.post(`${API_URL}/student/settings/allowedFieldsToShow/set`, { reg_no: auth.reg_no, password: auth.password, fields })
+    await axios.post(`${auth.server.url}/student/settings/allowedFieldsToShow/set`, { reg_no: auth.reg_no, password: auth.password, fields })
         .then(async (result) => {
             if (result.data.success) {
                 Toast.show({
@@ -33,7 +33,7 @@ export async function handleSetAllowedFieldsToShow(auth, fields, setFields, setL
 
 export async function getAllowedFieldsToShow(auth, setFields,setTempFields, setLoading) {
     setLoading(true)
-    await axios.post(`${API_URL}/student/settings/allowedFieldsToShow`, { reg_no: auth.reg_no, password: auth.password })
+    await axios.post(`${auth.server.url}/student/settings/allowedFieldsToShow`, { reg_no: auth.reg_no, password: auth.password })
         .then(async (result) => {
             if (result.data.success) {
                 setFields(result.data.data);

@@ -1,7 +1,7 @@
 import { userStorage } from "../../storage/storage";
 import axios from "axios";
 import Toast from "react-native-toast-message";
-import { API_URL } from "../../../context/Auth";
+import { auth } from "../../../context/Auth";
 import { DrivesSyncTime } from "../../settings/SyncAndRetryLimits";
 
 export const fetchDrives = async (
@@ -38,9 +38,17 @@ export const fetchDrives = async (
             if (syncInterval === 0 && !sync && userDrives) {
                 // Auto-sync is off and data exists – do nothing.
             } else {
-                const result = await axios.post(`${API_URL}/student/myDrives`, { 
-                    password: auth.password, 
-                    reg_no: auth.reg_no 
+                if (autoSyncEnabled && isOutdated) {
+                    setDrivesRefresh(true);
+                    setDrivesLoading(false);
+                    Toast.show({
+                        type: 'info',
+                        text1: "Auto-Syncing Drives"
+                    });
+                }
+                const result = await axios.post(`${auth.server.url}/student/myDrives`, {
+                    password: auth.password,
+                    reg_no: auth.reg_no
                 });
                 if (result.data.success) {
                     userStorage.set("DRIVES", JSON.stringify(result.data));

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from "../../../context/Auth";
+import { auth } from "../../../context/Auth";
 import { userStorage } from "../../storage/storage";
 import Toast from "react-native-toast-message";
 import { MyMessagesSyncTime } from "../../settings/SyncAndRetryLimits";
@@ -66,7 +66,15 @@ export const fetchMyMessages = async (
             if (syncInterval === 0 && !sync && userMessages) {
                 // Auto-sync off: use stored data.
             } else {
-                const result = await axios.post(`${API_URL}/student/messages`, {
+                if (autoSyncEnabled && isOutdated) {
+                    setRefresh(true);
+                    setLoading(false);
+                    Toast.show({
+                        type: 'info',
+                        text1: "Auto-Syncing Messages"
+                    });
+                }
+                const result = await axios.post(`${auth.server.url}/student/messages`, {
                     reg_no: auth.reg_no,
                     password: auth.password,
                     pageIndex: pageIndex,
@@ -174,7 +182,7 @@ export const searchMyMessages = async (
         const cachedData = cachedMessages ? cachedMessages[pageNumber] : null;
 
         if (!cachedData) {
-            const result = await axios.post(`${API_URL}/student/messages`, {
+            const result = await axios.post(`${auth.server.url}/student/messages`, {
                 reg_no: auth.reg_no,
                 password: auth.password,
                 pageIndex: pageIndex,

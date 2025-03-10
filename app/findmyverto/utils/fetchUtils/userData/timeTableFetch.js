@@ -2,7 +2,7 @@ import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import formatTimetable, { filterOutdatedMakeup, formatClassesToday } from "../../helperFunctions/timetableFormatter";
-import { API_URL } from "../../../context/Auth";
+import { auth } from "../../../context/Auth";
 import { TimetableSyncTime } from "../../settings/SyncAndRetryLimits";
 
 export async function fetchTimetable(
@@ -48,7 +48,15 @@ export async function fetchTimetable(
             if (syncInterval === 0 && !sync && userTimeTable) {
                 // Use stored timetable.
             } else {
-                const result = await axios.post(`${API_URL}/student/timetable`, {
+                if (autoSyncEnabled && isOutdated){
+                    setRefreshing(true);
+                    setTimetableLoading(false);
+                    Toast.show({
+                        type: 'info',
+                        text1: "Auto-Syncing Timetable"
+                    });
+                }
+                const result = await axios.post(`${auth.server.url}/student/timetable`, {
                     password: auth.password,
                     reg_no: auth.reg_no
                 });
@@ -128,7 +136,7 @@ export async function fetchMakeup(
         let storedMakeup = makeupRaw ? JSON.parse(makeupRaw) : null;
 
         if (!storedMakeup || sync) {
-            const result = await axios.post(`${API_URL}/student/makeup`, {
+            const result = await axios.post(`${auth.server.url}/student/makeup`, {
                 password: auth.password,
                 reg_no: auth.reg_no
             });

@@ -170,9 +170,14 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
                                 ? 'Over'
                                 : classesToday}
                         </Text>
-                        {timeTable.length === 0 ? null : (
-                            <Text style={styles.text1}>{days[day]}</Text>
-                        )}
+                        {
+                            refreshing ?
+                                <Text style={styles.text1}>Refreshing...</Text>
+                                :
+                                timeTable.length === 0 ? null : (
+                                    <Text style={styles.text1}>{days[day]}</Text>
+                                )
+                        }
                     </View>
                     <ScrollView
                         ref={scrollViewRef}

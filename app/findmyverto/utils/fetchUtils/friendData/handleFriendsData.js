@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from "../../../context/Auth";
+import { auth } from "../../../context/Auth";
 import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import formatTimetable, { formatClassesToday } from "../../helperFunctions/timetableFormatter";
@@ -9,7 +9,7 @@ import formatExams from "../../helperFunctions/examsFormatter";
 
 export async function getFriendDetails(auth, friend_id, setStudent, setLoading, loader) {
     loader && setLoading(true)
-    await axios.post(`${API_URL}/friends/getFriendInfo`, { reg_no: auth.reg_no, password: auth.password, studentId: friend_id })
+    await axios.post(`${auth.server.url}/friends/getFriendInfo`, { reg_no: auth.reg_no, password: auth.password, studentId: friend_id })
         .then(async (result) => {
             if (result.data.success) {
                 // await AsyncStorage.setItem(`${friend_id}`, JSON.stringify(result.data.data));
@@ -37,7 +37,7 @@ export async function getFriendDetails(auth, friend_id, setStudent, setLoading, 
 export async function getFriendTimetable(auth, friend_id, sync, settimeTable, setClassesToday, setCourses, setLastSynced, setLoading, setRefreshing, setIsError) {
     !sync && setLoading(true)
     sync && setRefreshing(true)
-    await axios.post(`${API_URL}/friends/timetable`, { reg_no: auth.reg_no, password: auth.password, studentId: friend_id, sync: sync })
+    await axios.post(`${auth.server.url}/friends/timetable`, { reg_no: auth.reg_no, password: auth.password, studentId: friend_id, sync: sync })
         .then(async (result) => {
             if (result.data.success) {
                 friendsStorage.set(`${friend_id}-timetable`, JSON.stringify(result.data));
@@ -78,7 +78,7 @@ export async function getFriendTimetable(auth, friend_id, sync, settimeTable, se
 export async function getFriendAttendance(auth, id, setAttendance, setAttendanceDetails, setLastSynced, setLoading, setIsError) {
     setLoading(true);
     try {
-        const result = await axios.post(`${API_URL}/friends/attendance`, {
+        const result = await axios.post(`${auth.server.url}/friends/attendance`, {
             reg_no: auth.reg_no,
             password: auth.password,
             studentId: id
@@ -121,7 +121,7 @@ export async function getFriendExams(auth, id, sync, setExams, setTotalExams, se
     !sync && setLoading(true)
     sync && setRefreshing(true)
     try {
-        const result = await axios.post(`${API_URL}/friends/exams`, {
+        const result = await axios.post(`${auth.server.url}/friends/exams`, {
             reg_no: auth.reg_no,
             password: auth.password,
             studentId: id
@@ -166,7 +166,7 @@ export async function getFriendAssignments(auth, id, sync, setAssignments, setTo
     !sync && setLoading(true)
     sync && setRefreshing(true)
     try {
-        const result = await axios.post(`${API_URL}/friends/assignments`, {
+        const result = await axios.post(`${auth.server.url}/friends/assignments`, {
             reg_no: auth.reg_no,
             password: auth.password,
             studentId: id

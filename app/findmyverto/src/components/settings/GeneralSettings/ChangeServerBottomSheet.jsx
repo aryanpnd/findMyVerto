@@ -13,23 +13,42 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  TextInput,
+  Alert,
+  Linking,
+  ActivityIndicator,
 } from 'react-native';
-import { BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
+import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
 import { colors } from '../../../constants/colors';
-import { Entypo, FontAwesome6 } from '@expo/vector-icons';
+import { AntDesign, Entypo, FontAwesome5, FontAwesome6, Octicons } from '@expo/vector-icons';
 import { AuthContext } from '../../../../context/Auth';
-import { loadCustomServers, loadServers } from '../../../../utils/settings/changeServer';
+import {
+  loadCustomServers,
+  loadServers,
+  addCustomServer,
+  deleteCustomServer,
+} from '../../../../utils/settings/changeServer';
+import { appStorage } from '../../../../utils/storage/storage';
+import { WIDTH } from '../../../constants/styles';
+import { useCustomAlert } from '../../miscellaneous/CustomAlert';
+import LottieView from 'lottie-react-native';
 
 const ChangeServerBottomSheet = forwardRef((props, ref) => {
   const bottomSheetModalRef = useRef(null);
   const [globalServers, setGlobalServers] = useState([]);
   const [customServers, setCustomServers] = useState([]);
-  const [selectedGlobalServer, setSelectedGlobalServer] = useState({});
+  const [addServerButtonLoading, setAddServerButtonLoading] = useState(false);
 
-  const { auth,setAuth } = useContext(AuthContext);
+  // State to manage add server form
+  const [isAddingServer, setIsAddingServer] = useState(false);
+  const [newServerName, setNewServerName] = useState('');
+  const [newServerUrl, setNewServerUrl] = useState('');
+
+  const { auth, setAuth } = useContext(AuthContext);
+  const customAlert = useCustomAlert();
 
   // Define the snap points for the bottom sheet
-  const snapPoints = useMemo(() => ['25%', '50%'], []);
+  const snapPoints = useMemo(() => ['25%', '80%'], []);
 
   // Expose open and close methods via the ref
   useImperativeHandle(ref, () => ({
@@ -41,9 +60,6 @@ const ChangeServerBottomSheet = forwardRef((props, ref) => {
     },
   }));
 
-  useEffect(() => {
-    setSelectedGlobalServer(auth.server);
-  }, [auth.server]);
 
   // Load servers when the component mounts
   useEffect(() => {
@@ -55,29 +71,131 @@ const ChangeServerBottomSheet = forwardRef((props, ref) => {
   }, []);
 
   // When a server is selected, update the auth state and close the bottom sheet
-  const handleServerSelect = (server) => {
-    setAuth({ server });
+  const handleServerSelect = (server, isCustom) => {
+    if (isCustom) {
+      appStorage.set('IS_CUSTOM_SERVER_SELECTED', true);
+      appStorage.set('SELECTED_CUSTOM_SERVER', JSON.stringify(server));
+      setAuth({ server });
+    } else {
+      appStorage.set('IS_CUSTOM_SERVER_SELECTED', false);
+      setAuth({ server });
+    }
     bottomSheetModalRef.current?.dismiss();
   };
 
-  // Handler for the "Add a Server" button.
-  // You could, for example, open another modal to add a custom server.
+  // Show the add server form
   const handleAddServer = () => {
-    if (props.onAddServer) {
-      props.onAddServer();
+    setIsAddingServer(true);
+  };
+
+  // Save the new server to custom servers list
+  const handleSaveNewServer = async () => {
+    if (!newServerName || !newServerUrl) {
+      customAlert.show('Error', 'Please fill in all fields');
+      return;
+    }
+    const newServer = {
+      name: newServerName,
+      url: newServerUrl,
+      original: false,
+    };
+    // Persist the new server
+    const response = await addCustomServer(newServer, setAddServerButtonLoading);
+    if (response.success) {
+      const custom = loadCustomServers();
+      setCustomServers(custom);
+      setNewServerName('');
+      setNewServerUrl('');
+      setIsAddingServer(false);
+    } else {
+      customAlert.show(
+        'Invalid server URL',
+        `${response.message}, refer to the documentation to host your own server`,
+        [
+          {
+            text: 'Documentaion',
+            color: colors.primary,
+            textColor: 'white',
+            onPress: () => Linking.openURL('https://github.com/aryanpnd/findmyverto'),
+          },
+          {
+            text: 'OK',
+            color: "black",
+            textColor: 'white',
+            onPress: () => console.log('OK Pressed'),
+          },
+        ]
+      );
     }
   };
 
+  // Cancel adding a new server
+  const handleCancelAddServer = () => {
+    setNewServerName('');
+    setNewServerUrl('');
+    setIsAddingServer(false);
+  };
+
+  const handleDeleteServer = (server) => {
+    customAlert.show(
+      "Delete Server",
+      "Are you sure you want to delete this server?",
+      [
+        {
+          text: "Delete",
+          color: colors.red,
+          textColor: "white",
+          onPress: () => {
+            deleteCustomServer(server);
+            const custom = loadCustomServers();
+            setCustomServers(custom);
+          },
+        },
+        {
+          text: "Cancel",
+          color: "white",
+          textColor: "black",
+          onPress: () => console.log("Cancel Pressed"),
+        },
+      ]
+    );
+  }
+
+  function handleHelp() {
+    customAlert.show(
+      "Help",
+      "You can switch between servers or add a custom one by specifying a name and its root URL. Ensure the root URL does not include any paths—it should be the server's base URL. For example, if the server is hosted at xyz.com, the root URL should be xyz.com. If you're setting up your own server, refer to the documentation for proper configuration. (Note: Global servers rotate periodically to balance the load.)",
+      [
+        {
+          text: "Documentaion",
+          color: colors.primary,
+          textColor: "white",
+          onPress: () => Linking.openURL('https://github.com/aryanpnd/findmyverto')
+        },
+        {
+          text: "OK",
+          color: colors.primary,
+          textColor: "white",
+          onPress: () => console.log("OK Pressed"),
+        },
+      ]
+    );
+  }
+
   return (
-    <BottomSheetModal
-      ref={bottomSheetModalRef}
-      index={1}
-      snapPoints={snapPoints}
-    >
+    <BottomSheetModal 
+    backdropComponent={(props) => (
+      <BottomSheetBackdrop {...props} opacity={0.4} disappearsOnIndex={-1} />
+    )}
+    ref={bottomSheetModalRef} index={1} snapPoints={snapPoints}>
       <BottomSheetView style={styles.contentContainer}>
         <View style={styles.header}>
           <FontAwesome6 name="server" size={18} color="black" />
           <Text style={styles.title}>Change Server</Text>
+
+          <TouchableOpacity onPress={handleHelp} style={{ marginLeft: 'auto' }}>
+            <FontAwesome5 name="question-circle" size={24} color="black" />
+          </TouchableOpacity>
         </View>
 
         {/* Global Servers Section */}
@@ -94,14 +212,21 @@ const ChangeServerBottomSheet = forwardRef((props, ref) => {
                 key={index}
                 style={[
                   styles.serverItem,
-                  selectedGlobalServer.name===server.name&&{backgroundColor:colors.primary, borderColor:colors.primary}
+                  auth.server.name === server.name && {
+                    backgroundColor: colors.primary,
+                    borderColor: colors.primary,
+                  },
                 ]}
                 onPress={() => handleServerSelect(server)}
               >
-                <Text style={[
-                  styles.serverName,
-                  selectedGlobalServer.name===server.name&&{color:'white'}
-                  ]}>{server.name}</Text>
+                <Text
+                  style={[
+                    styles.serverName,
+                    auth.server.name === server.name && { color: 'white' },
+                  ]}
+                >
+                  {server.name}
+                </Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
@@ -114,24 +239,102 @@ const ChangeServerBottomSheet = forwardRef((props, ref) => {
               <FontAwesome6 name="computer" size={13} color="grey" />
               <Text style={styles.subCategoryTitle}>Custom Servers</Text>
             </View>
-            <TouchableOpacity onPress={handleAddServer}>
-              <Text style={{ color: colors.primary }}>Add a Server</Text>
-            </TouchableOpacity>
+            {!isAddingServer && (
+              <TouchableOpacity onPress={handleAddServer}>
+                <Text style={{ color: colors.primary }}>Add a Server</Text>
+              </TouchableOpacity>
+            )}
           </View>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {isAddingServer && (
+            <View style={styles.addServerForm}>
+              <TextInput
+                style={styles.input}
+                placeholder="Server Name (eg: My Server)"
+                value={newServerName}
+                onChangeText={setNewServerName}
+              />
+              <TextInput
+                style={styles.input}
+                placeholder="Server root URL (eg: xyz.com)"
+                value={newServerUrl}
+                onChangeText={setNewServerUrl}
+              />
+              <View style={styles.formButtons}>
+                <TouchableOpacity disabled={addServerButtonLoading}
+                  style={styles.saveButton} onPress={handleSaveNewServer}>
+                  {addServerButtonLoading ?
+                    <ActivityIndicator color="white" /> :
+                    <Text style={styles.buttonText}>Save</Text>
+                  }
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.cancelButton} onPress={handleCancelAddServer}>
+                  <Text style={styles.buttonText}>Cancel</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          <ScrollView showsHorizontalScrollIndicator={false}>
             {customServers.length > 0 ? (
               customServers.map((server, index) => (
                 <TouchableOpacity
                   key={index}
-                  style={styles.serverItem}
-                  onPress={() => handleServerSelect(server)}
+                  style={[
+                    styles.customServerItem,
+                    auth.server.name === server.name && {
+                      backgroundColor: colors.primary,
+                      borderColor: colors.primary,
+                    },
+                  ]}
+                  onPress={() => handleServerSelect(server, true)}
                 >
-                  <Text style={styles.serverName}>{server.name}</Text>
-                  <Text style={styles.serverUrl}>{server.url}</Text>
+                  <View style={styles.customServerSubItem}>
+                    <Text
+                      numberOfLines={1} ellipsizeMode='middle'
+                      style={[
+                        styles.serverName,
+                        { maxWidth: WIDTH(50) },
+                        auth.server.name === server.name && { color: 'white' },
+                      ]}
+                    >
+                      {server.name}
+                    </Text>
+                    <Text
+                      style={[
+                        styles.serverUrl,
+                        auth.server.name === server.name && { color: 'white' },
+                      ]}
+                    >
+                      {server.url}
+                    </Text>
+                  </View>
+
+                  {auth.server.name !== server.name ?
+                    <TouchableOpacity onPress={() => handleDeleteServer(server)} style={styles.customServerSubItem}>
+                      <AntDesign name="delete" size={24} color={
+                        auth.server.name === server.name ? 'white' : colors.red
+                      } />
+                    </TouchableOpacity>
+                    :
+                    <Octicons name="dot-fill" size={24} color={colors.green} />
+                  }
                 </TouchableOpacity>
               ))
             ) : (
-              <Text style={styles.emptyText}>No custom servers available</Text>
+              !isAddingServer && (
+                <View style={{ alignItems: 'center', marginTop: 10 }}>
+                  <LottieView
+                    source={require('../../../../assets/lotties/empty.json')}
+                    autoPlay
+                    loop
+                    style={{ width: 80, height: 80 }}
+                  />
+                  <Text style={styles.emptyText}>No custom servers available</Text>
+                  <Text style={styles.emptyText}>Add a custom server</Text>
+                  <TouchableOpacity onPress={() => Linking.openURL('https://github.com/aryanpnd/findmyverto')}>
+                    <Text style={styles.emptyTextLink}>You can make one by following this documentation</Text>
+                  </TouchableOpacity>
+                </View>
+              )
             )}
           </ScrollView>
         </View>
@@ -166,6 +369,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
     marginBottom: 10,
+    marginTop: 10,
   },
   subCategoryTitleContainer: {
     flexDirection: 'row',
@@ -186,16 +390,72 @@ const styles = StyleSheet.create({
     marginRight: 10,
     alignItems: 'center',
   },
+  customServerItem: {
+    paddingHorizontal: 15,
+    paddingVertical: 10,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: 'grey',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+    width: "100%"
+  },
+  customServerSubItem: {
+    justifyContent: 'center',
+  },
   serverName: {
-    fontSize: 13
+    fontSize: 13,
   },
   serverUrl: {
     fontSize: 12,
     color: 'grey',
+    maxWidth: WIDTH(50)
   },
   emptyText: {
+    fontSize: 15,
     fontStyle: 'italic',
     color: 'grey',
     alignSelf: 'center',
+  },
+  emptyTextLink: {
+    fontSize: 13,
+    fontStyle: 'italic',
+    color: colors.primary,
+    alignSelf: 'center',
+  },
+  input: {
+    height: 40,
+    borderColor: 'grey',
+    borderWidth: 1,
+    borderRadius: 5,
+    paddingHorizontal: 10,
+    marginBottom: 10,
+  },
+  addServerForm: {
+    marginBottom: 10,
+  },
+  formButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  saveButton: {
+    backgroundColor: colors.primary,
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 5,
+  },
+  cancelButton: {
+    backgroundColor: 'grey',
+    padding: 10,
+    borderRadius: 5,
+    flex: 1,
+    marginLeft: 5,
+  },
+  buttonText: {
+    color: 'white',
+    textAlign: 'center',
   },
 });

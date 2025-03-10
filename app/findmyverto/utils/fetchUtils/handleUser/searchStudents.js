@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from "../../../context/Auth";
+import { auth } from "../../../context/Auth";
 
 /**
  * Fetches students based on the given query and pagination parameters.
@@ -15,7 +15,7 @@ export async function loadStudents(auth, query, page, limit) {
     return { success: false, message: "Search query must be greater than 2" };
   }
   try {
-    const url = `${API_URL}/student/search?q=${query}&r=${auth.reg_no}&p=${auth.password}&page=${page}&limit=${limit}`;
+    const url = `${auth.server.url}/student/search?q=${query}&r=${auth.reg_no}&p=${auth.password}&page=${page}&limit=${limit}`;
     const { data } = await axios.get(url);
     return data;
   } catch (err) {

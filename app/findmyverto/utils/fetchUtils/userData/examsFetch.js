@@ -1,6 +1,6 @@
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
-import { API_URL } from '../../../context/Auth';
+import { auth } from '../../../context/Auth';
 import { userStorage } from '../../storage/storage';
 import formatExams from '../../helperFunctions/examsFormatter';
 import { ExamsSyncTime } from '../../settings/SyncAndRetryLimits';
@@ -40,9 +40,17 @@ export async function fetchExams(
             if (syncInterval === 0 && !sync && userExams) {
                 // Auto-sync is off and data exists – use stored data.
             } else {
-                const result = await axios.post(`${API_URL}/student/exams`, { 
-                    password: auth.password, 
-                    reg_no: auth.reg_no 
+                if (autoSyncEnabled && isOutdated) {
+                    setExamsRefresh(true);
+                    setExamsLoading(false);
+                    Toast.show({
+                        type: 'info',
+                        text1: "Auto-Syncing Exams"
+                    });
+                }
+                const result = await axios.post(`${auth.server.url}/student/exams`, {
+                    password: auth.password,
+                    reg_no: auth.reg_no
                 });
                 if (result.data.success) {
                     userStorage.set("EXAMS", JSON.stringify(result.data));

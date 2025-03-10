@@ -2,7 +2,7 @@ import messaging from '@react-native-firebase/messaging';
 import notifee, { AndroidImportance, AuthorizationStatus, EventType } from '@notifee/react-native';
 import { colors } from '../../src/constants/colors';
 import { userStorage } from '../storage/storage';
-import { API_URL } from '../../context/Auth';
+import { auth } from '../../context/Auth';
 import axios from 'axios';
 
 /**
@@ -91,7 +91,7 @@ export const getFcmToken = async () => {
 
 export const sendFcmToken = async (auth, fcmToken) => {
   try {
-    const result = await axios.post(`${API_URL}/student/settings/setDevicePushToken`, {
+    const result = await axios.post(`${auth.server.url}/student/settings/setDevicePushToken`, {
       reg_no: auth.reg_no,
       password: auth.password,
       devicePushToken: fcmToken

@@ -23,9 +23,10 @@ export function TimetableSyncTime(time) {
   if (storedTime !== undefined && storedTime !== null) {
     return storedTime;
   } else {
-    // Default to Off (0)
-    userStorage.set("TIMETABLE_SYNC_TIME", 0);
-    return 0;
+    // Default to 1 day (24 hours)
+    const defaultTime = 24 * 3600000;
+    userStorage.set("TIMETABLE_SYNC_TIME", defaultTime);
+    return defaultTime;
   }
 }
 

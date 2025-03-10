@@ -1,14 +1,25 @@
 import { View, StyleSheet } from 'react-native'
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import Header from '../../components/home/Header';
 import Body from '../../components/home/Body';
 import { colors } from '../../constants/colors';
 import { StatusBar } from 'expo-status-bar';
+import { AppContext } from '../../../context/MainApp';
+import { AuthContext } from '../../../context/Auth';
+import { getFriendRequestsCount } from '../../../utils/fetchUtils/handleFriends/handleFriends';
 
 export default function Home({ navigation }) {
- 
+  const { auth } = useContext(AuthContext)
+  const { setFriendRequests } = useContext(AppContext)
+
+  useEffect(() => {
+    getFriendRequestsCount(auth, setFriendRequests)
+    console.log('Home Screen Mounted');
+    
+  }, [])
+
   return (
     <>
       <View style={{ zIndex: 2 }}>

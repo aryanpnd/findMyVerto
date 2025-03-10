@@ -1,6 +1,6 @@
 import axios from "axios";
 import Toast from "react-native-toast-message";
-import { API_URL } from "../../../context/Auth";
+import { auth } from "../../../context/Auth";
 import { userStorage } from "../../storage/storage";
 import { AssignmentsSyncTime } from "../../settings/SyncAndRetryLimits";
 
@@ -41,7 +41,15 @@ export const fetchAssignments = async (
             if (syncInterval === 0 && !sync && userAssignments) {
                 // Auto-sync is off; use stored data.
             } else {
-                const result = await axios.post(`${API_URL}/student/assignments`, { 
+                if (autoSyncEnabled && isOutdated) {
+                    setAssignmentsRefresh(true);
+                    setAssignmentsLoading(false);
+                    Toast.show({
+                        type: 'info',
+                        text1: "Auto-Syncing Assignments"
+                    });
+                }
+                const result = await axios.post(`${auth.server.url}/student/assignments`, { 
                     password: auth.password, 
                     reg_no: auth.reg_no 
                 });

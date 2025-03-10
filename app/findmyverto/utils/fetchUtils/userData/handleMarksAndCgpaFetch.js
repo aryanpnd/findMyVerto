@@ -1,6 +1,6 @@
 import Toast from "react-native-toast-message";
 import axios from "axios";
-import { API_URL } from "../../../context/Auth";
+import { auth } from "../../../context/Auth";
 import { userStorage } from "../../storage/storage";
 
 export async function fetchMarks(
@@ -20,7 +20,7 @@ export async function fetchMarks(
         
         if (!userMarks || sync) {
             if (!userMarks || userMarks.success === false || sync) {
-                const result = await axios.post(`${API_URL}/student/marks`, { password: auth.password, reg_no: auth.reg_no });
+                const result = await axios.post(`${auth.server.url}/student/marks`, { password: auth.password, reg_no: auth.reg_no });
                 if (result.data.success) {                   
                     userStorage.set("MARKS", JSON.stringify(result.data));
                     setMarks(result.data.data)
@@ -77,7 +77,7 @@ export async function fetchCgpa(
         let userCgpa = userCgpaRaw ? JSON.parse(userCgpaRaw) : null;
         if (!userCgpa || sync) {
             if (!userCgpa || userCgpa.success === false || sync) {
-                const result = await axios.post(`${API_URL}/student/cgpa`, { password: auth.password, reg_no: auth.reg_no });
+                const result = await axios.post(`${auth.server.url}/student/cgpa`, { password: auth.password, reg_no: auth.reg_no });
                 if (result.data.success) {
                     userStorage.set("CGPA", JSON.stringify(result.data));
                     setCgpa(result.data.data.cgpa)

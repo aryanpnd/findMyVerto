@@ -1,22 +1,19 @@
-import React, { useState, useContext, useRef, useMemo, useCallback } from 'react';
-import { Linking, View, Text, Button, StyleSheet } from "react-native";
+import React, { useState, useContext, useRef } from 'react';
+import { Linking } from "react-native";
 import { CustomButton } from "../CustomButton";
 import { AppContext } from "../../../../context/MainApp";
-import CustomAlert, { useCustomAlert } from "../../miscellaneous/CustomAlert";
+import { useCustomAlert } from "../../miscellaneous/CustomAlert";
 import { colors } from "../../../constants/colors";
 import { AuthContext } from "../../../../context/Auth";
 import { AntDesign, Feather, FontAwesome5, MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 import ChangeServerBottomSheet from './ChangeServerBottomSheet';
-import BottomSheet, { BottomSheetModal, BottomSheetModalProvider, BottomSheetView } from '@gorhom/bottom-sheet';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function GeneralSettings() {
     const { checkForUpdates } = useContext(AppContext);
-    const { logout } = useContext(AuthContext);
+    const { auth, logout } = useContext(AuthContext);
     const customAlert = useCustomAlert();
     const [updateLoading, setUpdateLoading] = useState(false);
 
-    // Reference for the ChangeServerBottomSheet
     const serverBottomSheetRef = useRef();
 
     const handleLogout = () => {
@@ -40,7 +37,6 @@ export default function GeneralSettings() {
         );
     };
 
-    // Open the bottom sheet when "Change Server" is pressed
     const handleOpenChangeServer = () => {
         serverBottomSheetRef.current?.open();
     };
@@ -50,6 +46,7 @@ export default function GeneralSettings() {
             <CustomButton
                 icon={<Feather name="server" size={15} color={colors.lightDark} />}
                 title="Change Server"
+                title2={auth.server.name}
                 onPress={handleOpenChangeServer}
             />
             <CustomButton
@@ -80,16 +77,3 @@ export default function GeneralSettings() {
         </>
     );
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        padding: 24,
-        justifyContent: 'center',
-        backgroundColor: 'grey',
-    },
-    contentContainer: {
-        flex: 1,
-        alignItems: 'center',
-    },
-});

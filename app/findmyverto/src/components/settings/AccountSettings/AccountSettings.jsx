@@ -11,7 +11,7 @@ export default function AccountSettings() {
         <View>
             <CustomButton
                 icon={<FontAwesome5 name="edit" size={15} color={colors.lightDark} />}
-                title="Details to show to the friends" onPress={() => modalRef.current.open()} />
+                title="Details visible to friends" onPress={() => modalRef.current.open()} />
             <AllowedFieldsToShow ref={modalRef} />
         </View>
     )

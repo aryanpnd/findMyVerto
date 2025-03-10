@@ -216,7 +216,12 @@ export default function VertoSearch({ navigation }) {
                             onEndReachedThreshold={0.5}
                             ListFooterComponent={renderFooter}
                             showsVerticalScrollIndicator={false}
-                            contentContainerStyle={{ alignItems: "center", paddingVertical: 10, gap: 5 }}
+                            contentContainerStyle={{ 
+                                alignItems: "center",
+                                 paddingVertical: 10,
+                                 paddingHorizontal: 10,
+                                  gap: 5
+                                 }}
                         />
                     )
                 ) : (

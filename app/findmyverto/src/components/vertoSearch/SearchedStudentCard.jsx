@@ -18,7 +18,7 @@ const { height } = Dimensions.get('window');
 export default function SearchedStudentCard({ forRequest, student, friends, setfriends, sentFriendRequests, setSentFriendRequests, friendsRequests, setfriendsRequests, navigation, disableBtn, setDisableBtn }) {
     const customAlert = useCustomAlert()
     const { auth } = useContext(AuthContext)
-    const { friendsRefreshing, setFriendsRefreshing } = useContext(AppContext)
+    const { friendsRefreshing, setFriendsRefreshing, friendRequests, setFriendRequests } = useContext(AppContext)
 
     const studentFirstName = student.name.split(" ")[0]
     const [isFriend, setIsFriend] = useState(false)
@@ -70,7 +70,7 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
     }
 
     function handleAddFriend() {
-        acceptFriendRequest(auth, student, setfriends, friends, setfriendsRequests, friendsRequests, setLoading, setDisableBtn)
+        acceptFriendRequest(auth, student, setfriends, friends, setfriendsRequests, friendsRequests, friendRequests, setFriendRequests, setLoading, setDisableBtn)
     }
 
     function handleRejectFriendRequest() {
@@ -221,7 +221,7 @@ const style = StyleSheet.create({
         backgroundColor: "white",
         padding: 10,
         height: height * 0.1,
-        width: "97%",
+        // width: "97%",
         borderRadius: 15,
         flexDirection: "row"
     },

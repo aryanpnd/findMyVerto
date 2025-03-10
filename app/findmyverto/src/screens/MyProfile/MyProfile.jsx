@@ -75,7 +75,7 @@ export default function MyProfile({ navigation }) {
 
                     <View style={styles.allowedFieldsToShowContainer}>
                         <Pressable style={styles.card} onPress={() => modalRef.current.open()} >
-                            <Text style={styles.text1}>Details to show to the friends</Text>
+                            <Text style={styles.text1}>Details visible to friends</Text>
                             <View style={styles.editButton} >
                                 <FontAwesome5 name="edit" size={20} color={colors.lightDark} />
                             </View>

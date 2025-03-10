@@ -9,17 +9,9 @@ import { loadCustomServers, loadServers } from '../utils/settings/changeServer';
 
 const AuthContext = createContext();
 
-let API_URL;
-if (process.env.NODE_ENV === 'development') {
-  // API_URL = "http://192.168.109.229:3000/api/v2";
-  // API_URL = "https://findmyvertov2-8wup.onrender.com/api/v2";
-  API_URL = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net/api/v2";
-} else {
-  API_URL = "https://findmyverto-dndxdgfsezc0gben.centralindia-01.azurewebsites.net/api/v2";
-  // API_URL = `${process.env.EXPO_PUBLIC_FMV_API_URL}`;
-  // API_URL = "https://findmyvertov2-8wup.onrender.com/api/v2";
-}
-export { API_URL };
+let auth = {server:{url:""}};
+
+export { auth };
 
 const AuthProvider = ({ children }) => {
 
@@ -60,16 +52,17 @@ const AuthProvider = ({ children }) => {
         let passwordExpiry = await SecureStore.getItemAsync("PASSWORDEXPIRY");
         let randomServer = {}
 
-        const customeServerSelected = appStorage.getBoolean("CUSTOM_SERVER_SELECTED");
+        const customeServerSelected = appStorage.getBoolean("IS_CUSTOM_SERVER_SELECTED");
+        
         if (customeServerSelected) {
-          const customServers = loadCustomServers()
-          randomServer = customServers[Math.floor(Math.random() * customServers.length)]
+          const selectedServer = appStorage.getString("SELECTED_CUSTOM_SERVER");
+          randomServer = JSON.parse(selectedServer)
         }else{
           let servers = loadServers()
           randomServer = servers[Math.floor(Math.random() * servers.length)]
         }
         
-        if (authenticated) {
+        if (JSON.parse(authenticated)) {
           const calculatedDate = getCalculatedDate(JSON.parse(passwordExpiry).days, JSON.parse(passwordExpiry).updatedAt);
           const pwdExp = {
             days: calculatedDate.daysLeft,
@@ -129,7 +122,7 @@ const AuthProvider = ({ children }) => {
     await AsyncStorage.clear();
     userStorage.clearAll()
     friendsStorage.clearAll()
-    setAuthState({ authenticated: false, reg_no: "", password: "", passwordExpiry: { days: 0, updatedAt: "" } });
+    setAuthState({ ...auth, authenticated: false, reg_no: "", password: "", passwordExpiry: { days: 0, updatedAt: "" } });
   };
 
   return (

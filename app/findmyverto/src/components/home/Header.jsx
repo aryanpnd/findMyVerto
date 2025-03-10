@@ -4,7 +4,7 @@ import { FontAwesome5, Octicons } from '@expo/vector-icons'
 import AttendanceProgressBar from '../miscellaneous/AttendanceProgressBar'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import { API_URL, AuthContext } from '../../../context/Auth'
+import { AuthContext } from '../../../context/Auth'
 import Toast from 'react-native-toast-message'
 import LottieView from 'lottie-react-native';
 import { AppContext } from '../../../context/MainApp'
@@ -22,7 +22,7 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 export default function Header({ navigation }) {
     const { auth } = useContext(AuthContext);
-    const { attendanceLoading, setAttendanceLoading } = useContext(AppContext);
+    const { attendanceLoading, setAttendanceLoading, friendRequests } = useContext(AppContext);
 
     // Basic Details states
     const [loading, setLoading] = useState(false);
@@ -146,11 +146,18 @@ export default function Header({ navigation }) {
                                 <Octicons name='person-add' size={15} color={colors.whiteLight} />
                             </TouchableOpacity>
                             <Text style={{ color: 'white', fontSize: 10 }}>Requests</Text>
+                            {friendRequests > 0 &&
+                                <View style={styles.friendRequestsBadge}>
+                                    <Text style={styles.friendRequestsBadgeText}>
+                                        {friendRequests > 9 ? "9+" : friendRequests}
+                                    </Text>
+                                </View>
+                            }
                         </View>
                         <View style={{ alignItems: "center" }}>
                             <TouchableOpacity
                                 style={styles.button2}
-                                onPress={loading ? () => { } : () => navigation.navigate('Settings')}>
+                                onPress={() => navigation.navigate('Settings')}>
                                 {/* <FontAwesome5 name='settings' size={15} color={colors.whiteLight} /> */}
                                 <Octicons name="gear" size={15} color={colors.whiteLight} />
                             </TouchableOpacity>
@@ -297,6 +304,22 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'flex-start'
+    },
+    friendRequestsBadge: {
+        position: 'absolute',
+        top: -5,
+        right: -5,
+        backgroundColor: colors.red,
+        borderRadius: 10,
+        width: 20,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    friendRequestsBadgeText: {
+        color: "white",
+        fontSize: 9,
+        fontWeight: 'bold',
     },
     text1: {
         color: colors.whiteLight

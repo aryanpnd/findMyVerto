@@ -1,6 +1,6 @@
 import Toast from "react-native-toast-message";
 import axios from "axios";
-import { API_URL } from "../../../context/Auth";
+import { auth } from "../../../context/Auth";
 import { userStorage } from "../../storage/storage";
 import { AttendanceSyncTime } from "../../settings/SyncAndRetryLimits";
 
@@ -30,7 +30,7 @@ export async function fetchAttendance(
       new Date().getTime() - new Date(userAttendance.last_updated).getTime() > syncInterval;
     
     if (!userAttendance || sync || isOutdated) {
-      const result = await axios.post(`${API_URL}/student/attendance`, {
+      const result = await axios.post(`${auth.server.url}/student/attendance`, {
         password: auth.password,
         reg_no: auth.reg_no,
       });

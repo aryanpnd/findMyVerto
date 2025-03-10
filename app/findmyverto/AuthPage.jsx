@@ -38,10 +38,14 @@ import OnboardingScreen from './src/screens/Onboarding/Onboarding';
 import { appStorage } from './utils/storage/storage';
 import { CustomBackButton } from './src/components/miscellaneous/CustomBackButton';
 import Settings from './src/screens/settings/Settings';
+import { fetchServers } from './utils/settings/changeServer';
+import { requestNotificationPermission } from './utils/notifications/notificationPermission';
 
 const Stack = createNativeStackNavigator();
 
-export default function AuthPage() {
+export default function AuthPage({
+  notificationSheetRef
+}) {
   const { auth, loadAuth, onboarding, setOnboarding } = useContext(AuthContext);
   const [loading, setLoading] = useState(true);
 
@@ -59,11 +63,13 @@ export default function AuthPage() {
         }
 
         await loadAuth();
+        fetchServers();
       } catch (e) {
         console.warn(e);
       } finally {
         await SplashScreen.hideAsync();
         setLoading(false);
+        requestNotificationPermission(notificationSheetRef);
       }
     }
 
