@@ -1,5 +1,5 @@
 import axios from "axios";
-import { API_URL } from "../../../context/Auth";
+import { auth } from "../../../context/Auth";
 import formatTimeAgo from "../../helperFunctions/dateFormatter";
 import Toast from "react-native-toast-message";
 import { friendsStorage } from "../../storage/storage";
@@ -7,7 +7,7 @@ import { friendsStorage } from "../../storage/storage";
 export const fetchFriendMarks = async (auth,studentId, setMarks, setLastSynced, setLoading, setRefresh, setIsError) => {
     setLoading(true);
     try {
-        const result = await axios.post(`${API_URL}/friends/marks`, {
+        const result = await axios.post(`${auth.server.url}/friends/marks`, {
             reg_no: auth.reg_no,
             password: auth.password,
             studentId: studentId
@@ -46,7 +46,7 @@ export const fetchFriendMarks = async (auth,studentId, setMarks, setLastSynced, 
 export const fetchFriendCGPA = async (auth,studentId, setCGPA, setLastSynced, setLoading, setRefresh, setIsError) => {
     setLoading(true);
     try {
-        const result = await axios.post(`${API_URL}/friends/cgpa`, {
+        const result = await axios.post(`${auth.server.url}/friends/cgpa`, {
             reg_no: auth.reg_no,
             password: auth.password,
             studentId: studentId

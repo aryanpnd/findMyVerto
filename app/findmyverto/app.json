@@ -11,6 +11,10 @@
       "resizeMode": "contain",
       "backgroundColor": "#5360e3"
     },
+    "notification": {
+      "icon": "./assets/notification.png",
+      "color": "#FFFFFF"
+    },
     "assetBundlePatterns": [
       "**/*"
     ],
@@ -18,7 +22,8 @@
       "supportsTablet": true,
       "runtimeVersion": {
         "policy": "appVersion"
-      }
+      },
+      "bundleIdentifier": "com.loudpear.findmyverto"
     },
     "android": {
       "adaptiveIcon": {
@@ -27,6 +32,7 @@
         "softwareKeyboardLayoutMode": "pan"
       },
       "package": "com.loudpear.findmyverto",
+      "googleServicesFile": "./google-services.json",
       "runtimeVersion": "1.0.0"
     },
     "web": {
@@ -40,6 +46,18 @@
     "owner": "loudpear",
     "updates": {
       "url": "https://u.expo.dev/3cfd0e34-fab5-4ba6-b312-fb3fa72bddea"
-    }
+    },
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "extraMavenRepos": [
+              "../../node_modules/@notifee/react-native/android/libs"
+            ]
+          }
+        }
+      ]
+    ]
   }
 }

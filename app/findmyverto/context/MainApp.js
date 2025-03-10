@@ -8,11 +8,9 @@ const AppProvider = ({ children }) => {
   const [attendanceLoading, setAttendanceLoading] = useState(false)
   const [friendsRefreshing, setFriendsRefreshing] = useState(false)
   const [allowedFieldsToShow, setAllowedFieldsToShow] = useState([])
+  const [friendRequests, setFriendRequests] = useState(0)
 
   const [courses, setCourses] = useState({})
-  const [friendsAttendance, setFriendsAttendance] = useState({})
-  const [friendsAttendanceDetails, setFriendsAttendanceDetails] = useState({})
-  const [friendsAttendanceLastSynced, setFriendsAttendanceLastSynced] = useState({})
 
   const [updateAvailable, setUpdateAvailable] = useState(false)
   const [updated, setUpdated] = useState(false)
@@ -45,7 +43,7 @@ const AppProvider = ({ children }) => {
       } else {
         console.log("update not available");
 
-        alert.show('No Updates', 'Your app is up to date.', [{
+        alert.show('No Updates', 'Your app is up to date. 🎉', [{
           text: 'OK',
           onPress: () => console.log("cancelled")
         }]);
@@ -64,11 +62,9 @@ const AppProvider = ({ children }) => {
       attendanceLoading, setAttendanceLoading,
       friendsRefreshing, setFriendsRefreshing,
       allowedFieldsToShow, setAllowedFieldsToShow,
+      friendRequests, setFriendRequests,
 
       courses, setCourses,
-      friendsAttendance, setFriendsAttendance,
-      friendsAttendanceDetails, setFriendsAttendanceDetails,
-      friendsAttendanceLastSynced, setFriendsAttendanceLastSynced,
 
       checkForUpdates, updateAvailable, setUpdateAvailable, updated, setUpdated
     }}>

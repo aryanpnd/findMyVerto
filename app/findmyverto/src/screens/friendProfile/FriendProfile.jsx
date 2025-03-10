@@ -26,7 +26,8 @@ import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/Cust
 import { useNavigation } from '@react-navigation/native'
 import { AppContext } from '../../../context/MainApp'
 import { friendsStorage, userStorage } from '../../../utils/storage/storage'
-import { WIDTH } from '../../constants/styles'
+import { globalStyles, HEIGHT, WIDTH } from '../../constants/styles'
+import AwesomeButton from 'react-native-really-awesome-button'
 
 const { height, width } = Dimensions.get('window')
 
@@ -84,6 +85,7 @@ const navigations = [
 export default function FriendProfile({ route }) {
   const { _id } = route.params
   const navigation = useNavigation()
+  const customAlert = useCustomAlert()
 
   const { auth } = useContext(AuthContext)
   const { friendsRefreshing, setFriendsRefreshing } = useContext(AppContext)
@@ -131,7 +133,6 @@ export default function FriendProfile({ route }) {
   }, [student])
 
   async function handleRemoveFriend() {
-    const customAlert = useCustomAlert()
 
     customAlert.show(
       `Remove ${firstName}?`,
@@ -139,13 +140,20 @@ export default function FriendProfile({ route }) {
       [
         {
           text: 'Remove',
+          color: colors.red,
+          textColor: "white",
           onPress: async () => {
             await removeFriend(auth, _id, setRemoveLoading)
             navigation.goBack()
             setFriendsRefreshing(!friendsRefreshing)
           }
         },
-        { text: 'Cancel', onPress: () => { } }
+        {
+          text: 'Cancel',
+          color: "white",
+          textColor: "black",
+          onPress: () => { }
+        }
       ]
     )
   }
@@ -181,13 +189,6 @@ export default function FriendProfile({ route }) {
         </View>
         {/* Remove Friend */}
         <View style={styles.backBtn}>
-          {removeLoading ? (
-            <ActivityIndicator size={25} color={"black"} />
-          ) : (
-            <TouchableOpacity onPress={handleRemoveFriend}>
-              <Ionicons name="person-remove-sharp" size={25} color={colors.lightDark} />
-            </TouchableOpacity>
-          )}
         </View>
       </View>
 
@@ -237,7 +238,27 @@ export default function FriendProfile({ route }) {
           }
         </View>
 
+        <AwesomeButton
+          width={WIDTH(90)}
+          height={HEIGHT(7)}
+          borderRadius={15}
+          raiseLevel={6}
+          backgroundColor={colors.red}
+          backgroundDarker={colors.red2}
+          debouncedPressTime={200}
+          onPress={handleRemoveFriend}>
+          {removeLoading ? (
+            <ActivityIndicator size={25} color={"white"} />
+          ) : <>
+            <Ionicons name="person-remove-sharp" size={25} color={"white"} />
+            <Text style={[styles.text2, { color: "white", marginLeft: 10 }]}>Remove</Text>
+          </>
+          }
+        </AwesomeButton>
       </ScrollView>
+
+
+
     </SafeAreaView>
   )
 }
@@ -288,6 +309,18 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 10
+  },
+  removeButton: {
+    width: WIDTH(90),
+    flexDirection: "row",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: colors.whitePrimary,
+    borderWidth: 1,
+    borderColor: colors.red,
+    borderRadius: 15,
+    ...globalStyles.elevationMin
   },
   text1: {
     color: colors.lightDark,

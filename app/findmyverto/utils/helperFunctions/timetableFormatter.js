@@ -159,8 +159,7 @@ export function formatClassesToday(timetable, todayOnly) {
 export function filterOutdatedMakeup(makeupClasses) {
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Normalize today's date
-    
-    return makeupClasses?.filter(item => {
+    return makeupClasses?.length>0 ? makeupClasses?.filter(item => {
         const parts = item.scheduledDate.split('/');
         if (parts.length !== 3) return false; // Skip if the format is invalid
 
@@ -173,5 +172,5 @@ export function filterOutdatedMakeup(makeupClasses) {
         classDate.setHours(0, 0, 0, 0);
         // Keep only classes scheduled for today or in the future.
         return classDate >= today;
-    });
+    }) : [];
 }

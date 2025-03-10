@@ -44,6 +44,7 @@ export interface StudentDetails {
     sentFriendRequests?: string[];
     lastSync: string;
     allowedFieldsToShow?: string[];
+    devicePushToken?: string;
 }
 
 /**

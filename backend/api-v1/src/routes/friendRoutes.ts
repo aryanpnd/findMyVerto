@@ -27,6 +27,12 @@ export const friendRoutes = express.Router();
  *                 type: string
  *               password:
  *                 type: string
+ *               page:
+ *                 type: integer
+ *                 default: 1
+ *               limit:
+ *                 type: integer
+ *                 default: 20
  *     responses:
  *       200:
  *         description: Successful response
@@ -104,13 +110,63 @@ friendRoutes.post('/addFriend', addFriend);
  *             properties:
  *               reg_no:
  *                 type: string
+ *                 description: Registration number of the user
  *               password:
  *                 type: string
+ *                 description: Password of the user
+ *               page:
+ *                 type: integer
+ *                 default: 1
+ *                 description: Page number for pagination
+ *               limit:
+ *                 type: integer
+ *                 default: 15
+ *                 description: Number of requests per page
+ *               count:
+ *                 type: boolean
+ *                 default: false
+ *                 description: If true, only returns the total number of requests
  *     responses:
  *       200:
  *         description: Successful response
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 friendRequests:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *                     description: List of friend request objects (if count is false)
+ *                 totalRequests:
+ *                   type: integer
+ *                   description: Total number of friend requests
+ *                 totalPages:
+ *                   type: integer
+ *                   description: Total pages available
+ *                 currentPage:
+ *                   type: integer
+ *                   description: Current page number
+ *                 message:
+ *                   type: string
+ *                   description: Response message
+ *                 success:
+ *                   type: boolean
+ *                   description: Indicates if the request was successful
  *       500:
  *         description: Internal server error
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 success:
+ *                   type: boolean
+ *                 errorMessage:
+ *                   type: string
  */
 friendRoutes.post('/getRequests', getFriendRequests);
 
@@ -131,6 +187,12 @@ friendRoutes.post('/getRequests', getFriendRequests);
  *                 type: string
  *               password:
  *                 type: string
+ *               page:
+ *                 type: integer
+ *                 default: 1
+ *               limit:
+ *                 type: integer
+ *                 default: 15
  *     responses:
  *       200:
  *         description: Successful response

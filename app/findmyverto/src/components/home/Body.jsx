@@ -7,7 +7,7 @@ import {
   Dimensions,
   Pressable,
   Platform,
-  RefreshControl
+  RefreshControl,
 } from 'react-native'
 import React, { useCallback, useContext, useRef, useState } from 'react'
 import HomescreenTimeTable from '../timeTable/HomescreenTimeTable'

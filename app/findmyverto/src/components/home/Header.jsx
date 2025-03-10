@@ -4,7 +4,7 @@ import { FontAwesome5, Octicons } from '@expo/vector-icons'
 import AttendanceProgressBar from '../miscellaneous/AttendanceProgressBar'
 import AsyncStorage from '@react-native-async-storage/async-storage'
 import axios from 'axios'
-import { API_URL, AuthContext } from '../../../context/Auth'
+import { AuthContext } from '../../../context/Auth'
 import Toast from 'react-native-toast-message'
 import LottieView from 'lottie-react-native';
 import { AppContext } from '../../../context/MainApp'
@@ -16,12 +16,13 @@ import { useFocusEffect } from '@react-navigation/native'
 import { HEIGHT, WIDTH } from '../../constants/styles'
 import { fetchAttendance } from '../../../utils/fetchUtils/userData/attendanceFetch'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
+import { AttendanceSyncTime } from '../../../utils/settings/SyncAndRetryLimits'
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 export default function Header({ navigation }) {
     const { auth } = useContext(AuthContext);
-    const { attendanceLoading, setAttendanceLoading } = useContext(AppContext);
+    const { attendanceLoading, setAttendanceLoading, friendRequests } = useContext(AppContext);
 
     // Basic Details states
     const [loading, setLoading] = useState(false);
@@ -43,28 +44,29 @@ export default function Header({ navigation }) {
 
     const retryAttemptsValue = 5;
 
-    const handleDataFetch = async (sync,isRetry) => {
+    const handleDataFetch = async (sync, isRetry) => {
         await fetchBasicDetails(setLoading, setRefreshing, setUserDetails, auth, setIsError, sync, setLastSynced, isRetry);
     };
 
-    const getAttendance = async (sync,isRetry) => {
+    const getAttendance = async (sync, isRetry) => {
         if (attendanceLoading) {
             return;
         }
-        // If attendance data was synced within the last hour, skip fetching
-        if (!sync && attendanceLastSynced &&
-            new Date().getTime() - new Date(attendanceLastSynced).getTime() <= 3600000) {
-            return;
+        const syncInterval = AttendanceSyncTime();
+        if (!sync && attendanceLastSynced) {
+            // If auto-sync is off (syncInterval === 0) or the last sync was performed too recently, skip fetching.
+            if (syncInterval === 0 || new Date().getTime() - new Date(attendanceLastSynced).getTime() <= syncInterval) {
+                return;
+            }
         }
-
         await fetchAttendance(
-            setAttendanceLoading, 
-            setAttendanceRefresh, 
+            setAttendanceLoading,
+            setAttendanceRefresh,
             setAttendance,
-            setAttendanceDetails, 
-            auth, 
-            setIsAttendanceError, 
-            sync, 
+            setAttendanceDetails,
+            auth,
+            setIsAttendanceError,
+            sync,
             setAttendanceLastSynced,
             isRetry
         );
@@ -76,12 +78,6 @@ export default function Header({ navigation }) {
             console.log("Retrying basic details fetch:", retryAttempts, isError);
             setRetryAttempts(prev => prev + 1);
             await handleDataFetch(false, true);
-            // Toast.show({
-            //     type: 'error',
-            //     position: 'top',
-            //     text1: 'Fetching details again',
-            //     text2: `Attempt ${retryAttempts + 1}`,
-            // });
         } else if (retryAttempts >= retryAttemptsValue) {
             Toast.show({
                 type: 'error',
@@ -99,12 +95,6 @@ export default function Header({ navigation }) {
             console.log("Retrying attendance fetch:", attendanceRetryAttempts, isAttendanceError);
             setAttendanceRetryAttempts(prev => prev + 1);
             await getAttendance(false, true);
-            // Toast.show({
-            //     type: 'error',
-            //     position: 'top',
-            //     text1: 'Fetching attendance again',
-            //     text2: `Attempt ${attendanceRetryAttempts + 1}`,
-            // });
         } else if (attendanceRetryAttempts >= retryAttemptsValue) {
             Toast.show({
                 type: 'error',
@@ -156,14 +146,22 @@ export default function Header({ navigation }) {
                                 <Octicons name='person-add' size={15} color={colors.whiteLight} />
                             </TouchableOpacity>
                             <Text style={{ color: 'white', fontSize: 10 }}>Requests</Text>
+                            {friendRequests > 0 &&
+                                <View style={styles.friendRequestsBadge}>
+                                    <Text style={styles.friendRequestsBadgeText}>
+                                        {friendRequests > 9 ? "9+" : friendRequests}
+                                    </Text>
+                                </View>
+                            }
                         </View>
                         <View style={{ alignItems: "center" }}>
                             <TouchableOpacity
-                                style={styles.button2} disabled={loading}
-                                onPress={loading ? () => { } : () => navigation.navigate('MyProfile')}>
-                                <FontAwesome5 name='user' size={15} color={colors.whiteLight} />
+                                style={styles.button2}
+                                onPress={() => navigation.navigate('Settings')}>
+                                {/* <FontAwesome5 name='settings' size={15} color={colors.whiteLight} /> */}
+                                <Octicons name="gear" size={15} color={colors.whiteLight} />
                             </TouchableOpacity>
-                            <Text style={{ color: 'white', fontSize: 10 }}>Profile</Text>
+                            <Text style={{ color: 'white', fontSize: 10 }}>Settings</Text>
                         </View>
                     </View>
                 </View>
@@ -195,6 +193,9 @@ export default function Header({ navigation }) {
                                     {loading ? "" : userDetails?.data?.rollNumber?.split(userDetails?.data?.section)[1]}
                                 </Text>}
                         </View>
+                        {!loading && <Text style={styles.textInfo}>
+                            Click to view profile
+                        </Text>}
                     </TouchableOpacity>
 
                     <TouchableOpacity style={styles.AttendanceContainer} onPress={loading ? () => { } : () => navigation.navigate('Attendance')}>
@@ -304,8 +305,30 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'flex-start'
     },
+    friendRequestsBadge: {
+        position: 'absolute',
+        top: -5,
+        right: -5,
+        backgroundColor: colors.red,
+        borderRadius: 10,
+        width: 20,
+        height: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    friendRequestsBadgeText: {
+        color: "white",
+        fontSize: 9,
+        fontWeight: 'bold',
+    },
     text1: {
         color: colors.whiteLight
+    },
+    textInfo: {
+        fontSize: 11,
+        color: colors.whiteLight,
+        textAlign: 'center',
+        marginTop: 5
     },
     textSmall: {
         marginRight: 15,
