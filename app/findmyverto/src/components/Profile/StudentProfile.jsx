@@ -1,9 +1,6 @@
 import { View, Text, Image, StyleSheet, Dimensions, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors } from '../../constants/colors';
-import { API_URL_ROOT } from '../../../context/Auth';
-import SyncData from '../miscellaneous/SyncData';
-import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter';
 import ImageViewer from '../miscellaneous/ImageViewer';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -12,9 +9,11 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create s
 
 export default function StudentProfile({ student, loading }) {
   const [fullscreenImage, setFullscreenImage] = useState(false)
+
   const imageSource = student?.studentPicture
-    ? { uri: `${API_URL_ROOT}${student?.studentPicture}` }
+    ? { uri: student?.studentPicture }
     : require("../../../assets/icons/profileAvatar.png");
+
   const onImageError = () => {
     imageSource = require("../../../assets/icons/profileAvatar.png");
   }

@@ -1,10 +1,10 @@
+// studentdetailsscrapper.ts
 import axios from 'axios';
-import fs from 'fs';
-import path from 'path';
 import { umsUrls } from '../constants/umsUrls';
 import { umsHeaders } from '../constants/headers';
 import { umsLogin } from './umsLogin';
 import { umsLoginReturn, User } from '../types/scrapperTypes';
+import { uploadImageToCloudinary } from '../utils/uploadImageToCloudinary';
 import { saveImageLocally } from '../utils/saveImageLocally';
 
 export const scrapeStudentBasicInfo = async (user: User) => {
@@ -34,10 +34,11 @@ export const scrapeStudentBasicInfo = async (user: User) => {
 
         const studentInfoRaw = studentInfoResponse.data.d[0];
 
-        // Save the student's picture locally and get the URL
+        // Save student picture to cloudinary and get the URL also save it locally
         let studentPictureUrl = '';
         if (studentInfoRaw.StudentPicture) {
-            studentPictureUrl = await saveImageLocally(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
+            saveImageLocally(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
+            studentPictureUrl = await uploadImageToCloudinary(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
         }
 
         const studentInfo = {
