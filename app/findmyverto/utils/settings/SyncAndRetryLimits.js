@@ -8,8 +8,8 @@ export function AttendanceSyncTime(time) {
   if (storedTime !== undefined && storedTime !== null) {
     return storedTime;
   } else {
-    // Default to 5 hours (in ms)
-    const defaultTime = 5 * 3600000;
+    // Default to 8 hours (in ms)
+    const defaultTime = 8 * 3600000;
     userStorage.set("ATTENDANCE_SYNC_TIME", defaultTime);
     return defaultTime;
   }
@@ -23,9 +23,10 @@ export function TimetableSyncTime(time) {
   if (storedTime !== undefined && storedTime !== null) {
     return storedTime;
   } else {
-    // Default to 1 day (24 hours)
-    const defaultTime = 24 * 3600000;
+    // Default to 5 days (in ms)
+    const defaultTime = 5 * 24 * 3600000;
     userStorage.set("TIMETABLE_SYNC_TIME", defaultTime);
+    
     return defaultTime;
   }
 }
@@ -53,8 +54,8 @@ export function AssignmentsSyncTime(time) {
   if (storedTime !== undefined && storedTime !== null) {
     return storedTime;
   } else {
-    // Default to 10 days
-    const defaultTime = 10 * 24 * 3600000;
+    // Default to 3 days
+    const defaultTime = 3 * 24 * 3600000;
     userStorage.set("ASSIGNMENTS_SYNC_TIME", defaultTime);
     return defaultTime;
   }

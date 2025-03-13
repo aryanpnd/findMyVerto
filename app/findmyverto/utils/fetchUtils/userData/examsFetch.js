@@ -43,6 +43,13 @@ export async function fetchExams(
                 if (autoSyncEnabled && isOutdated) {
                     setExamsRefresh(true);
                     setExamsLoading(false);
+
+                    // set the data from the local while it's being fetched.
+                    if (userExams) {
+                        setExams(userExams.data);
+                        setTotalExams(userExams.data.length);
+                        setLastSynced(userExams.lastSynced);
+                    }
                     Toast.show({
                         type: 'info',
                         text1: "Auto-Syncing Exams"

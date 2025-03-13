@@ -41,6 +41,13 @@ export const fetchDrives = async (
                 if (autoSyncEnabled && isOutdated) {
                     setDrivesRefresh(true);
                     setDrivesLoading(false);
+
+                    // set the data from the local while it's being fetched.
+                    if (userDrives) {
+                        setDrives(userDrives.data);
+                        setTotalDrives(userDrives.data.length);
+                        setLastSynced(userDrives.lastSynced);
+                    }
                     Toast.show({
                         type: 'info',
                         text1: "Auto-Syncing Drives"

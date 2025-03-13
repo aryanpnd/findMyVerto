@@ -69,6 +69,22 @@ export const fetchMyMessages = async (
                 if (autoSyncEnabled && isOutdated) {
                     setRefresh(true);
                     setLoading(false);
+
+                    // set the data from the local while it's being fetched.
+                    if (userMessages) {
+                        setMessages(userMessages.data);
+                        setLastSynced(userMessages.lastSynced);
+                        setPageCount(userMessages.data[0].PageCount);
+                        setCurrentPage(pageNumber);
+                        const pages = [];
+                        for (let i = 1; i <= userMessages.data[0].PageCount; i++) {
+                            pages.push(i);
+                        }
+                        setPages(pages.reverse());
+                        userStorage.set("MESSAGES-PAGE-NUMBER", JSON.stringify(userMessages.data[0].PageCount));
+                        setIsError(false);
+                    }
+
                     Toast.show({
                         type: 'info',
                         text1: "Auto-Syncing Messages"

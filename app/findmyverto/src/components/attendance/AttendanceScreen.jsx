@@ -14,6 +14,7 @@ export default function AttendanceScreen({
   fetchAttendance,
   lastSynced,
   loading,
+  refresh,
   self,
   navigation,
   attendanceDetails,
@@ -55,7 +56,7 @@ export default function AttendanceScreen({
             color={'white'}
             bg={colors.secondary}
             loader={true}
-            loading={loading}
+            loading={refresh ? refresh : loading}
           />
 
           {/* Only show aggregate attendance when search bar is not focused */}
