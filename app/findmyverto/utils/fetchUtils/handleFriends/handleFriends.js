@@ -109,7 +109,6 @@ export const fetchFriends = async ({
 
             setFriends(newFriends);
             setTotalFriends(response.data.totalFriends);
-            // Optionally cache the count.
             friendsStorage.set("FRIENDS-COUNT", response.data.totalFriends);
             setFilteredFriends(newFriends);
             setCurrentPage(response.data.currentPage);

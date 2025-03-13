@@ -40,9 +40,7 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
 
     const [refreshing, setRefreshing] = useState(false);
     const [isError, setIsError] = useState(false);
-    const [retryAttempts, setRetryAttempts] = useState(0);
-    const [isRetryMaxValueReached, setIsRetryMaxValueReached] = useState(false);
-    const retryAttemptsValue = 5;
+    const [isRetryMaxValueReached] = useState(false);
 
     const scrollViewRef = useRef(null);
 
@@ -110,28 +108,6 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
             scrollToOngoing();
         }, [timeTable])
     );
-
-    const handleRetry = async () => {
-        if (isError && retryAttempts < retryAttemptsValue) {
-            console.log('Error reattempt block', retryAttempts, isError);
-            setRetryAttempts((prev) => prev + 1);
-            await handleFetchTimetable(true);
-        } else if (retryAttempts >= retryAttemptsValue) {
-            Toast.show({
-                type: 'error',
-                position: 'top',
-                text1: 'Failed to fetch details',
-                text2: 'Please check your internet connection',
-            });
-            setIsRetryMaxValueReached(true);
-        }
-    };
-
-    useEffect(() => {
-        if (isError && !timetableLoading) {
-            handleRetry();
-        }
-    }, [isError, timetableLoading]);
 
     return (
         <>

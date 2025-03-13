@@ -95,7 +95,6 @@ export default function AssignmentsScreen({
                 <SyncData
                     time={AssignmentsLoading ? "Loading..." : formatTimeAgo(lastSynced)}
                     syncNow={() => handleAssignmentsFetch(true)}
-                    dataLoading={AssignmentsLoading}
                     self={!AssignmentsLoading}
                     loader={true}
                     loading={AssignmentsRefresh}

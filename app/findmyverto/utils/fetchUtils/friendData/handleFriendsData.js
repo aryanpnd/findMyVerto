@@ -75,8 +75,9 @@ export async function getFriendTimetable(auth, friend_id, sync, settimeTable, se
         })
 }
 
-export async function getFriendAttendance(auth, id, setAttendance, setAttendanceDetails, setLastSynced, setLoading, setIsError) {
-    setLoading(true);
+export async function getFriendAttendance(auth,sync, id, setAttendance, setAttendanceDetails, setLastSynced, setLoading,setRefresh, setIsError) {
+    !sync && setLoading(true)
+    sync && setRefresh(true)
     try {
         const result = await axios.post(`${auth.server.url}/friends/attendance`, {
             reg_no: auth.reg_no,
@@ -114,6 +115,7 @@ export async function getFriendAttendance(auth, id, setAttendance, setAttendance
         setIsError(true);
     } finally {
         setLoading(false);
+        setRefresh(false)
     }
 }
 

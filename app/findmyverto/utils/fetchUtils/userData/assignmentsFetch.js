@@ -1,6 +1,5 @@
 import axios from "axios";
 import Toast from "react-native-toast-message";
-import { auth } from "../../../context/Auth";
 import { userStorage } from "../../storage/storage";
 import { AssignmentsSyncTime } from "../../settings/SyncAndRetryLimits";
 
@@ -44,21 +43,31 @@ export const fetchAssignments = async (
                 if (autoSyncEnabled && isOutdated) {
                     setAssignmentsRefresh(true);
                     setAssignmentsLoading(false);
+
+                    // set the data from the local while it's being fetched.
+                    if (userAssignments) {
+                        setAssignments(userAssignments.data);
+                        const total = userAssignments.data.theory.length +
+                            userAssignments.data.practical.length +
+                            userAssignments.data.reading.length;
+                        setTotalAssignments(total);
+                        setLastSynced(userAssignments.lastSynced);
+                    }
                     Toast.show({
                         type: 'info',
                         text1: "Auto-Syncing Assignments"
                     });
                 }
-                const result = await axios.post(`${auth.server.url}/student/assignments`, { 
-                    password: auth.password, 
-                    reg_no: auth.reg_no 
+                const result = await axios.post(`${auth.server.url}/student/assignments`, {
+                    password: auth.password,
+                    reg_no: auth.reg_no
                 });
                 if (result.data.success) {
                     userStorage.set("ASSIGNMENTS", JSON.stringify(result.data));
                     setAssignments(result.data.data);
                     const total = result.data.data.theory.length +
-                                  result.data.data.practical.length +
-                                  result.data.data.reading.length;
+                        result.data.data.practical.length +
+                        result.data.data.reading.length;
                     setTotalAssignments(total);
                     setLastSynced(result.data.lastSynced);
                     Toast.show({
@@ -84,8 +93,8 @@ export const fetchAssignments = async (
         if (userAssignments) {
             setAssignments(userAssignments.data);
             const total = userAssignments.data.theory.length +
-                          userAssignments.data.practical.length +
-                          userAssignments.data.reading.length;
+                userAssignments.data.practical.length +
+                userAssignments.data.reading.length;
             setTotalAssignments(total);
             setLastSynced(userAssignments.lastSynced);
             setIsError(false);
@@ -99,8 +108,8 @@ export const fetchAssignments = async (
             let userAssignments = JSON.parse(userAssignmentsRaw);
             setAssignments(userAssignments.data);
             const total = userAssignments.data.theory.length +
-                          userAssignments.data.practical.length +
-                          userAssignments.data.reading.length;
+                userAssignments.data.practical.length +
+                userAssignments.data.reading.length;
             setTotalAssignments(total);
             setLastSynced(userAssignments.lastSynced);
         } else {

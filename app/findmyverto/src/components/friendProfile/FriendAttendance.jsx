@@ -5,6 +5,7 @@ import AttendanceScreen from '../../components/attendance/AttendanceScreen'
 import { getFriendAttendance } from '../../../utils/fetchUtils/friendData/handleFriendsData'
 import { friendsStorage } from '../../../utils/storage/storage'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
+import { AttendanceSyncTime } from '../../../utils/settings/SyncAndRetryLimits'
 
 export default function FriendAttendance({ navigation, route }) {
     const { id, name } = route.params;
@@ -14,33 +15,48 @@ export default function FriendAttendance({ navigation, route }) {
     const [attendanceDetails, setAttendanceDetails] = useState({});
     const [lastSynced, setLastSynced] = useState("");
     const [loading, setLoading] = useState(false);
+    const [refresh, setRefresh] = useState(false);
     const [isError, setIsError] = useState(false);
 
-    async function fetchAttendance() {
-        await getFriendAttendance(auth, id, setAttendance, setAttendanceDetails, setLastSynced, setLoading, setIsError);
+    async function fetchAttendance(sync) {
+        await getFriendAttendance(auth, sync, id, setAttendance, setAttendanceDetails, setLastSynced, setLoading, setRefresh, setIsError);
     }
 
     async function fetchDataLocally() {
-        if (loading) return;
         try {
             setLoading(true);
             const studentRaw = friendsStorage.getString(`${id}-attendance`);
-            const student = studentRaw && JSON.parse(studentRaw);
-
-            if (studentRaw && new Date().getTime() - new Date(student.last_updated).getTime() > 3600000) {
-                await fetchAttendance();
-            }
             if (studentRaw) {
+                const student = JSON.parse(studentRaw);
+
                 setAttendance(student.summary);
                 setAttendanceDetails(student.details);
                 setLastSynced(formatTimeAgo(student.last_updated));
-            }
-            else {
-                await fetchAttendance();
+
+                // Check if auto-sync is enabled and the data is outdated.
+                const syncInterval = AttendanceSyncTime();
+                const autoSyncEnabled = syncInterval > 0;
+                const isOutdated =
+                    autoSyncEnabled &&
+                    new Date().getTime() - new Date(student.last_updated).getTime() > syncInterval;
+                if (isOutdated) {
+                    Toast.show({
+                        type: 'info',
+                        text1: 'Auto-Syncing Friend Attendance'
+                    });
+                    setLoading(false);
+                    setRefresh(true);
+                    await fetchAttendance(false);
+                    setRefresh(false);
+
+                }
+            } else {
+                await fetchAttendance(true);
             }
             setLoading(false);
         } catch (error) {
             setLoading(false);
+            setRefresh(false);
             console.error(error);
             Toast.show({
                 type: 'error',
@@ -70,6 +86,7 @@ export default function FriendAttendance({ navigation, route }) {
             loading={loading}
             navigation={navigation}
             self={true}
+            refresh={refresh}
         />
     );
 }

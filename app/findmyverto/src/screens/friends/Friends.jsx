@@ -231,7 +231,8 @@ export default function Friends({ navigation }) {
                         paddingBottom: 15,
                         paddingHorizontal: 10,
                         alignItems: 'center',
-                        gap:10
+                        gap:10,
+                        paddingBottom: HEIGHT(10),
                      }}
                 />
             </View>
@@ -243,7 +244,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         width: '100%',
-        height: '100%',
+        paddingBottom: HEIGHT(10),
     },
     // header
     header: {

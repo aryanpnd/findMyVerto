@@ -167,13 +167,14 @@ export default function CgpaScreen({
 
 const styles = StyleSheet.create({
     body: {
-        height: HEIGHT(72),
+        height: HEIGHT(65),
         width: '100%',
-        backgroundColor: "white"
+        backgroundColor: "white",
     },
     scrollView: {
         padding: HEIGHT(1),
         paddingVertical: HEIGHT(2),
+        paddingBottom: HEIGHT(5),
         gap: 10,
         alignItems: "center",
         // justifyContent: "space-between"
