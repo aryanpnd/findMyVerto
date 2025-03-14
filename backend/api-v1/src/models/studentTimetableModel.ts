@@ -32,7 +32,7 @@ const studentTimeTableSchema = new Schema({
   },
   section: { type: String },
   last_updated: { type: String },
-  lastSync: { type: Date },
+  lastSynced: { type: Date },
   reg_no: { type: String }
 });
 
