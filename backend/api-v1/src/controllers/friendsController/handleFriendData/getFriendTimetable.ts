@@ -50,7 +50,7 @@ export const getFriendTimetable = async (req: Request, res: Response) => {
         return res.status(200).json({
           success: true,
           data: friendTimetable.data,
-          lastSynced: new Date().toISOString(),
+          lastSynced: friendTimetable.lastSynced || new Date().toISOString(),
           message: "Friend timetable fetched successfully",
         });
       }

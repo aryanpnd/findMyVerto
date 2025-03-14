@@ -18,7 +18,7 @@ handleBackgroundMessage();
 
 export default function App() {
   const notificationSheetRef = useRef();
-  
+
   useEffect(() => {
     let unsubscribe;
     const initializeNotifications = async () => {
@@ -38,10 +38,10 @@ export default function App() {
       <AppProvider>
         <NavigationContainer linking={linking}>
           <GestureHandlerRootView>
-          <BottomSheetModalProvider>
-            <AuthPage notificationSheetRef={notificationSheetRef}/>
-            <NotificationPermissionSheet ref={notificationSheetRef} />
-          </BottomSheetModalProvider>
+            <BottomSheetModalProvider>
+              <AuthPage notificationSheetRef={notificationSheetRef} />
+              <NotificationPermissionSheet ref={notificationSheetRef} />
+            </BottomSheetModalProvider>
           </GestureHandlerRootView>
         </NavigationContainer>
       </AppProvider>

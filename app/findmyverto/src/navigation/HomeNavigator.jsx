@@ -53,8 +53,6 @@ const HomeTabNavigator = () => {
                 activeBackgroundColor: colors.secondary,
                 inactiveTintColor: "grey",
                 tabStyle: {
-                    borderTopLeftRadius: 20,
-                    borderTopRightRadius: 20,
                 },
             }}
         >
