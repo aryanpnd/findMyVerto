@@ -23,16 +23,8 @@ Find My Verto is an open-source social and academic management platform built ex
 
 - [✨ Features](#-features)
 - [📂 Project Structure](#-project-structure)
-- [⚙️ Installation](#-installation)
-  - [🔧 Prerequisites](#-prerequisites)
-  - [📱 App Setup](#-app-setup)
-  - [🖥 Backend Setup](#-backend-setup)
-- [🚀 Usage](#-usage)
-  - [📲 Running the App](#-running-the-app)
-  - [🛠 Interacting with the Backend](#-interacting-with-the-backend)
-- [📡 API Documentation](#-api-documentation)
+- [🚀 Upcoming Features](#-upcoming-features)
 - [🤝 Contributing](#-contributing)
-- [🚧 Future Enhancements](#-future-enhancements)
 - [📜 License](#-license)
 - [📧 Contact](#-contact)
 
@@ -59,38 +51,11 @@ Find My Verto is an open-source social and academic management platform built ex
 
 ### 📱 App (`findmyverto`)
 
-```
+```py
 app/
-    findmyverto/
-        .env
-        .expo/
-        .gitignore
-        android/
-        App.js
-        app.json
-        assets/
-        AuthPage.jsx
-        babel.config.js
-        context/
-        dev-readme.md
-        eas.json
-        forDeveloper.md
-        hooks/
-        package.json
-        readme.md
-        src/
-        ttTest.json
-        utils/
-icons/
-    android/
-    ios/
-    web/
-icons-old-rn/
-    adaptive-icon.png
-    favicon.png
-    icon.png
-    logo.png
-    splash.png
+    findmyverto/ #main app
+    icons/
+    icons-old-rn/
 ```
 
 ### 🖥 Backend (`api-v1`)
@@ -98,90 +63,19 @@ icons-old-rn/
 ```
 backend/
     api-v1/
-        .env
-        .gitignore
-        apis.md
-        controller/
-        models/
-        package.json
         ...
 ```
 
----
-
-## ⚙️ Installation
-
-### 🔧 Prerequisites
-
-Ensure you have the following installed:
-- 🖥 Node.js
-- 📦 npm or yarn
-- 📲 Expo CLI
-
-### 📱 App Setup
-
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/aryanpnd/findMyVerto.git
-    ```
-2. Navigate to the app directory:
-    ```sh
-    cd findMyVerto/app/findmyverto
-    ```
-3. Install dependencies:
-    ```sh
-    npm install --legacy-peer-deps
-    ```
-4. Start the development server:
-    ```sh
-    npm start
-    # or
-    yarn start
-    ```
-
-### 🖥 Backend Setup
-
-1. Clone the repository:
-    ```sh
-    git clone https://github.com/aryanpnd/findMyVerto.git
-    ```
-2. Navigate to the backend directory:
-    ```sh
-    cd findMyVerto/backend/api-v1
-    ```
-3. Install dependencies:
-    ```sh
-    npm install
-    ```
-4. Start the server:
-    ```sh
-    npm start
-    ```
+For installation and setup, refer to the respective folders' `README.md` files.
 
 ---
 
-## 🚀 Usage
+## 🚀 Upcoming Features
 
-### 📲 Running the App
-
-1. Open **Expo Go** on your mobile device 📱.
-2. Scan the QR code displayed in the terminal or browser 🖥️.
-3. The app will launch on your device 🚀.
-
-### 🛠 Interacting with the Backend
-
-The backend server runs at `http://localhost:3000`. Test API endpoints using tools like **Postman** or **cURL**.
-
----
-
-## 📡 API Documentation
-
-The comprehensive API documentation is available in the `apis.md` file within the backend directory. It covers endpoints for:
-- 🔐 Student Authentication
-- 📊 Academic data retrieval (timetable, attendance, marks, CGPA, assignments, exams, makeup classes, pending assignments, leave slips, and placement drives)
-- 🤝 Friend Management (sending/receiving friend requests and accessing friends’ academic details)
-- 🔔 Notifications via Firebase Cloud Messaging
-- 📸 Image Uploads to Cloudinary and ImageKit
+- 📝 **Social Feed:** A Reddit-like discussion platform for LPU students.
+- 💬 **User Chat:** A simple yet optimized and secure messaging feature for LPU students.
+- 📌 **Pinned Notes:** Save and manage important academic notes for quick access.
+- 🔍 **Advanced Search:** Improved search functionality across all academic records and conversations.
 
 ---
 
@@ -199,12 +93,6 @@ Please adhere to our coding guidelines, include tests where applicable, and upda
 
 ---
 
-## 🚧 Future Enhancements
-
-We’re actively expanding Find My Verto with new features and improvements. Follow our repository and contribute your ideas to help shape the future of this platform!
-
----
-
 ## 📜 License
 
 This project is licensed under the **MIT License**. See the `LICENSE` file for details.
@@ -214,3 +102,4 @@ This project is licensed under the **MIT License**. See the `LICENSE` file for d
 ## 📧 Contact
 
 For any inquiries or feedback, please reach out at [aryanpnd3@gmail.com](mailto:aryanpnd3@gmail.com).
+
