@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, Dimensions, Image, Keyboard, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, TextInput, FlatList, Dimensions, Image, Keyboard, ActivityIndicator, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { colors } from '../../constants/colors';
@@ -8,12 +8,14 @@ import Toast from 'react-native-toast-message';
 import StudentCard from '../../components/vertoSearch/SearchedStudentCard';
 import { loadStudents } from '../../../utils/fetchUtils/handleUser/searchStudents';
 import { AuthContext } from '../../../context/Auth';
+import { HEIGHT, WIDTH } from '../../constants/styles';
 
 const { height, width } = Dimensions.get('window');
 
 export default function VertoSearch({ navigation }) {
     const { auth } = useContext(AuthContext);
     const [query, setQuery] = useState("");
+    const [searchedQuery, setSearchedQuery] = useState("");
     const [searchInitiated, setSearchInitiated] = useState(false);
     const [isFocused, setFocused] = useState(false);
     const [students, setStudents] = useState([]);
@@ -36,6 +38,7 @@ export default function VertoSearch({ navigation }) {
             });
             return;
         }
+        setSearchedQuery(query); // Save the query for later use in no results found container
         Keyboard.dismiss();
         setSearchInitiated(true);
         setPage(1);
@@ -105,7 +108,7 @@ export default function VertoSearch({ navigation }) {
                     }}
                     source={require('../../../assets/lotties/loading4.json')}
                 />
-                
+
             </View>
         );
     };
@@ -144,6 +147,7 @@ export default function VertoSearch({ navigation }) {
                 </View>
                 {/* Search input */}
                 <TextInput
+                    value={query}
                     onChangeText={(text) => setQuery(text)}
                     style={[
                         styles.searchBar,
@@ -158,6 +162,7 @@ export default function VertoSearch({ navigation }) {
                     onFocus={() => setFocused(true)}
                     onBlur={() => setFocused(false)}
                     onSubmitEditing={handleSearchStudents}
+                    clearButtonMode="while-editing"
                 />
                 {/* Search button */}
                 <View style={[styles.backBtn, { display: isFocused && query.length > 2 ? "flex" : "none" }]}>
@@ -191,21 +196,24 @@ export default function VertoSearch({ navigation }) {
                         </View>
                     ) : students.length < 1 ? (
                         // No results found container
-                        <View style={{ height: height * 0.7, justifyContent: "center", alignItems: "center", gap: 20 }}>
-                            <LottieView
-                                autoPlay
-                                style={{
-                                    width: width,
-                                    height: width,
-                                    opacity: 0.8,
-                                }}
-                                source={require('../../../assets/lotties/notfound.json')}
-                            />
-                            <Text style={styles.text2}>No student found matching your query</Text>
-                            <Text style={styles.text1}>Please check your query again</Text>
-                            <Text style={styles.text1}>or</Text>
-                            <Text style={styles.text1}>They might not be registered on this app yet</Text>
-                        </View>
+                        <ScrollView showsVerticalScrollIndicator={false}>
+                            <View
+                                style={{ height: HEIGHT(70), alignItems: "center", justifyContent: "center", gap: 20 }}>
+                                <LottieView
+                                    autoPlay
+                                    style={{
+                                        width: WIDTH(100),
+                                        height: HEIGHT(20),
+                                        opacity: 0.8,
+                                    }}
+                                    source={require('../../../assets/lotties/notfound.json')}
+                                />
+                                <Text style={styles.text2}>No student found matching your query: {searchedQuery}</Text>
+                                <Text style={styles.text1}>Please check your query again</Text>
+                                <Text style={styles.text1}>or</Text>
+                                <Text style={styles.text1}>They might not be registered on this app yet</Text>
+                            </View>
+                        </ScrollView>
                     ) : (
                         // FlatList for paginated results
                         <FlatList
@@ -216,12 +224,12 @@ export default function VertoSearch({ navigation }) {
                             onEndReachedThreshold={0.5}
                             ListFooterComponent={renderFooter}
                             showsVerticalScrollIndicator={false}
-                            contentContainerStyle={{ 
+                            contentContainerStyle={{
                                 alignItems: "center",
-                                 paddingVertical: 10,
-                                 paddingHorizontal: 10,
-                                  gap: 5
-                                 }}
+                                paddingVertical: 10,
+                                paddingHorizontal: 10,
+                                gap: 5
+                            }}
                         />
                     )
                 ) : (
