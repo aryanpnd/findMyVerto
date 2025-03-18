@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Dimensions,
   ScrollView,
@@ -21,12 +21,13 @@ import BreakCard from '../timeTable/BreakCard';
 import ClassesCard from '../timeTable/ClassesCard';
 import { getDay } from '../../../utils/helperFunctions/dataAndTimeHelpers';
 import LottieView from 'lottie-react-native';
-import {isTimeEqual} from '../../../utils/helperFunctions/dataAndTimeHelpers';
+import { isTimeEqual } from '../../../utils/helperFunctions/dataAndTimeHelpers';
 
 const { width } = Dimensions.get('screen');
 
 const getCurrentDayIndex = () => {
   const day = new Date().getDay();
+  // Treat Sunday (0) as index 0, Monday as 0, Tuesday as 1, etc.
   return day === 0 || day === 7 ? 0 : day - 1;
 };
 
@@ -39,7 +40,7 @@ const getHeaderWidths = (headers) => {
 };
 
 export default function TimeTableScreen({ timeTable, classesToday }) {
-  // Use day names as keys for lookup and build header display with count
+  // Define day names and build headers with class count.
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const headers = days.map((day, i) => `${day} (${classesToday[i] ?? 0})`);
 
@@ -47,21 +48,24 @@ export default function TimeTableScreen({ timeTable, classesToday }) {
   const scrollY = useSharedValue(0);
   const topScrollY = useSharedValue(0);
   const bottomScrollRef = useAnimatedRef();
-  const scroll1 = useSharedValue(getCurrentDayIndex());
   const topScrollRef = useAnimatedRef();
+  // Use a shared value for bottom scroll index.
+  const scroll1 = useSharedValue(0);
   const scroll2 = useSharedValue(0);
+  // Use local state for the header highlight.
+  const [selectedIndex, setSelectedIndex] = useState(getCurrentDayIndex());
 
-  // Scroll the bottom view to the selected header index
+  // Update the bottom scroll when scroll1 changes.
   useDerivedValue(() => {
     scrollTo(bottomScrollRef, scroll1.value * width, 0, true);
   });
 
-  // Scroll the top view based on our calculated value
+  // Update the top scroll (indicator) based on scroll2.
   useDerivedValue(() => {
     scrollTo(topScrollRef, scroll2.value, 0, true);
   });
 
-  // Update scroll2.value based on the current scrollY and measured header widths.
+  // Calculate scroll2.value based on scrollY and measured header widths.
   useDerivedValue(() => {
     let sumWidth = 0;
     const input = [];
@@ -79,7 +83,6 @@ export default function TimeTableScreen({ timeTable, classesToday }) {
     scroll2.value = moveValue + barWidth / 2 - width / 2;
   });
 
-  // Calculate the bar style using a fixed loop over the headers
   const barWidthStyle = useAnimatedStyle(() => {
     let sumWidth = 0;
     const input = [];
@@ -112,11 +115,21 @@ export default function TimeTableScreen({ timeTable, classesToday }) {
     topScrollY.value = event.contentOffset.x;
   });
 
+  // Only update scroll index if classesToday has data for the current day.
   useEffect(() => {
-    scroll1.value = getCurrentDayIndex();
-  }, []);
+    const currentDayIndex = getCurrentDayIndex();
+    if (
+      Array.isArray(classesToday) &&
+      classesToday.length > currentDayIndex &&
+      classesToday[currentDayIndex] > 0
+    ) {
+      setSelectedIndex(currentDayIndex);
+      scroll1.value = currentDayIndex;
+    }
+  }, [classesToday, scroll1]);
 
   const onPressHeader = index => {
+    setSelectedIndex(index);
     scroll1.value = index;
   };
 
@@ -137,9 +150,9 @@ export default function TimeTableScreen({ timeTable, classesToday }) {
             style={{ flex: 1 }}>
             <TouchableOpacity style={styles.headerItem} onPress={() => onPressHeader(index)}>
               <Text style={{
-                color: scroll1.value === index ? "yellow" : "#ffffffb5",
-                fontWeight: scroll1.value === index ? "bold" : "400",
-                fontSize: scroll1.value === index ? 16 : 15
+                color: selectedIndex === index ? "yellow" : "#ffffffb5",
+                fontWeight: selectedIndex === index ? "bold" : "400",
+                fontSize: selectedIndex === index ? 16 : 15
               }}>
                 {item}
               </Text>
@@ -148,7 +161,7 @@ export default function TimeTableScreen({ timeTable, classesToday }) {
         ))}
       </Animated.ScrollView>
 
-      <Animated.View style={[styles.bar, barWidthStyle]}>
+      <Animated.View style={[styles.bar, barWidthStyle]} pointerEvents={'none'}>
         <Animated.View style={[StyleSheet.absoluteFill, styles.barInner, barMovingStyle]} />
       </Animated.View>
 
@@ -180,7 +193,7 @@ function Item({ classes, index }) {
         animated: true,
       });
     }
-  }, [classes]);
+  }, [classes, index]);
 
   return (
     <Animated.View style={styles.itemContainer}>
@@ -258,7 +271,6 @@ const styles = StyleSheet.create({
     color: "grey",
     fontWeight: "500"
   },
-  // Added missing style for the bottom scroll view container
   list: {
     flexGrow: 1,
   }
