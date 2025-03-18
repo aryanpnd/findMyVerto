@@ -28,6 +28,7 @@
     "expo-constants": "~17.0.5",
     "expo-dev-client": "~5.0.8",
     "expo-device": "~7.0.2",
+    "expo-image": "~2.0.6",
     "expo-linear-gradient": "~14.0.1",
     "expo-location": "~18.0.4",
     "expo-secure-store": "~14.0.0",

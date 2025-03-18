@@ -23,7 +23,7 @@ async function attemptFetchTimetable({
     password: auth.password,
     reg_no: auth.reg_no,
   });
-  
+
   if (result.data.success) {
     // Save the fetched data locally.
     await AsyncStorage.setItem("TIMETABLE", JSON.stringify(result.data));
@@ -34,7 +34,7 @@ async function attemptFetchTimetable({
     setClassesToday(classesToday);
     setLastSynced(result.data.lastSynced);
     setLastUpdated(result.data.data.last_updated);
-    
+
     Toast.show({
       type: 'success',
       text1: "Timetable Synced",
@@ -80,11 +80,11 @@ export async function fetchTimetable(
   setLastUpdated,
 ) {
   // If a fetch is already in progress, do not start another.
-  if (isTimetableFetching) {
-    console.log("Timetable fetch already in progress.");
-    return;
-  }
-  isTimetableFetching = true;
+  // if (isTimetableFetching) {
+  //   console.log("Timetable fetch already in progress.");
+  //   return;
+  // }
+  // isTimetableFetching = true;
 
   try {
     if (!sync) setTimetableLoading(true);
@@ -128,6 +128,13 @@ export async function fetchTimetable(
             text1: "Auto-Syncing Timetable",
           });
         }
+        // If a fetch is already in progress, do not start another.
+        // if (isTimetableFetching) {
+        //   console.log("Timetable fetch already in progress.");
+        //   return;
+        // }
+        // isTimetableFetching = true;
+        
         // Attempt to fetch new data with retry logic.
         const resultData = await retryFetchTimetable({
           setTimetableLoading,

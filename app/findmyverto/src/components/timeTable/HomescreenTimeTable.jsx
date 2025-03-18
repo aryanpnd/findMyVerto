@@ -73,10 +73,12 @@ const HomescreenTimeTable = forwardRef(({ navigation }, ref) => {
     };
 
     useEffect(() => {
-        today();
         handleFetchTimetable();
+        today();
+        scrollToOngoing();
     }, []);
 
+    
     useEffect(() => {
         setClassesOver(
             timeTable &&
