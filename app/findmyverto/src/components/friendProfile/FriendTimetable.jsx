@@ -38,7 +38,7 @@ export default function FriendTimetable({ navigation, route }) {
                 const student = JSON.parse(studentRaw)
                 const parsedTimetable = formatTimetable(student.data.time_table, student.data.courses)
                 // sleep for half second
-                await new Promise((resolve) => setTimeout(resolve, 500));
+                // await new Promise((resolve) => setTimeout(resolve, 500));
                 settimeTable(parsedTimetable)
                 const classesToday = formatClassesToday(parsedTimetable, false);
                 setClassesToday(classesToday);
@@ -78,7 +78,7 @@ export default function FriendTimetable({ navigation, route }) {
 
             {
                 isError ?
-                    <ErrorMessage handleFetchTimetable={handleFetchTimetable} timetableLoading={loading} buttonHeight={45} ErrorMessage={"timetable"} />
+                    <ErrorMessage handleFetchTimetable={()=>handleFetchTimetable(true)} timetableLoading={loading||refreshing} buttonHeight={45} ErrorMessage={"timetable"} />
                     :
                     <TimeTableScreen timeTable={timeTable} loading={loading} classesToday={classesToday} />
             }

@@ -3,6 +3,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import formatTimetable, { filterOutdatedMakeup, formatClassesToday } from "../../helperFunctions/timetableFormatter";
 import { TimetableSyncTime } from "../../settings/SyncAndRetryLimits";
+import { userStorage } from "../../storage/storage";
 
 // Global flag to prevent concurrent timetable fetches.
 let isTimetableFetching = false;
@@ -26,7 +27,8 @@ async function attemptFetchTimetable({
 
   if (result.data.success) {
     // Save the fetched data locally.
-    await AsyncStorage.setItem("TIMETABLE", JSON.stringify(result.data));
+    userStorage.set("TIMETABLE", JSON.stringify(result.data));
+    // await AsyncStorage.setItem("TIMETABLE", JSON.stringify(result.data));
     const tt = formatTimetable(result.data.data.time_table, result.data.data.courses, todayOnly);
     settimeTable(tt);
     setCourses(result.data.data.courses);
@@ -91,7 +93,9 @@ export async function fetchTimetable(
     if (sync) setRefreshing(true);
 
     // Retrieve stored timetable data.
-    let userTimeTableRaw = await AsyncStorage.getItem("TIMETABLE");
+    // let userTimeTableRaw = await AsyncStorage.getItem("TIMETABLE");
+    let userTimeTableRaw = userStorage.getString("TIMETABLE");
+
     let userTimeTable = userTimeTableRaw ? JSON.parse(userTimeTableRaw) : null;
 
     const syncInterval = TimetableSyncTime();
@@ -193,7 +197,8 @@ export async function fetchMakeup(
     if (!sync) setMakeupLoading(true);
     if (sync) setRefreshing(true);
 
-    let makeupRaw = await AsyncStorage.getItem("MAKEUP");
+    // let makeupRaw = await AsyncStorage.getItem("MAKEUP");
+    let makeupRaw = userStorage.getString("MAKEUP");
     let storedMakeup = makeupRaw ? JSON.parse(makeupRaw) : null;
 
     if (!storedMakeup || sync) {
@@ -203,7 +208,8 @@ export async function fetchMakeup(
       });
 
       if (result.data.success) {
-        await AsyncStorage.setItem("MAKEUP", JSON.stringify(result.data));
+        // await AsyncStorage.setItem("MAKEUP", JSON.stringify(result.data));
+        userStorage.set("MAKEUP", JSON.stringify(result.data));
 
         let makeupClasses = filterOutdatedMakeup(result.data.data);
 
