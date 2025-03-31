@@ -94,6 +94,8 @@ export async function fetchTimetable(
 
     // Retrieve stored timetable data.
     // let userTimeTableRaw = await AsyncStorage.getItem("TIMETABLE");
+    // sleep for half second
+    await new Promise((resolve) => setTimeout(resolve, 500));
     let userTimeTableRaw = userStorage.getString("TIMETABLE");
 
     let userTimeTable = userTimeTableRaw ? JSON.parse(userTimeTableRaw) : null;
@@ -198,6 +200,8 @@ export async function fetchMakeup(
     if (sync) setRefreshing(true);
 
     // let makeupRaw = await AsyncStorage.getItem("MAKEUP");
+    // sleep for half second
+    await new Promise((resolve) => setTimeout(resolve, 500));
     let makeupRaw = userStorage.getString("MAKEUP");
     let storedMakeup = makeupRaw ? JSON.parse(makeupRaw) : null;
 

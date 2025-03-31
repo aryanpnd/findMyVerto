@@ -35,13 +35,18 @@ export const scrapeStudentBasicInfo = async (user: User) => {
 
         const studentInfoRaw = studentInfoResponse.data.d[0];
 
-        // Save student picture to cloudinary and get the URL also save it locally
+        // Save student picture locally and upload to preferred service
         let studentPictureUrl = '';
         if (studentInfoRaw.StudentPicture) {
-            saveImageLocally(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
-            // studentPictureUrl = await uploadImageToCloudinary(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
-            studentPictureUrl = await uploadImageToImageKit(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
+            const tempUrl = saveImageLocally(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
 
+            if (process.env.IMAGEKIT_PUBLIC_KEY && process.env.IMAGEKIT_PRIVATE_KEY) {
+                studentPictureUrl = await uploadImageToImageKit(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
+            } else if (process.env.CLOUDINARY_CLOUD_NAME && process.env.CLOUDINARY_API_KEY && process.env.CLOUDINARY_API_SECRET) {
+                studentPictureUrl = await uploadImageToCloudinary(studentInfoRaw.StudentPicture, studentInfoRaw.Registrationnumber);
+            } else {
+                studentPictureUrl = await tempUrl;
+            }
         }
 
         const studentInfo = {

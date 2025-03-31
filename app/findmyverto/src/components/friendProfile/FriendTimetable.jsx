@@ -38,7 +38,7 @@ export default function FriendTimetable({ navigation, route }) {
                 const student = JSON.parse(studentRaw)
                 const parsedTimetable = formatTimetable(student.data.time_table, student.data.courses)
                 // sleep for half second
-                // await new Promise((resolve) => setTimeout(resolve, 500));
+                await new Promise((resolve) => setTimeout(resolve, 500));
                 settimeTable(parsedTimetable)
                 const classesToday = formatClassesToday(parsedTimetable, false);
                 setClassesToday(classesToday);

@@ -1,10 +1,11 @@
-import { View, Text, Image, StyleSheet, Dimensions, Pressable } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, Pressable } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors } from '../../constants/colors';
 import ImageViewer from '../miscellaneous/ImageViewer';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import { LinearGradient } from 'expo-linear-gradient';
-import { HEIGHT, WIDTH } from '../../constants/styles';
+import { blurHash, HEIGHT, WIDTH } from '../../constants/styles';
+import { Image } from 'expo-image';
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create shimmer placeholder
 
 export default function StudentProfile({ student, loading }) {
@@ -28,8 +29,10 @@ export default function StudentProfile({ student, loading }) {
           <ShimmerPlaceHolder visible={false} style={{ height: 30, width: "80%", borderRadius: 10 }} />
           <ShimmerPlaceHolder visible={false} style={{ height: 30, width: "80%", borderRadius: 10 }} />
         </View>
-        <ShimmerPlaceHolder visible={false} style={{height:HEIGHT(25), width:"80%",marginTop:20,
-    borderRadius: 20,}}/>
+        <ShimmerPlaceHolder visible={false} style={{
+          height: HEIGHT(25), width: "80%", marginTop: 20,
+          borderRadius: 20,
+        }} />
       </View>
       :
       <View style={styles.container}>
@@ -37,10 +40,15 @@ export default function StudentProfile({ student, loading }) {
         {/* profile image */}
         <Pressable onPress={() => setFullscreenImage(true)} style={{ justifyContent: "center", alignItems: "center", width: "100%" }}>
           <Image
+            style={{
+              height: HEIGHT(15),
+              width: HEIGHT(15),
+              borderRadius: HEIGHT(15) / 2,
+            }}
             source={imageSource}
-            style={{height: HEIGHT(15), width: HEIGHT(15), borderRadius: HEIGHT(15) / 2 , objectFit: "contain",backgroundColor:colors.whiteLight }}
-            transition={1000}
+            placeholder={{blurHash: blurHash}}
             onError={onImageError}
+            contentFit="cover"
           />
         </Pressable>
 

@@ -3,15 +3,9 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { FeedNavigator } from './FeedNavigator';
 import { HomeNavigator } from './HomeNavigator';
 
-// Create navigators
+
 const Stack = createNativeStackNavigator();
 
-/* 
-  Root Stack Navigator
-  
-  Replace your current Home screen with the HomeTabNavigator. Other screens remain unchanged and
-  will not show the bottom tab bar.
-*/
 export const AppNavigator = () => {
     return (
         <Stack.Navigator
