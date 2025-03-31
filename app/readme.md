@@ -10,7 +10,6 @@ FindMyVerto provides seamless access to timetables, attendance, grades, assignme
 - [Upcoming Features](#upcoming-features)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Project Structure](#project-structure)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -93,33 +92,6 @@ Ensure you have the following installed:
    # or
    yarn start
    ```
-
----
-
-## 📁 Project Structure
-
-```
-findmyverto/
-├── .expo/
-├── android/
-├── assets/
-├── context/
-├── hooks/
-├── src/
-│   ├── components/
-│   ├── constants/
-│   ├── screens/
-│   ├── utils/
-├── icons/
-├── .env
-├── .gitignore
-├── App.js
-├── app.json
-├── babel.config.js
-├── eas.json
-├── package.json
-└── dev-readme.md
-```
 
 ---
 

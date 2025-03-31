@@ -1,18 +1,25 @@
 import ImageKit from 'imagekit';
 
-const imagekit = new ImageKit({
-  publicKey: process.env.IMAGEKIT_PUBLIC_KEY as string,
-  privateKey: process.env.IMAGEKIT_PRIVATE_KEY as string,
-  urlEndpoint: process.env.IMAGEKIT_URL_ENDPOINT as string, 
-});
+const imagekitPublicKey = process.env.IMAGEKIT_PUBLIC_KEY;
+const imagekitPrivateKey = process.env.IMAGEKIT_PRIVATE_KEY;
+const imagekitUrlEndpoint = process.env.IMAGEKIT_URL_ENDPOINT;
 
-/**
- * Uploads a base64 encoded image to ImageKit inside the "students" folder and returns the image URL.
- * @param base64Image - The base64 encoded image string.
- * @param regNo - The student's registration number (used as fileName).
- * @returns The ImageKit image URL.
- */
+let imagekit: ImageKit | null = null;
+if (imagekitPublicKey && imagekitPrivateKey && imagekitUrlEndpoint) {
+  imagekit = new ImageKit({
+    publicKey: imagekitPublicKey,
+    privateKey: imagekitPrivateKey,
+    urlEndpoint: imagekitUrlEndpoint,
+  });
+} else {
+  console.warn('Warning: Missing ImageKit environment variables. ImageKit functionality will not work.');
+}
+
 export const uploadImageToImageKit = async (base64Image: string, regNo: string): Promise<string> => {
+  if (!imagekit) {
+    throw new Error('ImageKit environment variables are not set.');
+  }
+
   try {
     let dataUri = base64Image;
     if (!base64Image.startsWith("data:image/")) {
@@ -20,13 +27,13 @@ export const uploadImageToImageKit = async (base64Image: string, regNo: string):
     }
 
     const uploadResponse = await new Promise<any>((resolve, reject) => {
-      imagekit.upload(
+      imagekit!.upload(
         {
-          file: dataUri,                      // Base64 image with prefix
-          fileName: `${regNo}.jpg`,            
-          folder: '/students',                // Upload into the "students" folder
-          useUniqueFileName: false,           // Overwrite if file with the same name exists
-          isPrivateFile: false,               // Set to true if you want the file to be private
+          file: dataUri,
+          fileName: `${regNo}.jpg`,
+          folder: '/students',
+          useUniqueFileName: false,
+          isPrivateFile: false,
         },
         (error, result) => {
           if (error) {

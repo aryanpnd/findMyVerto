@@ -19,12 +19,12 @@ export default function DriveCard({ drive, navigation }) {
     return (
         <View style={[styles.container, { opacity: drive.status === "Open" ? 1 : 0.7 }]}>
             <View style={styles.header}>
-                <Text style={[styles.text1, { width: WIDTH(55), color: drive.registered === "Yes" && "black" }]}>{drive.company}</Text>
+                <Text style={[styles.text1, { width: WIDTH(55), color: drive.registered !== "No" && "black" }]}>{drive.company}</Text>
                 {
-                    drive.registered === "Yes" ?
-                        <Text style={styles.registeredText}>Registered</Text>
-                        :
-                        <Text style={[styles.registeredText, { backgroundColor: "gray" }]}>Not Registered</Text>
+                    (drive.registered === "No" || drive.registered === "Click to Register") ?
+                    <Text style={[styles.registeredText, { backgroundColor: "gray" }]}>Not Registered</Text>
+                    :
+                    <Text style={styles.registeredText}>Registered</Text>
                 }
                 {
                     drive.registered !== "Yes" &&

@@ -69,10 +69,13 @@ export const addCustomServer = async (server, setLoading) => {
     const response = await axios.get(server.url + "/status");
     if (response.status !== 200) {
       setLoading(false);
+      
       return { success: false, message: "Check your URL, It should be the root url (eg: xyz.com)" };
     }
   } catch (err) {
     setLoading(false);
+    console.log(server.url);
+    console.log(err);
     return { success: false, message: "Check your URL, It should be the root url (eg: xyz.com)" };
   }
   setLoading(false);

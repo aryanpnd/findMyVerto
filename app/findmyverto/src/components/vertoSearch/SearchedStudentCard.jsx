@@ -1,6 +1,6 @@
-import { View, Text, StyleSheet, Dimensions, Image, TouchableOpacity, ActivityIndicator, Pressable, Modal } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ActivityIndicator, Pressable, Modal } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { globalStyles, HEIGHT, WIDTH } from '../../constants/styles'
+import { blurHash, globalStyles, HEIGHT, WIDTH } from '../../constants/styles'
 import { colors } from '../../constants/colors';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { AuthContext } from '../../../context/Auth';
@@ -11,6 +11,7 @@ import { acceptFriendRequest, cancelSentRequest, rejectFriendRequest, removeFrie
 import ImageViewer from '../miscellaneous/ImageViewer';
 import CustomAlert, { useCustomAlert } from '../miscellaneous/CustomAlert';
 import { AppContext } from '../../../context/MainApp';
+import { Image } from 'expo-image';
 
 
 const { height } = Dimensions.get('window');
@@ -123,7 +124,9 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
             <TouchableOpacity onPress={() => setModalVisible(true)} style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
                 <Image
                     source={imageSource}
-                    style={{ height: 60, width: 60, borderRadius: 60 / 2, objectFit: "contain" }}
+                    style={{ height: 60, width: 60, borderRadius: 60 / 2 }}
+                    placeholder={{ blurhash: blurHash }}
+                    contentFit="contain"
                 />
             </TouchableOpacity>
 

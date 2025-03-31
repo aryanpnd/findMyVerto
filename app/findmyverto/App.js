@@ -1,4 +1,3 @@
-// App.js
 import React, { useEffect, useRef } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import AuthPage from './AuthPage';

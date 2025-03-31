@@ -4,10 +4,10 @@ import Toast from 'react-native-toast-message';
 import AttendanceCard from '../../components/attendance/AttendanceCard';
 import { colors } from '../../constants/colors';
 import SyncData from '../../components/miscellaneous/SyncData';
-import { ErrorMessage } from '../miscellaneous/errorMessage';
 import Loading1 from '../miscellaneous/Loading1';
 import AttendanceScreenShimmer from '../shimmers/AttendanceScreenShimmer';
 import { HEIGHT, WIDTH } from '../../constants/styles';
+import { ErrorMessage } from '../timeTable/ErrorMessage';
 
 export default function AttendanceScreen({
   attendance,
@@ -41,12 +41,9 @@ export default function AttendanceScreen({
       </View>
 
       {isError ? (
-        <ErrorMessage
-          handleFetch={() => fetchAttendance(true)}
-          loading={loading}
-          messageText={"...while fetching the attendance"}
-          buttonStyles={{ height: '8%', width: '50%' }}
-        />
+        <View style={{ flex: 1, justifyContent: 'center' }}>
+          <ErrorMessage handleFetchTimetable={() => fetchAttendance(true)} timetableLoading={loading || refresh} buttonHeight={45} ErrorMessage={"Attendance"} />
+        </View>
       ) : (
         <View style={styles.container}>
           <SyncData

@@ -78,7 +78,7 @@ export default function FriendTimetable({ navigation, route }) {
 
             {
                 isError ?
-                    <ErrorMessage handleFetchTimetable={handleFetchTimetable} timetableLoading={loading} buttonHeight={45} ErrorMessage={"timetable"} />
+                    <ErrorMessage handleFetchTimetable={()=>handleFetchTimetable(true)} timetableLoading={loading||refreshing} buttonHeight={45} ErrorMessage={"timetable"} />
                     :
                     <TimeTableScreen timeTable={timeTable} loading={loading} classesToday={classesToday} />
             }

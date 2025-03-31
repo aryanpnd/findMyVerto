@@ -1,7 +1,7 @@
 {
   "name": "findmyverto",
   "version": "1.0.0",
-  "main": "node_modules/expo/AppEntry.js",
+  "main": "index.js",
   "scripts": {
     "start": "expo start",
     "android": "expo run:android",
@@ -11,6 +11,7 @@
   "dependencies": {
     "@expo/vector-icons": "^14.0.2",
     "@gorhom/bottom-sheet": "^5",
+    "@nandorojo/galeria": "^1.2.0",
     "@notifee/react-native": "^9.1.8",
     "@react-native-async-storage/async-storage": "1.23.1",
     "@react-native-community/viewpager": "5.0.11",
@@ -30,6 +31,7 @@
     "expo-device": "~7.0.2",
     "expo-image": "~2.0.6",
     "expo-linear-gradient": "~14.0.1",
+    "expo-linking": "~7.0.5",
     "expo-location": "~18.0.4",
     "expo-secure-store": "~14.0.0",
     "expo-splash-screen": "~0.29.18",
