@@ -70,7 +70,7 @@ export default function TimeTable() {
           ErrorMessage={"timetable"}
         />
       ) : (
-        <TimeTableScreen timeTable={timeTable} classesToday={classesToday} />
+        <TimeTableScreen timeTable={timeTable} classesToday={classesToday} courses={courses}/>
       )}
     </>
   );

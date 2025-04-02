@@ -1,26 +1,40 @@
-import { View, Text, StyleSheet, Dimensions, Pressable } from 'react-native'
-import React, { useEffect, useState } from 'react'
+import { View, Text, StyleSheet, Dimensions, Pressable } from 'react-native';
+import React, { useEffect, useState } from 'react';
 import { colors } from '../../constants/colors';
 import ImageViewer from '../miscellaneous/ImageViewer';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import { LinearGradient } from 'expo-linear-gradient';
 import { blurHash, HEIGHT, WIDTH } from '../../constants/styles';
 import { Image } from 'expo-image';
+
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create shimmer placeholder
 
 export default function StudentProfile({ student, loading }) {
-  const [fullscreenImage, setFullscreenImage] = useState(false)
+  const [fullscreenImage, setFullscreenImage] = useState(false);
 
-  const imageSource = student?.studentPicture
-    ? { uri: student?.studentPicture }
-    : require("../../../assets/icons/profileAvatar.png");
+  // Create a state variable to hold the image source.
+  const [imgSrc, setImgSrc] = useState(
+    student?.studentPicture
+      ? { uri: student.studentPicture }
+      : require("../../../assets/icons/profileAvatar.png")
+  );
 
+  // If the student picture changes, update the imgSrc.
+  useEffect(() => {
+    setImgSrc(
+      student?.studentPicture
+        ? { uri: student.studentPicture }
+        : require("../../../assets/icons/profileAvatar.png")
+    );
+  }, [student]);
+
+  // When an image error occurs, update the state to use the fallback image.
   const onImageError = () => {
-    imageSource = require("../../../assets/icons/profileAvatar.png");
-  }
+    setImgSrc(require("../../../assets/icons/profileAvatar.png"));
+  };
 
   return (
-    loading ?
+    loading ? (
       <View style={styles.container}>
         <View style={{ justifyContent: "center", alignItems: "center", width: "100%" }}>
           <ShimmerPlaceHolder visible={false} style={{ height: HEIGHT(15), width: HEIGHT(15), borderRadius: HEIGHT(15) / 2 }} />
@@ -34,9 +48,9 @@ export default function StudentProfile({ student, loading }) {
           borderRadius: 20,
         }} />
       </View>
-      :
+    ) : (
       <View style={styles.container}>
-        <ImageViewer image={imageSource} visible={fullscreenImage} setVisible={setFullscreenImage} />
+        <ImageViewer image={imgSrc} visible={fullscreenImage} setVisible={setFullscreenImage} />
         {/* profile image */}
         <Pressable onPress={() => setFullscreenImage(true)} style={{ justifyContent: "center", alignItems: "center", width: "100%" }}>
           <Image
@@ -45,8 +59,8 @@ export default function StudentProfile({ student, loading }) {
               width: HEIGHT(15),
               borderRadius: HEIGHT(15) / 2,
             }}
-            source={imageSource}
-            placeholder={{blurHash: blurHash}}
+            source={imgSrc}
+            placeholder={{ blurHash: blurHash }}
             onError={onImageError}
             contentFit="cover"
           />
@@ -67,7 +81,9 @@ export default function StudentProfile({ student, loading }) {
 
             <View style={styles.otherInfoSub2}>
               <Text style={[styles.textM, { textAlign: "right" }]}>Roll No</Text>
-              <Text style={{ textAlign: "right" }}>{student?.rollNumber?.split(student?.section)[1]}</Text>
+              <Text style={{ textAlign: "right" }}>
+                {student?.rollNumber?.split(student?.section)[1]}
+              </Text>
             </View>
           </View>
 
@@ -75,16 +91,14 @@ export default function StudentProfile({ student, loading }) {
             <Text style={styles.textM}>Program</Text>
             <Text>{student?.program}</Text>
           </View>
-
         </View>
-
       </View>
-  )
+    )
+  );
 }
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor:"red",
     width: "100%",
     alignItems: "center",
   },
@@ -94,23 +108,22 @@ const styles = StyleSheet.create({
     gap: 20,
     padding: WIDTH(5),
     borderRadius: 20,
-    backgroundColor: colors.whiteLight
+    backgroundColor: colors.whiteLight,
   },
   otherInfoSub: {
     flexDirection: "row",
     justifyContent: "space-between",
   },
   otherInfoSub2: {
-    width: "40%"
+    width: "40%",
   },
-
   textL: {
     fontSize: 20,
     color: colors.lightDark,
-    textAlign: "center"
+    textAlign: "center",
   },
   textM: {
     fontSize: 18,
     color: "grey",
-  }
-})
+  },
+});

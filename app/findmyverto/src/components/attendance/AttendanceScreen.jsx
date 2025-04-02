@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Text, TextInput } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import AttendanceCard from '../../components/attendance/AttendanceCard';
@@ -8,6 +8,7 @@ import Loading1 from '../miscellaneous/Loading1';
 import AttendanceScreenShimmer from '../shimmers/AttendanceScreenShimmer';
 import { HEIGHT, WIDTH } from '../../constants/styles';
 import { ErrorMessage } from '../timeTable/ErrorMessage';
+import { Entypo } from '@expo/vector-icons';
 
 export default function AttendanceScreen({
   attendance,
@@ -19,9 +20,16 @@ export default function AttendanceScreen({
   navigation,
   attendanceDetails,
   isError,
+  routeParams,
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+
+  useEffect(() => {
+    if (routeParams && routeParams.courseCode) {
+      setSearchQuery(routeParams.courseCode);
+    }
+  }, [routeParams]);
 
   // Filter attendance summary based on searchQuery
   const filteredAttendance = attendance?.attendance_summary?.filter((value) => {
@@ -42,7 +50,12 @@ export default function AttendanceScreen({
 
       {isError ? (
         <View style={{ flex: 1, justifyContent: 'center' }}>
-          <ErrorMessage handleFetchTimetable={() => fetchAttendance(true)} timetableLoading={loading || refresh} buttonHeight={45} ErrorMessage={"Attendance"} />
+          <ErrorMessage 
+            handleFetchTimetable={() => fetchAttendance(true)} 
+            timetableLoading={loading || refresh} 
+            buttonHeight={45} 
+            ErrorMessage={"Attendance"} 
+          />
         </View>
       ) : (
         <View style={styles.container}>
@@ -56,7 +69,6 @@ export default function AttendanceScreen({
             loading={refresh ? refresh : loading}
           />
 
-          {/* Only show aggregate attendance when search bar is not focused */}
           {!isFocused && (
             <View style={styles.TotalAttendanceContainer}>
               {loading ? (
@@ -78,16 +90,29 @@ export default function AttendanceScreen({
           )}
 
           <View style={styles.AttendanceContainer}>
-            <ScrollView contentContainerStyle={{ gap: 10, paddingVertical: 10 }}>
-              <TextInput
-                style={styles.searchBar}
-                placeholder='Search by subject name, code, or percentage...'
-                placeholderTextColor={'grey'}
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-                onFocus={() => setIsFocused(true)}
-                onBlur={() => setIsFocused(false)}
-              />
+            <ScrollView contentContainerStyle={{ gap: 10, paddingVertical: 10 }} 
+            keyboardShouldPersistTaps="handled">
+              {/* Wrap TextInput inside a view to overlay the clear icon */}
+              <View style={styles.searchContainer}>
+                <TextInput
+                  style={styles.searchBar}
+                  placeholder='Search by subject name, code, or percentage...'
+                  placeholderTextColor={'grey'}
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  onFocus={() => setIsFocused(true)}
+                  onBlur={() => setIsFocused(false)}
+                />
+                {searchQuery.trim() !== '' && (
+                  <TouchableOpacity 
+                    style={styles.clearIconContainer} 
+                    onPress={() => setSearchQuery('')}
+                  >
+                    <Entypo name="circle-with-cross" size={24} color="black" />
+                  </TouchableOpacity>
+                )}
+              </View>
+
               {loading ? (
                 Array(6)
                   .fill(0)
@@ -98,21 +123,19 @@ export default function AttendanceScreen({
                   ))
               ) : (
                 filteredAttendance &&
-                filteredAttendance.map((value, index) => {
-                  return (
-                    <View style={styles.cardContainer} key={index}>
-                      <AttendanceCard
-                        colors={['#0f2027', '#2c5364']}
-                        attendance={value}
-                        navigation={navigation}
-                        isAggregateCard={attendance.subject_name ? true : false}
-                        attendanceDetails={
-                          attendanceDetails.attendance_details[value.subject_code]
-                        }
-                      />
-                    </View>
-                  );
-                })
+                filteredAttendance.map((value, index) => (
+                  <View style={styles.cardContainer} key={index}>
+                    <AttendanceCard
+                      colors={['#0f2027', '#2c5364']}
+                      attendance={value}
+                      navigation={navigation}
+                      isAggregateCard={attendance.subject_name ? true : false}
+                      attendanceDetails={
+                        attendanceDetails.attendance_details[value.subject_code]
+                      }
+                    />
+                  </View>
+                ))
               )}
             </ScrollView>
           </View>
@@ -124,15 +147,12 @@ export default function AttendanceScreen({
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
     width: '100%',
     height: '100%',
   },
   TotalAttendanceContainer: {
-    // flex: 2,
     justifyContent: 'center',
     alignItems: 'center',
-    // height: HEIGHT(22),
     paddingTop: 10,
     paddingBottom: 15,
     backgroundColor: colors.secondary,
@@ -142,16 +162,29 @@ const styles = StyleSheet.create({
   AttendanceContainer: {
     flex: 6,
   },
-  searchBar: {
+  searchContainer: {
     width: WIDTH(95),
+    alignSelf: 'center',
+    position: 'relative',
+  },
+  searchBar: {
+    width: '100%',
     height: HEIGHT(6),
     borderWidth: 1,
     borderRadius: 20,
     paddingHorizontal: 15,
-    alignSelf: 'center',
-    // marginTop: 10,
     borderColor: 'grey',
     backgroundColor: 'white',
+  },
+  clearIconContainer: {
+    position: 'absolute',
+    right: 15,
+    top: '45%',
+    transform: [{ translateY: -10 }],
+  },
+  clearIcon: {
+    fontSize: 20,
+    color: 'grey',
   },
   cardContainer: {
     justifyContent: 'center',

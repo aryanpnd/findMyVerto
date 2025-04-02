@@ -114,6 +114,7 @@ export default function AssignmentsScreen({
                             scrollX={scrollX}
                             containerHeight={HEIGHT(6)}
                             containerWidth={WIDTH(95)}
+                            pageWidth={WIDTH(100)}
                         />
 
                         <ScrollView

@@ -17,11 +17,7 @@ import Animated, {
   useSharedValue
 } from 'react-native-reanimated';
 import { colors } from '../../constants/colors';
-import BreakCard from '../timeTable/BreakCard';
-import ClassesCard from '../timeTable/ClassesCard';
-import { getDay } from '../../../utils/helperFunctions/dataAndTimeHelpers';
-import LottieView from 'lottie-react-native';
-import { isTimeEqual } from '../../../utils/helperFunctions/dataAndTimeHelpers';
+import TimetableItem from './TimetableItem';
 
 const { width } = Dimensions.get('screen');
 
@@ -39,7 +35,7 @@ const getHeaderWidths = (headers) => {
   return obj;
 };
 
-export default function TimeTableScreen({ timeTable, classesToday }) {
+export default function TimeTableScreen({ timeTable,courses, classesToday }) {
   // Define day names and build headers with class count.
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const headers = days.map((day, i) => `${day} (${classesToday[i] ?? 0})`);
@@ -129,103 +125,56 @@ export default function TimeTableScreen({ timeTable, classesToday }) {
   }, [classesToday, scroll1]);
 
   const onPressHeader = index => {
-    setSelectedIndex(index);
     scroll1.value = index;
   };
 
   return (
     <View style={styles.flex}>
-      <Animated.ScrollView
-        ref={topScrollRef}
-        style={styles.topScroll}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        onScroll={topScrollHandler}>
-        {headers.map((item, index) => (
-          <View
-            key={index}
-            onLayout={e => {
-              headerWidths[index].value = e.nativeEvent.layout.width;
-            }}
-            style={{ flex: 1 }}>
-            <TouchableOpacity style={styles.headerItem} onPress={() => onPressHeader(index)}>
-              <Text style={{
-                color: selectedIndex === index ? "yellow" : "#ffffffb5",
-                fontWeight: selectedIndex === index ? "bold" : "400",
-                fontSize: selectedIndex === index ? 16 : 15
-              }}>
-                {item}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        ))}
-      </Animated.ScrollView>
+    <Animated.ScrollView
+      ref={topScrollRef}
+      style={styles.topScroll}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      onScroll={topScrollHandler}>
+      {headers.map((item, index) => (
+        <View
+          key={index}
+          onLayout={e => {
+            headerWidths[index].value = e.nativeEvent.layout.width;
+          }}
+          style={{ flex: 1 }}>
+          <TouchableOpacity style={styles.headerItem} onPress={() => onPressHeader(index)}>
+            <Text style={{
+              color: getCurrentDayIndex() === index ? "yellow" : "#ffffffb5",
+              fontWeight: getCurrentDayIndex() === index ? "bold" : "400",
+              fontSize: getCurrentDayIndex() === index ? 16 : 15
+            }}>
+              {item}
+            </Text>
+          </TouchableOpacity>
+        </View>
+      ))}
+    </Animated.ScrollView>
 
-      <Animated.View style={[styles.bar, barWidthStyle]} pointerEvents={'none'}>
-        <Animated.View style={[StyleSheet.absoluteFill, styles.barInner, barMovingStyle]} />
-      </Animated.View>
-
-      <Animated.ScrollView
-        ref={bottomScrollRef}
-        pagingEnabled
-        contentContainerStyle={styles.list}
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        onScroll={scrollHandler}>
-        {days.map((day, index) => (
-          <Item key={day} index={index} classes={timeTable[day] || []} />
-        ))}
-      </Animated.ScrollView>
-    </View>
-  );
-}
-
-function Item({ classes, index }) {
-  const scrollViewRef = React.useRef(null);
-
-  useEffect(() => {
-    const ongoingIndex = classes.findIndex(classDetails =>
-      isTimeEqual(classDetails?.time) && getDay() === index
-    );
-    if (ongoingIndex !== -1 && scrollViewRef.current) {
-      scrollViewRef.current.scrollTo({
-        y: ongoingIndex * 100,
-        animated: true,
-      });
-    }
-  }, [classes, index]);
-
-  return (
-    <Animated.View style={styles.itemContainer}>
-      <View style={styles.items}>
-        {!classes[0]?.time ? (
-          <View style={{ alignItems: "center", justifyContent: "center", gap: 8, width: width, height: "100%" }}>
-            <LottieView
-              autoPlay
-              style={{ width: 200, height: 200 }}
-              source={require('../../../assets/lotties/sleep.json')}
-            />
-            <Text style={styles.text1}>No classes for today</Text>
-            <Text style={styles.text1}>Have fun...</Text>
-          </View>
-        ) : (
-          <ScrollView
-            ref={scrollViewRef}
-            showsVerticalScrollIndicator={false}
-            contentContainerStyle={{ gap: 10, paddingVertical: 10, paddingHorizontal: 8 }}>
-            {classes.map((classDetails, idx) =>
-              classDetails?.break ? (
-                <BreakCard key={idx} time={classDetails?.time} day={index} />
-              ) : (
-                <ClassesCard key={idx} time={classDetails?.time} classes={classDetails?.class} day={index} />
-              )
-            )}
-          </ScrollView>
-        )}
-      </View>
+    <Animated.View style={[styles.bar, barWidthStyle]} pointerEvents={'none'}>
+      <Animated.View style={[StyleSheet.absoluteFill, styles.barInner, barMovingStyle]} />
     </Animated.View>
+
+    <Animated.ScrollView
+      ref={bottomScrollRef}
+      pagingEnabled
+      contentContainerStyle={styles.list}
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      onScroll={scrollHandler}>
+      {days.map((day, index) => (
+        <TimetableItem key={day} index={index} classes={timeTable[day] || []} courses={courses}/>
+      ))}
+    </Animated.ScrollView>
+  </View>
   );
 }
+
 
 const styles = StyleSheet.create({
   flex: {
@@ -237,16 +186,6 @@ const styles = StyleSheet.create({
     backgroundColor: colors.secondary,
     borderBottomLeftRadius: 25,
     borderBottomRightRadius: 25,
-  },
-  itemContainer: {
-    height: '100%',
-    width: width,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  items: {
-    height: "100%",
-    width: "100%",
   },
   headerItem: {
     paddingHorizontal: 20,
@@ -266,10 +205,6 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "white",
     borderRadius: 20
-  },
-  text1: {
-    color: "grey",
-    fontWeight: "500"
   },
   list: {
     flexGrow: 1,
