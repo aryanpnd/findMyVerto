@@ -98,6 +98,7 @@ export default function FriendRequests({ navigation }) {
           scrollX={scrollX}
           containerWidth={WIDTH(90)}
           containerHeight={HEIGHT(6)}
+          pageWidth={width}
         />
 
         <ScrollView

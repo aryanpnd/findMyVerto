@@ -1,45 +1,57 @@
 import React, { useState } from "react";
 import { View, Text, TouchableOpacity, Animated, StyleSheet } from "react-native";
 import { colors } from "../../constants/colors";
-import { Dimensions } from "react-native";
-const { height, width } = Dimensions.get('window');
 
-export default function PagerButtons({ buttons, onClick, scrollX, containerWidth, containerHeight }) {
+export default function PagerButtons({ buttons, onClick, scrollX, containerWidth, containerHeight, pageWidth, buttonColor }) {
   const [btnContainerWidth, setWidth] = useState(0);
+  // Calculate each button's width
   const btnWidth = btnContainerWidth / buttons?.length;
+
+  // Use the passed pageWidth to set the interpolation input range.
+  // When scrolling from 0 to (pageWidth * (buttons.length - 1)),
+  // the indicator should translate from 0 to (btnWidth * (buttons.length - 1)).
   const translateX = scrollX.interpolate({
-    inputRange: [0, width],
-    outputRange: [0, btnWidth],
+    inputRange: [0, pageWidth * (buttons.length - 1)],
+    outputRange: [0, btnWidth * (buttons.length - 1)],
+    extrapolate: 'clamp'
   });
+
+  // This inverse translation ensures the text inside the animated indicator remains centered.
   const translateXOpposit = scrollX.interpolate({
-    inputRange: [0, width],
-    outputRange: [0, -btnWidth],
+    inputRange: [0, pageWidth * (buttons.length - 1)],
+    outputRange: [0, -btnWidth * (buttons.length - 1)],
+    extrapolate: 'clamp'
   });
+
   return (
     <View
       style={[styles.btnContainer, { width: containerWidth, height: containerHeight }]}
-      onLayout={e => setWidth(e.nativeEvent.layout.width)}>
+      onLayout={e => setWidth(e.nativeEvent.layout.width)}
+    >
       {buttons?.map((btn, i) => (
         <TouchableOpacity
           key={btn}
           style={styles.btn}
-          onPress={() => onClick(i)}>
-          <Text style={{ fontWeight: "500",color:"gray" }}>{btn}</Text>
+          onPress={() => onClick(i)}
+        >
+          <Text style={{ fontWeight: "500", color: "gray" }}>{btn}</Text>
         </TouchableOpacity>
       ))}
       <Animated.View
         style={[
           styles.animatedBtnContainer,
-          { width: btnWidth, transform: [{ translateX }] },
-        ]}>
+          { backgroundColor: buttonColor || colors.primary, width: btnWidth, transform: [{ translateX }] },
+        ]}
+      >
         {buttons?.map(btn => (
           <Animated.View
             key={btn}
             style={[
               styles.animatedBtn,
               { width: btnWidth, transform: [{ translateX: translateXOpposit }] },
-            ]}>
-            <Text style={[styles.btnTextActive]}>{btn}</Text>
+            ]}
+          >
+            <Text style={styles.btnTextActive}>{btn}</Text>
           </Animated.View>
         ))}
       </Animated.View>
@@ -49,12 +61,10 @@ export default function PagerButtons({ buttons, onClick, scrollX, containerWidth
 
 const styles = StyleSheet.create({
   btnContainer: {
-    // height: "6%",
     borderRadius: 25,
     overflow: 'hidden',
     flexDirection: 'row',
     backgroundColor: '#00000011',
-    // width: '90%',
   },
   btn: {
     flex: 1,
@@ -68,10 +78,8 @@ const styles = StyleSheet.create({
     position: 'absolute',
     alignItems: "center",
     overflow: 'hidden',
-    backgroundColor: colors.primary,
   },
   animatedBtn: {
-    height: 40,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -79,4 +87,4 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
   },
-})
+});

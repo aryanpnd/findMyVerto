@@ -9,7 +9,9 @@ import { AppContext } from '../../../context/MainApp'
 import { fetchAttendance } from '../../../utils/fetchUtils/userData/attendanceFetch'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 
-export default function Attendance({ navigation }) {
+export default function Attendance({ navigation,route }) {
+  const routeParams = route.params
+
   const { auth } = useContext(AuthContext)
   const { attendanceLoading, setAttendanceLoading } = useContext(AppContext)
   const [attendance, setattendance] = useState({})
@@ -42,7 +44,9 @@ export default function Attendance({ navigation }) {
         self={true}
         navigation={navigation}
         attendanceDetails={attendanceDetails}
-        isError={isError} />
+        isError={isError} 
+        routeParams={routeParams}
+        />
     </>
   )
 }
