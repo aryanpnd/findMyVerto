@@ -283,7 +283,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     text2: {
-        fontSize: 18,
+        fontSize: 15,
         fontWeight: '500',
         color: colors.lightDark,
     },
