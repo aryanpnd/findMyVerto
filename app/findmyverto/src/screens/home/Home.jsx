@@ -17,7 +17,6 @@ export default function Home({ navigation }) {
   useEffect(() => {
     getFriendRequestsCount(auth, setFriendRequests)
     console.log('Home Screen Mounted');
-    
   }, [])
 
   return (
