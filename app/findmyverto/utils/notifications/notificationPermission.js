@@ -21,14 +21,14 @@ export async function requestNotificationPermission(notificationSheetRef) {
 
     notificationSheetRef.current.open(
       "Stay Updated! 📢",
-      "We'd love to keep you in the loop with updates about your friends, friend requests, and other important info. Please allow notifications! 😊",
+      "We'd love to keep you in the loop with updates about your friends, friend requests, and other important info. Please allow notifications!",
       async () => {
         // Request permissions using notifee
         const newSettings = await notifee.requestPermission();
         if (newSettings.authorizationStatus === AuthorizationStatus.DENIED) {
           // Show a follow-up bottom sheet if permission is denied
           notificationSheetRef.current.open(
-            "Permission Required 🚨",
+            "Permission Required 🥺",
             "Notification permission is essential for receiving timely updates.",
             async () => {
               const notifSetting = await notifee.requestPermission();
@@ -51,7 +51,7 @@ export async function requestNotificationPermission(notificationSheetRef) {
     // Regular launch, but permission is not granted
     notificationSheetRef.current.open(
       "Enable Notifications! 🔔",
-      "Allow notifications to get updates about your friends, friend requests, and other important news.",
+      "Allow notifications to get updates about your friends, friend requests, and other important info.",
       async () => {
         const notifSetting = await notifee.requestPermission();
         if (notifSetting.authorizationStatus === AuthorizationStatus.DENIED) {

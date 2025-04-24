@@ -12,6 +12,7 @@ import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import { LinearGradient } from "expo-linear-gradient";
 import { ErrorMessage } from "../timeTable/ErrorMessage";
 import LottieView from "lottie-react-native";
+import { userStorage } from "../../../utils/storage/storage";
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
@@ -70,9 +71,8 @@ export default function AssignmentsScreen({
         }
     }, [assignments, searchQuery, courses]);
 
-    // Get courses data from AsyncStorage
     const getCourses = async () => {
-        const coursesItem = await AsyncStorage.getItem("TIMETABLE");
+        const coursesItem = userStorage.getString("TIMETABLE");
         if (coursesItem) {
             const coursesData = JSON.parse(coursesItem);
             setCourses(coursesData.data.courses);
@@ -83,7 +83,6 @@ export default function AssignmentsScreen({
         getCourses();
     }, []);
 
-    // Simply update the searchQuery state; filtering is handled in the useEffect above.
     const filterSubjects = (text) => {
         setSearchQuery(text);
     };

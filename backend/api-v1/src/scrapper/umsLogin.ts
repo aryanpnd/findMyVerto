@@ -1,3 +1,7 @@
+// Disabling SSL certificate validation to bypass self-signed certificate issues
+// Resolved: "unable to verify the first certificate"
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
 import axios from 'axios';
 import { load } from 'cheerio';
 import { CookieJar } from 'tough-cookie';
@@ -15,9 +19,16 @@ export async function umsLogin(user: User): Promise<umsLoginReturn> {
   const url = umsUrls.LOGIN_URL;
   const headers: any = umsHeaders;
 
-  // Initialize cookie jar
   const jar = new CookieJar();
-  const client = wrapper(axios.create({ jar, headers: headers as any }));
+
+  // ✅ Create Axios instance separately, with rejectUnauthorized false
+  const axiosInstance = axios.create({
+    jar,
+    headers,
+    withCredentials: true,
+  });
+
+  const client = wrapper(axiosInstance);
 
   try {
     // Initial GET request to fetch view states
@@ -102,7 +113,6 @@ export async function umsLogin(user: User): Promise<umsLoginReturn> {
       passwordExpiry: fgPassword
     };
   } catch (error: any) {
-    // console.error(error);
     return {
       login: false,
       message: error.message,
