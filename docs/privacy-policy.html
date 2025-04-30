@@ -1,113 +1,712 @@
 <!DOCTYPE html>
-<html>
-
+<html lang="en">
 <head>
-    <meta charset='utf-8'>
-    <meta name='viewport' content='width=device-width'>
-    <title>Privacy Policy</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy - FindMyVerto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #5665DA;
+            --secondary: #707BE4;
+            --dark-blue: #343a6c;
+            --white: #ffffff;
+            --white-light: #ffffffb5;
+            --light-dark: #242323;
+            --accent: #f78c30;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
         body {
-            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-            padding: 1em;
+            background-color: #0a0a0a;
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Animated gradient background */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #10111E, #1B1E3D, #343a6c);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 10%;
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        nav.scrolled {
+            background: rgba(27, 30, 61, 0.95);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+        }
+        
+        .logo img {
+            height: 40px;
+            border-radius: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--white-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--white);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .burger {
+            display: none;
+            cursor: pointer;
+        }
+        
+        /* Main content */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 150px 2rem 5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .privacy-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 3rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+            animation: fadeUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            background-size: 200% auto;
+            animation: textGradient 5s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        @keyframes textGradient {
+            0% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+            100% { background-position: 0% center; }
+        }
+        
+        .effective-date {
+            text-align: center;
+            color: var(--white-light);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .section {
+            margin-bottom: 2.5rem;
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--white-light);
+        }
+        
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--white-light);
+        }
+        
+        li {
+            margin-bottom: 0.7rem;
+        }
+        
+        a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
+
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: var(--white);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 99;
+        }
+        
+        .back-to-top.active {
+            opacity: 1;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            background: var(--secondary);
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 10%;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        
+        .copyright {
+            color: var(--white-light);
+        }
+        
+        .copyright a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        /* Navigation buttons */
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+            text-decoration: none;
+        }
+        
+        /* Highlights */
+        .highlight {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        /* Third party services */
+        .services-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            list-style-type: none;
+            margin-left: 0;
+        }
+        
+        .service-item {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50px;
+            padding: 0.5rem 1.5rem;
+            transition: all 0.3s ease;
+        }
+        
+        .service-item:hover {
+            background: rgba(255, 255, 255, 0.15);
+            transform: translateY(-3px);
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 70%;
+            height: 100vh;
+            background: rgba(27, 30, 61, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+            padding: 2rem;
+            transition: all 0.5s ease;
+        }
+        
+        .mobile-menu.active {
+            left: 0;
+        }
+        
+        .mobile-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--white);
+            cursor: pointer;
+        }
+        
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 5rem;
+        }
+        
+        .mobile-nav-link {
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 1.2rem;
+        }
+        
+        .mobile-nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .content {
+                padding: 120px 1.5rem 3rem;
+            }
+            
+            .privacy-card {
+                padding: 2rem 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .burger {
+                display: block;
+            }
+            
+            nav {
+                padding: 1.5rem 5%;
+            }
+        }
+
+        /* Table of contents */
+        .toc {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--primary);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .toc-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+        
+        .toc-list {
+            list-style-type: none;
+            margin-left: 0;
+        }
+        
+        .toc-item {
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            padding-left: 0;
+        }
+        
+        .toc-item:hover {
+            padding-left: 5px;
+        }
+        
+        .toc-item a {
+            color: var(--white-light);
+            text-decoration: none;
+            display: block;
+        }
+        
+        .toc-item a:hover {
+            color: var(--primary);
+            text-decoration: none;
         }
     </style>
 </head>
-
 <body>
-    <strong>Privacy Policy</strong>
-    <p>This privacy policy applies to the Find My Verto app (hereby referred to as "Application") for mobile devices
-        that was created by Aryan pandey (hereby referred to as "Service Provider") as a Free service. This service is
-        intended for use "AS IS".</p><br><strong>Information Collection and Use</strong>
-    <p>The Application collects information when you download and use it. This information may include information such
-        as </p>
-    <ul>
-        <li>Your device's Internet Protocol address (e.g. IP address)</li>
-        <li>The pages of the Application that you visit, the time and date of your visit, the time spent on those pages
-        </li>
-        <li>The time spent on the Application</li>
-        <li>The operating system you use on your mobile device</li>
-    </ul>
-    <p></p><br>
-    <p>The Application does not gather precise information about the location of your mobile device.</p>
-    <div style="display: none;">
-        <p>The Application collects your device's location, which helps the Service Provider determine your approximate
-            geographical location and make use of in below ways:</p>
-        <ul>
-            <li>Geolocation Services: The Service Provider utilizes location data to provide features such as
-                personalized content, relevant recommendations, and location-based services.</li>
-            <li>Analytics and Improvements: Aggregated and anonymized location data helps the Service Provider to
-                analyze user behavior, identify trends, and improve the overall performance and functionality of the
-                Application.</li>
-            <li>Third-Party Services: Periodically, the Service Provider may transmit anonymized location data to
-                external services. These services assist them in enhancing the Application and optimizing their
-                offerings.</li>
-        </ul>
-    </div><br>
-    <p>The Service Provider may use the information you provided to contact you from time to time to provide you with
-        important information, required notices and marketing promotions.</p><br>
-    <p>For a better experience, while using the Application, the Service Provider may require you to provide us with
-        certain personally identifiable information, including but not limited to UMS registration number, password. The
-        information that the Service Provider request will be retained by them and used as described in this privacy
-        policy.</p><br><strong>Third Party Access</strong>
-    <p>Only aggregated, anonymized data is periodically transmitted to external services to aid the Service Provider in
-        improving the Application and their service. The Service Provider may share your information with third parties
-        in the ways that are described in this privacy statement.</p>
-    <div><br>
-        <p>Please note that the Application utilizes third-party services that have their own Privacy Policy about
-            handling data. Below are the links to the Privacy Policy of the third-party service providers used by the
-            Application:</p>
-        <ul>
-            <li><a href="https://www.google.com/policies/privacy/" target="_blank" rel="noopener noreferrer">Google Play
-                    Services</a></li>
-            <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!---->
-            <li><a href="https://expo.io/privacy" target="_blank" rel="noopener noreferrer">Expo</a></li>
-            <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!---->
-            <li><a href="https://www.vexo.co/privacy" target="_blank" rel="noopener noreferrer">Vexo</a></li>
-            <!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!----><!---->
-        </ul>
-    </div><br>
-    <p>The Service Provider may disclose User Provided and Automatically Collected Information:</p>
-    <ul>
-        <li>as required by law, such as to comply with a subpoena, or similar legal process;</li>
-        <li>when they believe in good faith that disclosure is necessary to protect their rights, protect your safety or
-            the safety of others, investigate fraud, or respond to a government request;</li>
-        <li>with their trusted services providers who work on their behalf, do not have an independent use of the
-            information we disclose to them, and have agreed to adhere to the rules set forth in this privacy statement.
-        </li>
-    </ul>
-    <p></p><br><strong>Opt-Out Rights</strong>
-    <p>You can stop all collection of information by the Application easily by uninstalling it. You may use the standard
-        uninstall processes as may be available as part of your mobile device or via the mobile application marketplace
-        or network.</p><br><strong>Data Retention Policy</strong>
-    <p>The Service Provider will retain User Provided data for as long as you use the Application and for a reasonable
-        time thereafter. If you'd like them to delete User Provided Data that you have provided via the Application,
-        please contact them at findmyverto@gmail.com and they will respond in a reasonable time.</p>
-    <br><strong>Children</strong>
-    <p>The Service Provider does not use the Application to knowingly solicit data from or market to children under the
-        age of 13.</p>
-    <div><br>
-        <p>The Application does not address anyone under the age of 13.
-            The Service Provider does not knowingly collect personally
-            identifiable information from children under 13 years of age. In the case
-            the Service Provider discover that a child under 13 has provided
-            personal information, the Service Provider will immediately
-            delete this from their servers. If you are a parent or guardian
-            and you are aware that your child has provided us with
-            personal information, please contact the Service Provider (findmyverto@gmail.com) so that
-            they will be able to take the necessary actions.</p>
-    </div><!----><br><strong>Security</strong>
-    <p>The Service Provider is concerned about safeguarding the confidentiality of your information. The Service
-        Provider provides physical, electronic, and procedural safeguards to protect information the Service Provider
-        processes and maintains.</p><br><strong>Changes</strong>
-    <p>This Privacy Policy may be updated from time to time for any reason. The Service Provider will notify you of any
-        changes to the Privacy Policy by updating this page with the new Privacy Policy. You are advised to consult this
-        Privacy Policy regularly for any changes, as continued use is deemed approval of all changes.</p><br>
-    <p>This privacy policy is effective as of 2025-03-14</p><br><strong>Your Consent</strong>
-    <p>By using the Application, you are consenting to the processing of your information as set forth in this Privacy
-        Policy now and as amended by us.</p><br><strong>Contact Us</strong>
-    <p>If you have any questions regarding privacy while using the Application, or have questions about the practices,
-        please contact the Service Provider via email at findmyverto@gmail.com.</p>
-    <hr>
-</body>
+    <!-- Gradient Background -->
+    <div class="gradient-bg"></div>
+    
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="index.html" class="logo">
+            <img src="assets/logo.png" alt="FindMyVerto Logo">
+            FindMyVerto
+        </a>
+        <div class="nav-links">
+            <a href="index.html#features" class="nav-link">Features</a>
+            <a href="index.html#screenshots" class="nav-link">Screenshots</a>
+            <a href="index.html#download" class="nav-link">Download</a>
+            <a href="index.html#upcoming" class="nav-link">Roadmap</a>
+        </div>
+        <div class="burger" id="burger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-close" id="mobile-close">
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="mobile-nav-links">
+            <a href="index.html#features" class="mobile-nav-link">Features</a>
+            <a href="index.html#screenshots" class="mobile-nav-link">Screenshots</a>
+            <a href="index.html#download" class="mobile-nav-link">Download</a>
+            <a href="index.html#upcoming" class="mobile-nav-link">Roadmap</a>
+        </div>
+    </div>
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Main Content -->
+    <div class="content">
+        <div class="privacy-card">
+            <h1 class="page-title">Privacy Policy</h1>
+            <p class="effective-date">Effective Date: March 14, 2025</p>
+            
+            <div class="toc">
+                <h3 class="toc-title"><i class="fas fa-list"></i> Table of Contents</h3>
+                <ul class="toc-list">
+                    <li class="toc-item"><a href="#introduction">Introduction</a></li>
+                    <li class="toc-item"><a href="#collection">1. Information We Collect</a></li>
+                    <li class="toc-item"><a href="#usage">2. How We Use Your Information</a></li>
+                    <li class="toc-item"><a href="#sharing">3. Data Sharing and Security</a></li>
+                    <li class="toc-item"><a href="#third-party">4. Third-Party Services</a></li>
+                    <li class="toc-item"><a href="#changes">5. Changes to This Policy</a></li>
+                    <li class="toc-item"><a href="#security">6. Security</a></li>
+                    <li class="toc-item"><a href="#children">7. Children's Privacy</a></li>
+                    <li class="toc-item"><a href="#opt-out">8. Opt-Out Rights</a></li>
+                    <li class="toc-item"><a href="#consent">9. Your Consent</a></li>
+                    <li class="toc-item"><a href="#contact">10. Contact Us</a></li>
+                </ul>
+            </div>
 
+            <div class="section" id="introduction">
+                <p>Find My Verto ("we," "our," or "us") is committed to protecting your privacy. This Privacy Policy explains how we collect, use, and disclose information when you use our mobile application (the "App"). This service is intended for use "AS IS".</p>
+            </div>
+            
+            <div class="section" id="collection">
+                <h2 class="section-title"><i class="fas fa-database"></i> 1. Information We Collect</h2>
+                <p>The Application collects information when you download and use it. This information may include:</p>
+                <ul>
+                    <li><span class="highlight">Personal Information:</span> We may collect your LPU UMS credentials to access your academic data.</li>
+                    <li><span class="highlight">Usage Data:</span> We collect information on how you interact with the App, such as session activity and feature usage.</li>
+                    <li><span class="highlight">Device Information:</span> We may collect data about your device, including model, operating system, and IP address.</li>
+                    <li>The pages of the Application that you visit, the time and date of your visit, the time spent on those pages.</li>
+                    <li>Other statistics.</li>
+                </ul>
+            </div>
+            
+            <div class="section" id="usage">
+                <h2 class="section-title"><i class="fas fa-cogs"></i> 2. How We Use Your Information</h2>
+                <p>We use your information to:</p>
+                <ul>
+                    <li>Provide access to academic features like timetable, attendance, marks, and CGPA.</li>
+                    <li>Enable friend management and notifications.</li>
+                    <li>Improve user experience and enhance security.</li>
+                    <li>Contact you from time to time to provide you with important information, required notices and marketing promotions.</li>
+                </ul>
+                <p>For a better experience, while using the Application, we may require you to provide us with certain personally identifiable information, including but not limited to UMS registration number, password. The information that we request will be retained and used as described in this privacy policy.</p>
+            </div>
+            
+            <div class="section" id="sharing">
+                <h2 class="section-title"><i class="fas fa-share-alt"></i> 3. Data Sharing and Security</h2>
+                <p>Only aggregated, anonymized data is periodically transmitted to external services to aid us in improving the Application and our service. We may share your information with third parties in the ways that are described in this privacy statement.</p>
+                <p>We may disclose User Provided and Automatically Collected Information:</p>
+                <ul>
+                    <li>As required by law, such as to comply with a subpoena, or similar legal process;</li>
+                    <li>When we believe in good faith that disclosure is necessary to protect our rights, protect your safety or the safety of others, investigate fraud, or respond to a government request;</li>
+                    <li>With our trusted services providers who work on our behalf, do not have an independent use of the information we disclose to them, and have agreed to adhere to the rules set forth in this privacy statement.</li>
+                </ul>
+                <p><strong>We do not sell or share your data with third parties for commercial purposes.</strong></p>
+                <p>Data is stored securely using encryption and authentication mechanisms.</p>
+            </div>
+            
+            <div class="section" id="third-party">
+                <h2 class="section-title"><i class="fas fa-plug"></i> 4. Third-Party Services</h2>
+                <p>Please note that the Application utilizes third-party services that have their own Privacy Policy about handling data. Below are the links to the Privacy Policy of the third-party service providers used by the Application:</p>
+                <ul class="services-list">
+                    <li class="service-item"><a href="https://www.google.com/policies/privacy/" target="_blank" rel="noopener noreferrer">Google Play Services</a></li>
+                    <li class="service-item"><a href="https://expo.io/privacy" target="_blank" rel="noopener noreferrer">Expo</a></li>
+                    <li class="service-item"><a href="https://www.vexo.co/privacy" target="_blank" rel="noopener noreferrer">Vexo</a></li>
+                </ul>
+            </div>
+            
+            <div class="section" id="changes">
+                <h2 class="section-title"><i class="fas fa-history"></i> 5. Changes to This Policy</h2>
+                <p>This Privacy Policy may be updated from time to time for any reason. We will notify you of any changes to the Privacy Policy by updating this page with the new Privacy Policy. You are advised to consult this Privacy Policy regularly for any changes, as continued use is deemed approval of all changes.</p>
+                <p>This privacy policy is effective as of 2025-03-14.</p>
+            </div>
+            
+            <div class="section" id="security">
+                <h2 class="section-title"><i class="fas fa-shield-alt"></i> 6. Security</h2>
+                <p>We are concerned about safeguarding the confidentiality of your information. We provide physical, electronic, and procedural safeguards to protect information we process and maintain.</p>
+            </div>
+            
+            <div class="section" id="children">
+                <h2 class="section-title"><i class="fas fa-child"></i> 7. Children's Privacy</h2>
+                <p>We do not use the Application to knowingly solicit data from or market to children under the age of 13.</p>
+                <p>The Application does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from children under 13 years of age. In the case we discover that a child under 13 has provided personal information, we will immediately delete this from our servers. If you are a parent or guardian and you are aware that your child has provided us with personal information, please contact us (findmyverto@gmail.com) so that we will be able to take the necessary actions.</p>
+            </div>
+            
+            <div class="section" id="opt-out">
+                <h2 class="section-title"><i class="fas fa-sign-out-alt"></i> 8. Opt-Out Rights</h2>
+                <p>You can stop all collection of information by the Application easily by uninstalling it. You may use the standard uninstall processes as may be available as part of your mobile device or via the mobile application marketplace or network.</p>
+                <p>You can delete your account and associated data upon request.</p>
+            </div>
+            
+            <div class="section" id="consent">
+                <h2 class="section-title"><i class="fas fa-check-circle"></i> 9. Your Consent</h2>
+                <p>By using the Application, you are consenting to the processing of your information as set forth in this Privacy Policy now and as amended by us.</p>
+            </div>
+            
+            <div class="section" id="contact">
+                <h2 class="section-title"><i class="fas fa-envelope"></i> 10. Contact Us</h2>
+                <p>If you have any questions regarding privacy while using the Application, or have questions about our practices, please contact us via email at <a href="mailto:findmyverto@gmail.com">findmyverto@gmail.com</a>.</p>
+            </div>
+
+            <div class="navigation-buttons">
+                <a href="index.html" class="btn btn-outline">
+                    <i class="fas fa-arrow-left"></i> Back to Home
+                </a>
+                <a href="terms-and-conditions.html" class="btn btn-outline">
+                    Terms & Conditions <i class="fas fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="copyright">
+            &copy; 2023 FindMyVerto. All rights reserved. Made with ❤️ by <a href="https://github.com/aryanpnd" target="_blank">Aryan Pandey</a>
+        </div>
+    </footer>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile menu
+        const burger = document.getElementById('burger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileClose = document.getElementById('mobile-close');
+        const overlay = document.getElementById('overlay');
+        const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+        
+        burger.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        function closeMenu() {
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        mobileClose.addEventListener('click', closeMenu);
+        overlay.addEventListener('click', closeMenu);
+        
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+        
+        // Back to top button
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('active');
+            } else {
+                backToTop.classList.remove('active');
+            }
+        });
+        
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
+
+        // Animate sections on scroll
+        const sections = document.querySelectorAll('.section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0)';
+                }
+            });
+        }, { threshold: 0.1 });
+
+        sections.forEach(section => {
+            section.style.opacity = 0;
+            section.style.transform = 'translateY(20px)';
+            section.style.transition = 'all 0.8s ease';
+            observer.observe(section);
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
 </html>

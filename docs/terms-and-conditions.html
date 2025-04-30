@@ -1,32 +1,683 @@
-**Terms and Conditions**
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms & Conditions - FindMyVerto</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #5665DA;
+            --secondary: #707BE4;
+            --dark-blue: #343a6c;
+            --white: #ffffff;
+            --white-light: #ffffffb5;
+            --light-dark: #242323;
+            --accent: #f78c30;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+        
+        body {
+            background-color: #0a0a0a;
+            color: var(--white);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Animated gradient background */
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #10111E, #1B1E3D, #343a6c);
+            background-size: 400% 400%;
+            animation: gradient 15s ease infinite;
+        }
+        
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Navigation */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1.5rem 10%;
+            backdrop-filter: blur(10px);
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(10, 10, 10, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        nav.scrolled {
+            background: rgba(27, 30, 61, 0.95);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--white);
+            text-decoration: none;
+        }
+        
+        .logo img {
+            height: 40px;
+            border-radius: 2rem;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            color: var(--white-light);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            position: relative;
+        }
+        
+        .nav-link:hover {
+            color: var(--white);
+        }
+        
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: width 0.3s ease;
+        }
+        
+        .nav-link:hover::after {
+            width: 100%;
+        }
+        
+        .burger {
+            display: none;
+            cursor: pointer;
+        }
+        
+        /* Main content */
+        .content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 150px 2rem 5rem;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .terms-card {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            padding: 3rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 2rem;
+            animation: fadeUp 0.8s ease-out forwards;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        
+        @keyframes fadeUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .page-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            text-align: center;
+            background: linear-gradient(45deg, var(--primary), var(--secondary));
+            background-size: 200% auto;
+            animation: textGradient 5s ease infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        @keyframes textGradient {
+            0% { background-position: 0% center; }
+            50% { background-position: 100% center; }
+            100% { background-position: 0% center; }
+        }
+        
+        .effective-date {
+            text-align: center;
+            color: var(--white-light);
+            margin-bottom: 2rem;
+            font-size: 0.9rem;
+        }
+        
+        .terms-intro {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        .section {
+            margin-bottom: 2.5rem;
+            padding-left: 1rem;
+            border-left: 3px solid var(--primary);
+            background: rgba(255, 255, 255, 0.02);
+            padding: 1.5rem;
+            border-radius: 0 10px 10px 0;
+            transition: all 0.3s ease;
+        }
+        
+        .section:hover {
+            background: rgba(255, 255, 255, 0.04);
+            transform: translateX(5px);
+        }
+        
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+        }
+        
+        .section-title i {
+            margin-right: 10px;
+        }
+        
+        p {
+            margin-bottom: 1rem;
+            color: var(--white-light);
+        }
+        
+        ul, ol {
+            margin-left: 2rem;
+            margin-bottom: 1.5rem;
+            color: var(--white-light);
+        }
+        
+        li {
+            margin-bottom: 0.7rem;
+        }
+        
+        a {
+            color: var(--secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: var(--primary);
+            text-decoration: underline;
+        }
 
-**Effective Date:** March 14, 2025
+        .back-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: var(--primary);
+            color: var(--white);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            z-index: 99;
+        }
+        
+        .back-to-top.active {
+            opacity: 1;
+        }
+        
+        .back-to-top:hover {
+            transform: translateY(-5px);
+            background: var(--secondary);
+        }
 
-By using Find My Verto ("the App"), you agree to the following terms:
+        /* Footer */
+        footer {
+            padding: 3rem 10%;
+            background: rgba(10, 10, 10, 0.8);
+            backdrop-filter: blur(10px);
+            text-align: center;
+        }
+        
+        .copyright {
+            color: var(--white-light);
+        }
+        
+        .copyright a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+        
+        /* Navigation buttons */
+        .navigation-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 3rem;
+        }
+        
+        .btn {
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+        
+        .btn-outline {
+            background: transparent;
+            border: 1px solid var(--primary);
+            color: var(--primary);
+        }
+        
+        .btn-outline:hover {
+            background: var(--primary);
+            color: var(--white);
+            text-decoration: none;
+        }
+        
+        /* Highlights */
+        .highlight {
+            color: var(--accent);
+            font-weight: 500;
+        }
+        
+        /* Mobile Menu */
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            left: -100%;
+            width: 70%;
+            height: 100vh;
+            background: rgba(27, 30, 61, 0.98);
+            backdrop-filter: blur(10px);
+            z-index: 1001;
+            padding: 2rem;
+            transition: all 0.5s ease;
+        }
+        
+        .mobile-menu.active {
+            left: 0;
+        }
+        
+        .mobile-close {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--white);
+            cursor: pointer;
+        }
+        
+        .mobile-nav-links {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin-top: 5rem;
+        }
+        
+        .mobile-nav-link {
+            color: var(--white);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            font-size: 1.2rem;
+        }
+        
+        .mobile-nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.5s ease;
+        }
+        
+        .overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        /* Mobile Responsiveness */
+        @media (max-width: 768px) {
+            .content {
+                padding: 120px 1.5rem 3rem;
+            }
+            
+            .terms-card {
+                padding: 2rem 1.5rem;
+            }
+            
+            .page-title {
+                font-size: 2rem;
+            }
+            
+            .section-title {
+                font-size: 1.3rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .burger {
+                display: block;
+            }
+            
+            nav {
+                padding: 1.5rem 5%;
+            }
+            
+            .navigation-buttons {
+                flex-direction: column;
+                gap: 1rem;
+            }
+        }
 
-### 1. Use of the App
+        /* Table of contents */
+        .toc {
+            background: rgba(255, 255, 255, 0.03);
+            border-left: 3px solid var(--primary);
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            border-radius: 0 10px 10px 0;
+        }
+        
+        .toc-title {
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+            color: var(--white);
+        }
+        
+        .toc-list {
+            list-style-type: none;
+            margin-left: 0;
+        }
+        
+        .toc-item {
+            margin-bottom: 0.5rem;
+            transition: all 0.3s ease;
+            padding-left: 0;
+        }
+        
+        .toc-item:hover {
+            padding-left: 5px;
+        }
+        
+        .toc-item a {
+            color: var(--white-light);
+            text-decoration: none;
+            display: block;
+        }
+        
+        .toc-item a:hover {
+            color: var(--primary);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Gradient Background -->
+    <div class="gradient-bg"></div>
+    
+    <!-- Navigation -->
+    <nav id="navbar">
+        <a href="index.html" class="logo">
+            <img src="assets/logo.png" alt="FindMyVerto Logo">
+            FindMyVerto
+        </a>
+        <div class="nav-links">
+            <a href="index.html#features" class="nav-link">Features</a>
+            <a href="index.html#screenshots" class="nav-link">Screenshots</a>
+            <a href="index.html#download" class="nav-link">Download</a>
+            <a href="index.html#upcoming" class="nav-link">Roadmap</a>
+        </div>
+        <div class="burger" id="burger">
+            <i class="fas fa-bars"></i>
+        </div>
+    </nav>
+    
+    <!-- Mobile Menu -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-close" id="mobile-close">
+            <i class="fas fa-times"></i>
+        </div>
+        <div class="mobile-nav-links">
+            <a href="index.html#features" class="mobile-nav-link">Features</a>
+            <a href="index.html#screenshots" class="mobile-nav-link">Screenshots</a>
+            <a href="index.html#download" class="mobile-nav-link">Download</a>
+            <a href="index.html#upcoming" class="mobile-nav-link">Roadmap</a>
+        </div>
+    </div>
+    <div class="overlay" id="overlay"></div>
+    
+    <!-- Main Content -->
+    <div class="content">
+        <div class="terms-card">
+            <h1 class="page-title">Terms & Conditions</h1>
+            <p class="effective-date">Effective Date: March 14, 2025</p>
+            
+            <div class="terms-intro">
+                <p>By using Find My Verto ("the App"), you agree to the following terms:</p>
+            </div>
+            
+            <div class="toc">
+                <h3 class="toc-title"><i class="fas fa-list"></i> Table of Contents</h3>
+                <ul class="toc-list">
+                    <li class="toc-item"><a href="#use">1. Use of the App</a></li>
+                    <li class="toc-item"><a href="#ip">2. Intellectual Property</a></li>
+                    <li class="toc-item"><a href="#disclaimer">3. Disclaimer of Liability</a></li>
+                    <li class="toc-item"><a href="#termination">4. Termination</a></li>
+                    <li class="toc-item"><a href="#law">5. Governing Law</a></li>
+                    <li class="toc-item"><a href="#contact">6. Contact</a></li>
+                </ul>
+            </div>
+            
+            <div class="section" id="use">
+                <h2 class="section-title"><i class="fas fa-user-check"></i> 1. Use of the App</h2>
+                <ul>
+                    <li><span class="highlight">Eligibility:</span> You must be an LPU student to use this App.</li>
+                    <li><span class="highlight">Responsible Use:</span> You agree not to misuse the App or engage in unauthorized activities.</li>
+                    <li>You agree to provide accurate information when creating an account.</li>
+                    <li>You are responsible for maintaining the confidentiality of your login credentials.</li>
+                    <li>You agree not to use the App for any illegal purpose or in any manner that could disable, overburden, or impair the App.</li>
+                </ul>
+            </div>
+            
+            <div class="section" id="ip">
+                <h2 class="section-title"><i class="fas fa-copyright"></i> 2. Intellectual Property</h2>
+                <ul>
+                    <li>The App and its contents are protected under applicable copyright laws.</li>
+                    <li>Unauthorized distribution or modification of the App is prohibited.</li>
+                    <li>All trademarks, service marks, and trade names are the property of their respective owners.</li>
+                    <li>You agree not to reproduce, duplicate, copy, sell, or exploit any portion of the App without express written permission.</li>
+                </ul>
+            </div>
+            
+            <div class="section" id="disclaimer">
+                <h2 class="section-title"><i class="fas fa-exclamation-triangle"></i> 3. Disclaimer of Liability</h2>
+                <ul>
+                    <li>The App is provided "as is" without warranties of any kind, either express or implied.</li>
+                    <li>We are not responsible for any inaccuracies in academic data retrieved from LPU UMS.</li>
+                    <li>We do not guarantee uninterrupted or error-free operation of the App.</li>
+                    <li>In no event shall we be liable for any direct, indirect, incidental, special, or consequential damages arising out of or in any way connected with the use of the App.</li>
+                    <li>You acknowledge that the App may contain bugs, errors, or other limitations.</li>
+                </ul>
+            </div>
+            
+            <div class="section" id="termination">
+                <h2 class="section-title"><i class="fas fa-ban"></i> 4. Termination</h2>
+                <p>We reserve the right to suspend or terminate accounts violating these terms. Termination may occur without prior notice for any reason, including but not limited to:</p>
+                <ul>
+                    <li>Violation of these Terms and Conditions</li>
+                    <li>Engaging in fraudulent or illegal activities</li>
+                    <li>Misrepresentation of identity or affiliation with LPU</li>
+                    <li>Any behavior that could harm other users or the integrity of the App</li>
+                </ul>
+            </div>
+            
+            <div class="section" id="law">
+                <h2 class="section-title"><i class="fas fa-gavel"></i> 5. Governing Law</h2>
+                <p>These terms are governed by the laws of India. Any disputes arising from the use of the App shall be subject to the exclusive jurisdiction of the courts in India.</p>
+                <p>By using this App, you consent to the jurisdiction and venue of such courts.</p>
+            </div>
+            
+            <div class="section" id="contact">
+                <h2 class="section-title"><i class="fas fa-envelope"></i> 6. Contact</h2>
+                <p>For any concerns or questions regarding these Terms and Conditions, please contact us at <a href="mailto:findmyverto@gmail.com">findmyverto@gmail.com</a>.</p>
+                <p>We will make an effort to respond to your inquiries as soon as possible.</p>
+            </div>
+            
+            <div class="navigation-buttons">
+                <a href="index.html" class="btn btn-outline">
+                    <i class="fas fa-home"></i> Back to Home
+                </a>
+                <a href="privacy-policy.html" class="btn btn-outline">
+                    <i class="fas fa-shield-alt"></i> Privacy Policy
+                </a>
+            </div>
+        </div>
+    </div>
+    
+    <div class="back-to-top" id="backToTop">
+        <i class="fas fa-arrow-up"></i>
+    </div>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="copyright">
+            &copy; 2023 FindMyVerto. All rights reserved. Made with ❤️ by <a href="https://github.com/aryanpnd" target="_blank">Aryan Pandey</a>
+        </div>
+    </footer>
 
-- You must be an LPU student to use this App.
-- You agree not to misuse the App or engage in unauthorized activities.
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+        });
+        
+        // Mobile menu
+        const burger = document.getElementById('burger');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileClose = document.getElementById('mobile-close');
+        const overlay = document.getElementById('overlay');
+        const mobileLinks = document.querySelectorAll('.mobile-nav-link');
+        
+        burger.addEventListener('click', () => {
+            mobileMenu.classList.add('active');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        });
+        
+        function closeMenu() {
+            mobileMenu.classList.remove('active');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        mobileClose.addEventListener('click', closeMenu);
+        overlay.addEventListener('click', closeMenu);
+        
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+        
+        // Back to top button
+        const backToTop = document.getElementById('backToTop');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 300) {
+                backToTop.classList.add('active');
+            } else {
+                backToTop.classList.remove('active');
+            }
+        });
+        
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        });
 
-### 2. Intellectual Property
+        // Animate sections on scroll
+        const sections = document.querySelectorAll('.section');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.style.opacity = 1;
+                    entry.target.style.transform = 'translateY(0) translateX(0)';
+                }
+            });
+        }, { threshold: 0.1 });
 
-- The App and its contents are protected under applicable copyright laws.
-- Unauthorized distribution or modification of the App is prohibited.
+        sections.forEach((section, index) => {
+            section.style.opacity = 0;
+            section.style.transform = 'translateY(20px) translateX(0px)';
+            section.style.transition = `all 0.8s ease ${index * 0.1}s`;
+            observer.observe(section);
+        });
 
-### 3. Disclaimer of Liability
-
-- The App is provided "as is" without warranties.
-- We are not responsible for any inaccuracies in academic data retrieved from LPU UMS.
-
-### 4. Termination
-
-We reserve the right to suspend or terminate accounts violating these terms.
-
-### 5. Governing Law
-
-These terms are governed by the laws of India.
-
-### 6. Contact
-
-For any concerns, contact us at [findmyverto@gmail.com](mailto\:findmyverto@gmail.com).
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>
