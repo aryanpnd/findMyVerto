@@ -3,3 +3,4 @@
 .env
 /public
 google-service-account-key.json
+/.vscode
