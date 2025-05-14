@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { globalStyles } from '../../constants/styles';
@@ -6,9 +6,9 @@ import { colors } from '../../constants/colors';
 import { getDay, isTimeEqual } from '../../../utils/helperFunctions/dataAndTimeHelpers';
 import CourseDetailsModal from './CourseDetailsModal';
 
-export default function ClassesCard({ time, classes,courses, day, friend }) {
+export default function ClassesCard({ time, classes, courses, day, friend }) {
   const [ongoing, setOngoing] = useState(false);
-  const [modalVisible, setModalVisible] = useState(false);
+  const courseDetailSheetRef = useRef();
 
   const checkOngoing = () => {
     const isOngoing = isTimeEqual(time) && day === getDay();
@@ -20,16 +20,9 @@ export default function ClassesCard({ time, classes,courses, day, friend }) {
   }, [classes]);
 
   const handlePress = () => {
-    // Open the modal if there is at least one class.
     if (classes && classes.length > 0) {
-      setModalVisible(true);
+      courseDetailSheetRef.current?.open();
     }
-  };
-
-  const handleNavigate = () => {
-    // Replace with your navigation logic
-    console.log('Navigating to course attendance for', classes);
-    setModalVisible(false);
   };
 
   return (
@@ -99,12 +92,10 @@ export default function ClassesCard({ time, classes,courses, day, friend }) {
 
       {/* Render the multi-course modal */}
       <CourseDetailsModal
-        visible={modalVisible}
         courses={courses}
         classes={classes}
-        onClose={() => setModalVisible(false)}
-        onNavigate={handleNavigate}
         friend={friend}
+        ref={courseDetailSheetRef}
       />
     </>
   );

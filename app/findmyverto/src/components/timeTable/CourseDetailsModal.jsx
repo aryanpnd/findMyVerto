@@ -1,22 +1,40 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Modal, View, Text, ScrollView, StyleSheet, Animated, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
+import React, { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, Animated, TouchableOpacity, TouchableWithoutFeedback, Image, Pressable } from 'react-native';
 import { globalStyles, HEIGHT, WIDTH } from '../../constants/styles';
 import { colors } from '../../constants/colors';
 import PagerButtons from '../miscellaneous/PagerButtons';
 import CoursesCard from './CoursesCard';
 import { useNavigation } from '@react-navigation/native';
+import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from '@gorhom/bottom-sheet';
+import ButtonV1 from '../miscellaneous/buttons/ButtonV1';
 
-const CourseDetailsModal = ({ visible,friend, classes, courses, onClose }) => {
+const CourseDetailsModal = forwardRef(function CourseDetailsModal(props, ref) {
+  const { friend, classes, courses } = props;
   const navigation = useNavigation();
   const scrollViewRef = useRef(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [selectedIndex, setSelectedIndex] = useState(0);
+  useEffect(() => {
+    console.log("classes", classes);
+  }, [selectedIndex]);
+
+  const bottomSheetModalRef = useRef(null);
+
+  // Expose open and close methods via the ref
+  useImperativeHandle(ref, () => ({
+    open: () => {
+      bottomSheetModalRef.current?.present();
+    },
+    close: () => {
+      bottomSheetModalRef.current?.dismiss();
+    },
+  }));
 
   // Create buttons using the 'class' property from each classDetails
   const buttons = classes ? classes.map((classDetails) => classDetails.class) : [];
 
   // Each page has a fixed width
-  const pageWidth = WIDTH(80);
+  const pageWidth = WIDTH(90);
 
   const onCLick = (i) => {
     scrollViewRef.current?.scrollTo({ x: i * pageWidth, animated: true });
@@ -24,7 +42,7 @@ const CourseDetailsModal = ({ visible,friend, classes, courses, onClose }) => {
   };
 
   const handleNavigate = (classDetails) => {
-    if(friend) {
+    if (friend) {
       navigation.navigate('FriendAttendance', {
         id: friend.id,
         name: friend.name,
@@ -35,92 +53,79 @@ const CourseDetailsModal = ({ visible,friend, classes, courses, onClose }) => {
         courseCode: classDetails.class,
       });
     }
-    onClose();
+    bottomSheetModalRef.current?.dismiss();
   };
 
   return (
-    <Modal
-      transparent
-      visible={visible}
-      animationType="fade"
-      statusBarTranslucent={true}
-      onRequestClose={onClose}
+    <BottomSheetModal
+      ref={bottomSheetModalRef}
+      snapPoints={['45%']}
+      enablePanDownToClose={true}
+      backdropComponent={(props) => (
+        <BottomSheetBackdrop {...props} pressBehavior="close" opacity={0.4} disappearsOnIndex={-1} />
+      )}
     >
-      {/*
-        Wrap the entire overlay in a TouchableOpacity so that touching anywhere outside
-        the modal content triggers onClose. We use TouchableWithoutFeedback inside to
-        prevent closing when touching inside the modal container.
-      */}
-      <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={onClose}>
-        <TouchableWithoutFeedback>
-          <View style={[styles.modalContainer, globalStyles.elevation]}>
-            <View style={styles.header}>
-              <PagerButtons
-                buttons={buttons}
-                onClick={onCLick}
-                scrollX={scrollX}
-                containerWidth={WIDTH(60)}
-                containerHeight={HEIGHT(5)}
-                pageWidth={pageWidth}
-                buttonColor={colors.primary}
+      <BottomSheetView style={styles.modalContainer}>
+        <View style={styles.header}>
+          <PagerButtons
+            buttons={buttons}
+            onClick={onCLick}
+            scrollX={scrollX}
+            containerWidth={WIDTH(90)}
+            containerHeight={HEIGHT(5)}
+            pageWidth={pageWidth}
+            buttonColor={colors.primary}
+          />
+        </View>
+
+        <ScrollView
+          ref={scrollViewRef}
+          horizontal
+          pagingEnabled
+          decelerationRate="fast"
+          showsHorizontalScrollIndicator={false}
+          onMomentumScrollEnd={(e) => {
+            const offsetX = e.nativeEvent.contentOffset.x;
+            const index = Math.round(offsetX / pageWidth);
+            setSelectedIndex(index);
+          }}
+          onScroll={Animated.event(
+            [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+            { useNativeDriver: false }
+          )}
+          style={{ width: '100%' }}
+          contentContainerStyle={{ alignItems: 'center' }}
+        >
+          {classes?.map((classDetails, index) => (
+            <View style={styles.content} key={index}>
+              <CoursesCard
+                course={courses[classDetails.class]}
+                subjectCode={classDetails.class}
               />
             </View>
+          ))}
+        </ScrollView>
 
-            {/* Scrollable content for each course */}
-            <ScrollView
-              ref={scrollViewRef}
-              horizontal
-              pagingEnabled
-              decelerationRate="fast"
-              showsHorizontalScrollIndicator={false}
-              onMomentumScrollEnd={(e) => {
-                const offsetX = e.nativeEvent.contentOffset.x;
-                const index = Math.round(offsetX / pageWidth);
-                setSelectedIndex(index);
-              }}
-              onScroll={Animated.event(
-                [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-                { useNativeDriver: false }
-              )}
-            >
-              {classes?.map((classDetails, index) => (
-                <View style={styles.content} key={index}>
-                  <CoursesCard
-                    course={courses[classDetails.class]}
-                    subjectCode={classDetails.class}
-                  />
-                </View>
-              ))}
-            </ScrollView>
-
-            <TouchableOpacity
-              style={styles.button}
-              onPress={() => handleNavigate(classes[selectedIndex])}
-            >
-              <Image
-                source={require('../../../assets/icons/attendance.png')}
-                style={{ height: 20, width: 20 }}
-              />
-              <Text style={styles.buttonText}>View Attendance</Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableWithoutFeedback>
-      </TouchableOpacity>
-    </Modal>
+        <ButtonV1
+          style={styles.button}
+          onPress={() => handleNavigate(classes[selectedIndex])}
+        >
+          {/* <Image
+                  source={require('../../../assets/icons/attendance.png')}
+                  style={{ height: 20, width: 20 }}
+                /> */}
+          <Text style={styles.buttonText}>View Attendance</Text>
+        </ButtonV1>
+      </BottomSheetView>
+    </BottomSheetModal>
   );
-};
+});
 
 export default CourseDetailsModal;
 
 const styles = StyleSheet.create({
-  overlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
   modalContainer: {
-    width: '90%',
+    width: '100%',
     backgroundColor: '#fff',
     borderRadius: 25,
     padding: 20,
@@ -130,7 +135,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   content: {
-    width: WIDTH(80),
+    width: WIDTH(90),
     justifyContent: 'center',
     alignItems: 'center',
     marginBottom: 20,
@@ -141,10 +146,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     gap: 10,
-    paddingVertical: 10,
+    paddingVertical: HEIGHT(1.5),
     borderRadius: 10,
     marginVertical: 5,
-    backgroundColor: colors.secondary
+    backgroundColor: colors.primary,
   },
   buttonText: {
     color: 'white',
