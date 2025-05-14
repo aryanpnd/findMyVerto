@@ -4,9 +4,9 @@ import {
   Pressable,
   StyleSheet,
   Text,
-  View,
   ActivityIndicator,
 } from 'react-native';
+import { colors } from '../../../constants/colors';
 
 const ButtonV1 = ({
   children,
@@ -16,49 +16,53 @@ const ButtonV1 = ({
   style,
   textStyle,
   text,
-  opacityEffect=false,
+  bounce = true,
+  scaleInValue=0.95,
+  opacityEffect = false,
   loading = false,
   disabled = false,
+  disabledBackground=colors.disabledBackground,
   spinnerColor = '#fff',
   ...rest
 }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
 
-  const handlePressIn = (event) => {
-    if (!disabled && !loading) {
-      Animated.spring(scaleAnim, {
-        toValue: 0.95,
-        useNativeDriver: true,
-      }).start();
-      onPressIn?.(event);
+  const handlePressIn = e => {
+    if (bounce) {
+      Animated.spring(scaleAnim, { toValue: scaleInValue, useNativeDriver: true }).start();
     }
+    onPressIn?.(e);
   };
 
-  const handlePressOut = (event) => {
-    if (!disabled && !loading) {
+  const handlePressOut = e => {
+    if (bounce) {
       Animated.spring(scaleAnim, {
         toValue: 1,
         friction: 3,
         tension: 40,
         useNativeDriver: true,
       }).start();
-      onPressOut?.(event);
     }
+    onPressOut?.(e);
   };
 
   const isPressable = !disabled && !loading;
 
   return (
-    <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
+    <Animated.View 
+      style={[
+        style, 
+        { transform: [{ scale: bounce ? scaleAnim : 1 }] }
+      ]}
+    >
       <Pressable
         onPress={isPressable ? onPress : null}
-        onPressIn={handlePressIn}
-        onPressOut={handlePressOut}
+        onPressIn={isPressable ? handlePressIn : null}
+        onPressOut={isPressable ? handlePressOut : null}
         disabled={!isPressable}
         style={({ pressed }) => [
-          styles.defaultButton,
-          style,
-          disabled && styles.disabledButton,
+          styles.button,
+          disabled && { backgroundColor: disabledBackground },
           pressed && isPressable && { opacity: opacityEffect ? 0.85 : 1 },
         ]}
         {...rest}
@@ -76,16 +80,14 @@ const ButtonV1 = ({
 };
 
 const styles = StyleSheet.create({
-  defaultButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    backgroundColor: '#007bff',
-    borderRadius: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
+    button: {
+        width: '100%',
+        height:"auto",
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
   disabledButton: {
-    backgroundColor: '#aaa',
+    backgroundColor: colors.disabledBackground,
   },
   defaultText: {
     color: '#fff',

@@ -110,10 +110,6 @@ const CourseDetailsModal = forwardRef(function CourseDetailsModal(props, ref) {
           style={styles.button}
           onPress={() => handleNavigate(classes[selectedIndex])}
         >
-          {/* <Image
-                  source={require('../../../assets/icons/attendance.png')}
-                  style={{ height: 20, width: 20 }}
-                /> */}
           <Text style={styles.buttonText}>View Attendance</Text>
         </ButtonV1>
       </BottomSheetView>

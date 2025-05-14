@@ -3,12 +3,14 @@ import React, { useEffect } from 'react'
 import { LinearGradient } from 'expo-linear-gradient'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { globalStyles, HEIGHT } from '../../constants/styles'
+import ButtonV1 from '../miscellaneous/buttons/ButtonV1'
 
 export default function AttendanceCard({ attendance, colors, navigation, isAggregateCard, attendanceDetails }) {
     return (
-        <Pressable style={[
-            styles.cardWrapper,
-            !attendance?.subject_name && { borderBottomRightRadius: 50,borderTopLeftRadius:50 }
+        <ButtonV1 bounce={attendance?.subject_name? true : false}
+            style={[
+                styles.cardWrapper,
+                !attendance?.subject_name && { borderBottomRightRadius: 50, borderTopLeftRadius: 50 }
             ]}
             onPress={
                 attendance?.subject_name ?
@@ -20,7 +22,7 @@ export default function AttendanceCard({ attendance, colors, navigation, isAggre
                 style={[
                     styles.cardContainer,
                     globalStyles.elevationMin,
-                    !attendance?.subject_name && { borderBottomRightRadius: 50,borderBottomLeftRadius:50 }
+                    !attendance?.subject_name && { borderBottomRightRadius: 50, borderBottomLeftRadius: 50 }
                 ]}
                 start={{ x: 0, y: 0 }} // Start from the left
                 end={{ x: 1, y: 0 }}
@@ -29,11 +31,11 @@ export default function AttendanceCard({ attendance, colors, navigation, isAggre
                     attendance?.subject_name ? `${attendance.subject_code}: ${attendance.subject_name}` : "Aggregate Attendance"
                 }</Text>
 
-                <View style={{ maxHeight:HEIGHT(13), flexDirection: 'row' }}>
+                <View style={{ maxHeight: HEIGHT(13), flexDirection: 'row' }}>
 
                     <View style={styles.detailsContainer}>
 
-                        <View style={{ height:"100%",justifyContent: "space-evenly", paddingLeft: 5 }}>
+                        <View style={{ height: "100%", justifyContent: "space-evenly", paddingLeft: 5 }}>
                             <Text style={[
                                 styles.textAttendanceDetails,
                                 { display: (attendance?.last_attended ?? '') === "" ? "none" : "flex" }
@@ -61,7 +63,7 @@ export default function AttendanceCard({ attendance, colors, navigation, isAggre
                     </View>
                 </View>
             </LinearGradient>
-        </Pressable>
+        </ButtonV1>
     )
 }
 

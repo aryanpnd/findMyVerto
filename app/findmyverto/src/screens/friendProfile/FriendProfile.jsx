@@ -28,6 +28,7 @@ import { AppContext } from '../../../context/MainApp'
 import { friendsStorage, userStorage } from '../../../utils/storage/storage'
 import { globalStyles, HEIGHT, WIDTH } from '../../constants/styles'
 import AwesomeButton from 'react-native-really-awesome-button'
+import ButtonV1 from '../../components/miscellaneous/buttons/ButtonV1'
 
 const { height, width } = Dimensions.get('window')
 
@@ -211,7 +212,8 @@ export default function FriendProfile({ route }) {
               return (aAllowed === bAllowed) ? 0 : (aAllowed ? -1 : 1);
             })
             .map((value) => (
-              <Pressable
+              <ButtonV1
+              scaleInValue={0.90}
                 onPress={
                   student.allowedFieldsToShow?.includes(value.name)
                     ? () => navigation.navigate(value.route, { id: _id, name: firstName })
@@ -233,7 +235,7 @@ export default function FriendProfile({ route }) {
                   transition={1000}
                 />
                 <Text style={styles.text2}>{value.title}</Text>
-              </Pressable>
+              </ButtonV1>
             ))
           }
         </View>

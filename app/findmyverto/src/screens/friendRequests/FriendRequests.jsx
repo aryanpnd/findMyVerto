@@ -15,7 +15,7 @@ import { AuthContext } from '../../../context/Auth'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { colors } from '../../constants/colors'
 import { MaterialIcons } from '@expo/vector-icons'
-import SearchedStudentCard from '../../components/vertoSearch/SearchedStudentCard'
+import StudentCard from '../../components/vertoSearch/StudentCard'
 import LottieView from 'lottie-react-native';
 import EmptyRequests from '../../components/miscellaneous/EmptyRequests'
 import { getFriendRequests, getSentFriendRequests } from '../../../utils/fetchUtils/handleFriends/handleFriends'
@@ -184,7 +184,7 @@ function RequestsContainer({
   // Render each item depending on the tab
   const renderItem = ({ item }) =>
     tabIndex ? (
-      <SearchedStudentCard
+      <StudentCard
         friends={friends}
         disableBtn={disableBtn}
         friendsRequests={friendsRequests}
@@ -195,7 +195,7 @@ function RequestsContainer({
         student={item}
       />
     ) : (
-      <SearchedStudentCard
+      <StudentCard
         forRequest={true}
         setfriends={setfriends}
         friends={friends}

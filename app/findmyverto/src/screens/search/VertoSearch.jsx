@@ -5,7 +5,7 @@ import { FontAwesome5, MaterialIcons } from '@expo/vector-icons';
 import { colors } from '../../constants/colors';
 import LottieView from 'lottie-react-native';
 import Toast from 'react-native-toast-message';
-import StudentCard from '../../components/vertoSearch/SearchedStudentCard';
+import StudentCard from '../../components/vertoSearch/StudentCard';
 import { loadStudents } from '../../../utils/fetchUtils/handleUser/searchStudents';
 import { AuthContext } from '../../../context/Auth';
 import { HEIGHT, WIDTH } from '../../constants/styles';

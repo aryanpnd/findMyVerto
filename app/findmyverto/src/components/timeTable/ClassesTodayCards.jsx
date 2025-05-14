@@ -5,6 +5,7 @@ import { AppContext } from '../../../context/MainApp';
 import { colors } from '../../constants/colors';
 import { globalStyles, HEIGHT } from '../../constants/styles';
 import {isTimeEqual} from '../../../utils/helperFunctions/dataAndTimeHelpers';
+import ButtonV1 from '../miscellaneous/buttons/ButtonV1';
 
 
 const { width, height } = Dimensions.get('window');
@@ -18,7 +19,7 @@ export default function ClassesTodayCards({ value, index, navigation }) {
         setIsTimeEqualState(isTimeEqual(value?.time))
     }, [value?.time])
     return (
-        <Pressable onPress={() => navigation.navigate("Timetable")}>
+        <ButtonV1 onPress={() => navigation.navigate("Timetable")}>
             <LinearGradient
                 colors={isTimeEqualState ? ['#11998e', '#32cf6d'] : ["white", "white"]}
                 style={[styles.cardContainer, globalStyles.elevationMin]}
@@ -107,7 +108,7 @@ export default function ClassesTodayCards({ value, index, navigation }) {
                         </View>
                 }
             </LinearGradient>
-        </Pressable>
+        </ButtonV1>
     )
 }
 

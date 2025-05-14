@@ -1,4 +1,4 @@
-import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Modal } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import Toast from 'react-native-toast-message';
 import AttendanceCard from '../../components/attendance/AttendanceCard';
@@ -8,7 +8,7 @@ import Loading1 from '../miscellaneous/Loading1';
 import AttendanceScreenShimmer from '../shimmers/AttendanceScreenShimmer';
 import { HEIGHT, WIDTH } from '../../constants/styles';
 import { ErrorMessage } from '../timeTable/ErrorMessage';
-import { Entypo } from '@expo/vector-icons';
+import { Entypo, AntDesign } from '@expo/vector-icons';
 
 export default function AttendanceScreen({
   attendance,
@@ -24,6 +24,8 @@ export default function AttendanceScreen({
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
+  const [sortMethod, setSortMethod] = useState('none'); // 'none', 'ascending', 'descending'
+  const [showSortOptions, setShowSortOptions] = useState(false);
 
   useEffect(() => {
     if (routeParams && routeParams.courseCode) {
@@ -32,15 +34,35 @@ export default function AttendanceScreen({
   }, [routeParams]);
 
   // Filter attendance summary based on searchQuery
-  const filteredAttendance = attendance?.attendance_summary?.filter((value) => {
-    if (!searchQuery.trim()) return true;
-    const query = searchQuery.toLowerCase();
-    return (
-      (value.subject_name && value.subject_name.toLowerCase().includes(query)) ||
-      (value.subject_code && value.subject_code.toLowerCase().includes(query)) ||
-      (value.agg_attendance && value.agg_attendance.toString().includes(query))
-    );
-  });
+  const getFilteredAndSortedAttendance = () => {
+    if (!attendance?.attendance_summary) return [];
+    
+    let filtered = attendance.attendance_summary.filter((value) => {
+      if (!searchQuery.trim()) return true;
+      const query = searchQuery.toLowerCase();
+      return (
+        (value.subject_name && value.subject_name.toLowerCase().includes(query)) ||
+        (value.subject_code && value.subject_code.toLowerCase().includes(query)) ||
+        (value.agg_attendance && value.agg_attendance.toString().includes(query))
+      );
+    });
+    
+    // Sort based on the selected sort method
+    if (sortMethod === 'ascending') {
+      return [...filtered].sort((a, b) => a.agg_attendance - b.agg_attendance);
+    } else if (sortMethod === 'descending') {
+      return [...filtered].sort((a, b) => b.agg_attendance - a.agg_attendance);
+    }
+    
+    return filtered;
+  };
+
+  const filteredAttendance = getFilteredAndSortedAttendance();
+
+  const handleSortMethod = (method) => {
+    setSortMethod(method);
+    setShowSortOptions(false);
+  };
 
   return (
     <>
@@ -92,26 +114,48 @@ export default function AttendanceScreen({
           <View style={styles.AttendanceContainer}>
             <ScrollView contentContainerStyle={{ gap: 10, paddingVertical: 10 }} 
             keyboardShouldPersistTaps="handled">
-              {/* Wrap TextInput inside a view to overlay the clear icon */}
-              <View style={styles.searchContainer}>
-                <TextInput
-                  style={styles.searchBar}
-                  placeholder='Search by subject name, code, or percentage...'
-                  placeholderTextColor={'grey'}
-                  value={searchQuery}
-                  onChangeText={setSearchQuery}
-                  onFocus={() => setIsFocused(true)}
-                  onBlur={() => setIsFocused(false)}
-                />
-                {searchQuery.trim() !== '' && (
-                  <TouchableOpacity 
-                    style={styles.clearIconContainer} 
-                    onPress={() => setSearchQuery('')}
-                  >
-                    <Entypo name="circle-with-cross" size={24} color="black" />
-                  </TouchableOpacity>
-                )}
+              {/* Search and Sort Section */}
+              <View style={styles.searchSortContainer}>
+                <View style={styles.searchContainer}>
+                  <TextInput
+                    style={styles.searchBar}
+                    placeholder='Search by subject name, code, or percentage...'
+                    placeholderTextColor={'grey'}
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    onFocus={() => setIsFocused(true)}
+                    onBlur={() => setIsFocused(false)}
+                  />
+                  {searchQuery.trim() !== '' && (
+                    <TouchableOpacity 
+                      style={styles.clearIconContainer} 
+                      onPress={() => setSearchQuery('')}
+                    >
+                      <Entypo name="circle-with-cross" size={24} color="black" />
+                    </TouchableOpacity>
+                  )}
+                </View>
+                
+                <TouchableOpacity 
+                  style={styles.sortButton} 
+                  onPress={() => setShowSortOptions(true)}
+                >
+                  <AntDesign 
+                    name="sort-amount-desc" 
+                    size={24} 
+                    color={sortMethod !== 'none' ? colors.primary : 'gray'} 
+                  />
+                </TouchableOpacity>
               </View>
+
+              {/* Sort indicator if sorting is active */}
+              {sortMethod !== 'none' && (
+                <View style={styles.sortIndicatorContainer}>
+                  <Text style={styles.sortIndicator}>
+                    Sorted by: {sortMethod === 'ascending' ? 'Lowest to Highest' : 'Highest to Lowest'}
+                  </Text>
+                </View>
+              )}
 
               {loading ? (
                 Array(6)
@@ -139,6 +183,65 @@ export default function AttendanceScreen({
               )}
             </ScrollView>
           </View>
+          
+          {/* Sort Options Modal */}
+          <Modal
+            visible={showSortOptions}
+            transparent={true}
+            animationType="fade"
+            onRequestClose={() => setShowSortOptions(false)}
+          >
+            <TouchableOpacity 
+              style={styles.modalOverlay}
+              activeOpacity={1}
+              onPress={() => setShowSortOptions(false)}
+            >
+              <View style={styles.modalContainer}>
+                <View style={styles.modalContent}>
+                  <Text style={styles.modalTitle}>Sort Attendance By</Text>
+                  
+                  <TouchableOpacity 
+                    style={[
+                      styles.sortOption, 
+                      sortMethod === 'none' && styles.selectedOption
+                    ]}
+                    onPress={() => handleSortMethod('none')}
+                  >
+                    <Text style={styles.sortOptionText}>Default</Text>
+                    {sortMethod === 'none' && (
+                      <AntDesign name="check" size={18} color={colors.primary} />
+                    )}
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity 
+                    style={[
+                      styles.sortOption,
+                      sortMethod === 'ascending' && styles.selectedOption
+                    ]}
+                    onPress={() => handleSortMethod('ascending')}
+                  >
+                    <Text style={styles.sortOptionText}>Lowest to Highest</Text>
+                    {sortMethod === 'ascending' && (
+                      <AntDesign name="check" size={18} color={colors.primary} />
+                    )}
+                  </TouchableOpacity>
+                  
+                  <TouchableOpacity 
+                    style={[
+                      styles.sortOption,
+                      sortMethod === 'descending' && styles.selectedOption
+                    ]}
+                    onPress={() => handleSortMethod('descending')}
+                  >
+                    <Text style={styles.sortOptionText}>Highest to Lowest</Text>
+                    {sortMethod === 'descending' && (
+                      <AntDesign name="check" size={18} color={colors.primary} />
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </Modal>
         </View>
       )}
     </>
@@ -162,9 +265,16 @@ const styles = StyleSheet.create({
   AttendanceContainer: {
     flex: 6,
   },
-  searchContainer: {
+  searchSortContainer: {
     width: WIDTH(95),
     alignSelf: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+  },
+  searchContainer: {
+    flex: 1,
     position: 'relative',
   },
   searchBar: {
@@ -176,18 +286,70 @@ const styles = StyleSheet.create({
     borderColor: 'grey',
     backgroundColor: 'white',
   },
+  sortButton: {
+    height: HEIGHT(6),
+    width: HEIGHT(6),
+    borderRadius: HEIGHT(3),
+    backgroundColor: 'white',
+    borderWidth: 1,
+    borderColor: 'grey',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   clearIconContainer: {
     position: 'absolute',
     right: 15,
     top: '45%',
     transform: [{ translateY: -10 }],
   },
-  clearIcon: {
-    fontSize: 20,
-    color: 'grey',
-  },
   cardContainer: {
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: 'white',
+    borderRadius: 12,
+    overflow: 'hidden',
+  },
+  modalContent: {
+    padding: 16,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    textAlign: 'center',
+    color: colors.secondary,
+  },
+  sortOption: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 16,
+    paddingHorizontal: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  selectedOption: {
+    backgroundColor: '#f0f8ff',
+  },
+  sortOptionText: {
+    fontSize: 16,
+  },
+  sortIndicatorContainer: {
+    alignItems: 'center',
+    paddingVertical: 5,
+  },
+  sortIndicator: {
+    fontSize: 12,
+    color: colors.primary,
+    fontWeight: '500',
   },
 });

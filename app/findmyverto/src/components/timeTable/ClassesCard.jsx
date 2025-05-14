@@ -5,6 +5,7 @@ import { globalStyles } from '../../constants/styles';
 import { colors } from '../../constants/colors';
 import { getDay, isTimeEqual } from '../../../utils/helperFunctions/dataAndTimeHelpers';
 import CourseDetailsModal from './CourseDetailsModal';
+import ButtonV1 from '../miscellaneous/buttons/ButtonV1';
 
 export default function ClassesCard({ time, classes, courses, day, friend }) {
   const [ongoing, setOngoing] = useState(false);
@@ -27,7 +28,7 @@ export default function ClassesCard({ time, classes, courses, day, friend }) {
 
   return (
     <>
-      <Pressable onPress={handlePress}>
+      <ButtonV1 onPress={handlePress}>
         <LinearGradient
           colors={["white", "white"]}
           style={[
@@ -88,7 +89,7 @@ export default function ClassesCard({ time, classes, courses, day, friend }) {
             ))}
           </View>
         </LinearGradient>
-      </Pressable>
+      </ButtonV1>
 
       {/* Render the multi-course modal */}
       <CourseDetailsModal
