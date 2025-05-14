@@ -1,5 +1,5 @@
-import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity, Modal } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { View, StyleSheet, ScrollView, Text, TextInput, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
 import Toast from 'react-native-toast-message';
 import AttendanceCard from '../../components/attendance/AttendanceCard';
 import { colors } from '../../constants/colors';
@@ -9,6 +9,7 @@ import AttendanceScreenShimmer from '../shimmers/AttendanceScreenShimmer';
 import { HEIGHT, WIDTH } from '../../constants/styles';
 import { ErrorMessage } from '../timeTable/ErrorMessage';
 import { Entypo, AntDesign } from '@expo/vector-icons';
+import SortBottomSheet from './SortBottomSheet';
 
 export default function AttendanceScreen({
   attendance,
@@ -25,7 +26,7 @@ export default function AttendanceScreen({
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [sortMethod, setSortMethod] = useState('none'); // 'none', 'ascending', 'descending'
-  const [showSortOptions, setShowSortOptions] = useState(false);
+  const sortBottomSheetRef = useRef(null);
 
   useEffect(() => {
     if (routeParams && routeParams.courseCode) {
@@ -61,7 +62,6 @@ export default function AttendanceScreen({
 
   const handleSortMethod = (method) => {
     setSortMethod(method);
-    setShowSortOptions(false);
   };
 
   return (
@@ -138,7 +138,7 @@ export default function AttendanceScreen({
                 
                 <TouchableOpacity 
                   style={styles.sortButton} 
-                  onPress={() => setShowSortOptions(true)}
+                  onPress={() => sortBottomSheetRef.current?.open()}
                 >
                   <AntDesign 
                     name="sort-amount-desc" 
@@ -184,64 +184,12 @@ export default function AttendanceScreen({
             </ScrollView>
           </View>
           
-          {/* Sort Options Modal */}
-          <Modal
-            visible={showSortOptions}
-            transparent={true}
-            animationType="fade"
-            onRequestClose={() => setShowSortOptions(false)}
-          >
-            <TouchableOpacity 
-              style={styles.modalOverlay}
-              activeOpacity={1}
-              onPress={() => setShowSortOptions(false)}
-            >
-              <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                  <Text style={styles.modalTitle}>Sort Attendance By</Text>
-                  
-                  <TouchableOpacity 
-                    style={[
-                      styles.sortOption, 
-                      sortMethod === 'none' && styles.selectedOption
-                    ]}
-                    onPress={() => handleSortMethod('none')}
-                  >
-                    <Text style={styles.sortOptionText}>Default</Text>
-                    {sortMethod === 'none' && (
-                      <AntDesign name="check" size={18} color={colors.primary} />
-                    )}
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity 
-                    style={[
-                      styles.sortOption,
-                      sortMethod === 'ascending' && styles.selectedOption
-                    ]}
-                    onPress={() => handleSortMethod('ascending')}
-                  >
-                    <Text style={styles.sortOptionText}>Lowest to Highest</Text>
-                    {sortMethod === 'ascending' && (
-                      <AntDesign name="check" size={18} color={colors.primary} />
-                    )}
-                  </TouchableOpacity>
-                  
-                  <TouchableOpacity 
-                    style={[
-                      styles.sortOption,
-                      sortMethod === 'descending' && styles.selectedOption
-                    ]}
-                    onPress={() => handleSortMethod('descending')}
-                  >
-                    <Text style={styles.sortOptionText}>Highest to Lowest</Text>
-                    {sortMethod === 'descending' && (
-                      <AntDesign name="check" size={18} color={colors.primary} />
-                    )}
-                  </TouchableOpacity>
-                </View>
-              </View>
-            </TouchableOpacity>
-          </Modal>
+          {/* Sort Bottom Sheet */}
+          <SortBottomSheet 
+            ref={sortBottomSheetRef} 
+            sortMethod={sortMethod} 
+            onSortMethodChange={handleSortMethod} 
+          />
         </View>
       )}
     </>
@@ -305,43 +253,6 @@ const styles = StyleSheet.create({
   cardContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContainer: {
-    width: '80%',
-    backgroundColor: 'white',
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  modalContent: {
-    padding: 16,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 16,
-    textAlign: 'center',
-    color: colors.secondary,
-  },
-  sortOption: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 16,
-    paddingHorizontal: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  selectedOption: {
-    backgroundColor: '#f0f8ff',
-  },
-  sortOptionText: {
-    fontSize: 16,
   },
   sortIndicatorContainer: {
     alignItems: 'center',
