@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Modal, View, Text, ScrollView, StyleSheet, Animated, TouchableOpacity, TouchableWithoutFeedback, Image } from 'react-native';
 import { globalStyles, HEIGHT, WIDTH } from '../../constants/styles';
 import { colors } from '../../constants/colors';
@@ -6,7 +6,7 @@ import PagerButtons from '../miscellaneous/PagerButtons';
 import CoursesCard from './CoursesCard';
 import { useNavigation } from '@react-navigation/native';
 
-const CourseDetailsModal = ({ visible, classes, courses, onClose }) => {
+const CourseDetailsModal = ({ visible,friend, classes, courses, onClose }) => {
   const navigation = useNavigation();
   const scrollViewRef = useRef(null);
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -24,9 +24,17 @@ const CourseDetailsModal = ({ visible, classes, courses, onClose }) => {
   };
 
   const handleNavigate = (classDetails) => {
-    navigation.navigate('Attendance', {
-      courseCode: classDetails.class,
-    });
+    if(friend) {
+      navigation.navigate('FriendAttendance', {
+        id: friend.id,
+        name: friend.name,
+        courseCode: classDetails.class,
+      });
+    } else {
+      navigation.navigate('Attendance', {
+        courseCode: classDetails.class,
+      });
+    }
     onClose();
   };
 
@@ -38,9 +46,9 @@ const CourseDetailsModal = ({ visible, classes, courses, onClose }) => {
       statusBarTranslucent={true}
       onRequestClose={onClose}
     >
-      {/* 
-        Wrap the entire overlay in a TouchableOpacity so that touching anywhere outside 
-        the modal content triggers onClose. We use TouchableWithoutFeedback inside to 
+      {/*
+        Wrap the entire overlay in a TouchableOpacity so that touching anywhere outside
+        the modal content triggers onClose. We use TouchableWithoutFeedback inside to
         prevent closing when touching inside the modal container.
       */}
       <TouchableOpacity style={styles.overlay} activeOpacity={1} onPress={onClose}>

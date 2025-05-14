@@ -1,4 +1,3 @@
-// ClassesCard.js
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -7,7 +6,7 @@ import { colors } from '../../constants/colors';
 import { getDay, isTimeEqual } from '../../../utils/helperFunctions/dataAndTimeHelpers';
 import CourseDetailsModal from './CourseDetailsModal';
 
-export default function ClassesCard({ time, classes,courses, day }) {
+export default function ClassesCard({ time, classes,courses, day, friend }) {
   const [ongoing, setOngoing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -105,6 +104,7 @@ export default function ClassesCard({ time, classes,courses, day }) {
         classes={classes}
         onClose={() => setModalVisible(false)}
         onNavigate={handleNavigate}
+        friend={friend}
       />
     </>
   );

@@ -87,6 +87,7 @@ export default function FriendAttendance({ navigation, route }) {
             navigation={navigation}
             self={true}
             refresh={refresh}
+            routeParams={route.params}
         />
     );
 }

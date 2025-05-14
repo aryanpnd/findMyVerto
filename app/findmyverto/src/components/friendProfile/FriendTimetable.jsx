@@ -41,11 +41,13 @@ export default function FriendTimetable({ navigation, route }) {
                 await new Promise((resolve) => setTimeout(resolve, 500));
                 settimeTable(parsedTimetable)
                 const classesToday = formatClassesToday(parsedTimetable, false);
+                setCourses(student.data.courses)
                 setClassesToday(classesToday);
                 setLastSynced(student.lastSynced)
             } else {
                 await handleFetchTimetable(false)
             }
+            setIsError(false)
             setLoading(false)
         } catch (error) {
             setLoading(false)
@@ -80,7 +82,7 @@ export default function FriendTimetable({ navigation, route }) {
                 isError ?
                     <ErrorMessage handleFetchTimetable={()=>handleFetchTimetable(true)} timetableLoading={loading||refreshing} buttonHeight={45} ErrorMessage={"timetable"} />
                     :
-                    <TimeTableScreen timeTable={timeTable} loading={loading} classesToday={classesToday} />
+                    <TimeTableScreen timeTable={timeTable} loading={loading} classesToday={classesToday} courses={courses} friend={route.params}/>
             }
         </>
     )
