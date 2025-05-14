@@ -35,7 +35,7 @@ const getHeaderWidths = (headers) => {
   return obj;
 };
 
-export default function TimeTableScreen({ timeTable,courses, classesToday }) {
+export default function TimeTableScreen({ timeTable,courses, classesToday, friend }) {
   // Define day names and build headers with class count.
   const days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   const headers = days.map((day, i) => `${day} (${classesToday[i] ?? 0})`);
@@ -168,7 +168,7 @@ export default function TimeTableScreen({ timeTable,courses, classesToday }) {
       showsHorizontalScrollIndicator={false}
       onScroll={scrollHandler}>
       {days.map((day, index) => (
-        <TimetableItem key={day} index={index} classes={timeTable[day] || []} courses={courses}/>
+        <TimetableItem key={day} index={index} classes={timeTable[day] || []} courses={courses} friend={friend}/>
       ))}
     </Animated.ScrollView>
   </View>

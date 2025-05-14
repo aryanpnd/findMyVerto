@@ -50,11 +50,13 @@ export default function CoursesCard({ course, subjectCode }) {
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: "white",
+        // backgroundColor: "white",
+        borderWidth: 1,
+        borderColor: colors.disabledBackground,
         paddingHorizontal: 15,
         paddingVertical: 10,
         borderRadius: 15,
-        ...globalStyles.elevationMin
+        // ...globalStyles.elevationMin
     },
     titleContainer: {
     },

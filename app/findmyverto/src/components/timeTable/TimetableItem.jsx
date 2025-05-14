@@ -8,7 +8,7 @@ import { isTimeEqual, getDay } from '../../../utils/helperFunctions/dataAndTimeH
 
 const { width } = Dimensions.get('screen');
 
-export default function TimetableItem({ classes,courses, index }) {
+export default function TimetableItem({ classes,courses, index, friend }) {
   const scrollViewRef = useRef(null);
 
   useEffect(() => {
@@ -45,7 +45,7 @@ export default function TimetableItem({ classes,courses, index }) {
               classDetails?.break ? (
                 <BreakCard key={idx} time={classDetails?.time} day={index} />
               ) : (
-                <ClassesCard key={idx} time={classDetails?.time} classes={classDetails?.class} day={index} courses={courses}/>
+                <ClassesCard key={idx} time={classDetails?.time} classes={classDetails?.class} day={index} courses={courses} friend={friend} />
               )
             )}
           </ScrollView>
