@@ -1,22 +1,34 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity, ActivityIndicator, Pressable, Modal } from 'react-native'
+import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
-import { blurHash, globalStyles, HEIGHT, WIDTH } from '../../constants/styles'
+import { blurHash, globalStyles, WIDTH } from '../../constants/styles'
 import { colors } from '../../constants/colors';
 import { FontAwesome5, Ionicons } from '@expo/vector-icons';
 import { AuthContext } from '../../../context/Auth';
-import axios from 'axios';
 import Toast from 'react-native-toast-message';
-import LottieView from 'lottie-react-native';
 import { acceptFriendRequest, cancelSentRequest, rejectFriendRequest, removeFriend, sendFriendRequest } from '../../../utils/fetchUtils/handleFriends/handleFriends';
 import ImageViewer from '../miscellaneous/ImageViewer';
 import CustomAlert, { useCustomAlert } from '../miscellaneous/CustomAlert';
 import { AppContext } from '../../../context/MainApp';
 import { Image } from 'expo-image';
+import ButtonV1 from '../miscellaneous/buttons/ButtonV1';
 
 
 const { height } = Dimensions.get('window');
 
-export default function SearchedStudentCard({ forRequest, student, friends, setfriends, sentFriendRequests, setSentFriendRequests, friendsRequests, setfriendsRequests, navigation, disableBtn, setDisableBtn }) {
+export default function StudentCard({ 
+    forRequest,
+    student,
+    friends, 
+    setfriends, 
+    sentFriendRequests, 
+    setSentFriendRequests, 
+    friendsRequests, 
+    setfriendsRequests, 
+    navigation, 
+    disableBtn, 
+    setDisableBtn, 
+    elevation=true
+}) {
     const customAlert = useCustomAlert()
     const { auth } = useContext(AuthContext)
     const { friendsRefreshing, setFriendsRefreshing, friendRequests, setFriendRequests } = useContext(AppContext)
@@ -118,7 +130,9 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
     }
 
     return (
-        <View style={[style.container, globalStyles.elevationMin]}>
+        <ButtonV1 onPress={navigateToFriend} 
+        childrenStyle={{flexDirection:"row",}}
+        style={[style.container, elevation && globalStyles.elevationMin]}>
             <CustomAlert />
             <ImageViewer visible={modalVisible} setVisible={setModalVisible} image={imageSource} />
             <TouchableOpacity onPress={() => setModalVisible(true)} style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
@@ -130,42 +144,49 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={navigateToFriend} style={{ width: forRequest ? "35%" : "55%", paddingHorizontal: 10, justifyContent: "center" }}>
+            <View style={{ width: forRequest ? "35%" : "55%", paddingHorizontal: 10, justifyContent: "center" }}>
                 <Text ellipsizeMode='clip' numberOfLines={1} style={{ fontWeight: "bold" }}>{student.name}</Text>
                 <Text style={{ fontSize: 12, color: "grey" }}>{student.reg_no}</Text>
                 <Text style={{ fontSize: 12, color: "grey" }}>{student.section}</Text>
-            </TouchableOpacity>
+            </View>
 
             {/* Button  */}
             <View style={{ justifyContent: "center", width: forRequest ? "45%" : "30%" }}>
                 {
                     forRequest ?
                         <View style={{ flexDirection: "row", width: WIDTH(43), justifyContent: 'space-between' }}>
-                            <TouchableOpacity
+                            <ButtonV1
+                            childrenStyle={{justifyContent: 'center', alignItems: 'center'}}
+                                scaleInValue={0.90}
                                 disabled={disableBtn ? true : isFriend ? true : false}
                                 onPress={handleAddFriend}
                                 style={[style.acceptAndRejectBtn, { backgroundColor: colors.green }]}
+                                loading={loading}
+                                spinnerColor={isInSentList ? "black" : "white"}
                             >
-                                {loading ? <ActivityIndicator size="small" color={"white"} />
-                                    :
-                                    <Text style={{ color: "white", fontWeight: '500' }}>Accept</Text>
-                                }
-                            </TouchableOpacity>
+                                <Text style={{ color: "white", fontWeight: '500' }}>Accept</Text>
 
-                            <TouchableOpacity
+                            </ButtonV1>
+
+                            <ButtonV1
+                            childrenStyle={{justifyContent: 'center', alignItems: 'center'}}
+                                scaleInValue={0.90}
                                 disabled={disableBtn ? true : isFriend ? true : false}
                                 onPress={handleRejectFriendRequest}
                                 style={[style.acceptAndRejectBtn, { backgroundColor: colors.btn1 }]}
+                                loading={loading}
+                                spinnerColor={isInSentList ? "black" : "white"}
                             >
-                                {loading ? <ActivityIndicator size="small" color={isInSentList ? "black" : "white"} />
-                                    :
-                                    <Text style={{ color: "grey", fontWeight: '500' }}>Cancel</Text>
-                                }
-                            </TouchableOpacity>
+                                <Text style={{ color: "grey", fontWeight: '500' }}>Cancel</Text>
+
+                            </ButtonV1>
                         </View>
                         :
-                        <TouchableOpacity
+                        <ButtonV1
+                            scaleInValue={0.90}
                             disabled={disableBtn}
+                            disabledBackground='transparent'
+                            childrenStyle={{justifyContent: 'center', alignItems: 'center'}}
                             onPress={() => {
                                 if (isFriend) {
                                     handleRemoveFriend();
@@ -180,42 +201,43 @@ export default function SearchedStudentCard({ forRequest, student, friends, setf
                             style={{
                                 width: "100%",
                                 borderRadius: 15,
-                                backgroundColor: isFriend ? colors.green : isInRequestList ? colors.orange : isInSentList ? colors.btn1 : colors.lightDark,
+                                backgroundColor: isFriend ? colors.green : isInRequestList ? colors.orange : isInSentList ? colors.btn1 : colors.secondary,
                                 padding: 10,
                                 justifyContent: "center",
                                 flexDirection: "row",
                                 alignItems: "center",
                                 gap: 5
                             }}
+                            loading={loading}
+                            spinnerColor={isInSentList ? "black" : "white"}
                         >
-                            {
-                                loading ?
-                                    <>
-                                        <ActivityIndicator size="small" color={isInSentList ? "black" : "white"} />
-                                    </>
-                                    :
-                                    <>
-                                        <Text style={{ color: isInSentList ? "grey" : "white", textAlign: "center", fontWeight: "bold" }}>
-                                            {isFriend ? "Friends" : isInRequestList ? "Requested" : isInSentList ? "Cancel" : "Send"}
-                                        </Text>
-                                        {
-                                            isInSentList ?
-                                                <Ionicons name='time' color={"grey"} />
-                                                : isInRequestList ?
-                                                    <></>
-                                                    :
-                                                    isFriend ?
-                                                        <FontAwesome5 name="user-check" color={"white"} />
-                                                        :
-                                                        <Ionicons name='person-add-sharp' color={"white"} />
-                                        }
-                                    </>
-                            }
-                        </TouchableOpacity>
+                            <View style={style.buttonChildContainer}>
+                                <Text style={[style.buttonText, { color: isInSentList ? "grey" : "white" }]}>
+                                    {
+                                        isFriend ?
+                                            "Friends" :
+                                            isInRequestList ?
+                                                "Requested" :
+                                                isInSentList ?
+                                                    "Cancel" : "Send"}
+                                </Text>
+                                {
+                                    isInSentList ?
+                                        <Ionicons name='time' color={"grey"} />
+                                        : isInRequestList ?
+                                            <></>
+                                            :
+                                            isFriend ?
+                                                <FontAwesome5 name="user-check" color={"white"} />
+                                                :
+                                                <Ionicons name='person-add-sharp' color={"white"} />
+                                }
+                            </View>
+                        </ButtonV1>
                 }
             </View>
 
-        </View>
+        </ButtonV1>
     )
 }
 
@@ -237,4 +259,15 @@ const style = StyleSheet.create({
         alignItems: "center",
         gap: 5
     },
+    buttonChildContainer: {
+        width: "100%",
+        flexDirection: "row",
+        gap: 5,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    buttonText: {
+        fontWeight: "bold",
+        textAlign: "center",
+    }
 })

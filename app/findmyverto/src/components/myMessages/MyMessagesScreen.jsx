@@ -11,6 +11,7 @@ import { globalStyles, HEIGHT, WIDTH } from '../../constants/styles';
 import { ErrorMessage } from '../timeTable/ErrorMessage';
 import LottieView from 'lottie-react-native';
 import { userStorage } from '../../../utils/storage/storage';
+import ButtonV1 from '../miscellaneous/buttons/ButtonV1';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
@@ -108,9 +109,9 @@ export default function MyMessagesScreen({
                                 <View style={styles.searchContainer}>
                                     <SearchBar searchQuery={searchQuery} updateSearchQuery={searchQueryHandler} isFocused={isFocused} setFocused={setFocused} />
                                     <Text style={styles.text2}>-or-</Text>
-                                    <Pressable style={{ backgroundColor: "black", padding: 10, borderRadius: 10 }} onPress={() => navigation.navigate("MyMessagesSearch")}>
+                                    <ButtonV1 style={{ backgroundColor: "black", padding: 10, borderRadius: 10 }} onPress={() => navigation.navigate("MyMessagesSearch")}>
                                         <Text style={{ color: "white", fontSize: 13 }}>Advanced Search</Text>
-                                    </Pressable>
+                                    </ButtonV1>
                                 </View>
                                 <FlatList
                                     // style={styles.body}

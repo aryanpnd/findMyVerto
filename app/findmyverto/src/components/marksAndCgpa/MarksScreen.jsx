@@ -7,6 +7,7 @@ import formatTimeAgo from "../../../utils/helperFunctions/dateFormatter";
 import { globalStyles, HEIGHT } from "../../constants/styles";
 import { LinearGradient } from "expo-linear-gradient";
 import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
+import ButtonV1 from "../miscellaneous/buttons/ButtonV1";
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create shimmer placeholder
 
@@ -98,12 +99,14 @@ export default function MarksScreen({
         );
 
         const card = (
-            <Pressable key={index} style={styles.card} onPress={() => navigation.navigate("MarksDetails", {
-                subjects: marks[key],
-                year: isBacklog ? "backlog/reappear/improvement" : year,
-                sem: isBacklog ? "" : semester,
-                colors: getGradientColorsForYear(year),
-            })}>
+            <ButtonV1
+                childrenStyle={styles.card}
+                key={index} onPress={() => navigation.navigate("MarksDetails", {
+                    subjects: marks[key],
+                    year: isBacklog ? "backlog/reappear/improvement" : year,
+                    sem: isBacklog ? "" : semester,
+                    colors: getGradientColorsForYear(year),
+                })}>
                 {isBacklog ?
                     (
                         <LinearGradient colors={['#d31027', '#ea384d']}
@@ -128,7 +131,7 @@ export default function MarksScreen({
                         </LinearGradient>
                     )}
                 {cardContent}
-            </Pressable>
+            </ButtonV1>
         );
 
         if (isBacklog) {
@@ -157,7 +160,7 @@ export default function MarksScreen({
 
             {
                 isError ?
-                    <ErrorMessage handleFetchTimetable={()=>handleMarksFetch(true)} timetableLoading={marksLoading||markRefresh} buttonHeight={45} ErrorMessage={"Marks"} />
+                    <ErrorMessage handleFetchTimetable={() => handleMarksFetch(true)} timetableLoading={marksLoading || markRefresh} buttonHeight={45} ErrorMessage={"Marks"} />
                     :
                     <ScrollView showsVerticalScrollIndicator={false} style={styles.body} contentContainerStyle={styles.scrollView}>
                         <Text style={styles.sectionHeader}>Normal Semesters</Text>
@@ -193,7 +196,7 @@ const styles = StyleSheet.create({
         gap: 10,
         paddingTop: 10,
         paddingHorizontal: 10,
-        paddingBottom: 20
+        paddingBottom: HEIGHT(10),
     },
     card: {
         height: HEIGHT(10),

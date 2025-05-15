@@ -17,6 +17,7 @@ import { HEIGHT, WIDTH } from '../../constants/styles'
 import { fetchAttendance } from '../../../utils/fetchUtils/userData/attendanceFetch'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 import { AttendanceSyncTime } from '../../../utils/settings/SyncAndRetryLimits'
+import ButtonV1 from '../miscellaneous/buttons/ButtonV1'
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
@@ -132,10 +133,18 @@ export default function Header({ navigation }) {
 
                 <View style={styles.headerContainer}>
                     <View style={styles.searchbarContainer}>
-                        <TouchableOpacity style={styles.button1} onPress={() => navigation.navigate('VertoSearch')}>
-                            <Text style={styles.text1}>Search a Verto</Text>
+                        <ButtonV1
+                            childrenStyle={{
+                                flexDirection: "row",
+                                justifyContent: 'center',
+                                gap: 10,
+                                alignItems: 'center'
+                            }}
+                            scaleInValue={0.9}
+                            style={styles.button1} onPress={() => navigation.navigate('VertoSearch')}>
+                            <Text style={styles.text1}>Search Vertos</Text>
                             <Octicons name='search' color={colors.whiteLight} size={18} />
-                        </TouchableOpacity>
+                        </ButtonV1>
                     </View>
 
                     <View style={styles.iconContainer}>
@@ -198,7 +207,10 @@ export default function Header({ navigation }) {
                         </Text>}
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.AttendanceContainer} onPress={loading ? () => { } : () => navigation.navigate('Attendance')}>
+                    <ButtonV1
+                        childrenStyle={{ justifyContent: 'center', alignItems: 'center' }}
+                        scaleInValue={0.9}
+                        style={styles.AttendanceContainer} onPress={loading ? () => { } : () => navigation.navigate('Attendance')}>
                         <Text style={{ fontWeight: '500', color: colors.whiteLight, marginTop: 5 }}>Attendance</Text>
                         {
                             attendanceLoading ?
@@ -225,7 +237,7 @@ export default function Header({ navigation }) {
                         ) : (
                             <AttendanceProgressBar size={50} attendance={parseInt(attendance?.total_details?.agg_attendance) || 0} />
                         )}
-                    </TouchableOpacity>
+                    </ButtonV1>
                 </View>
             </View>
         </LinearGradient>

@@ -15,6 +15,7 @@ import { colors } from '../../constants/colors'
 import { AuthContext } from '../../../context/Auth'
 import { HEIGHT, WIDTH } from '../../constants/styles'
 import { homeScreenNavigations } from '../../constants/globalConstants'
+import ButtonV1 from '../miscellaneous/buttons/ButtonV1'
 
 const { width } = Dimensions.get('window')
 
@@ -71,15 +72,13 @@ export default function Body({ navigation }) {
         {/* Other navigations in a 3x3 grid */}
         <View style={styles.NavigationsContainer}>
           {homeScreenNavigations.map((value) => (
-            <Pressable
-              onPress={() => navigation.navigate(value.route)}
+            <ButtonV1
               key={value.title}
               style={[styles.NavigationsCard, value.development && { opacity: 0.6 }]}
+              childrenStyle={{justifyContent: 'center', alignItems: 'center'}}
+              scaleInValue={0.90}
+              onPress={() => navigation.navigate(value.route)}
             >
-              {/* {value.development&&
-              <View style={styles.underDevelopmentMark}>
-                <Text>Development</Text>
-                </View>} */}
               <Image
                 source={value.icon}
                 style={{
@@ -90,7 +89,7 @@ export default function Body({ navigation }) {
                 transition={1000}
               />
               <Text style={styles.text2}>{value.title}</Text>
-            </Pressable>
+            </ButtonV1>
           ))}
         </View>
       </ScrollView>
@@ -133,6 +132,7 @@ const styles = StyleSheet.create({
   NavigationsCard: {
     width: '30%',
     aspectRatio: 1,
+    // padding: 10,
     backgroundColor: 'white',
     borderRadius: 20,
     justifyContent: 'center',

@@ -13,7 +13,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 import { colors } from '../../constants/colors';
 import { AuthContext } from '../../../context/Auth';
-import SearchedStudentCard from '../../components/vertoSearch/SearchedStudentCard';
+import StudentCard from '../../components/vertoSearch/StudentCard';
 import EmptyRequests from '../../components/miscellaneous/EmptyRequests';
 import { StatusBar } from 'expo-status-bar';
 import TimetableScreenShimmer from '../../components/shimmers/TimetableScreenShimmer';
@@ -154,7 +154,7 @@ export default function Friends({ navigation }) {
 
     // Render friend item.
     const renderFriendItem = ({ item }) => (
-        <SearchedStudentCard
+        <StudentCard
             student={item}
             setfriends={setFriends}
             friends={friends}
@@ -165,6 +165,7 @@ export default function Friends({ navigation }) {
             navigation={navigation}
             setDisableBtn={() => { }}
             setSentFriendRequests={() => { }}
+            elevation={false}
         />
     );
 

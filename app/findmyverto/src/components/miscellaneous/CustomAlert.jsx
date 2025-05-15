@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Modal, View, Text, TouchableOpacity, StyleSheet, Pressable } from 'react-native';
 import { globalStyles } from '../../constants/styles';
+import ButtonV1 from './buttons/ButtonV1';
 
 const CustomAlert = (() => {
   let alertInstance;
@@ -35,16 +36,17 @@ const CustomAlert = (() => {
             <Text style={styles.message}>{message}</Text>
             <View style={styles.buttonContainer}>
               {buttons.map((button, index) => (
-                <Pressable
+                <ButtonV1
                   key={index}
                   style={[styles.button,button.color&&{backgroundColor:button.color}]}
                   onPress={() => {
                     button.onPress?.();
                     setVisible(false);
                   }}
+                  scaleInValue={0.9}
                 >
                   <Text style={[styles.buttonText,button.textColor&&{color:button.textColor}]}>{button.text}</Text>
-                </Pressable>
+                </ButtonV1>
               ))}
             </View>
           </View>
