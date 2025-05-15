@@ -5,6 +5,7 @@ import { globalStyles, WIDTH } from '../../constants/styles';
 import { colors } from '../../constants/colors';
 import { Feather, FontAwesome6, MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { useEffect, useState } from 'react';
+import ButtonV1 from '../miscellaneous/buttons/ButtonV1';
 
 export default function DriveCard({ drive, navigation }) {
     // Enable LayoutAnimation on Android
@@ -118,7 +119,8 @@ export default function DriveCard({ drive, navigation }) {
                         <Text style={[styles.registeredText, { backgroundColor: "gray" }]}>Closed</Text>
                 }
 
-                <Pressable 
+                <ButtonV1 
+                    childrenStyle={{flexDirection:"row",justifyContent: 'center', alignItems: 'center'}}
                     style={styles.viewDetailsBtn}
                     onPress={(e) => {
                         e.stopPropagation();
@@ -127,7 +129,7 @@ export default function DriveCard({ drive, navigation }) {
                 >
                     <MaterialCommunityIcons name="information-outline" size={13} color="white" />
                     <Text style={{ color: "white", fontSize: 13 }}>View Details</Text>
-                </Pressable>
+                </ButtonV1>
             </View>
             
             {/* <Text style={styles.toggleText}>

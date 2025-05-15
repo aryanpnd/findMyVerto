@@ -75,6 +75,7 @@ export default function Body({ navigation }) {
             <ButtonV1
               key={value.title}
               style={[styles.NavigationsCard, value.development && { opacity: 0.6 }]}
+              childrenStyle={{justifyContent: 'center', alignItems: 'center'}}
               scaleInValue={0.90}
               onPress={() => navigation.navigate(value.route)}
             >

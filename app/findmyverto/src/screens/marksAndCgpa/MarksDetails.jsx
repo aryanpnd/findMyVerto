@@ -4,6 +4,7 @@ import { globalStyles, HEIGHT, WIDTH } from "../../constants/styles";
 import { useEffect } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 import { FontAwesome6 } from "@expo/vector-icons";
+import { colors } from "../../constants/colors";
 
 export default function MarksDetails({ navigation }) {
     const route = useRoute();
@@ -136,7 +137,9 @@ const styles = StyleSheet.create({
         padding: 20,
         borderRadius: 20,
         backgroundColor: "white",
-        ...globalStyles.elevation
+        borderWidth: 1,
+        borderColor: colors.disabledBackground,
+        // ...globalStyles.elevation
     },
     subNameText: {
         fontSize: 16,

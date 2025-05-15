@@ -14,14 +14,15 @@ const ButtonV1 = ({
   onPressIn,
   onPressOut,
   style,
+  childrenStyle,
   textStyle,
   text,
   bounce = true,
-  scaleInValue=0.95,
+  scaleInValue = 0.95,
   opacityEffect = false,
   loading = false,
   disabled = false,
-  disabledBackground=colors.disabledBackground,
+  disabledBackground = colors.disabledBackground,
   spinnerColor = '#fff',
   ...rest
 }) => {
@@ -29,17 +30,20 @@ const ButtonV1 = ({
 
   const handlePressIn = e => {
     if (bounce) {
-      Animated.spring(scaleAnim, { toValue: scaleInValue, useNativeDriver: true }).start();
+      Animated.timing(scaleAnim, {
+        toValue: scaleInValue,
+        duration: 100,
+        useNativeDriver: true,
+      }).start();
     }
     onPressIn?.(e);
   };
 
   const handlePressOut = e => {
     if (bounce) {
-      Animated.spring(scaleAnim, {
+      Animated.timing(scaleAnim, {
         toValue: 1,
-        friction: 3,
-        tension: 40,
+        duration: 100,
         useNativeDriver: true,
       }).start();
     }
@@ -49,18 +53,18 @@ const ButtonV1 = ({
   const isPressable = !disabled && !loading;
 
   return (
-    <Animated.View 
-      style={[
-        style, 
-        { transform: [{ scale: bounce ? scaleAnim : 1 }] }
-      ]}
-    >
+    <Animated.View style={[
+      style,
+      { transform: [{ scale: bounce ? scaleAnim : 1 }] }
+    ]}>
       <Pressable
         onPress={isPressable ? onPress : null}
         onPressIn={isPressable ? handlePressIn : null}
         onPressOut={isPressable ? handlePressOut : null}
         disabled={!isPressable}
+        delayPressIn={bounce ? 80 : 0}
         style={({ pressed }) => [
+          childrenStyle,
           styles.button,
           disabled && { backgroundColor: disabledBackground },
           pressed && isPressable && { opacity: opacityEffect ? 0.85 : 1 },
@@ -80,14 +84,8 @@ const ButtonV1 = ({
 };
 
 const styles = StyleSheet.create({
-    button: {
-        width: '100%',
-        height:"auto",
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-  disabledButton: {
-    backgroundColor: colors.disabledBackground,
+  button: {
+    width: '100%',
   },
   defaultText: {
     color: '#fff',

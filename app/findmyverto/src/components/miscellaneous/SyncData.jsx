@@ -3,7 +3,6 @@ import React from 'react'
 import { MaterialCommunityIcons, Octicons } from '@expo/vector-icons'
 import CustomAlert, { useCustomAlert } from './CustomAlert'
 import { globalStyles } from '../../constants/styles';
-import ButtonV1 from './buttons/ButtonV1';
 
 export default function SyncData({ time, syncNow, self, color, bg, loader, loading }) {
   const customAlert = useCustomAlert();
@@ -34,18 +33,21 @@ export default function SyncData({ time, syncNow, self, color, bg, loader, loadi
         {self && <View>
           {loader ?
             loading ?
-              <ButtonV1 scaleInValue={0.9} style={[styles.TouchableOpacity, styles.loader]} onPress={SyncData}>
+              <TouchableOpacity style={[styles.TouchableOpacity, styles.loader]} onPress={SyncData}>
                 <Text style={{ color: color }}>Syncing</Text>
                 <ActivityIndicator size={15} color={color} />
-              </ButtonV1>
+                {/* <LottieView
+                  source={require('../../../assets/lotties/loading1.json')} autoPlay loop
+                  style={{ width: 25, height: 25 }} /> */}
+              </TouchableOpacity>
               :
-              <ButtonV1 scaleInValue={0.9} style={styles.TouchableOpacity} onPress={SyncData}>
+              <TouchableOpacity style={styles.TouchableOpacity} onPress={SyncData}>
                 <Text style={{ color: color }}>Sync now <Octicons name='sync' /></Text>
-              </ButtonV1>
+              </TouchableOpacity>
             :
-            <ButtonV1 scaleInValue={0.9} style={styles.TouchableOpacity} onPress={SyncData}>
+            <TouchableOpacity style={styles.TouchableOpacity} onPress={SyncData}>
               <Text style={{ color: color }}>Sync now <Octicons name='sync' /></Text>
-            </ButtonV1>
+            </TouchableOpacity>
           }
         </View>}
       </View>
@@ -60,7 +62,6 @@ export default function SyncData({ time, syncNow, self, color, bg, loader, loadi
 const styles = StyleSheet.create({
   container: { paddingHorizontal: 15, flexDirection: 'row', justifyContent: 'space-between', alignItems: "center" },
   TouchableOpacity: {
-    width: "100%",
     padding: 3,
     borderRadius: 5
   },

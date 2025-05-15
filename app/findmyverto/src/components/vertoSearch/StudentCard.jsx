@@ -130,7 +130,9 @@ export default function StudentCard({
     }
 
     return (
-        <View style={[style.container, elevation && globalStyles.elevationMin]}>
+        <ButtonV1 onPress={navigateToFriend} 
+        childrenStyle={{flexDirection:"row",}}
+        style={[style.container, elevation && globalStyles.elevationMin]}>
             <CustomAlert />
             <ImageViewer visible={modalVisible} setVisible={setModalVisible} image={imageSource} />
             <TouchableOpacity onPress={() => setModalVisible(true)} style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
@@ -142,11 +144,11 @@ export default function StudentCard({
                 />
             </TouchableOpacity>
 
-            <TouchableOpacity onPress={navigateToFriend} style={{ width: forRequest ? "35%" : "55%", paddingHorizontal: 10, justifyContent: "center" }}>
+            <View style={{ width: forRequest ? "35%" : "55%", paddingHorizontal: 10, justifyContent: "center" }}>
                 <Text ellipsizeMode='clip' numberOfLines={1} style={{ fontWeight: "bold" }}>{student.name}</Text>
                 <Text style={{ fontSize: 12, color: "grey" }}>{student.reg_no}</Text>
                 <Text style={{ fontSize: 12, color: "grey" }}>{student.section}</Text>
-            </TouchableOpacity>
+            </View>
 
             {/* Button  */}
             <View style={{ justifyContent: "center", width: forRequest ? "45%" : "30%" }}>
@@ -154,6 +156,7 @@ export default function StudentCard({
                     forRequest ?
                         <View style={{ flexDirection: "row", width: WIDTH(43), justifyContent: 'space-between' }}>
                             <ButtonV1
+                            childrenStyle={{justifyContent: 'center', alignItems: 'center'}}
                                 scaleInValue={0.90}
                                 disabled={disableBtn ? true : isFriend ? true : false}
                                 onPress={handleAddFriend}
@@ -166,6 +169,7 @@ export default function StudentCard({
                             </ButtonV1>
 
                             <ButtonV1
+                            childrenStyle={{justifyContent: 'center', alignItems: 'center'}}
                                 scaleInValue={0.90}
                                 disabled={disableBtn ? true : isFriend ? true : false}
                                 onPress={handleRejectFriendRequest}
@@ -182,6 +186,7 @@ export default function StudentCard({
                             scaleInValue={0.90}
                             disabled={disableBtn}
                             disabledBackground='transparent'
+                            childrenStyle={{justifyContent: 'center', alignItems: 'center'}}
                             onPress={() => {
                                 if (isFriend) {
                                     handleRemoveFriend();
@@ -232,7 +237,7 @@ export default function StudentCard({
                 }
             </View>
 
-        </View>
+        </ButtonV1>
     )
 }
 

@@ -213,6 +213,7 @@ export default function FriendProfile({ route }) {
             })
             .map((value) => (
               <ButtonV1
+              childrenStyle={{justifyContent: 'center', alignItems: 'center'}}
               scaleInValue={0.90}
                 onPress={
                   student.allowedFieldsToShow?.includes(value.name)

@@ -8,8 +8,9 @@ import Loading1 from '../miscellaneous/Loading1';
 import AttendanceScreenShimmer from '../shimmers/AttendanceScreenShimmer';
 import { HEIGHT, WIDTH } from '../../constants/styles';
 import { ErrorMessage } from '../timeTable/ErrorMessage';
-import { Entypo, AntDesign } from '@expo/vector-icons';
+import { Entypo, AntDesign, MaterialCommunityIcons } from '@expo/vector-icons';
 import SortBottomSheet from './SortBottomSheet';
+import ButtonV1 from '../miscellaneous/buttons/ButtonV1';
 
 export default function AttendanceScreen({
   attendance,
@@ -37,7 +38,7 @@ export default function AttendanceScreen({
   // Filter attendance summary based on searchQuery
   const getFilteredAndSortedAttendance = () => {
     if (!attendance?.attendance_summary) return [];
-    
+
     let filtered = attendance.attendance_summary.filter((value) => {
       if (!searchQuery.trim()) return true;
       const query = searchQuery.toLowerCase();
@@ -47,14 +48,14 @@ export default function AttendanceScreen({
         (value.agg_attendance && value.agg_attendance.toString().includes(query))
       );
     });
-    
+
     // Sort based on the selected sort method
     if (sortMethod === 'ascending') {
       return [...filtered].sort((a, b) => a.agg_attendance - b.agg_attendance);
     } else if (sortMethod === 'descending') {
       return [...filtered].sort((a, b) => b.agg_attendance - a.agg_attendance);
     }
-    
+
     return filtered;
   };
 
@@ -72,11 +73,11 @@ export default function AttendanceScreen({
 
       {isError ? (
         <View style={{ flex: 1, justifyContent: 'center' }}>
-          <ErrorMessage 
-            handleFetchTimetable={() => fetchAttendance(true)} 
-            timetableLoading={loading || refresh} 
-            buttonHeight={45} 
-            ErrorMessage={"Attendance"} 
+          <ErrorMessage
+            handleFetchTimetable={() => fetchAttendance(true)}
+            timetableLoading={loading || refresh}
+            buttonHeight={45}
+            ErrorMessage={"Attendance"}
           />
         </View>
       ) : (
@@ -112,8 +113,8 @@ export default function AttendanceScreen({
           )}
 
           <View style={styles.AttendanceContainer}>
-            <ScrollView contentContainerStyle={{ gap: 10, paddingVertical: 10 }} 
-            keyboardShouldPersistTaps="handled">
+            <ScrollView contentContainerStyle={{ gap: 10, paddingVertical: 10 }}
+              keyboardShouldPersistTaps="handled">
               {/* Search and Sort Section */}
               <View style={styles.searchSortContainer}>
                 <View style={styles.searchContainer}>
@@ -127,25 +128,31 @@ export default function AttendanceScreen({
                     onBlur={() => setIsFocused(false)}
                   />
                   {searchQuery.trim() !== '' && (
-                    <TouchableOpacity 
-                      style={styles.clearIconContainer} 
+                    <TouchableOpacity
+                      style={styles.clearIconContainer}
                       onPress={() => setSearchQuery('')}
                     >
                       <Entypo name="circle-with-cross" size={24} color="black" />
                     </TouchableOpacity>
                   )}
                 </View>
-                
-                <TouchableOpacity 
-                  style={styles.sortButton} 
+
+                <ButtonV1
+                  scaleInValue={0.85}
+                  childrenStyle={{justifyContent: 'center', alignItems: 'center'}}
+                  style={[styles.sortButton, 
+                    { backgroundColor: sortMethod !== 'none' ? colors.secondary : 'white' }]}
                   onPress={() => sortBottomSheetRef.current?.open()}
                 >
-                  <AntDesign 
-                    name="sort-amount-desc" 
-                    size={24} 
-                    color={sortMethod !== 'none' ? colors.primary : 'gray'} 
+                  <MaterialCommunityIcons
+                    name={sortMethod === 'none' ?
+                      "sort-reverse-variant" :
+                      sortMethod === 'ascending' ? 'sort-ascending' : 'sort-descending'
+                    }
+                    size={20}
+                    color={sortMethod !== 'none' ? colors.whiteLight : 'gray'}
                   />
-                </TouchableOpacity>
+                </ButtonV1>
               </View>
 
               {/* Sort indicator if sorting is active */}
@@ -183,12 +190,12 @@ export default function AttendanceScreen({
               )}
             </ScrollView>
           </View>
-          
+
           {/* Sort Bottom Sheet */}
-          <SortBottomSheet 
-            ref={sortBottomSheetRef} 
-            sortMethod={sortMethod} 
-            onSortMethodChange={handleSortMethod} 
+          <SortBottomSheet
+            ref={sortBottomSheetRef}
+            sortMethod={sortMethod}
+            onSortMethodChange={handleSortMethod}
           />
         </View>
       )}

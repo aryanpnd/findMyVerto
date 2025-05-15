@@ -9,6 +9,7 @@ import formatTimeAgo from "../../../utils/helperFunctions/dateFormatter";
 import { colors } from "../../constants/colors";
 import { AnimatedCircularProgress } from "react-native-circular-progress";
 import { useEffect, useState } from "react";
+import ButtonV1 from "../miscellaneous/buttons/ButtonV1";
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient); // Create shimmer placeholder
 
@@ -129,7 +130,7 @@ export default function CgpaScreen({
                         <ScrollView showsVerticalScrollIndicator={false} style={styles.body} contentContainerStyle={styles.scrollView}>
                             {
                                 Object.keys(cgpa).map((key, index) => (
-                                    <Pressable
+                                    <ButtonV1
                                         onPress={() => navigation.navigate("CGPADetails", {
                                             grades: cgpa[key].course_grades,
                                             sem: cgpa[key].term,
@@ -156,7 +157,7 @@ export default function CgpaScreen({
                                             </AnimatedCircularProgress>
                                         </View>
                                         {/* <Text>Click to view the details</Text> */}
-                                    </Pressable>
+                                    </ButtonV1>
                                 ))
                             }
                         </ScrollView>

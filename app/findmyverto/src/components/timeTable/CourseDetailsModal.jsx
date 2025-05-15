@@ -108,6 +108,7 @@ const CourseDetailsModal = forwardRef(function CourseDetailsModal(props, ref) {
 
         <ButtonV1
           style={styles.button}
+          childrenStyle={{justifyContent: 'center', alignItems: 'center'}}
           onPress={() => handleNavigate(classes[selectedIndex])}
         >
           <Text style={styles.buttonText}>View Attendance</Text>
