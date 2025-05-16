@@ -49,7 +49,7 @@ const ChangeServerBottomSheet = forwardRef((props, ref) => {
   const customAlert = useCustomAlert();
 
   // Define the snap points for the bottom sheet
-  const snapPoints = useMemo(() => ['25%', '80%'], []);
+  const snapPoints = useMemo(() => ['55%', '55%', '80%'], []);
 
   // Expose open and close methods via the ref
   useImperativeHandle(ref, () => ({

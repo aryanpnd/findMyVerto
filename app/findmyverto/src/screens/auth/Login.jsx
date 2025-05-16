@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from 'react';
-import { TextInput, View, StyleSheet, Text, ScrollView, TouchableOpacity, Keyboard } from 'react-native';
+import { TextInput, View, StyleSheet, Text, ScrollView, TouchableOpacity, Keyboard, Linking } from 'react-native';
 import { AuthContext } from '../../../context/Auth';
 import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,6 +12,7 @@ import { StatusBar } from 'expo-status-bar';
 import { HEIGHT, WIDTH } from '../../constants/styles';
 import AwesomeButton from 'react-native-really-awesome-button';
 import ChangeServerBottomSheet from '../../components/settings/GeneralSettings/ChangeServerBottomSheet';
+import { Image } from 'expo-image';
 
 export default function Login() {
   const { auth, setAuth } = useContext(AuthContext);
@@ -27,10 +28,11 @@ export default function Login() {
   const serverBottomSheetRef = useRef();
 
   const openTerms = () => {
-    customAlert.show(
-      'Terms and Conditions',
-      'By accessing and using Find My Verto, you confirm that you have read and accepted these terms. You agree to use the app responsibly and to protect your login details. The app accesses your academic data only to deliver its services. Find My Verto is provided on an "as is" basis, without any warranties, and the developers are not liable for any errors, damages, or losses arising from its use.'
-    );
+    // customAlert.show(
+    //   'Terms and Conditions',
+    //   'By accessing and using Find My Verto, you confirm that you have read and accepted these terms. You agree to use the app responsibly and to protect your login details. The app accesses your academic data only to deliver its services. Find My Verto is provided on an "as is" basis, without any warranties, and the developers are not liable for any errors, damages, or losses arising from its use.'
+    // );
+    Linking.openURL('https://findmyverto.aryanpnd.in/terms-and-conditions.html');
   };
 
   const login = async () => {
@@ -90,22 +92,23 @@ export default function Login() {
         <CustomAlert />
         <ChangeServerBottomSheet ref={serverBottomSheetRef} />
       </View>
-      <SafeAreaView style={styles.container}>
-        <StatusBar backgroundColor={isFocused ? colors.whitePrimary : colors.primary} />
+
+      {/* Make StatusBar transparent to show image underneath */}
+      <StatusBar translucent backgroundColor="transparent" />
+
+      {/* Background image that extends under status bar */}
+      {!isFocused && (
+        <Image
+          source={require('../../../assets/illustrations/loginScreen.png')}
+          style={styles.fullscreenBackground}
+        />
+      )}
+
+      <SafeAreaView style={[styles.container, { backgroundColor: isFocused ? colors.whitePrimary : 'transparent' }]}>
         <View style={styles.container}>
-          {/* Hide logo and animation when text input is focused */}
           {!isFocused && (
             <View style={styles.topContainer}>
-              <Text style={{ fontSize: 25, fontWeight: '500', color: 'white' }}>FindMyVerto</Text>
-              <LottieView
-                autoPlay
-                style={{
-                  flex: 1,
-                  width: 350,
-                  height: 350,
-                }}
-                source={require('../../../assets/lotties/loginAnim2.json')}
-              />
+              {/* <Text style={styles.appTitle}>FindMyVerto</Text> */}
             </View>
           )}
 
@@ -243,14 +246,51 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
-  topContainer: {
+  fullscreenBackground: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '55%',
+    flex: 1,
+    resizeMode: 'cover',
+    zIndex: 0,
+  },
+  container: {
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingTop: 20,
+    width: '100%',
+    height: '100%',
+  },
+  topContainer: {
     flex: 4,
+    width: '100%',
+    justifyContent: 'flex-start',
+    alignItems: 'center',
+    paddingTop: 20,
+  },
+  fullScreenImage: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+    zIndex: 1, // Place behind the text
+  },
+  appTitle: {
+    fontSize: 25,
+    fontWeight: '500',
+    color: 'white',
+    zIndex: 2, // Place above the image
+    alignSelf: 'center',
+    marginTop: 20,
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 3,
   },
   loginContainer: {
-    flex: 4,
+    height: '50%',
     width: '100%',
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -258,6 +298,8 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     paddingBottom: 10,
     backgroundColor: '#f1f1f1',
+    marginTop: -20, // Pull up the container to create overlap with image
+    zIndex: 3, // Place above the image
   },
   focusedLoginContainer: {
     height: '100%',
