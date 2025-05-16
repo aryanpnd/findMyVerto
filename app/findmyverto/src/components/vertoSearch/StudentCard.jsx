@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
+import { View,Image, Text, StyleSheet, Dimensions, TouchableOpacity } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { blurHash, globalStyles, WIDTH } from '../../constants/styles'
 import { colors } from '../../constants/colors';
@@ -9,7 +9,7 @@ import { acceptFriendRequest, cancelSentRequest, rejectFriendRequest, removeFrie
 import ImageViewer from '../miscellaneous/ImageViewer';
 import CustomAlert, { useCustomAlert } from '../miscellaneous/CustomAlert';
 import { AppContext } from '../../../context/MainApp';
-import { Image } from 'expo-image';
+// import { Image } from 'expo-image';
 import ButtonV1 from '../miscellaneous/buttons/ButtonV1';
 
 
@@ -135,12 +135,19 @@ export default function StudentCard({
         style={[style.container, elevation && globalStyles.elevationMin]}>
             <CustomAlert />
             <ImageViewer visible={modalVisible} setVisible={setModalVisible} image={imageSource} />
-            <TouchableOpacity onPress={() => setModalVisible(true)} style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
+            <TouchableOpacity 
+            activeOpacity={0.6}
+            onPress={() => setModalVisible(true)} style={{ justifyContent: "center", alignItems: "center", width: "15%" }}>
                 <Image
                     source={imageSource}
-                    style={{ height: 60, width: 60, borderRadius: 60 / 2 }}
-                    placeholder={{ blurhash: blurHash }}
-                    contentFit="contain"
+                    style={{ 
+                        height: 60,
+                        width: 60,
+                        borderRadius: 60 / 2,
+                        objectFit: "contain",
+                    }}
+                    // placeholder={{ blurhash: blurHash }}
+                    // contentFit="contain"
                 />
             </TouchableOpacity>
 
