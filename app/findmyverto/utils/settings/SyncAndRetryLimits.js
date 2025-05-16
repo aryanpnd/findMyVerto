@@ -31,6 +31,21 @@ export function TimetableSyncTime(time) {
   }
 }
 
+export function MakeupSyncTime(time) {
+  const storedTime = userStorage.getNumber("MAKEUP_SYNC_TIME");
+  if (time !== undefined && time !== null) {
+    userStorage.set("MAKEUP_SYNC_TIME", time);
+  }
+  if (storedTime !== undefined && storedTime !== null) {
+    return storedTime;
+  } else {
+    // Default to 1 day (in ms)
+    const defaultTime = 24 * 3600000;
+    userStorage.set("MAKEUP_SYNC_TIME", defaultTime);
+    return defaultTime;
+  }
+}
+
 export function ExamsSyncTime(time) {
   const storedTime = userStorage.getNumber("EXAMS_SYNC_TIME");
   if (time !== undefined && time !== null) {

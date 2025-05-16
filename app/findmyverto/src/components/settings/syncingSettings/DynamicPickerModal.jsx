@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { HEIGHT, WIDTH, globalStyles } from '../../../constants/styles';
 import { colors } from '../../../constants/colors';
+import ButtonV1 from '../../miscellaneous/buttons/ButtonV1';
 
 const DynamicPickerModal = ({
   visible,
@@ -89,9 +90,9 @@ const DynamicPickerModal = ({
               style={{ maxHeight: HEIGHT(30) }}
               contentContainerStyle={{ paddingVertical: 10 }}
             />
-            <Pressable style={styles.button} onPress={onClose}>
+            <ButtonV1 childrenStyle={{justifyContent: 'center',alignItems:"center"}} style={styles.button} onPress={onClose}>
               <Text style={styles.buttonText}>Cancel</Text>
-            </Pressable>
+            </ButtonV1>
           </View>
         </View>
       {/* </SafeAreaView> */}

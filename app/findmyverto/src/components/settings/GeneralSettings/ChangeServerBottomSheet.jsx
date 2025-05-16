@@ -32,6 +32,7 @@ import { appStorage } from '../../../../utils/storage/storage';
 import { WIDTH } from '../../../constants/styles';
 import { useCustomAlert } from '../../miscellaneous/CustomAlert';
 import LottieView from 'lottie-react-native';
+import ButtonV1 from '../../miscellaneous/buttons/ButtonV1';
 
 const ChangeServerBottomSheet = forwardRef((props, ref) => {
   const bottomSheetModalRef = useRef(null);
@@ -260,16 +261,16 @@ const ChangeServerBottomSheet = forwardRef((props, ref) => {
                 onChangeText={setNewServerUrl}
               />
               <View style={styles.formButtons}>
-                <TouchableOpacity disabled={addServerButtonLoading}
+                <ButtonV1 disabled={addServerButtonLoading}
                   style={styles.saveButton} onPress={handleSaveNewServer}>
                   {addServerButtonLoading ?
                     <ActivityIndicator color="white" /> :
                     <Text style={styles.buttonText}>Save</Text>
                   }
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.cancelButton} onPress={handleCancelAddServer}>
+                </ButtonV1>
+                <ButtonV1 style={styles.cancelButton} onPress={handleCancelAddServer}>
                   <Text style={styles.buttonText}>Cancel</Text>
-                </TouchableOpacity>
+                </ButtonV1>
               </View>
             </View>
           )}

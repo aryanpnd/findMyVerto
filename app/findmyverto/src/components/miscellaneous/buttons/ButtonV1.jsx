@@ -67,7 +67,7 @@ const ButtonV1 = ({
           childrenStyle,
           styles.button,
           disabled && { backgroundColor: disabledBackground },
-          pressed && isPressable && { opacity: opacityEffect ? 0.85 : 1 },
+          pressed && isPressable && { opacity: opacityEffect ? 0.6 : 1 },
         ]}
         {...rest}
       >

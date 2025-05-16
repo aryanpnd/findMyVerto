@@ -46,13 +46,13 @@ export default function MyDrivesScreen({
         if (drives && drives.length) {
             const counts = {
                 All: drives.length,
-                Open: drives.filter(drive => 
+                Open: drives.filter(drive =>
                     drive.status === "Open").length,
-                Registered: drives.filter(drive => 
-                    drive.registered !== "No" && 
+                Registered: drives.filter(drive =>
+                    drive.registered !== "No" &&
                     drive.registered !== "Click to Register").length,
-                NotRegistered: drives.filter(drive => 
-                    drive.registered === "No" || 
+                NotRegistered: drives.filter(drive =>
+                    drive.registered === "No" ||
                     drive.registered === "Click to Register").length
             };
             setDriveCounts(counts);
@@ -69,27 +69,27 @@ export default function MyDrivesScreen({
     // Apply both text search and category filter
     useEffect(() => {
         let result = drives;
-        
+
         // First apply category filter
         if (activeFilter !== "All") {
             switch (activeFilter) {
                 case "Open":
-                    result = drives.filter(drive => 
+                    result = drives.filter(drive =>
                         drive.status === "Open");
                     break;
                 case "Registered":
-                    result = drives.filter(drive => 
-                        drive.registered !== "Click to Register" && 
+                    result = drives.filter(drive =>
+                        drive.registered !== "Click to Register" &&
                         drive.registered !== "No");
                     break;
                 case "NotRegistered":
-                    result = drives.filter(drive => 
+                    result = drives.filter(drive =>
                         drive.registered === "Click to Register" ||
                         drive.registered === "No");
                     break;
             }
         }
-        
+
         // Then apply text search
         if (searchQuery.trim() !== "") {
             const lowerText = searchQuery.toLowerCase();
@@ -97,7 +97,7 @@ export default function MyDrivesScreen({
                 drive.company.toLowerCase().includes(lowerText)
             );
         }
-        
+
         setFilteredDrives(result);
     }, [searchQuery, drives, activeFilter]);
 
@@ -128,13 +128,14 @@ export default function MyDrivesScreen({
             />
 
             {/* Filter Chips */}
-            <ScrollView 
-                horizontal 
+            <ScrollView
+                horizontal
                 showsHorizontalScrollIndicator={false}
                 contentContainerStyle={styles.filterContainer}
             >
                 {filterOptions.map((option) => (
                     <TouchableOpacity
+                        activeOpacity={0.5}
                         key={option.id}
                         style={[
                             styles.filterChip,
@@ -142,7 +143,7 @@ export default function MyDrivesScreen({
                         ]}
                         onPress={() => handleFilterSelect(option.id)}
                     >
-                        <Text 
+                        <Text
                             style={[
                                 styles.filterChipText,
                                 activeFilter === option.id && styles.activeFilterChipText
@@ -156,32 +157,32 @@ export default function MyDrivesScreen({
 
             {isError ? (
                 <View style={{ flex: 1, justifyContent: 'center' }}>
-                    <ErrorMessage handleFetchTimetable={()=>handleDrivesFetch(true)} timetableLoading={drivesLoading||drivesRefresh} buttonHeight={45} ErrorMessage={"Makeup"} />
+                    <ErrorMessage handleFetchTimetable={() => handleDrivesFetch(true)} timetableLoading={drivesLoading || drivesRefresh} buttonHeight={45} ErrorMessage={"Makeup"} />
                 </View>
             ) : (
-                    drivesLoading ? (
-                        <FlatList
-                            data={Array.from({ length: 5 })}
-                            keyExtractor={(_, index) => index.toString()}
-                            showsVerticalScrollIndicator={false}
-                            renderItem={() => (
-                                <ShimmerPlaceHolder
-                                    style={styles.shimmer}
-                                    visible={false}
-                                />
-                            )}
-                            contentContainerStyle={{ alignItems: 'center' }}
-                        />
-                    ) : filteredDrives.length === 0 ? (
-                        <View style={styles.noDrivesContainer}>
-                            <LottieView
-                                source={require("../../../assets/lotties/empty.json")}
-                                autoPlay
-                                loop
-                                style={styles.lottie}
+                drivesLoading ? (
+                    <FlatList
+                        data={Array.from({ length: 5 })}
+                        keyExtractor={(_, index) => index.toString()}
+                        showsVerticalScrollIndicator={false}
+                        renderItem={() => (
+                            <ShimmerPlaceHolder
+                                style={styles.shimmer}
+                                visible={false}
                             />
-                            <Text style={[styles.text1, { color: "grey" }]}>No Drives found</Text>
-                            <View style={{height:40, width:150, marginTop:10}}>
+                        )}
+                        contentContainerStyle={{ alignItems: 'center' }}
+                    />
+                ) : filteredDrives.length === 0 ? (
+                    <View style={styles.noDrivesContainer}>
+                        <LottieView
+                            source={require("../../../assets/lotties/empty.json")}
+                            autoPlay
+                            loop
+                            style={styles.lottie}
+                        />
+                        <Text style={[styles.text1, { color: "grey" }]}>No Drives found</Text>
+                        <View style={{ height: 40, width: 150, marginTop: 10 }}>
                             <Button
                                 bg={"black"}
                                 loading={drivesLoading || drivesRefresh}
@@ -189,23 +190,23 @@ export default function MyDrivesScreen({
                                 title={"Retry"}
                                 textStyles={{ fontSize: 15 }}
                                 styles={{ hieght: 10 }}
-                                />
-                                </View>
+                            />
                         </View>
-                    ) : (
-                        <FlatList
-                            data={filteredDrives}
-                            showsVerticalScrollIndicator={false}
-                            keyExtractor={(item, index) => index.toString()}
-                            renderItem={({ item }) => (
-                                <DriveCard drive={item} navigation={navigation} />
-                            )}
-                            contentContainerStyle={{ 
-                                paddingBottom: HEIGHT(5), 
-                                paddingHorizontal: WIDTH(2.5)
-                             }}
-                        />
-                    )
+                    </View>
+                ) : (
+                    <FlatList
+                        data={filteredDrives}
+                        showsVerticalScrollIndicator={false}
+                        keyExtractor={(item, index) => index.toString()}
+                        renderItem={({ item }) => (
+                            <DriveCard drive={item} navigation={navigation} />
+                        )}
+                        contentContainerStyle={{
+                            paddingBottom: HEIGHT(5),
+                            paddingHorizontal: WIDTH(2.5)
+                        }}
+                    />
+                )
             )}
         </View>
     );
