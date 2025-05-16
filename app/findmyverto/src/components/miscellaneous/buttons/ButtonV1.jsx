@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
   },
   gradient: {
-    width: '100%',
+    // width: '100%',
     borderRadius: 8, // Default border radius, can be overridden by style
     overflow: 'hidden',
   },
