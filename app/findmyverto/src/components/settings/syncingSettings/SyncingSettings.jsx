@@ -9,6 +9,7 @@ import {
   AssignmentsSyncTime,
   MyMessagesSyncTime,
   DrivesSyncTime,
+  MakeupSyncTime,
 } from '../../../../utils/settings/SyncAndRetryLimits';
 
 // Option sets for each feature
@@ -25,6 +26,14 @@ const timetableOptions = [
   { value: 480, label: '20 days' },
   { value: 720, label: '1 month' },
   { value: 1440, label: '2 months' },
+];
+
+// Makeup options: objects with value (in hours) and custom label
+const makeupOptions = [
+  { value: 24, label: '1 day' },
+  { value: 72, label: '3 days' },
+  { value: 168, label: '7 days' },
+  { value: 336, label: '2 weeks' },
 ];
 
 // Exams options (in hours)
@@ -82,6 +91,8 @@ export default function SyncingSettings() {
     MyMessagesSyncTime() === 0 ? 0 : MyMessagesSyncTime() / 3600000;
   const initialDrivesTime =
     DrivesSyncTime() === 0 ? 0 : DrivesSyncTime() / 3600000;
+  const initialMakeupTime =
+    MakeupSyncTime() === 0 ? 0 : MakeupSyncTime() / 3600000;
 
   const [attendanceTime, setAttendanceTime] = useState(initialAttendanceTime);
   const [timetableTime, setTimetableTime] = useState(initialTimetableTime);
@@ -89,6 +100,7 @@ export default function SyncingSettings() {
   const [assignmentsTime, setAssignmentsTime] = useState(initialAssignmentsTime);
   const [myMessagesTime, setMyMessagesTime] = useState(initialMyMessagesTime);
   const [drivesTime, setDrivesTime] = useState(initialDrivesTime);
+  const [makeupTime, setMakeupTime] = useState(initialMakeupTime);
 
   // Open the modal for a given feature type.
   const openModalFor = (type) => {
@@ -123,6 +135,10 @@ export default function SyncingSettings() {
       const newValue = selectedOption.value;
       DrivesSyncTime(newValue === 0 ? 0 : newValue * 3600000);
       setDrivesTime(newValue);
+    } else if (modalType === 'makeup') {
+      const newValue = selectedOption.value;
+      MakeupSyncTime(newValue === 0 ? 0 : newValue * 3600000);
+      setMakeupTime(newValue);
     }
     setModalVisible(false);
     setModalType(null);
@@ -153,8 +169,8 @@ export default function SyncingSettings() {
           ? 'Off'
           : item.label
         : item === 0
-        ? 'Off'
-        : `${item} hour${item > 1 ? 's' : ''}`;
+          ? 'Off'
+          : `${item} hour${item > 1 ? 's' : ''}`;
   } else if (modalType === 'exams') {
     pickerOptions = [{ value: 0, label: 'Off' }, ...examOptions];
     modalHeader = 'Set auto syncing time for exams';
@@ -168,8 +184,8 @@ export default function SyncingSettings() {
           ? 'Off'
           : item.label
         : item === 0
-        ? 'Off'
-        : `${item} hour${item > 1 ? 's' : ''}`;
+          ? 'Off'
+          : `${item} hour${item > 1 ? 's' : ''}`;
   } else if (modalType === 'assignments') {
     pickerOptions = [{ value: 0, label: 'Off' }, ...assignmentOptions];
     modalHeader = 'Set auto syncing time for assignments';
@@ -183,8 +199,8 @@ export default function SyncingSettings() {
           ? 'Off'
           : item.label
         : item === 0
-        ? 'Off'
-        : `${item} hour${item > 1 ? 's' : ''}`;
+          ? 'Off'
+          : `${item} hour${item > 1 ? 's' : ''}`;
   } else if (modalType === 'myMessages') {
     pickerOptions = [{ value: 0, label: 'Off' }, ...myMessagesOptions];
     modalHeader = 'Set auto syncing time for messages';
@@ -198,8 +214,8 @@ export default function SyncingSettings() {
           ? 'Off'
           : item.label
         : item === 0
-        ? 'Off'
-        : `${item} hour${item > 1 ? 's' : ''}`;
+          ? 'Off'
+          : `${item} hour${item > 1 ? 's' : ''}`;
   } else if (modalType === 'drives') {
     pickerOptions = [{ value: 0, label: 'Off' }, ...drivesOptions];
     modalHeader = 'Set auto syncing time for drives';
@@ -213,8 +229,23 @@ export default function SyncingSettings() {
           ? 'Off'
           : item.label
         : item === 0
-        ? 'Off'
-        : `${item} hour${item > 1 ? 's' : ''}`;
+          ? 'Off'
+          : `${item} hour${item > 1 ? 's' : ''}`;
+  } else if (modalType === 'makeup') {
+    pickerOptions = [{ value: 0, label: 'Off' }, ...makeupOptions];
+    modalHeader = 'Set auto syncing time for makeup';
+    selectedItem =
+      makeupTime === 0
+        ? { value: 0, label: 'Off' }
+        : makeupOptions.find((opt) => opt.value === makeupTime);
+    labelExtractor = (item) =>
+      typeof item === 'object'
+        ? item.value === 0
+          ? 'Off'
+          : item.label
+        : item === 0
+          ? 'Off'
+          : `${item} hour${item > 1 ? 's' : ''}`;
   }
 
   return (
@@ -248,9 +279,20 @@ export default function SyncingSettings() {
           timetableTime === 0
             ? 'Off'
             : timetableOptions.find((opt) => opt.value === timetableTime)?.label ||
-              `${timetableTime} hrs`
+            `${timetableTime} hrs`
         }
         onPress={() => openModalFor('timetable')}
+      />
+      <CustomButton
+        icon={<Image style={styles.icon} source={require('../../../../assets/icons/makeup.png')} />}
+        title="Makeup"
+        title2={
+          makeupTime === 0
+            ? 'Off'
+            : makeupOptions.find((opt) => opt.value === makeupTime)?.label ||
+            `${makeupTime} hrs`
+        }
+        onPress={() => openModalFor('makeup')}
       />
       <CustomButton
         icon={<Image style={styles.icon} source={require('../../../../assets/icons/exam.png')} />}
@@ -259,7 +301,7 @@ export default function SyncingSettings() {
           examsTime === 0
             ? 'Off'
             : examOptions.find((opt) => opt.value === examsTime)?.label ||
-              `${examsTime} hrs`
+            `${examsTime} hrs`
         }
         onPress={() => openModalFor('exams')}
       />
@@ -270,7 +312,7 @@ export default function SyncingSettings() {
           assignmentsTime === 0
             ? 'Off'
             : assignmentOptions.find((opt) => opt.value === assignmentsTime)?.label ||
-              `${assignmentsTime} hrs`
+            `${assignmentsTime} hrs`
         }
         onPress={() => openModalFor('assignments')}
       />
@@ -281,7 +323,7 @@ export default function SyncingSettings() {
           myMessagesTime === 0
             ? 'Off'
             : myMessagesOptions.find((opt) => opt.value === myMessagesTime)?.label ||
-              `${myMessagesTime} hrs`
+            `${myMessagesTime} hrs`
         }
         onPress={() => openModalFor('myMessages')}
       />
@@ -292,7 +334,7 @@ export default function SyncingSettings() {
           drivesTime === 0
             ? 'Off'
             : drivesOptions.find((opt) => opt.value === drivesTime)?.label ||
-              `${drivesTime} hrs`
+            `${drivesTime} hrs`
         }
         onPress={() => openModalFor('drives')}
       />

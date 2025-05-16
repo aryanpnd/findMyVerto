@@ -128,6 +128,7 @@ export default function VertoSearch({ navigation }) {
                 setSentFriendRequests={setSentFriendRequests}
                 navigation={navigation}
                 disableBtn={false}
+                elevation={false}
                 setDisableBtn={() => { }}
             />
         );
@@ -227,7 +228,7 @@ export default function VertoSearch({ navigation }) {
                             contentContainerStyle={{
                                 alignItems: "center",
                                 paddingVertical: 10,
-                                paddingHorizontal: 10,
+                                paddingHorizontal: 5,
                                 gap: 5
                             }}
                         />

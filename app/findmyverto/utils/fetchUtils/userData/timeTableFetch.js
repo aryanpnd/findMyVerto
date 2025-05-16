@@ -2,7 +2,7 @@ import Toast from "react-native-toast-message";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "axios";
 import formatTimetable, { filterOutdatedMakeup, formatClassesToday } from "../../helperFunctions/timetableFormatter";
-import { TimetableSyncTime } from "../../settings/SyncAndRetryLimits";
+import { MakeupSyncTime, TimetableSyncTime } from "../../settings/SyncAndRetryLimits";
 import { userStorage } from "../../storage/storage";
 
 // Global flag to prevent concurrent timetable fetches.
@@ -186,7 +186,7 @@ export async function fetchTimetable(
   }
 }
 
-export async function fetchMakeup(
+export const fetchMakeup = async (
   setMakeupLoading,
   setRefreshing,
   setMakeup,
@@ -194,62 +194,95 @@ export async function fetchMakeup(
   setIsError,
   sync,
   setLastSynced
-) {
+) => {
   try {
+    // 1. Set loading states
     if (!sync) setMakeupLoading(true);
     if (sync) setRefreshing(true);
 
-    // let makeupRaw = await AsyncStorage.getItem("MAKEUP");
-    // sleep for half second
-    await new Promise((resolve) => setTimeout(resolve, 500));
-    let makeupRaw = userStorage.getString("MAKEUP");
-    let storedMakeup = makeupRaw ? JSON.parse(makeupRaw) : null;
+    // 2. Load stored makeup data
+    const raw = userStorage.getString("MAKEUP");
+    let stored = raw ? JSON.parse(raw) : null;
 
-    if (!storedMakeup || sync) {
-      const result = await axios.post(`${auth.server.url}/student/makeup`, {
-        password: auth.password,
-        reg_no: auth.reg_no,
-      });
+    // 3. Determine auto-sync settings
+    const syncInterval = MakeupSyncTime();
+    const autoSync = syncInterval > 0;
+    const isOutdated =
+      stored &&
+      autoSync &&
+      (Date.now() - new Date(stored.lastSynced).getTime() > syncInterval);
 
-      if (result.data.success) {
-        // await AsyncStorage.setItem("MAKEUP", JSON.stringify(result.data));
-        userStorage.set("MAKEUP", JSON.stringify(result.data));
+    // 4. Decide if we need to fetch fresh data
+    if (!stored || sync || (autoSync && isOutdated)) {
+      // If auto-sync off & we have data & not forced, skip fetch
+      if (!(syncInterval === 0 && !sync && stored)) {
+        // Show interim local data when auto-syncing
+        if (autoSync && isOutdated && stored) {
+          setRefreshing(true);
+          setMakeupLoading(false);
+          setMakeup(filterOutdatedMakeup(stored.data));
+          setLastSynced(stored.lastSynced);
+          Toast.show({ type: "info", text1: "Auto-Syncing Makeup Classes" });
+        }
 
-        let makeupClasses = filterOutdatedMakeup(result.data.data);
-
-        setMakeup(makeupClasses);
-        setLastSynced(result.data.lastSynced);
-        Toast.show({
-          type: 'success',
-          text1: "Makeup Classes Fetched",
-          text2: result.data.message,
+        // 5. Fetch from server
+        const res = await axios.post(`${auth.server.url}/student/makeup`, {
+          reg_no: auth.reg_no,
+          password: auth.password,
         });
-        setIsError(false);
-      } else {
-        Toast.show({
-          type: 'error',
-          text1: result.data.message,
-          text2: result.data.errorMessage,
-        });
-        setIsError(true);
+
+        if (res.data.success) {
+          // 6a. Persist and update state
+          userStorage.set("MAKEUP", JSON.stringify(res.data));
+          const fresh = filterOutdatedMakeup(res.data.data);
+          setMakeup(fresh);
+          setLastSynced(res.data.lastSynced);
+          Toast.show({
+            type: "success",
+            text1: "Makeup Classes Synced",
+            text2: res.data.message,
+          });
+          setIsError(false);
+          stored = res.data;
+        } else {
+          // 6b. Server‐side error
+          Toast.show({
+            type: "error",
+            text1: res.data.message,
+            text2: res.data.errorMessage,
+          });
+          setIsError(true);
+        }
       }
-    } else {
-      let makeupClasses = filterOutdatedMakeup(storedMakeup.data);
-      setMakeup(makeupClasses);
-      setLastSynced(storedMakeup.lastSynced);
+    }
+
+    // 7. Fall back to stored data if available
+    if (stored) {
+      setMakeup(filterOutdatedMakeup(stored.data));
+      setLastSynced(stored.lastSynced);
       setIsError(false);
     }
+
+    // 8. Clear loading indicators
     setMakeupLoading(false);
     setRefreshing(false);
   } catch (error) {
+    // 9. Network or unexpected error
     console.error(error);
+    const raw = userStorage.getString("MAKEUP");
+    if (raw) {
+      const stored = JSON.parse(raw);
+      setMakeup(filterOutdatedMakeup(stored.data));
+      setLastSynced(stored.lastSynced);
+    } else {
+      setIsError(true);
+      Toast.show({
+        type: "error",
+        text1: "Error fetching makeup classes",
+        text2: error.message,
+      });
+    }
     setMakeupLoading(false);
     setRefreshing(false);
-    setIsError(true);
-    Toast.show({
-      type: 'error',
-      text1: "Error fetching makeup classes",
-      text2: error.message,
-    });
   }
-}
+};

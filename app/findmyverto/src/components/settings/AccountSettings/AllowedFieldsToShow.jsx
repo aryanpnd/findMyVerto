@@ -19,6 +19,7 @@ import { createShimmerPlaceholder } from "react-native-shimmer-placeholder";
 import { getAllowedFieldsToShow, handleSetAllowedFieldsToShow } from "../../../../utils/fetchUtils/handleUser/fetchSettings";
 import { AuthContext } from "../../../../context/Auth";
 import { AppContext } from "../../../../context/MainApp";
+import ButtonV1 from "../../miscellaneous/buttons/ButtonV1";
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
@@ -103,12 +104,14 @@ const AllowedFieldsToShow = forwardRef((props, ref) => {
                             ))}
                     </ScrollView>
                     <View style={styles.buttonContainer}>
-                        <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
+                        <ButtonV1 childrenStyle={styles.buttonChildContainer}
+                        style={styles.button} onPress={() => setModalVisible(false)}>
                             <Text>Cancel</Text>
-                        </TouchableOpacity>
-                        <Pressable style={[styles.button, { backgroundColor: "black" }]} onPress={handleUpdateFields}>
+                        </ButtonV1>
+                        <ButtonV1 childrenStyle={styles.buttonChildContainer}
+                        style={[styles.button, { backgroundColor: "black" }]} onPress={handleUpdateFields}>
                             {loading ? <ActivityIndicator size="small" color="white" /> : <Text style={{ color: "white" }}>Save</Text>}
-                        </Pressable>
+                        </ButtonV1>
                     </View>
                 </View>
             </View>
@@ -162,6 +165,10 @@ const styles = StyleSheet.create({
         alignSelf: "baseline",
         gap: 10,
         width: WIDTH(60),
+    },
+    buttonChildContainer: {
+        justifyContent: "center",
+        alignItems: "center",
     },
     button: {
         padding: 10,

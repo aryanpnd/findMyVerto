@@ -16,24 +16,42 @@ export default function formatExams(exams) {
 
   function parseDate(dateStr) {
     const [day, mon, year] = dateStr.split(" ");
-    const month = months[mon];
-    return new Date(year, month, day);
+    return new Date(year, months[mon], parseInt(day, 10));
   }
 
   function formatDate(date) {
-    const monthsArr = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    const monthsArr = [
+      "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+      "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+    ];
     const day = String(date.getDate()).padStart(2, '0');
     const mon = monthsArr[date.getMonth()];
     const year = date.getFullYear();
     return `${day} ${mon} ${year}`;
   }
 
-  const oneDay = 24 * 60 * 60 * 1000; 
+  const oneDay = 24 * 60 * 60 * 1000;
   const newArray = [];
 
+  // 1. Insert gap before the first exam (from today until first exam)
+  if (exams.length > 0) {
+    const firstExamDate = parseDate(exams[0].date);
+    const today = new Date();
+    const diffDays = Math.floor((firstExamDate - today) / oneDay);
+    if (diffDays > 0) {
+      newArray.push({
+        beginGap: true,
+        gap: diffDays.toString()
+      });
+    }
+  }
+
+  // 2. Push each exam and gaps between exams
   for (let i = 0; i < exams.length; i++) {
+    // Push the exam object
     newArray.push(exams[i]);
 
+    // If there's a next exam, calculate the gap to it
     if (i < exams.length - 1) {
       const currentDate = parseDate(exams[i].date);
       const nextDate = parseDate(exams[i + 1].date);
@@ -42,12 +60,11 @@ export default function formatExams(exams) {
       if (diffDays > 1) {
         const gapDays = diffDays - 1;
         const toDate = new Date(nextDate.getTime() - oneDay);
-        const gapObj = {
+        newArray.push({
+          from: exams[i].date,
           gap: gapDays.toString(),
-          from: exams[i].date,        
-          to: formatDate(toDate)      
-        };
-        newArray.push(gapObj);
+          to: formatDate(toDate)
+        });
       }
     }
   }

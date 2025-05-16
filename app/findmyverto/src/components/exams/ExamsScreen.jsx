@@ -71,19 +71,43 @@ export default function ExamsScreen({
                                 {
                                     exams.map((exam, index) => (
                                         exam.gap ?
-                                            <LinearGradient
-                                                key={index}
-                                                colors={['#a8e063', '#56ab2f']}
-                                                start={{ x: 0, y: 0 }}
-                                                end={{ x: 1, y: 0 }} style={[styles.gapCard, globalStyles.elevationMin]}>
-                                                <View style={{ width: "40%", justifyContent: "center" }}>
-                                                    <Text style={[styles.text2, { textAlign: "center", fontSize: 20, fontWeight: "bold", color: "white" }]}>Gap: {exam.gap} {exam.gap > 1 ? "days" : "day"}</Text>
-                                                </View>
-                                                <View style={{ justifyContent: "space-between", height: "80%", paddingLeft: WIDTH(5),paddingRight:WIDTH(2),alignItems:"center"}}>
-                                                    <Text style={[styles.text2, { color: colors.whitePrimary, fontWeight: "bold" }]}>From: {exam.from}</Text>
-                                                    <Text style={[styles.text2, { color: colors.whitePrimary, fontWeight: "bold" }]}>To: {exam.to}</Text>
-                                                </View>
-                                            </LinearGradient>
+                                            exam.beginGap ?
+
+                                                <LinearGradient
+                                                    key={index}
+                                                    colors={['#a8e063', '#56ab2f']}
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 1, y: 0 }}
+                                                    style={[
+                                                        styles.gapCard,
+                                                        { justifyContent: "center" }
+                                                        //  globalStyles.elevationMin
+                                                    ]}>
+                                                    <View style={{ width: "40%", justifyContent: "center" }}>
+                                                        <Text style={[styles.text2, { textAlign: "center", fontSize: 20, fontWeight: "bold", color: "white" }]}>
+                                                            {exam.gap} {exam.gap > 1 ? "days" : "day"}
+                                                            {" "}to go
+                                                        </Text>
+                                                    </View>
+                                                </LinearGradient>
+                                                :
+                                                <LinearGradient
+                                                    key={index}
+                                                    colors={['#a8e063', '#56ab2f']}
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 1, y: 0 }}
+                                                    style={[
+                                                        styles.gapCard,
+                                                        //  globalStyles.elevationMin
+                                                    ]}>
+                                                    <View style={{ width: "40%", justifyContent: "center" }}>
+                                                        <Text style={[styles.text2, { textAlign: "center", fontSize: 20, fontWeight: "bold", color: "white" }]}>Gap: {exam.gap} {exam.gap > 1 ? "days" : "day"}</Text>
+                                                    </View>
+                                                    <View style={{ justifyContent: "space-between", height: "80%", paddingLeft: WIDTH(5), paddingRight: WIDTH(2), alignItems: "center" }}>
+                                                        <Text style={[styles.text2, { color: colors.whitePrimary, fontWeight: "bold" }]}>From: {exam.from}</Text>
+                                                        <Text style={[styles.text2, { color: colors.whitePrimary, fontWeight: "bold" }]}>To: {exam.to}</Text>
+                                                    </View>
+                                                </LinearGradient>
                                             :
                                             <LinearGradient
                                                 colors={["white", "white"]}
@@ -95,7 +119,7 @@ export default function ExamsScreen({
                                                 </View>
 
                                                 <View>
-                                                    <Text style={[{fontWeight: "bold", fontSize: 15 }]}>[{exam.course_code}] - {exam.course_name}</Text>
+                                                    <Text style={[{ fontWeight: "bold", fontSize: 15 }]}>[{exam.course_code}] - {exam.course_name}</Text>
                                                 </View>
 
                                                 <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -132,6 +156,14 @@ export default function ExamsScreen({
                                                     <Text style={[styles.text2, { maxWidth: "100%" }]}>Reporting Time: {exam.reporting_time}</Text>
                                                 </View>
 
+                                                {exam.defaulter_detail && <View style={[styles.infoContainer, { justifyContent: "center" }]}>
+                                                    <Text style={[styles.text2, { maxWidth: "100%" }]}>defaulter detail: {exam.defaulter_detail}</Text>
+                                                </View>}
+
+                                                {exam.detainee_status && <View style={[styles.infoContainer, { justifyContent: "center" }]}>
+                                                    <Text style={[styles.text2, { maxWidth: "100%" }]}>detainee status: {exam.detainee_status}</Text>
+                                                </View>}
+
                                             </LinearGradient>
                                     ))
                                 }
@@ -166,6 +198,7 @@ const styles = StyleSheet.create({
     body: {
         height: HEIGHT(84),
         // backgroundColor:"red",
+        paddingVertical: HEIGHT(2),
         paddingHorizontal: WIDTH(2),
     },
     scrollView: {

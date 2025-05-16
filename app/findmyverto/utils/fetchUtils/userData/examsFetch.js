@@ -1,6 +1,5 @@
 import axios from 'axios';
 import Toast from 'react-native-toast-message';
-import { auth } from '../../../context/Auth';
 import { userStorage } from '../../storage/storage';
 import formatExams from '../../helperFunctions/examsFormatter';
 import { ExamsSyncTime } from '../../settings/SyncAndRetryLimits';

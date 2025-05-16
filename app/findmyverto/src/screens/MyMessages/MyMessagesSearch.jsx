@@ -19,6 +19,7 @@ import { searchMyMessages } from '../../../utils/fetchUtils/userData/myMessagesF
 import LottieView from 'lottie-react-native';
 import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import { LinearGradient } from 'expo-linear-gradient';
+import { Image } from 'expo-image';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
@@ -93,7 +94,9 @@ export default function MyMessagesSearch({ navigation }) {
                     value={description}
                     onChangeText={setDescription}
                 />
-                <TouchableOpacity style={styles.searchButton} onPress={() => handleSearch(1)}>
+                <TouchableOpacity 
+                    activeOpacity={0.7}
+                style={styles.searchButton} onPress={() => handleSearch(1)}>
                     <Text style={styles.searchButtonText}>Search</Text>
                 </TouchableOpacity>
             </View>
@@ -106,7 +109,9 @@ export default function MyMessagesSearch({ navigation }) {
                         <Text style={styles.headerText}>
                             Messages: {messages[currentPage] ? messages[currentPage].data.length : 0}
                         </Text>
-                        <TouchableOpacity style={styles.pageButton} onPress={() => setUpdate(true)}>
+                        <TouchableOpacity
+                        activeOpacity={0.7}
+                         style={styles.pageButton} onPress={() => setUpdate(true)}>
                             <Text style={[styles.headerText, { color: 'black' }]}>Page: {currentPage}</Text>
                         </TouchableOpacity>
                         <Text style={styles.headerText}>
@@ -155,6 +160,16 @@ export default function MyMessagesSearch({ navigation }) {
                         item.id ? item.id.toString() : index.toString()
                     }
                     renderItem={renderMessageItem}
+                    ListEmptyComponent={
+                        <View style={styles.searchMessagesEmptyContainer}>
+                            <Image
+                                source={require("../../../assets/icons/searchMessages.png")}
+                                style={{ height: HEIGHT(20), width: WIDTH(80) }}
+                                resizeMode="contain"
+                            />
+                            <Text style={[styles.text1, { color: "grey" }]}>Search by Subject or Description</Text>
+                        </View>
+                    }
                     contentContainerStyle={{
                         paddingBottom: HEIGHT(5),
                         paddingHorizontal: WIDTH(2),
@@ -332,5 +347,16 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         justifyContent: 'center',
         alignItems: 'center',
+    },
+    searchMessagesEmptyContainer: {
+        height: HEIGHT(50),
+        justifyContent: 'center',
+        alignItems: 'center',
+        gap: HEIGHT(1),
+    },
+    text1: {
+        fontSize: 14,
+        fontWeight: '500',
+        color: colors.whitePrimary,
     },
 });

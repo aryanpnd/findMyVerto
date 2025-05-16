@@ -7,6 +7,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { colors } from '../../../constants/colors';
+import { LinearGradient } from 'expo-linear-gradient';
 
 const ButtonV1 = ({
   children,
@@ -24,6 +25,10 @@ const ButtonV1 = ({
   disabled = false,
   disabledBackground = colors.disabledBackground,
   spinnerColor = '#fff',
+  gradientColors,
+  gradientStart = { x: 0, y: 0 },
+  gradientEnd = { x: 1, y: 0 },
+  gradientLocations,
   ...rest
 }) => {
   const scaleAnim = useRef(new Animated.Value(1)).current;
@@ -52,11 +57,36 @@ const ButtonV1 = ({
 
   const isPressable = !disabled && !loading;
 
+  // Content to render inside the button (loader, text, or children)
+  const buttonContent = loading ? (
+    <ActivityIndicator color={spinnerColor} />
+  ) : text ? (
+    <Text style={[styles.defaultText, textStyle]}>{text}</Text>
+  ) : (
+    children
+  );
+
+  // Create the animated component that will be rendered
+  const AnimatedComponent = Animated.createAnimatedComponent(gradientColors ? LinearGradient : Animated.View);
+  
+  // Add gradient props if needed
+  const gradientProps = gradientColors ? {
+    colors: gradientColors,
+    start: gradientStart,
+    end: gradientEnd,
+    locations: gradientLocations,
+  } : {};
+
   return (
-    <Animated.View style={[
-      style,
-      { transform: [{ scale: bounce ? scaleAnim : 1 }] }
-    ]}>
+    <AnimatedComponent
+      {...gradientProps}
+      style={[
+        style,
+        gradientColors && styles.gradient,
+        { transform: [{ scale: bounce ? scaleAnim : 1 }] },
+        disabled && gradientColors && { opacity: 0.5 }
+      ]}
+    >
       <Pressable
         onPress={isPressable ? onPress : null}
         onPressIn={isPressable ? handlePressIn : null}
@@ -64,28 +94,29 @@ const ButtonV1 = ({
         disabled={!isPressable}
         delayPressIn={bounce ? 80 : 0}
         style={({ pressed }) => [
-          childrenStyle,
           styles.button,
-          disabled && { backgroundColor: disabledBackground },
-          pressed && isPressable && { opacity: opacityEffect ? 0.85 : 1 },
+          childrenStyle,
+          !gradientColors && disabled && { backgroundColor: disabledBackground },
+          pressed && isPressable && { opacity: opacityEffect ? 0.6 : 1 },
         ]}
         {...rest}
       >
-        {loading ? (
-          <ActivityIndicator color={spinnerColor} />
-        ) : text ? (
-          <Text style={[styles.defaultText, textStyle]}>{text}</Text>
-        ) : (
-          children
-        )}
+        {buttonContent}
       </Pressable>
-    </Animated.View>
+    </AnimatedComponent>
   );
 };
 
 const styles = StyleSheet.create({
   button: {
     width: '100%',
+    // alignItems: 'center',
+    // justifyContent: 'center',
+  },
+  gradient: {
+    // width: '100%',
+    borderRadius: 8, // Default border radius, can be overridden by style
+    overflow: 'hidden',
   },
   defaultText: {
     color: '#fff',

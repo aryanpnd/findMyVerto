@@ -12,6 +12,7 @@ import { ErrorMessage } from '../timeTable/ErrorMessage';
 import LottieView from 'lottie-react-native';
 import { userStorage } from '../../../utils/storage/storage';
 import ButtonV1 from '../miscellaneous/buttons/ButtonV1';
+import { AntDesign } from '@expo/vector-icons';
 
 const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
@@ -80,7 +81,9 @@ export default function MyMessagesScreen({
                         :
                         <View style={styles.headerSection}>
                             <Text style={[styles.text1, { color: colors.whitePrimary }]}>Messages: {messages?.length}</Text>
-                            <TouchableOpacity style={styles.pageButton} onPress={() => setUpdate(true)}>
+                            <TouchableOpacity
+                                activeOpacity={0.7}
+                                style={styles.pageButton} onPress={() => setUpdate(true)}>
                                 <Text style={[styles.text1, { color: "black" }]}>Page: {currentPage}</Text>
                             </TouchableOpacity>
                             <Text style={[styles.text1, { color: colors.whitePrimary }]}>Total: {messages[0]?.TotalMessages}</Text>
@@ -109,8 +112,26 @@ export default function MyMessagesScreen({
                                 <View style={styles.searchContainer}>
                                     <SearchBar searchQuery={searchQuery} updateSearchQuery={searchQueryHandler} isFocused={isFocused} setFocused={setFocused} />
                                     <Text style={styles.text2}>-or-</Text>
-                                    <ButtonV1 style={{ backgroundColor: "black", padding: 10, borderRadius: 10 }} onPress={() => navigation.navigate("MyMessagesSearch")}>
-                                        <Text style={{ color: "white", fontSize: 13 }}>Advanced Search</Text>
+                                    <ButtonV1
+                                        style={{
+                                            backgroundColor: "white",
+                                            padding: 10,
+                                            borderRadius: 10
+                                        }}
+                                        onPress={() => navigation.navigate("MyMessagesSearch")}>
+                                        <View
+                                            style={{
+                                                flexDirection: "row",
+                                                justifyContent: "space-between",
+                                                alignItems: "center",
+                                                gap: 5,
+                                            }}>
+                                            <Text style={{
+                                                color: "black",
+                                                fontSize: 13,
+                                            }}>Deep Search</Text>
+                                            <AntDesign name="search1" size={12} color="black" />
+                                        </View>
                                     </ButtonV1>
                                 </View>
                                 <FlatList

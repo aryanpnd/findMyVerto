@@ -110,6 +110,7 @@ const CourseDetailsModal = forwardRef(function CourseDetailsModal(props, ref) {
           style={styles.button}
           childrenStyle={{justifyContent: 'center', alignItems: 'center'}}
           onPress={() => handleNavigate(classes[selectedIndex])}
+          gradientColors={['#2657eb', '#de6161']}
         >
           <Text style={styles.buttonText}>View Attendance</Text>
         </ButtonV1>

@@ -13,6 +13,7 @@ import { fetchBasicDetails } from '../../../utils/fetchUtils/userData/basicDetai
 import CustomAlert, { useCustomAlert } from '../../components/miscellaneous/CustomAlert'
 import { HEIGHT, WIDTH } from '../../constants/styles'
 import AllowedFieldsToShow from '../../components/settings/AccountSettings/AllowedFieldsToShow'
+import ButtonV1 from '../../components/miscellaneous/buttons/ButtonV1'
 const { height, width } = Dimensions.get('window');
 
 export default function MyProfile({ navigation }) {
@@ -83,9 +84,11 @@ export default function MyProfile({ navigation }) {
                     </View>
                 </ScrollView>
                 <View style={styles.footer}>
-                    <TouchableOpacity onPress={handleLogout} style={styles.footerBtn}>
+                    <ButtonV1 scaleInValue={0.9}
+                    childrenStyle={{ justifyContent: 'center', alignItems: "center" }}
+                    onPress={handleLogout} style={styles.footerBtn}>
                         <Text style={{ color: "grey" }}>Logout</Text>
-                    </TouchableOpacity>
+                    </ButtonV1>
 
                     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
                         <Text style={{ color: "grey", marginTop: 10, fontSize: 10 }}>Made with ❤️ by</Text>
