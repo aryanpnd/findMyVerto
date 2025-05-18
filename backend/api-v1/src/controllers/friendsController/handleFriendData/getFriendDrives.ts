@@ -42,7 +42,7 @@ export const getFriendDrives = async (req: Request, res: Response) => {
                 data: {},
                 message: "Not allowed",
                 success: false,
-                errorMessage: "Your friend has made his drives private",
+                errorMessage: "Your friend has made their drives private",
             });
         }
 

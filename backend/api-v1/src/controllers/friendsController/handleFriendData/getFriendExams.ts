@@ -41,7 +41,7 @@ export const getFriendExams = async (req: Request, res: Response) => {
                 data: {},
                 message: "Not allowed",
                 success: false,
-                errorMessage: "Your friend has made his exams private",
+                errorMessage: "Your friend has made their exams private",
             });
         }
 

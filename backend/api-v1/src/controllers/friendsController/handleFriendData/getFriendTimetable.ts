@@ -40,7 +40,7 @@ export const getFriendTimetable = async (req: Request, res: Response) => {
         success: false,
         data: {},
         message: "Not allowed",
-        errorMessage: "Your friend has made his timetable private",
+        errorMessage: "Your friend has made their timetable private",
       });
     }
 

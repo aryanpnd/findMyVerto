@@ -23,7 +23,16 @@ export default function Attendance({ navigation,route }) {
 
   const handleAttendanceFetch = async (sync) => {
     if(attendanceLoading) return
-    await fetchAttendance(setAttendanceLoading, setRefreshing, setattendance, setAttendanceDetails, auth, setIsError, sync, setLastSyncedRaw)
+    await fetchAttendance(
+      setAttendanceLoading,
+      setRefreshing,
+      setattendance,
+      setAttendanceDetails,
+      auth,
+      setIsError,
+      sync,
+      setLastSyncedRaw
+    )
   }
   useEffect(() => {
     handleAttendanceFetch()

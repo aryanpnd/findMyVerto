@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 import { Student } from "../../../models/studentModel";
-import { getStudentCgpa } from "../../studentController/getStudentCgpaController";
+import { getStudentMarks } from "../../studentController/getStudentMarksController";
 
-export const getFriendCgpa = async (req: Request, res: Response) => {
-try {
+export const getFriendMarks = async (req: Request, res: Response) => {
+    try {
         const { reg_no, password, studentId } = req.body;
 
         const student = await Student.findOne({ reg_no, password });
@@ -36,18 +36,18 @@ try {
             });
         }
 
-        if(friend.allowedFieldsToShow.includes("marks") === false){
+        if (friend.allowedFieldsToShow.includes("marks") === false) {
             return res.status(200).json({
                 data: {},
                 message: "Not allowed",
                 success: false,
-                errorMessage: "Your friend has made his marks private",
+                errorMessage: "Your friend has made their marks private",
             });
         }
 
         if (friend.reg_no && friend.password) {
             const friendBody = { reg_no: friend.reg_no, password: friend.password };
-            return getStudentCgpa(req, res, friendBody);
+            return getStudentMarks(req, res, friendBody);
         }
 
         res.status(200).json({
@@ -60,8 +60,7 @@ try {
     } catch (error: any) {
         console.error(error);
         res.status(500).json({
-            summary: {},
-            details: {},
+            data: {},
             message: "Unexpected server error",
             success: false,
             errorMessage: error.message,

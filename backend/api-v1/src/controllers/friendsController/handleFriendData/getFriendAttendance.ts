@@ -45,7 +45,7 @@ export const getFriendAttendance = async (req: Request, res: Response) => {
                 details: {},
                 message: "Not allowed",
                 success: false,
-                errorMessage: "Your friend has made his attendance private",
+                errorMessage: "Your friend has made their attendance private",
             });
         }
 

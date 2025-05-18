@@ -2,11 +2,11 @@ import express from 'express';
 import { getFriendTimetable } from '../controllers/friendsController/handleFriendData/getFriendTimetable';
 import { getFriendData } from '../controllers/friendsController/handleFriendData/getFriendData';
 import { getFriendAttendance } from '../controllers/friendsController/handleFriendData/getFriendAttendance';
-import { getFriendCgpa } from '../controllers/friendsController/handleFriendData/getFriendMarks';
-import { getFriendMarks } from '../controllers/friendsController/handleFriendData/getFriendCgpa';
 import { getFriendExams } from '../controllers/friendsController/handleFriendData/getFriendExams';
 import { getFriendAssignments } from '../controllers/friendsController/handleFriendData/getFriendAssignments';
 import { getFriendDrives } from '../controllers/friendsController/handleFriendData/getFriendDrives';
+import { getFriendMarks } from '../controllers/friendsController/handleFriendData/getFriendMarks';
+import { getFriendCgpa } from '../controllers/friendsController/handleFriendData/getFriendCgpa';
 
 export const friendScrapperRoutes = express.Router();
 

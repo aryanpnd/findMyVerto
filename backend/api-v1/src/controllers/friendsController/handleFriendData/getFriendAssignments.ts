@@ -41,7 +41,7 @@ export const getFriendAssignments = async (req: Request, res: Response) => {
                 data: {},
                 message: "Not allowed",
                 success: false,
-                errorMessage: "Your friend has made his assignments private",
+                errorMessage: "Your friend has made their assignments private",
             });
         }
 
