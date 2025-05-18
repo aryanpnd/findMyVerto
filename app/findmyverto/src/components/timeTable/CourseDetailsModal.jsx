@@ -14,9 +14,6 @@ const CourseDetailsModal = forwardRef(function CourseDetailsModal(props, ref) {
   const scrollViewRef = useRef(null);
   const scrollX = useRef(new Animated.Value(0)).current;
   const [selectedIndex, setSelectedIndex] = useState(0);
-  useEffect(() => {
-    console.log("classes", classes);
-  }, [selectedIndex]);
 
   const bottomSheetModalRef = useRef(null);
 
