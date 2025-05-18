@@ -22,7 +22,7 @@ export const getStudentAttendance = async (req: Request, res: Response, friendBo
       return;
     }
 
-    const { reg_no, password } = requestBody;
+    const { reg_no, password, summary: summaryOnly } = requestBody;
 
     if (!reg_no || !password) {
       res.status(200).json({
@@ -58,6 +58,30 @@ export const getStudentAttendance = async (req: Request, res: Response, friendBo
     };
 
     try {
+      // If summaryOnly is true, only fetch attendance summary
+      if (summaryOnly) {
+        const summary = await scrapeAttendanceSummary(login.cookie);
+        
+        if (!summary.success) {
+          res.status(200).json({
+            summary: {},
+            details: {},
+            message: "Failed to fetch attendance summary",
+            success: false,
+            errorMessage: summary.errorMessage || "Unknown error"
+          });
+          return;
+        }
+
+        // Only return the summary
+        studentAttendance.summary = summary;
+        studentAttendance.message = "Summary data fetched successfully";
+        studentAttendance.success = true;
+        
+        res.status(200).json(studentAttendance);
+        return;
+      }
+      
       // Fetch attendance summary and detail in parallel
       const [summary, detail] = await Promise.all([
         scrapeAttendanceSummary(login.cookie),
