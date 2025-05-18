@@ -202,6 +202,9 @@ studentRoutes.post('/makeup', (req: Request, res: Response) => {
  *                 type: string
  *               password:
  *                 type: string
+ *               summary:
+ *                 type: boolean
+ *                 required: false
  *     responses:
  *       200:
  *         description: Successful response
