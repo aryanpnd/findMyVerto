@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from 'react';
-import { TextInput, View, StyleSheet, Text, ScrollView, TouchableOpacity, Keyboard, Linking } from 'react-native';
+import { TextInput, View, StyleSheet, Text, ScrollView, TouchableOpacity, Keyboard, Linking,Image } from 'react-native';
 import { AuthContext } from '../../../context/Auth';
 import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -12,7 +12,7 @@ import { StatusBar } from 'expo-status-bar';
 import { HEIGHT, WIDTH } from '../../constants/styles';
 import AwesomeButton from 'react-native-really-awesome-button';
 import ChangeServerBottomSheet from '../../components/settings/GeneralSettings/ChangeServerBottomSheet';
-import { Image } from 'expo-image';
+// import { Image } from 'expo-image';
 
 export default function Login() {
   const { auth, setAuth } = useContext(AuthContext);
