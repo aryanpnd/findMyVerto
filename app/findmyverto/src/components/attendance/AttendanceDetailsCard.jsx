@@ -115,11 +115,11 @@ export default function AttendanceDetailsCard({ details }) {
 const styles = StyleSheet.create({
     container: {
         maxHeight: HEIGHT(15),
-        width: '95%',
+        // width: '95%',
         borderRadius: 25,
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 10,
+        // padding: 10,
         gap: 10,
     },
     recordContainer: {

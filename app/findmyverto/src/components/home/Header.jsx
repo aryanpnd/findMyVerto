@@ -1,9 +1,7 @@
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, Dimensions } from 'react-native'
-import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { FontAwesome5, Octicons } from '@expo/vector-icons'
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { useCallback, useContext, useEffect, useState } from 'react'
+import { Octicons } from '@expo/vector-icons'
 import AttendanceProgressBar from '../miscellaneous/AttendanceProgressBar'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import axios from 'axios'
 import { AuthContext } from '../../../context/Auth'
 import Toast from 'react-native-toast-message'
 import LottieView from 'lottie-react-native';
@@ -14,7 +12,7 @@ import { createShimmerPlaceholder } from 'react-native-shimmer-placeholder';
 import { fetchBasicDetails } from '../../../utils/fetchUtils/userData/basicDetailsFetch'
 import { useFocusEffect } from '@react-navigation/native'
 import { HEIGHT, WIDTH } from '../../constants/styles'
-import { fetchAttendance, fetchAttendanceSummary } from '../../../utils/fetchUtils/userData/attendanceFetch'
+import { fetchAttendanceSummary } from '../../../utils/fetchUtils/userData/attendanceFetch'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 import { AttendanceSyncTime } from '../../../utils/settings/SyncAndRetryLimits'
 import ButtonV1 from '../miscellaneous/buttons/ButtonV1'
@@ -23,7 +21,7 @@ const ShimmerPlaceHolder = createShimmerPlaceholder(LinearGradient);
 
 export default function Header({ navigation }) {
     const { auth } = useContext(AuthContext);
-    const { setAttendanceLoading, friendRequests } = useContext(AppContext);
+    const { attendanceLoading, setAttendanceLoading, friendRequests } = useContext(AppContext);
 
     // Basic Details states
     const [loading, setLoading] = useState(false);
@@ -39,7 +37,6 @@ export default function Header({ navigation }) {
     const [attendanceDetails, setAttendanceDetails] = useState({});
     const [isAttendanceError, setIsAttendanceError] = useState(false);
     const [attendanceLastSynced, setAttendanceLastSynced] = useState("");
-    const [attendanceSummaryLoading, setAttendanceSummaryLoading] = useState(false);
     const [attendanceSummarySuccess, setAttendanceSummarySuccess] = useState(false);
     const [attendanceRefresh, setAttendanceRefresh] = useState(false);
     const [attendanceRetryAttempts, setAttendanceRetryAttempts] = useState(0);
@@ -59,28 +56,9 @@ export default function Header({ navigation }) {
                 return;
             }
         }
-        fetchAttendance(
-            setAttendanceLoading,
-            setAttendanceRefresh,
-            setAttendance,
-            setAttendanceDetails,
-            auth,
-            () => {},
-            sync,
-            setAttendanceLastSynced,
-            isRetry
-        );
 
-        // This is to stop fetching attendance summary if the attendance fetch was successful
-        // to avoid the condition where attendance is not fetched or have error but attendance summary
-        // is fetched. For example, when you navigate to home screen it tries fetching attendance
-        // and attendance summary as the sync condition is true, but you dont want to fetch 
-        // attendance summary.
-        if (attendanceSummarySuccess) {
-            return
-        }
         await fetchAttendanceSummary(
-            setAttendanceSummaryLoading,
+            setAttendanceLoading,
             setAttendanceRefresh,
             setAttendance,
             auth,
@@ -140,10 +118,10 @@ export default function Header({ navigation }) {
     }, [isError, loading]);
 
     useEffect(() => {
-        if (isAttendanceError && !attendanceSummaryLoading) {
+        if (isAttendanceError && !attendanceLoading) {
             handleAttendanceRetry();
         }
-    }, [isAttendanceError, attendanceSummaryLoading]);
+    }, [isAttendanceError, attendanceLoading]);
 
     return (
         <LinearGradient style={styles.container} colors={[colors.secondary, colors.primary]}>
@@ -232,7 +210,7 @@ export default function Header({ navigation }) {
                         style={styles.AttendanceContainer} onPress={loading ? () => { } : () => navigation.navigate('Attendance')}>
                         <Text style={{ fontWeight: '500', color: colors.whiteLight, marginTop: 5 }}>Attendance</Text>
                         {
-                            attendanceSummaryLoading ?
+                            attendanceLoading ?
                                 <Text style={{ fontSize: 10, color: colors.whiteLight, marginBottom: 5 }}>Loading...</Text>
                                 :
                                 <Text style={{ fontSize: 10, color: colors.whiteLight, marginBottom: 5 }}>
@@ -244,7 +222,7 @@ export default function Header({ navigation }) {
                                 <Text style={{ color: colors.whiteLight, fontWeight: "bold" }}>Error</Text>
                                 <Text style={{ color: colors.whiteLight, fontSize: 10 }}>Click to open</Text>
                             </>
-                        ) : attendanceSummaryLoading ? (
+                        ) : attendanceLoading ? (
                             <LottieView
                                 autoPlay
                                 style={{

@@ -85,6 +85,9 @@ friendScrapperRoutes.post('/timetable', getFriendTimetable);
  *                 type: string
  *               studentId:
  *                 type: string
+ *               summary:
+ *                 type: boolean
+ *                 required: false
  *     responses:
  *       200:
  *         description: Successful response

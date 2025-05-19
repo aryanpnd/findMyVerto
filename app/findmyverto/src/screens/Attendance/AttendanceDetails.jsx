@@ -1,75 +1,69 @@
-import { MaterialIcons } from "@expo/vector-icons";
 import { useRoute } from "@react-navigation/native";
-import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { colors } from "../../constants/colors";
-import AttendanceDetailsCard from "../../components/attendance/AttendanceDetailsCard";
-import { HEIGHT } from "../../constants/styles";
+import { AuthContext } from "../../../context/Auth";
+import { useContext, useEffect, useState } from "react";
+import { AppContext } from "../../../context/MainApp";
+import { fetchAttendanceDetails } from "../../../utils/fetchUtils/userData/attendanceFetch";
+import formatTimeAgo from "../../../utils/helperFunctions/dateFormatter";
+import AttendanceDetailsScreen from "../../components/attendance/AttendanceDetailsScreen";
 
 export default function AttendanceDetails({ navigation }) {
     const route = useRoute();
-    const { Details,subject_code } = route.params
+    const { name, subject_code, self = true } = route.params;
+    const { auth } = useContext(AuthContext);
+
+    const {
+        attendanceDetailsLoading, setAttendanceDetailsLoading,
+        attendanceDetailsRefreshing, setAttendanceDetailsRefreshing
+    } = useContext(AppContext);
+    const [attendanceDetails, setAttendanceDetails] = useState([]);
+    const [isError, setIsError] = useState(false);
+    const [lastSyncedRaw, setLastSyncedRaw] = useState("");
+    const [lastSynced, setLastSynced] = useState("");
+
+    const handleAttendanceFetch = async (sync) => {
+        if (attendanceDetailsLoading) return;
+
+        await fetchAttendanceDetails(
+            setAttendanceDetailsLoading,
+            setAttendanceDetailsRefreshing,
+            setAttendanceDetails,
+            auth,
+            setIsError,
+            sync,
+            setLastSyncedRaw,
+            false
+        );
+    };
+
+    useEffect(() => {
+        handleAttendanceFetch();
+    }, []);
+
+    useEffect(() => {
+        setLastSynced(formatTimeAgo(lastSyncedRaw));
+    }, [lastSyncedRaw]);
+
     return (
         <SafeAreaView style={[styles.container, { backgroundColor: 'transparent' }]}>
-            <View style={[styles.header]}>
-                {/* Back naviagtion button */}
-                <View style={[styles.backBtn]}>
-                    <TouchableOpacity onPress={() => navigation.goBack()}>
-                        <MaterialIcons name='arrow-back-ios' size={25} color={colors.lightDark} />
-                    </TouchableOpacity>
-                </View>
-                {/* title */}
-                <View style={[styles.title]}>
-                    <Text style={{ fontSize: 18, fontWeight: "500", textAlign:"center" }}>{subject_code}</Text>
-                </View>
-            </View>
-            <ScrollView style={styles.body} contentContainerStyle={{ alignItems: 'center',gap:10,paddingBottom:20 }}>
-                {
-                    Details?.map((value, index) => {
-                        return (
-                            <AttendanceDetailsCard key={index} details={value} />
-                        );
-                    })
-                }
-            </ScrollView>
+            <AttendanceDetailsScreen
+                subjectCode={subject_code}
+                name={name}
+                self={self}
+                attendanceDetails={attendanceDetails}
+                loading={attendanceDetailsLoading}
+                refreshing={attendanceDetailsRefreshing}
+                lastSynced={lastSynced}
+                isError={isError}
+                onRefresh={() => handleAttendanceFetch(true)}
+                navigation={navigation}
+            />
         </SafeAreaView>
-    )
+    );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        width: '100%',
-        // justifyContent:"space-between",
-        height: '100%',
-    },
+    container: { flex: 1, width: '100%', height: '100%' },
 
-    // header
-    header: {
-        height: HEIGHT(8),
-        width: '100%',
-        flexDirection: "row",
-        padding: 10,
-        gap: 10,
-    },
-    backBtn: {
-        width: "10%",
-        justifyContent: "center",
-        alignItems: 'center',
-    },
-    title: {
-        alignItems: "center",
-        justifyContent: "center"
-    },
-
-    // body
-    body: {
-        height: "92%",
-        width: '100%',
-        gap: HEIGHT(5),
-    },
-    cardContainer:{
-        justifyContent: 'center',
-        alignItems: 'center'
-    }
 });

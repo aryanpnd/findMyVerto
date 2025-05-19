@@ -1,12 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react'
-import Toast from 'react-native-toast-message'
+import { useContext, useEffect, useState } from 'react'
 import {  AuthContext } from '../../../context/Auth'
-import AsyncStorage from '@react-native-async-storage/async-storage'
-import axios from 'axios'
 import AttendanceScreen from '../../components/attendance/AttendanceScreen'
-import { Alert } from 'react-native'
 import { AppContext } from '../../../context/MainApp'
-import { fetchAttendance } from '../../../utils/fetchUtils/userData/attendanceFetch'
+import {  fetchAttendanceSummary } from '../../../utils/fetchUtils/userData/attendanceFetch'
 import formatTimeAgo from '../../../utils/helperFunctions/dateFormatter'
 
 export default function Attendance({ navigation,route }) {
@@ -15,7 +11,6 @@ export default function Attendance({ navigation,route }) {
   const { auth } = useContext(AuthContext)
   const { attendanceLoading, setAttendanceLoading } = useContext(AppContext)
   const [attendance, setattendance] = useState({})
-  const [attendanceDetails, setAttendanceDetails] = useState({})
   const [refreshing, setRefreshing] = useState(false);
   const [isError, setIsError] = useState(false);
   const [lastSyncedRaw, setLastSyncedRaw] = useState("")
@@ -23,15 +18,17 @@ export default function Attendance({ navigation,route }) {
 
   const handleAttendanceFetch = async (sync) => {
     if(attendanceLoading) return
-    await fetchAttendance(
+
+    await fetchAttendanceSummary(
       setAttendanceLoading,
       setRefreshing,
       setattendance,
-      setAttendanceDetails,
       auth,
       setIsError,
       sync,
-      setLastSyncedRaw
+      setLastSyncedRaw,
+      false,
+      () => {}
     )
   }
   useEffect(() => {
@@ -52,7 +49,6 @@ export default function Attendance({ navigation,route }) {
         loading={attendanceLoading}
         self={true}
         navigation={navigation}
-        attendanceDetails={attendanceDetails}
         isError={isError} 
         routeParams={routeParams}
         />

@@ -4,7 +4,7 @@ import { getStudentAttendance } from "../../studentController/studentAttendanceC
 
 export const getFriendAttendance = async (req: Request, res: Response) => {
     try {
-        const { reg_no, password, studentId } = req.body;
+        const { reg_no, password, studentId, summary: summaryOnly } = req.body;
 
         const student = await Student.findOne({ reg_no, password });
         if (!student) {
@@ -50,7 +50,11 @@ export const getFriendAttendance = async (req: Request, res: Response) => {
         }
 
         if (friend.reg_no && friend.password) {
-            const friendBody = { reg_no: friend.reg_no, password: friend.password };
+            const friendBody = { 
+                reg_no: friend.reg_no, 
+                password: friend.password,
+                summary: summaryOnly 
+            };
             return getStudentAttendance(req, res, friendBody);
         }
 

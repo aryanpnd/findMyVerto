@@ -5,17 +5,32 @@ import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import { globalStyles, HEIGHT } from '../../constants/styles'
 import ButtonV1 from '../miscellaneous/buttons/ButtonV1'
 
-export default function AttendanceCard({ attendance, colors, navigation, isAggregateCard, attendanceDetails }) {
+export default function AttendanceCard({
+    attendance,
+    colors,
+    navigation,
+    isAggregateCard,
+    isFriend,
+    friendParams,
+}) {
     return (
-        <ButtonV1 bounce={attendance?.subject_name? true : false}
+        <ButtonV1 bounce={attendance?.subject_name ? true : false}
             style={[
                 styles.cardWrapper,
                 !attendance?.subject_name && { borderBottomRightRadius: 50, borderTopLeftRadius: 50 }
             ]}
             onPress={
-                attendance?.subject_name ?
-                    () => navigation.navigate('AttendanceDetails', { Details: attendanceDetails, subject_code: attendance.subject_code })
-                    : () => { }
+                isFriend ?
+                    () => navigation.navigate('FriendAttendanceDetails', {
+                        id: friendParams.id,
+                        name: friendParams.name,
+                        subject_code: attendance.subject_code
+                    })
+                    : attendance?.subject_name ?
+                        () => navigation.navigate('AttendanceDetails', {
+                            subject_code: attendance.subject_code
+                        })
+                        : () => { }
             }>
             <LinearGradient
                 colors={colors}

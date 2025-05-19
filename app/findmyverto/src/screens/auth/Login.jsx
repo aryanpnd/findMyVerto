@@ -1,5 +1,5 @@
 import React, { useContext, useRef, useState } from 'react';
-import { TextInput, View, StyleSheet, Text, ScrollView, TouchableOpacity, Keyboard, Linking,Image } from 'react-native';
+import { TextInput, View, StyleSheet, Text, ScrollView, TouchableOpacity, Keyboard, Linking, Image } from 'react-native';
 import { AuthContext } from '../../../context/Auth';
 import Toast from 'react-native-toast-message';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -153,7 +153,7 @@ export default function Login() {
                   onFocus={() => setIsFocused(true)}
                   onBlur={() => setIsFocused(false)}
                 />
-                <View style={{ flex: 1 }}>
+                <View>
                   <TextInput
                     ref={passwordRef}
                     secureTextEntry={!showPassword}
@@ -195,6 +195,13 @@ export default function Login() {
 
               <View style={{ flex: 4 }}>
                 <LoginButton onPress={login} loading={loading} />
+              </View>
+
+              <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', marginTop: 20 }}>
+                <Text style={{ color: "grey", marginTop: 10, fontSize: 10 }}>Made with ❤️ by</Text>
+                <TouchableOpacity onPress={() => Linking.openURL('https://github.com/aryanpnd')}>
+                  <Text style={{ color: "#5D3FD3", fontSize: 10 }}>Aryan</Text>
+                </TouchableOpacity>
               </View>
             </ScrollView>
           </View>
@@ -307,10 +314,10 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 0,
   },
   input: {
-    height: 65,
+    height: 60,
     padding: 10,
     borderColor: 'black',
-    marginBottom: 30,
+    marginBottom: 25,
     borderRadius: 15,
     backgroundColor: 'white',
   },

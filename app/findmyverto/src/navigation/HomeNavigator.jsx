@@ -40,6 +40,7 @@ import { View } from 'react-native';
 import { act, useEffect, useRef } from 'react';
 import { TabBar } from '../components/miscellaneous/TabBar';
 import Chats from '../screens/Chats/Chats';
+import FriendAttendanceDetails from '../components/friendProfile/FriendAttendanceDetails';
 
 
 const Tab = AnimatedTabBarNavigator();
@@ -329,6 +330,10 @@ export const HomeNavigator = () => {
                     headerShadowVisible: false,
                     title: "Friend's Attendance",
                 }}
+            />
+            <Stack.Screen
+                name="FriendAttendanceDetails"
+                component={FriendAttendanceDetails}
             />
             <Stack.Screen
                 name="FriendTimetable"

@@ -20,9 +20,9 @@ export default function AttendanceScreen({
   refresh,
   self,
   navigation,
-  attendanceDetails,
   isError,
   routeParams,
+  isFriend=false
 }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
@@ -181,9 +181,8 @@ export default function AttendanceScreen({
                       attendance={value}
                       navigation={navigation}
                       isAggregateCard={attendance.subject_name ? true : false}
-                      attendanceDetails={
-                        attendanceDetails.attendance_details[value.subject_code]
-                      }
+                      isFriend={isFriend}
+                      friendParams={routeParams}
                     />
                   </View>
                 ))

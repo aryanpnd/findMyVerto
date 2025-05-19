@@ -6,6 +6,8 @@ const AppContext = createContext();
 const AppProvider = ({ children }) => {
   const [timetableLoading, setTimetableLoading] = useState(false)
   const [attendanceLoading, setAttendanceLoading] = useState(false)
+  const [attendanceDetailsLoading, setAttendanceDetailsLoading] = useState(false)
+  const [attendanceDetailsRefreshing, setAttendanceDetailsRefreshing] = useState(false)
   const [friendsRefreshing, setFriendsRefreshing] = useState(false)
   const [allowedFieldsToShow, setAllowedFieldsToShow] = useState([])
   const [friendRequests, setFriendRequests] = useState(0)
@@ -60,6 +62,8 @@ const AppProvider = ({ children }) => {
     <AppContext.Provider value={{
       timetableLoading, setTimetableLoading,
       attendanceLoading, setAttendanceLoading,
+      attendanceDetailsLoading, setAttendanceDetailsLoading,
+      attendanceDetailsRefreshing, setAttendanceDetailsRefreshing,
       friendsRefreshing, setFriendsRefreshing,
       allowedFieldsToShow, setAllowedFieldsToShow,
       friendRequests, setFriendRequests,
